@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.egg-info/
+outputs/**/*.partial
+
+# Downloaded datasets and nested upstream repositories are reproducible inputs.
+data/llmx_data/
+upstream/LLM-Xavier/
+data/candidate_datasets/*/repository/
+data/candidate_datasets/*/*.zip
+data/candidate_datasets/*/extracted/
+
+# Generated analyses and paid-pilot outputs.
+outputs/**/*.csv
+outputs/**/*.json
+outputs/**/*.jsonl
+outputs/smoke/
+outputs/smoke-episode.npz

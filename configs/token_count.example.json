@@ -1,0 +1,8 @@
+{
+  "scope": "all upstream-supported official tasks",
+  "history_size": 1,
+  "model": "gpt-4o",
+  "fallback_encoding": "cl100k_base",
+  "tokens_per_message": 3,
+  "priming_tokens": 3
+}

@@ -1,0 +1,7 @@
+name: llmx_original
+prompt_mode: original_llmx
+implementation: upstream/LLM-Xavier
+indexed_history: true
+numeric_precision: 4
+fetch_drop_last_state_feature: true
+semantics: upstream Episode/history_text/render_question/system_prompt/user_prompt unchanged

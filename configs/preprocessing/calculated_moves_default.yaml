@@ -1,0 +1,12 @@
+name: calculated_moves_example_baseline
+dataset_id: calculated_moves
+prompt_mode: external_static
+source_globs: ['data/candidate_datasets/calculated_moves/**/*.csv']
+selector_scope: csv_table
+fields: '*'
+state_columns: []
+action_columns: []
+reward_column: null
+value_format: lexical
+system_prompt: 'Describe the supplied encounter statistics, rule weights, or fitness fields. These are not timestep flight states or actions.'
+question: 'Summarize this record using only its available fields.'

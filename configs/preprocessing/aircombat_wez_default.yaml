@@ -1,0 +1,11 @@
+name: aircombat_wez_example_baseline
+dataset_id: aircombat_wez
+prompt_mode: external_static
+source_globs: ['data/candidate_datasets/aircombat_wez/*/Data/*.csv']
+fields: '*'
+state_columns: []
+action_columns: []
+reward_column: null
+value_format: lexical
+system_prompt: 'Describe the supplied static scenario and target fields. They are not a trajectory, action, or reward sequence.'
+question: 'Summarize this scenario and its recorded targets; do not infer missing actions or rewards.'
