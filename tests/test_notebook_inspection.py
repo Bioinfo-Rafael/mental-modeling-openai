@@ -74,10 +74,30 @@ def test_missing_batch_does_not_execute(tmp_path):
     assert not list(tmp_path.iterdir())
 
 
-def test_notebook_source_has_no_writer_or_api():
-    nb = json.loads((ROOT / 'notebooks/01_data_and_token_inspection.ipynb').read_text())
+@pytest.mark.parametrize('external', [False, True])
+def test_notebook_source_has_no_writer_or_api(external):
+    filename = '02_external_data_and_token_inspection.ipynb' if external else '01_data_and_token_inspection.ipynb'
+    nb = json.loads((ROOT / 'notebooks' / filename).read_text())
     source = '\n'.join(''.join(c['source']) for c in nb['cells'] if c['cell_type'] == 'code')
     for forbidden in ['to_csv(', 'write_text(', 'savefig(', 'OpenAI(', 'responses.create', 'execute-paid-api']:
         assert forbidden not in source
-    first = next(c for c in nb['cells'] if c['cell_type'] == 'code')
-    assert 'configuration' in first['metadata']['tags']
+    code_cells = [c for c in nb['cells'] if c['cell_type'] == 'code']
+    assert 'DATASET =' not in ''.join(code_cells[0]['source'])
+    tags = [c['metadata'].get('tags', []) for c in code_cells]
+    selection = next(i for i, t in enumerate(tags) if 'selection' in t)
+    scan_tag = 'live-external-scan' if external else 'live-official-scan'
+    scan_index = next(i for i, t in enumerate(tags) if scan_tag in t)
+    assert selection > scan_index
+    assert 'build_token_inventory(' in source
+    assert 'datasets="everything"' not in source
+    if external:
+        assert 'llmx_inventory' not in source
+        assert 'create_inventory(' not in source
+        assert 'datasets="external-all"' in source
+    else:
+        assert 'candidate_inventory' not in source
+        assert 'inventory_candidates' not in source
+        assert 'external_frames(' not in source
+        assert 'datasets="all"' in source
+    for cell in code_cells:
+        compile(''.join(cell['source']), filename, 'exec')

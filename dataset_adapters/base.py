@@ -5,6 +5,8 @@ from functools import lru_cache
 from hashlib import sha256
 from pathlib import Path
 from typing import Any
+from contextlib import contextmanager
+from contextvars import ContextVar
 import json
 import numpy as np
 
@@ -12,8 +14,26 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_ROOT = ROOT / "data"
 
 
-@lru_cache(maxsize=1)
 def inventories():
+    current = _live_inventories.get()
+    return current if current is not None else _saved_inventories()
+
+
+_live_inventories = ContextVar('live_raw_inventories', default=None)
+
+
+@contextmanager
+def inventory_context(llmx_inventory, candidate_inventory):
+    """Use an explicit in-memory live scan for readers without overwriting saved caches."""
+    token = _live_inventories.set((llmx_inventory, candidate_inventory))
+    try:
+        yield
+    finally:
+        _live_inventories.reset(token)
+
+
+@lru_cache(maxsize=1)
+def _saved_inventories():
     base = ROOT / "outputs/dataset_inventory"
     return (json.loads((base / "llmx_schema.json").read_text()),
             json.loads((base / "candidate_schema.json").read_text()))

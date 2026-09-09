@@ -22,7 +22,12 @@ python tools/count_input_tokens.py --external-all --prompt-mode external_generic
 
 ## データを目視確認する
 
-[閲覧用Notebook](notebooks/01_data_and_token_inspection.ipynb)の最初のconfiguration cellを変更し、Restart Kernel and Run All Cellsで実行してください。raw dataのshape/dtype・実際の数値、公式LLM-X prompt全文、episode/query番号ごとのtoken数、分布とhistory size比較を確認できます。既存reader・前処理・token計測関数を再利用し、data/と保存済みbatch結果は変更しません。APIも呼びません。
+調査Notebookを公式用と外部用に分離しています。どちらも単独で上から実行でき、他方のrawデータやinventoryは読みません。
+
+- [01: 公式データ](notebooks/01_data_and_token_inspection.ipynb)：`create_inventory(data/llmx_data)` で公式rawを検査し、全task・全episode・全NPZ keyを表示します。
+- [02: 外部データ](notebooks/02_external_data_and_token_inspection.ipynb)：`scan(data/candidate_datasets)` で外部rawを検査し、file/schema/column/arrayを表示します。大きな表は全行をDataFrameに保持してページ表示します。scanには数分かかる場合があります。
+
+どちらもread-onlyのlive scanを主とし、保存済みinventoryは後から検算にだけ使用します。
 
 ```bash
 # workspace直下で、初回のみ依存を追加
@@ -31,7 +36,11 @@ python tools/count_input_tokens.py --external-all --prompt-mode external_generic
 .venv/bin/jupyter lab notebooks/01_data_and_token_inspection.ipynb
 ```
 
-一覧は25件（Baidu未取得を含む）。公式20 taskはraw閲覧、元promptは対応11 taskのみ。外部rawは `DATASET='f16capstone'` / `SEQUENCE_ID=0` などで選択し、token表示は `PREPROCESSING_CONFIG='configs/preprocessing/f16capstone_default.yaml'` のように明示したときだけ有効です。外部の既定token計測は選択sequenceのみで、重い全dataset batchを自動実行しません。
+各Notebookの「drill-down selection」でdataset/episode/sequence/row/indexを選び、raw値→既存preprocessing→history→prompt全文→選択queryのtoken数を追跡します。公式20 taskはraw閲覧、元promptは対応11 taskのみ。外部用の初期選択はF16Capstoneで、`PREPROCESSING_CONFIG='configs/preprocessing/f16capstone_default.yaml'` を明示しています。外部preprocessingは本projectで定義するLLM入力用example / baseline変換であり、raw datasetそのものではありません。
+
+「LIVE TOKEN COUNT」は選択recordとは独立に、公式用は `build_token_inventory(datasets='all', ...)`、外部用は `datasets='external-all'` を呼びます。公式は全valid query、外部は既存YAML設定に従い100,000件超のpoolを既定2,000件・seed=0でsample（全件扱いしない）。Hは既定 `[1]`、staticは0です。各Notebookの対象範囲のqueryを `all_token_queries_df`、集計を `token_by_dataset_df`、scope/skip理由もDataFrameで保持し、mode/前処理別の分布と上位・下位queryを表示します。最後の保存済みbatch比較も各Notebookの対象datasetに限定します。
+
+Notebookはdata/・保存済みCSV/JSONを変更せず、OpenAI APIも呼びません。CLIとNotebookは同じ `tools/token_inventory.py:build_token_inventory` を共有し、保存処理はCLI側の明示的writerへ分離しています。検証は `.venv/bin/python tools/check_inspection_notebook.py`（全live scanと全token計測を実行）です。
 
 ## データ一覧
 

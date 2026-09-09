@@ -34,56 +34,87 @@ socket.create_connection = no_network
 '''
 
 
-def run_case(name, overrides, assertions):
-    nb = nbformat.read(ROOT / 'notebooks/01_data_and_token_inspection.ipynb', as_version=4)
-    config = next(c for c in nb.cells if 'configuration' in c.metadata.get('tags', []))
-    config.source += '\n' + '\n'.join(f'{key} = {value!r}' for key, value in overrides.items())
-    nb.cells.insert(0, nbformat.v4.new_code_cell(GUARD))
-    nb.cells.append(nbformat.v4.new_code_cell(assertions))
-    NotebookClient(nb, timeout=600, kernel_name='mental-modeling',
-                   resources={'metadata': {'path': str(ROOT)}}).execute()
-    output = derived_path(ROOT / 'outputs/notebook_checks' / (name + '.ipynb'))
-    output.parent.mkdir(parents=True, exist_ok=True)
-    nbformat.write(nb, output)
-    print(f'{name}: all cells executed; assertions passed; network/raw writes blocked', flush=True)
-    return {'case': name, 'code_cells': sum(c.cell_type == 'code' for c in nb.cells),
-            'status': 'passed', 'api_requests': 0, 'output': str(output.relative_to(ROOT))}
-
-
 def main():
-    results = [
-        run_case('MountainCar-v0', {}, '''assert len(datasets) == 25
-assert schema_table.matches_inventory.all()
-assert len(query_tokens) == 1021
-assert set(history_tables) == {0, 1, 2, 3, 5}
-assert query.query_index == 10
-assert query.system_prompt and query.user_prompt
-assert selected_tokens['tokenizer'] == 'o200k_base'
-assert not selected_tokens['fallback_encoding_used']
-assert len(statistics_table) == 1
-assert batch_summary is not None
-print('MountainCar assertions passed')'''),
-        run_case('f16capstone_raw', {'DATASET': 'f16capstone', 'SEQUENCE_ID': 0}, '''assert len(raw_record['fields']) == 55
-assert len(raw_preview) == 5
-assert schema_table.matches_inventory.all()
-assert config is None and query is None
-assert query_tokens.empty
-print('F16 raw-only assertions passed')'''),
-        run_case('baidu_not_acquired', {'DATASET': 'baidu_fighter_jet'}, '''assert sequence is None
-assert query is None and query_tokens.empty
-print('Not-acquired case passed')'''),
-        run_case('aircombat_static', {'DATASET': 'aircombat_wez', 'ROW_ID': 100,
-                 'PREPROCESSING_CONFIG': 'configs/preprocessing/aircombat_wez_default.yaml'}, '''assert raw_record['row_id'] == 100
-assert query.history_size == 0
-assert selected_tokens['prompt_mode'] == 'external_static'
-assert len(history_comparison) == 1
-assert set(history_tables) == {0}
-assert len(query_tokens) == sequence.length
-assert 'selected external reader unit only' in count_scope
-print('Explicit external preprocessing assertions passed')'''),
-    ]
-    path = derived_path(ROOT / 'outputs/notebook_checks/verification.json')
-    path.write_text(json.dumps(results, ensure_ascii=False, indent=2) + '\n')
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--scope', choices=['official', 'external', 'both'], default='both')
+    args = parser.parse_args()
+    reports = []
+    for scope in ('official', 'external'):
+        if args.scope not in (scope, 'both'):
+            continue
+        external = scope == 'external'
+        name = '02_external_data_and_token_inspection.ipynb' if external else '01_data_and_token_inspection.ipynb'
+        nb = nbformat.read(ROOT / 'notebooks' / name, as_version=4)
+        # Fail if a notebook even reads the other scope's raw data or saved raw inventory.
+        other_raw = 'llmx_data' if external else 'candidate_datasets'
+        other_schema = 'llmx_schema.json' if external else 'candidate_schema.json'
+        isolation = f"""
+blocked_raw = Path.cwd() / 'data' / {other_raw!r}
+blocked_schema = Path.cwd() / 'outputs/dataset_inventory' / {other_schema!r}
+def audit_scope(event, args):
+    if event in ('open', 'os.scandir') and isinstance(args[0], (str, bytes, os.PathLike)):
+        path = Path(os.fsdecode(args[0])).resolve()
+        if path == blocked_schema or path == blocked_raw or path.is_relative_to(blocked_raw):
+            raise RuntimeError('Other dataset scope accessed: ' + str(path))
+sys.addaudithook(audit_scope)
+"""
+        nb.cells.insert(0, nbformat.v4.new_code_cell(GUARD + isolation))
+        assertions = """
+assert result.metadata['api_requests'] == 0
+assert len(largest_token_queries_df) == 20
+assert selected_tokens is not None
+for name, table in raw_validation.items():
+    assert {'matches', 'presence'} <= set(table.columns)
+    print('Saved raw comparison:', name, 'differences:', int((~table.matches).sum()))
+if 'saved_token_validation_df' in globals():
+    assert saved_token_validation_df.query("presence == 'both'").matches.all()
+"""
+        if external:
+            assertions += """
+assert len(external_files_df) == len(candidate_inventory['files'])
+assert candidate_inventory['source_size_mtime_unchanged']
+assert not external_files_df.query("status == 'error'").shape[0]
+assert len(all_token_queries_df) == 50905
+assert all_token_queries_df.dataset_id.nunique() == 4
+assert set(all_token_queries_df.dataset_id) <= set(EXTERNAL)
+assert len(token_skipped_df) == 1
+assert set(token_scopes_df.query("count_scope == 'deterministic_sample'").dataset_id) == {'trajair', 'calculated_moves'}
+import hashlib
+r = all_token_queries_df.query("dataset_id == 'f16capstone'").iloc[10]
+with inventory_context({'tasks': []}, candidate_inventory):
+    ext = get_adapter('f16capstone')
+seq, raw = select_record(ext, sequence_id=int(r.sequence_id), index=int(r.query_index))
+cfg, _ = preprocessing_for_inspection('f16capstone', 'configs/preprocessing/f16capstone_default.yaml')
+q = selected_query(ext, seq, int(r.query_index), cfg, int(r.history_size))
+assert hashlib.sha256(q.user_prompt.encode()).hexdigest() == r.user_prompt_sha256
+"""
+        else:
+            assertions += """
+assert len(official_tasks_df) == 20
+assert len(official_files_df) == 172
+assert len(official_arrays_df) == sum(len(f['arrays']) for t in llmx_inventory['tasks'] for f in t['files'])
+assert len(all_token_queries_df) == 10095
+assert all_token_queries_df.dataset_id.nunique() == 11
+assert len(token_skipped_df) == 9
+assert set(all_token_queries_df.prompt_mode) == {'original_llmx'}
+"""
+        nb.cells.append(nbformat.v4.new_code_cell(assertions))
+        def progress(cell, cell_index, **kwargs):
+            print(f"{scope}: cell {cell_index}: {cell.source.splitlines()[0][:100]}", flush=True)
+        output = derived_path(ROOT / f'outputs/notebook_checks/live_{scope}_split.ipynb')
+        output.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            NotebookClient(nb, timeout=1800, kernel_name='mental-modeling',
+                           resources={'metadata': {'path': str(ROOT)}},
+                           on_cell_execute=progress).execute()
+        finally:
+            nbformat.write(nb, output)
+        reports.append(dict(scope=scope, status='passed', api_requests=0,
+                            other_scope_reads=0, output=str(output.relative_to(ROOT))))
+    path = derived_path(ROOT / f'outputs/notebook_checks/split_verification_{args.scope}.json')
+    path.write_text(json.dumps(reports, indent=2) + '\n')
+    print(reports)
 
 
 if __name__ == '__main__':
