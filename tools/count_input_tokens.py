@@ -73,6 +73,11 @@ def count_query(
         "tokenizer_encoding": encoding_name,
         "fallback_encoding_used": fallback_used,
         "dataset_sha256": query.dataset_sha256,
+        "history_tokens": len(encoding.encode(query.history_text)),
+        "question_tokens": len(encoding.encode(query.question_text)),
+        "total_content_tokens": content_tokens,
+        "estimated_api_input_tokens": estimated,
+        "tokenizer": encoding_name,
     }
 
 

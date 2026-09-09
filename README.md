@@ -20,6 +20,19 @@ python tools/count_input_tokens.py --external-all --prompt-mode external_generic
 
 結果は [dataset目次](outputs/dataset_inventory/datasets.csv)、[token比較表](outputs/token_counts/token_inventory.csv)、[query別CSV](outputs/token_counts/queries.csv)、[実施報告](outputs/token_counts/REPORT.md)。各count実行は同じoutput-dirの結果を置き換えるため、比較実験は `--output-dir outputs/token_counts/experiment_name` で分けてください。
 
+## データを目視確認する
+
+[閲覧用Notebook](notebooks/01_data_and_token_inspection.ipynb)の最初のconfiguration cellを変更し、Restart Kernel and Run All Cellsで実行してください。raw dataのshape/dtype・実際の数値、公式LLM-X prompt全文、episode/query番号ごとのtoken数、分布とhistory size比較を確認できます。既存reader・前処理・token計測関数を再利用し、data/と保存済みbatch結果は変更しません。APIも呼びません。
+
+```bash
+# workspace直下で、初回のみ依存を追加
+.venv/bin/python -m pip install -e '.[data,notebook,test]'
+.venv/bin/python -m ipykernel install --prefix .venv --name mental-modeling --display-name 'Python (mental-modeling)'
+.venv/bin/jupyter lab notebooks/01_data_and_token_inspection.ipynb
+```
+
+一覧は25件（Baidu未取得を含む）。公式20 taskはraw閲覧、元promptは対応11 taskのみ。外部rawは `DATASET='f16capstone'` / `SEQUENCE_ID=0` などで選択し、token表示は `PREPROCESSING_CONFIG='configs/preprocessing/f16capstone_default.yaml'` のように明示したときだけ有効です。外部の既定token計測は選択sequenceのみで、重い全dataset batchを自動実行しません。
+
 ## データ一覧
 
 | Dataset | データ単位 | 件数 | State | Action | Reward | 形式 | 使い方 |
