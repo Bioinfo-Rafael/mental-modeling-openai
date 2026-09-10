@@ -6,9 +6,8 @@ __pycache__/
 *.egg-info/
 outputs/**/*.partial
 
-# Downloaded datasets and nested upstream repositories are reproducible inputs.
+# Downloaded datasets are reproducible inputs. LLM-Xavier is a tracked submodule.
 data/llmx_data/
-upstream/LLM-Xavier/
 data/candidate_datasets/*/repository/
 data/candidate_datasets/*/*.zip
 data/candidate_datasets/*/extracted/

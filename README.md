@@ -154,7 +154,15 @@ mental-modeling-openai/
     └── pilot/                    # 過去dry-run計画。paid結果ではない
 ```
 
-download物・nested Git・仮想環境・生成CSV/JSONはgitignore対象。toolsと文書は独立にversion管理できる。旧 `outputs/dataset_inventory.{json,csv}` も互換出力する。過去smoke出力はsynthetic fixtureで実データ評価ではない。
+downloadデータ・仮想環境・生成CSV/JSONはgitignore対象。`upstream/LLM-Xavier`は公式リポジトリのcommitを固定したGit submoduleとして管理する。旧 `outputs/dataset_inventory.{json,csv}` も互換出力する。過去smoke出力はsynthetic fixtureで実データ評価ではない。
+
+既存cloneでは次のコマンドで原典コードを取得する（新規cloneでは`git clone --recurse-submodules`も利用可能）:
+
+```bash
+git submodule update --init --recursive
+```
+
+token見積もりのスクリプトは`notebooks/01_token_estimation.py`、Excelは`notebooks/01data/token_estimation.xlsx`。再生成には`.[estimation]`の追加依存関係を使用する。
 
 環境再作成（source取得済みが前提）:
 
