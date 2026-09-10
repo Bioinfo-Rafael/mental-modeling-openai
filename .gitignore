@@ -18,3 +18,7 @@ outputs/**/*.json
 outputs/**/*.jsonl
 outputs/smoke/
 outputs/smoke-episode.npz
+
+# Experiment manifests, raw API responses, figures, and local caches are derived.
+experiments/**/results/*
+!experiments/**/results/.gitkeep

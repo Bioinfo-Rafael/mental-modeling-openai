@@ -25,4 +25,4 @@ testpaths = ["tests"]
 pythonpath = [".", "upstream/LLM-Xavier"]
 
 [tool.setuptools]
-packages = ["tools", "dataset_adapters", "preprocessing"]
+packages = ["tools", "dataset_adapters", "preprocessing", "experiments"]
