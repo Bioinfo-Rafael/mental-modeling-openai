@@ -10,6 +10,7 @@ from contextlib import contextmanager, redirect_stderr, redirect_stdout
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 import csv
+import fcntl
 import hashlib
 import io
 import json
@@ -32,6 +33,7 @@ from preprocessing.llmx_original import (  # noqa: E402
     DEFAULT_DATA_ROOT, build_prompt_queries, discover_episodes, file_sha256,
 )
 from tools.output_safety import derived_path  # noqa: E402
+# @Rafa: 元論文の実装の再利用
 from llm_x import cli as llmx_cli  # noqa: E402
 from llm_x.backends import OpenAIChatBackend  # noqa: E402
 from llm_x.evaluation import EvaluationConfig, _summarize  # noqa: E402
@@ -100,7 +102,7 @@ def json_text(value):
 def query_id(row):
     return digest(json_text({key: row[key] for key in IDENTITY_FIELDS}))
 
-
+# @Rafa: なぜか論文の実装は実際に渡すtimestepをHで指定せずにそれを-1した値で指定するので、その変換
 def history_size(H):
     """The ONLY conversion from actual history length to upstream's parameter."""
     if type(H) is not int or H < 1:
@@ -210,17 +212,18 @@ def make_plan(spec, retries):
     """Use existing discovery + prompt wrapper, taking each episode's valid prefix."""
     sources = sorted(discover_episodes(DEFAULT_DATA_ROOT), key=lambda s: str(s.path))
     conditions, queries = [], []
-    for alias in spec.models:
-        model = MODELS[alias]
+    for alias in spec.models: # @Rafa: モデルの選択、aliasがモデルの略称
+        model = MODELS[alias] # @Rafa: モデルの略称から正式名称を取得
+        # @Rafa: task(Acrobatとか), metric(s_t,s_t+1->a_tの行動予測とか), H(timestepの長さ)の組み合わせを一つ選ぶ
         for task in spec.tasks:
             for metric in spec.metrics:
                 for H in spec.histories:
                     question = QUESTIONS[task][metric]
                     upstream_h = history_size(H)
-                    config = EvaluationConfig(task, metric, question, upstream_h)
+                    config = EvaluationConfig(task, metric, question, upstream_h) # @Rafa:型定義
                     cid = f"{alias}__{task}__{metric}__H{H}"
                     selected = []
-                    for source in (s for s in sources if s.task == task):
+                    for source in (s for s in sources if s.task == task): # @Rafa: npzファイルの選択
                         for q in build_prompt_queries(source, metric=metric,
                                                       question_name=question, history_size=upstream_h):
                             actual = q.history_end - q.history_start
@@ -380,6 +383,7 @@ class RecordingSession:
         self.retry_attempts = 0
         self.clients = []
 
+    # @Rafa: 元論文の実装のOpenAIChatBackendをRecordingOpenAIBackendに置き換えるための関数
     def backend_class(self):
         session = self
 
@@ -397,11 +401,13 @@ class RecordingSession:
                     if str(self._client.base_url).rstrip("/") != "https://api.openai.com/v1":
                         raise SafetyStop("Only the explicit OpenAI API endpoint is allowed")
 
+            # @Rafa: evaluation.py:evaluate_episode()の中で、backend.complete()が呼ばれるので、ここでRecordingOpenAIBackend.complete()が呼ばれる
             def complete(self, *, system_prompt, user_prompt):
                 if self.position >= len(session.rows):
                     raise SafetyStop("Upstream emitted more queries than planned")
                 row = session.rows[self.position]
                 self.position += 1
+                # @Rafa: rowが自分の実装で作ったプロンプト。system_prompt, user_promptが元論文の実装で作成されたプロンプト。verify_promptで両者が一致するかを確認する
                 verify_prompt(row, system_prompt, user_prompt)
                 qid = row["query_id"]
                 cached = session.cached.get(qid)
@@ -483,6 +489,11 @@ class RecordingSession:
                     finished.update(source_experiment=cached["source_experiment"],
                                     source_record=cached.get("source_record"),
                                     source_query_elapsed_seconds=cached["query_elapsed_seconds"])
+                    if cached["source_experiment"] == session.experiment:
+                        finished.update(replay_elapsed_seconds=finished["query_elapsed_seconds"],
+                                        query_elapsed_seconds=cached["query_elapsed_seconds"],
+                                        request_elapsed_seconds=cached.get("request_elapsed_seconds", 0),
+                                        query_time_recovered_from_request=cached.get("query_time_recovered_from_request", False))
                 usage = latest["raw_response"].get("usage") or {}
                 finished.update(input_tokens=usage.get("prompt_tokens"), output_tokens=usage.get("completion_tokens"),
                                 total_tokens=usage.get("total_tokens"), usage=usage)
@@ -519,7 +530,7 @@ def quiet_sdk_logging():
         for logger, disabled, level in saved:
             logger.disabled, logger.level = disabled, level
 
-
+# @Rafa: 元論文の実装(../upstream/LLM-Xavier)の実行を行う部分。
 def invoke_cli(session, output, retries):
     """Only the CLI backend symbol is patched; evaluate_episode and scorer are untouched."""
     row = session.rows[0]
@@ -538,6 +549,7 @@ def invoke_cli(session, output, retries):
     ]
     captured = io.StringIO()
     try:
+        # @Rafa: 元論文の実装のOpenAIChatBackendをRecordingOpenAIBackendに置き換えて、llmx_cli.main(argv)を実行する.
         with patch.object(llmx_cli, "OpenAIChatBackend", session.backend_class()), quiet_sdk_logging(), \
                 redirect_stdout(captured), redirect_stderr(captured):
             return llmx_cli.main(argv)
@@ -574,7 +586,7 @@ def summarize_scored(records, metric):
     scores = [r["score"] for r in records if r["status"] in SCORED_STATUSES]
     return _summarize(scores, metric) if scores else {}
 
-
+# @Rafa: ここから元論文のコマンド実行を行う
 def execute_plan(spec, plan, directory, cached, retries):
     """Fail fast. Recover completed prefix scores by OFFLINE replay after an API failure."""
     started, clock = utc_now(), time.perf_counter()
@@ -597,10 +609,12 @@ def execute_plan(spec, plan, directory, cached, retries):
             try:
                 for number, path in enumerate(episode_paths):
                     batch = [q for q in rows if q["episode_path"] == path]
-                    session = RecordingSession(batch, directory, spec.name, cached)
+                    session = RecordingSession(batch, directory, spec.name, cached,
+                                               replay_only=all(q["query_id"] in cached for q in batch))
                     output = directory / "runs" / condition["condition_id"] / f"episode_{number:03d}"
                     error = None
                     try:
+                        # @Rafa: これが元論文のコマンド実行
                         rc = invoke_cli(session, output, retries)
                         if rc != 0:
                             error = RuntimeError(f"Upstream CLI exited {rc}; see run.log")
@@ -657,47 +671,175 @@ def execute_plan(spec, plan, directory, cached, retries):
               f"api_attempts={summary['api_attempts']}, retry_attempts={summary['retry_attempts']}")
 
 
+def latest_results(directory):
+    """Original run and immutable, ordered resume generations."""
+    generations = sorted((directory / "resumes").glob("[0-9][0-9][0-9][0-9]"))
+    return generations[-1] if generations else directory
+
+
+def prepare_resume(plan, directory, retry_uncertain=False):
+    """Recover saved responses, including responses not yet scored. Never send here."""
+    sources = [directory, *sorted((directory / "resumes").glob("[0-9][0-9][0-9][0-9]"))]
+    expected = {q["query_id"]: q for q in plan["queries"]}
+    cached, attempted = {}, set()
+    from openai.types.chat import ChatCompletion
+    for source in sources:
+        previous = read_json(source / "manifest.json")
+        if (previous["experiment"] != plan["experiment"]
+                or previous["queries"] != plan["queries"]
+                or previous["provenance"]["semantics_sha256"] != plan["provenance"]["semantics_sha256"]):
+            raise ValueError("Resume manifest/prompt/data/semantics mismatch")
+        requests = {}
+        for request in read_jsonl(source / "requests.jsonl"):
+            if not request["api_request_made"]:
+                continue
+            qid, aid = request["query_id"], request["attempt_id"]
+            if qid not in expected or aid in requests:
+                raise ValueError("Invalid resume request journal")
+            q = expected[qid]
+            wanted = {"model": q["model"], "temperature": 0, "messages": [
+                {"role": "system", "content": q["system_prompt"]},
+                {"role": "user", "content": q["user_prompt"]}]}
+            if request["kwargs"] != wanted:
+                raise ValueError("Resume request parameters changed")
+            requests[aid] = request
+            attempted.add(qid)
+        records = {r["query_id"]: r for r in read_jsonl(source / "records.jsonl")
+                   if r["status"] in SCORED_STATUSES}
+        seen = set()
+        for response in read_jsonl(source / "responses.jsonl"):
+            if not response["api_request_made"]:
+                continue
+            aid, qid = response["attempt_id"], response["query_id"]
+            if aid not in requests or aid in seen or requests[aid]["query_id"] != qid:
+                raise ValueError("Invalid resume response journal")
+            seen.add(aid)
+            raw = response.get("raw_response")
+            if raw is None:
+                continue
+            parsed = ChatCompletion.model_validate(raw)
+            if not parsed.choices or not parsed.choices[0].message.content:
+                raise ValueError("Saved response cannot be replayed; refusing automatic resend")
+            record = records.get(qid, {})
+            cached[qid] = {
+                "request": requests[aid]["kwargs"], "raw_response": raw,
+                "source_experiment": plan["experiment"],
+                "source_record": f"{source.relative_to(ROOT)}/responses.jsonl#{aid}",
+                "query_elapsed_seconds": record.get("query_elapsed_seconds", response["request_elapsed_seconds"]),
+                "request_elapsed_seconds": record.get("request_elapsed_seconds", response["request_elapsed_seconds"]),
+                "query_time_recovered_from_request": not bool(record),
+            }
+        if set(records) - cached.keys():
+            raise ValueError("Scored queries are missing saved responses; refusing resend")
+    uncertain = attempted - cached.keys()
+    plan["resume_cached_queries"] = len(cached)
+    plan["resume_uncertain_queries"] = sorted(uncertain)
+    for c in plan["conditions"]:
+        reused = sum(q["query_id"] in cached for q in plan["queries"] if q["condition_id"] == c["condition_id"])
+        c["planned_reused_queries"] = reused
+        c["planned_api_requests"] = c["logical_queries"] - reused
+        c["maximum_api_attempts"] = c["planned_api_requests"] * (plan["upstream_retries"] + 1)
+    for key in ("planned_reused_queries", "planned_api_requests", "maximum_api_attempts"):
+        plan[key] = sum(c[key] for c in plan["conditions"])
+    plan["resume_sources"] = [str(s.relative_to(ROOT)) for s in sources]
+    plan["retry_uncertain_confirmed"] = retry_uncertain
+    return cached, uncertain, directory / "resumes" / f"{len(sources):04d}"
+
+
+# @Rafa: run.pyで呼び出す、smoke testかどうかを判定して、さもなくばmkdirする
 def run(spec, argv=None):
+    """Serialize paid executions, including resume, to prevent duplicate sends."""
+    arguments = list(sys.argv[1:] if argv is None else argv)
+
+    # --executeがなければAPI実行用ロックは取らず、dry-runまたはpreviewへ進む。
+    if "--execute" not in arguments:
+        return _run(spec, arguments)
+    directory = output_path(EXPERIMENTS / spec.name / "results")
+    directory.mkdir(parents=True, exist_ok=True)
+    with (directory / ".execution.lock").open("a") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            print("Stopped: another execution holds the results lock", file=sys.stderr)
+            return 2
+        return _run(spec, arguments)
+
+# @Rafa: これが本体
+def _run(spec, argv=None):
     parser = argparse.ArgumentParser(description=spec.name)
     parser.add_argument("--execute", action="store_true", help="Allow paid execution (also requires confirmation)")
     parser.add_argument("--confirm-paid-api", action="store_true")
+    parser.add_argument("--resume", action="store_true", help="Exp.3: replay saved responses and send only missing queries")
+    parser.add_argument("--retry-uncertain", action="store_true", help="Acknowledge possible duplicate billing for timed-out/interrupted requests")
     parser.add_argument("--retries", type=int, default=0,
                         help="Explicit upstream retries per query; default 0 avoids uncertain duplicate billing")
     args = parser.parse_args(argv)
+    # --resume は、再開処理を実装している Exp.3 だけで許可する。
+    if args.resume and spec.name != "03_gpt35_history_n30":
+        parser.error("--resume is currently supported for Exp.3 only")
+    # 結果不明requestの再送指定は、resumeと組み合わせた場合だけ許可する。
+    if args.retry_uncertain and not args.resume:
+        parser.error("--retry-uncertain requires --resume")
+    # query数Nは1以上、追加retry回数は0以上でなければ停止する。
     if spec.n < 1 or args.retries < 0:
         parser.error("N must be positive and retries non-negative")
+    # 有料API実行は、--executeと--confirm-paid-apiが両方ある場合だけ許可する。
     if args.execute != args.confirm_paid_api:
         parser.error("Paid execution requires BOTH --execute and --confirm-paid-api")
+    # prompt確認専用のpreview実験では、有料API実行を禁止する。
     if spec.preview and args.execute:
         parser.error("Exp.1 is local preview only; paid flags are not accepted")
     directory = EXPERIMENTS / spec.name / "results"
     try:
         plan = make_plan(spec, args.retries)
         cached = {}
+        resume_directory = None
+        uncertain = set()
+        # resume指定時は、保存済み応答・結果不明request・新しい保存先を復元する。
+        if args.resume:
+            cached, uncertain, resume_directory = prepare_resume(plan, directory, args.retry_uncertain)
         try:
-            cached = check_inputs(spec, plan)
+            cached.update(check_inputs(spec, plan))
             plan["prerequisites"] = "ready"
         except (OSError, ValueError, KeyError, SafetyStop) as exc:
             plan["prerequisites"] = exception_info(exc)
+            # API実行前提なら失敗理由をdry-run manifestへ残し、送信せず停止する。
             if args.execute:
                 # Show the full plan and reason even though no API call is allowed.
                 save_manifest(directory / "dry_run", plan)
                 raise ValueError("Prerequisite check failed; see results/dry_run/manifest.json") from None
+
+        # 通常実験で--executeがなければ、計画だけ保存するdry-runとして終了する。
         if not spec.preview and not args.execute:
             plan["mode"] = "dry_run"
             print("DRY RUN")
             save_manifest(directory / "dry_run", plan)
             print("prerequisites:", plan["prerequisites"])
             return 0
+
+        # 結果不明requestの再送は、明示確認がなければ禁止する。
+        if uncertain and not args.retry_uncertain:
+            raise ValueError(f"{len(uncertain)} requests have unknown outcomes; inspect --resume dry-run, then explicitly add --retry-uncertain to resend")
+        # 全queryを回収済みで最新runも完了済みなら、再送せず正常終了する。
+        if args.resume and len(cached) == len(plan["queries"]) and read_json(latest_results(directory) / "summary.json")["status"] == "complete":
+            print("Already complete. API requests made: 0")
+            return 0
+        # resume時は、元結果を上書きせず新しいresumes/XXXXへ保存する。
+        if resume_directory is not None:
+            directory = resume_directory
+        # API実行時に認証キーがなければ、client生成前に停止する。
         if args.execute and not os.environ.get("OPENAI_API_KEY"):
             raise ValueError("OPENAI_API_KEY must be set in the environment")
         # Exclusive, persistent marker: reruns must not overwrite results or resend paid queries.
         output_path(directory).mkdir(parents=True, exist_ok=True)
-        if any(p.name not in {".gitkeep", "dry_run"} for p in directory.iterdir()):
+        # 許可された補助物以外の既存結果があれば、上書き防止のため停止する。
+        if any(p.name not in {".gitkeep", "dry_run", ".execution.lock"} for p in directory.iterdir()):
             raise FileExistsError("Existing results: archive them manually before a deliberate new run")
+
         write_json(directory / ".started.json", {"started_at_utc": utc_now()}, exclusive=True)
         plan["mode"] = "preview" if spec.preview else "execute"
         save_manifest(directory, plan)
+        # preview実験ではpromptをtxtへ保存し、APIを呼ばずに終了する。
         if spec.preview:
             for row in plan["queries"]:
                 write_text(directory / f"{row['condition_id']}.txt",
@@ -705,6 +847,7 @@ def run(spec, argv=None):
                            + "\n\nUSER MESSAGE\n==============\n" + row["user_prompt"] + "\n", exclusive=True)
             print("Preview complete. API requests made: 0")
             return 0
+
         execute_plan(spec, plan, directory, cached, args.retries)
         return 0
     except (Exception, SafetyStop, KeyboardInterrupt) as exc:

@@ -1,3 +1,9 @@
+# @Rafa:メモ
+- cli.py : エントリーポイント
+- prompting : promptを生成する関数
+- questions: 質問に対応するクラスを生成
+- feedback: 質問リスト
+
 # LLM-X
 
 LLM-X evaluates how well language models form a mental model of a trained

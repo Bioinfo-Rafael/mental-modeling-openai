@@ -91,7 +91,7 @@ def validate_combination(metric: str, question_name: str, episode: Episode) -> N
     if metric == "argue-action" and not discrete:
         raise ValueError("argue-action requires scalar discrete actions")
 
-
+# @Rafa: ここでpromptを作成しているが、結局は元論文の実装のllm_x/prompting.pyの関数で作成されているので同じ。
 def build_prompt_queries(
     source: EpisodeSource,
     *,

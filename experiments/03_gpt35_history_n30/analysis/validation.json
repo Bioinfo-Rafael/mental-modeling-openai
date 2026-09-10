@@ -1,0 +1,16 @@
+{
+  "queries": 960,
+  "official_rescores_matched": 960,
+  "unique_queries": 960,
+  "conditions": 32,
+  "parse_failures": 44,
+  "missing_prediction_queries": 44,
+  "missing_main_accuracy_queries": 16,
+  "unchanged_state_dimensions": 87,
+  "state_ground_truth_dimensions_changed_vs_original": 87,
+  "nested_subsets_verified": true,
+  "source_results_unchanged": true,
+  "raw_episodes_unchanged": true,
+  "figure_count": 6,
+  "api_requests_made": 0
+}

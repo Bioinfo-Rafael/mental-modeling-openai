@@ -92,6 +92,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
+        # @Rafa: 多分データを調べる時用の条件分岐
         if args.command == "list-questions":
             print(json.dumps(available_questions(), indent=2, sort_keys=True))
             return 0
@@ -99,12 +100,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             episode = Episode.load(args.data_path)
             print(json.dumps(_episode_schema(episode), indent=2, sort_keys=True))
             return 0
-        return _evaluate(args)
+        return _evaluate(args) # @Rafa: ここがllm-x evaluateの実行部分
     except (FileExistsError, FileNotFoundError, RuntimeError, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 
 
+# @Rafa:ここでプロンプトを作ってAPIに投げる
 def _evaluate(args: argparse.Namespace) -> int:
     values = _resolved_values(args)
     required = (
@@ -130,7 +132,9 @@ def _evaluate(args: argparse.Namespace) -> int:
 
         _reject_endpoint_credentials(values["endpoint"])
 
+    # @Rafa: Episodeのクラスメソッドを用いてEpisodeの型定義。arraysにnpzのnumpy配列が入る
     episode = Episode.load(values["data_path"])
+
     config = EvaluationConfig(
         task_name=values["task_name"],
         metric=values["metric"],
@@ -158,6 +162,7 @@ def _evaluate(args: argparse.Namespace) -> int:
         print(json.dumps(_safe_effective_config(values, config, episode), indent=2, sort_keys=True))
         return 0
 
+    # @Rafa: LLM APIを呼ぶためのインスタンス生成。 backend.complete()でAPIを呼ぶ-> evaluate_episode()でプロンプトを作ってAPIに投げる
     backend = _backend(values)
     result = evaluate_episode(episode, config, backend)
     output = Path(values["output_dir"]).expanduser().resolve()
@@ -289,6 +294,6 @@ def _atomic_text(path: Path, value: str) -> None:
         if os.path.exists(temporary):
             os.unlink(temporary)
 
-
+# @Rafa: ここがエントリーポイント、llm-xコマンドを実行するとここが呼ばれる
 if __name__ == "__main__":
     raise SystemExit(main())

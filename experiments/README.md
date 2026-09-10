@@ -1,6 +1,31 @@
 # 段階的な Mental Modeling 実験
 
-**今回の納品は実装・静的レビューのみ。実験01〜06（dry-run含む）・API呼び出し・commit・pushは未実行です。**
+## 実験の意図・作業メモ
+
+以下は各実験で何を確認したいかのメモです。「4通り」は `next-action`、`last-action`、`next-state`、`last-state` を指します。送信件数はretryなしの場合です。
+
+1. **[01：送信前のprompt確認](01_prompt_preview/README.md)**
+   request送信直前のsystem/user promptを `.txt` などへ出力し、APIには送らない。MountainCar・Pendulumの2タスクについて、行動予測と状態予測の4通り全てを作る。合計 **8件**。現在のpilot履歴長はH=5。
+
+2. **[02：GPT-3.5に各1回送るpilot](02_gpt35_single/README.md)**
+   01で確認した8 queryをchatGPT3.5（aliasは `3.5`）へそれぞれ1回送信し、返ってきた値を全てログに保存して確認する。「1回」は実験全体で1回ではなく、**8条件それぞれ1回、計8件**。実装ではrequest・全response・usage・時間・scoreをJSONLなどに保存する。
+
+3. **[03：GPT-3.5で履歴長を比較](03_gpt35_history_n30/README.md)**
+   chatGPT3.5のみで、H=5/10/20/30 × MountainCar/Pendulum × 4通り、計32条件を評価する。1条件につき30 queryを使い、条件ごとの平均的な性能などを集計する。概算では約900回、正確には **32×30＝960件**。30回は同じpromptの反復送信ではなく、各条件の先頭30有効queryを使う。Accuracyの分母は公式実装に従う。
+
+4. **[04：N30→N20→N10で統計を比較](04_sample_size_analysis/README.md)**
+   03の同じ30件について、全30件・先頭20件・先頭10件へと使用件数を減らし、平均と分散を比較する。追加API送信はしない。論文Fig.3を参考に、横軸をH、縦軸をAccuracy・処理時間・token消費として比較する。**希望する配置は、縦方向にN=30/20/10を並べる形**。
+   現行実装はN=30/20/10を同じパネル内の系列として描き、task×metricでパネル分割しているため、この縦方向の配置は未反映。ここでは希望をメモとして残し、描画コードは変更していない。
+
+5. **[05：Sol・Terra・Lunaのpilot](05_new_models_single/README.md)**
+   Sol・Terra・Lunaについて、H=20、Pendulum、行動予測と状態予測の4通りを各1回送信する。返ってきた値は全てログなどへ保存して確認する。**3モデル×4条件＝12件**。これを06の該当条件の先頭1件として再利用する。
+
+6. **[06：新3モデルで全条件N10](06_new_models_n10/README.md)**
+   Sol・Terra・Lunaについて、03と同じtask/metric/Hの全32条件を、各条件N=10まで揃える。05で実行済みのqueryは照合して再利用し、重複送信しない。概算では約300回/model、正確には **32×10−4＝316件/model、3モデルで948件の追加送信**。再利用分を含む最終結果は **320件/model、計960件**。05で扱った条件を丸ごと除くのではなく、その4条件では残り9件ずつを送る。
+
+## 実装・実行状況について
+
+初回実装時は静的レビューのみを行い、実験・API呼び出しは実行していません。その後、ユーザーの指示でコードとExp.1の既存preview結果をcommit・pushしています。今回のメモ追記では実験・API送信を実行していません。
 
 01でprompt確認 → 02でGPT-3.5 pilot → 03でH sweep → 04でNを再解析。
 新モデルは05のpilotを確認してから06へ進みます。
@@ -16,7 +41,17 @@
 
 ## コマンド（ユーザーが後日実行するとき）
 
-repository直下で `.venv` を有効化して使用します。基本依存は既存projectのもの、04の図には既存の `notebook` extraにあるmatplotlibが必要です。
+全実験で、[01の環境説明](01_prompt_preview/README.md)と同じ作成済みのLLM-Xavier用 `.venv` を使います。Notebookの `Python (mental-modeling)` もこの環境です。新規作成は不要です。
+
+実行は「repositoryへ移動 → 環境を有効化 → 対象のrun.py」の順です。例えば01の場合：
+
+```bash
+cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
+source .venv/bin/activate
+python experiments/01_prompt_preview/run.py
+```
+
+02〜06では最後の行を下表の対象コマンドに置き換えます。各実験のREADMEにも、`cd` と `source` を含めた実行例を記載しています。基本依存は既存projectのもの、04の図には既存の `notebook` extraにあるmatplotlibが必要です。
 API keyは `OPENAI_API_KEY` 環境変数のみから読みます。キーをコマンド引数・ファイル・ログに入れないでください。
 
 | Experiment | dry-run / APIなし | execute |
@@ -33,7 +68,7 @@ API keyは `OPENAI_API_KEY` 環境変数のみから読みます。キーをコ�
 - 条件は各 `run.py`、共通のpilot履歴長は `common.PILOT_H=5`。`H` は実際の履歴step数で、変換は `common.history_size()` の1か所だけ。履歴範囲は半開区間 `[history_start, history_end)` です。
 - episodeをpath順に並べ、upstreamで有効なqueryの先頭N件を採用します。足りなければ次のepisodeへ進み、境界は跨ぎません。01/02は同一8件。06は05とのidentity・model・prompt SHA・API引数・source hash一致を全件確認し、不足/不一致なら送信前に停止します。
 - 有料実験はフラグなしではmanifestのみ。dry-runは `results/dry_run/` に保存し、実行済みの `results/manifest.json` を上書きしません。表示件数はplanから計算します。
-- `--execute --confirm-paid-api` の両方が必要。既存結果があれば停止し、自動resume/上書きはしません。再実験する場合は結果を手動で退避し、再課金の可能性を確認してください。
+- `--execute --confirm-paid-api` の両方が必要。既存結果の上書き・自動再送はしません。Exp.3は明示的な `--resume` で保存済み応答を再利用できます。まず `python experiments/03_gpt35_history_n30/run.py --resume` で計画を確認してください。タイムアウト等の結果不明queryの再送には、重複課金の可能性を確認したうえで `--retry-uncertain` も必要です。[再開手順と保存先](03_gpt35_history_n30/README.md#途中から再開する方法)を参照してください。
 - SDK内部retryは0。upstream retryも既定0ですが、ユーザーが `--retries N` で明示できます。retry込み上限もplanに表示します。`api_attempts` はSDK create試行数であり、通信失敗がサーバーに到達/課金されたかまでは保証できません。
 - APIはupstreamのChat Completions・`temperature=0`を維持します。モデルIDは既存token estimatorと同じです。アカウントの利用可否・モデルの引数互換性は未検証で、エラー時にモデル/API/引数を自動変更しません。
 - `data/`・`upstream/`・既存Notebookは変更しません。結果は各experimentの `results/` のみ。ユーザー指定でExp.1の開始記録・manifest・prompt txtはGitで共有し、他の実験結果は `.gitkeep` のみを含めます。

@@ -6,10 +6,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 sys.dont_write_bytecode = True
 from experiments import common
 
+# @Rafa: 型定義クラス
 EXPERIMENT = common.Experiment(
     name="03_gpt35_history_n30", models=("3.5",),
     tasks=common.TASKS, metrics=common.METRICS, histories=common.H_VALUES, n=30,
 )
 
+# @Rafa: common.pyのrun関数
 if __name__ == "__main__":
     raise SystemExit(common.run(EXPERIMENT))

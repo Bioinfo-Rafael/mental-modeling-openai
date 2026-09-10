@@ -1,0 +1,38 @@
+{
+  "source": "experiments/03_gpt35_history_n30/results/resumes/0001",
+  "source_sha256": {
+    "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/experiments/03_gpt35_history_n30/results/resumes/0001/manifest.json": "e3e1b880648b9b168a7fcad85edff77ff9178dc1d35151e74bafca0735b39f15",
+    "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/experiments/03_gpt35_history_n30/results/resumes/0001/summary.json": "960a68abc568be2e2774d578ef6930a9541cdfd3b1a065f4c29b9f66cb7138b3",
+    "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/experiments/03_gpt35_history_n30/results/resumes/0001/records.jsonl": "366262b2979546a7431289f9dcdc206f470a49735106ce633ea4002d4de0d0fc",
+    "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/experiments/03_gpt35_history_n30/results/resumes/0001/responses.jsonl": "dc626facdf67741edd3fce1d8dbb04a3836c5780338e2b516f6d22f6876f1499"
+  },
+  "raw_sha256": {
+    "data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_0.npz": "c91b3e277decddff587601790c381096c5bab98fc726af94dba76d924e0ffa5b",
+    "data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz": "09c3c01c27f0a19af5d18bd6f5c70cbc8dd1b88eb8f3c70d2bbaac03ecf32fce"
+  },
+  "script_sha256": "ecb7859da574f05e471c7b42f8821bbec0cf5deb9fc728e25cb4c22ec8b3953e",
+  "seed": 42,
+  "histories": [
+    5,
+    10,
+    20,
+    30
+  ],
+  "subset_sizes": [
+    30,
+    20,
+    10
+  ],
+  "std_ddof": 0,
+  "python_version": "3.14.5 (main, May 10 2026, 10:21:34) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "paper_reference": "https://arxiv.org/html/2406.18505v1",
+  "state_definition": "official state_directions(allow_unchanged=True), threshold from manifest, decimals=5",
+  "figures": [
+    "figures/paper_matching_accuracy/paper_matching_accuracy_n30.png",
+    "figures/paper_matching_accuracy/paper_matching_accuracy_n30.svg",
+    "figures/paper_matching_accuracy/paper_matching_accuracy_n20.png",
+    "figures/paper_matching_accuracy/paper_matching_accuracy_n20.svg",
+    "figures/paper_matching_accuracy/paper_matching_accuracy_n10.png",
+    "figures/paper_matching_accuracy/paper_matching_accuracy_n10.svg"
+  ]
+}

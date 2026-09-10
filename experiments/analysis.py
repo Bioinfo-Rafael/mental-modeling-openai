@@ -36,7 +36,7 @@ def describe(values):
 
 def load_source():
     """Require a complete, unique, ordered N30 dataset, not a partial run/summary alone."""
-    source = common.EXPERIMENTS / SOURCE / "results"
+    source = common.latest_results(common.EXPERIMENTS / SOURCE / "results")
     manifest = common.read_json(source / "manifest.json")
     summary = common.read_json(source / "summary.json")
     records = common.read_jsonl(source / "records.jsonl")
