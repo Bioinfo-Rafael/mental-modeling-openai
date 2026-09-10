@@ -154,13 +154,9 @@ mental-modeling-openai/
     └── pilot/                    # 過去dry-run計画。paid結果ではない
 ```
 
-downloadデータ・仮想環境・生成CSV/JSONはgitignore対象。`upstream/LLM-Xavier`は公式リポジトリのcommitを固定したGit submoduleとして管理する。旧 `outputs/dataset_inventory.{json,csv}` も互換出力する。過去smoke出力はsynthetic fixtureで実データ評価ではない。
+downloadデータ・仮想環境・生成CSV/JSONはgitignore対象。`upstream/LLM-Xavier`は公式コードをコピーした通常ディレクトリとして、このリポジトリで直接管理する。コードの編集・commit・pushは本体と同じ手順で行える。旧 `outputs/dataset_inventory.{json,csv}` も互換出力する。過去smoke出力はsynthetic fixtureで実データ評価ではない。
 
-既存cloneでは次のコマンドで原典コードを取得する（新規cloneでは`git clone --recurse-submodules`も利用可能）:
-
-```bash
-git submodule update --init --recursive
-```
+通常の`git clone`で原典コードも取得できる。submoduleの初期化は不要。取得元・元commitは`configs/sources.json`の`llm_xavier`に記録し、原典の`LICENSE`・`NOTICE`・`CITATION.cff`を保持する。公式コードの更新を取り込む際は、こちら側の変更を確認してから差分を統合する。
 
 token見積もりのスクリプトは`notebooks/01_token_estimation.py`、Excelは`notebooks/01data/token_estimation.xlsx`。再生成には`.[estimation]`の追加依存関係を使用する。
 

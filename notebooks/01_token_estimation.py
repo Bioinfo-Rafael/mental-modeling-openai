@@ -325,7 +325,13 @@ def estimate(h_values, n_samples, seed):
     audit["raw_sha256_unchanged"] = True
     audit["notebooks_unchanged"] = True
     audit["code_revision"] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    audit["upstream_revision"] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT/'upstream/LLM-Xavier', text=True).strip()
+    # Vendored source shares this repository's Git history. Record the original
+    # upstream commit separately from local source content and project revision.
+    audit["upstream_revision"] = json.loads((ROOT/'configs/sources.json').read_text())['llm_xavier']['commit']
+    audit["upstream_source_sha256"] = {
+        str(p.relative_to(ROOT/'upstream/LLM-Xavier')): file_sha256(p)
+        for p in sorted((ROOT/'upstream/LLM-Xavier/llm_x').glob('*.py'))
+    }
     return audit
 
 
