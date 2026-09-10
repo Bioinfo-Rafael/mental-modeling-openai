@@ -36,7 +36,7 @@ API keyは `OPENAI_API_KEY` 環境変数のみから読みます。キーをコ�
 - `--execute --confirm-paid-api` の両方が必要。既存結果があれば停止し、自動resume/上書きはしません。再実験する場合は結果を手動で退避し、再課金の可能性を確認してください。
 - SDK内部retryは0。upstream retryも既定0ですが、ユーザーが `--retries N` で明示できます。retry込み上限もplanに表示します。`api_attempts` はSDK create試行数であり、通信失敗がサーバーに到達/課金されたかまでは保証できません。
 - APIはupstreamのChat Completions・`temperature=0`を維持します。モデルIDは既存token estimatorと同じです。アカウントの利用可否・モデルの引数互換性は未検証で、エラー時にモデル/API/引数を自動変更しません。
-- `data/`・`upstream/`・既存Notebookは変更しません。結果は各experimentの `results/` のみ、Gitには `.gitkeep` だけを含めます。
+- `data/`・`upstream/`・既存Notebookは変更しません。結果は各experimentの `results/` のみ。ユーザー指定でExp.1の開始記録・manifest・prompt txtはGitで共有し、他の実験結果は `.gitkeep` のみを含めます。
 
 ## 保存内容・再利用
 

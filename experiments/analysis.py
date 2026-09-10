@@ -43,7 +43,7 @@ def load_source():
     if manifest["experiment"] != SOURCE or summary["status"] != "complete":
         raise ValueError("Exp.3 must be complete before analysis")
     expected_grid = {
-        (common.MODELS["chatGPT3.5"], task, metric, H)
+        (common.MODELS["3.5"], task, metric, H)
         for task in common.TASKS for metric in common.METRICS for H in common.H_VALUES
     }
     actual_grid = {(c["model"], c["task"], c["metric"], c["H"]) for c in manifest["conditions"]}

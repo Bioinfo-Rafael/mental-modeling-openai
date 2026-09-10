@@ -7,7 +7,7 @@ sys.dont_write_bytecode = True
 from experiments import common
 
 EXPERIMENT = common.Experiment(
-    name="03_gpt35_history_n30", models=("chatGPT3.5",),
+    name="03_gpt35_history_n30", models=("3.5",),
     tasks=common.TASKS, metrics=common.METRICS, histories=common.H_VALUES, n=30,
 )
 

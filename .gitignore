@@ -22,3 +22,9 @@ outputs/smoke-episode.npz
 # Experiment manifests, raw API responses, figures, and local caches are derived.
 experiments/**/results/*
 !experiments/**/results/.gitkeep
+
+# Exp.1 prompt previews are shared; paid responses and other results stay ignored.
+!experiments/01_prompt_preview/results/.started.json
+!experiments/01_prompt_preview/results/manifest.json
+!experiments/01_prompt_preview/results/manifest.csv
+!experiments/01_prompt_preview/results/*.txt

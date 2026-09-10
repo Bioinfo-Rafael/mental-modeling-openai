@@ -42,7 +42,7 @@ METRICS = ("next-action", "last-action", "next-state", "last-state")
 H_VALUES = (5, 10, 20, 30)
 NEW_MODELS = ("sol", "terra", "luna")
 MODELS = {
-    "chatGPT3.5": "gpt-3.5-turbo",
+    "3.5": "gpt-3.5-turbo",
     "luna": "gpt-5.6-luna",
     "terra": "gpt-5.6-terra",
     "sol": "gpt-5.6-sol",
