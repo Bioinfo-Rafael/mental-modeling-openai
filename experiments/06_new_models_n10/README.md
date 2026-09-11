@@ -1,10 +1,19 @@
-# Exp.6 — Sol / Terra / Luna、全条件N=10
+# Exp.6 — Joint prompt、全条件N=10、Exp.5を重複送信しない
 
-新3モデルで、MountainCar/Pendulum・4 metric・H=5/10/20/30を各10 query評価します。Exp.5の12 queryを再利用するため、**最終960 recordsに対して新規API queryは948件（316/model）**です。
+03_1と同じquestionを使い、Sol / Terra / Lunaについて
+2 Task × 4 Metric × H={5,10,20,30} × 10 queryを揃える。
+各モデル320 queryのうち、05の40 queryを再利用し、**06の新規送信は280件/model**。
+
+| 対象 | 05の新規送信 | 06の新規送信 | 06に含める再利用 | 最終ユニークquery |
+|---|---:|---:|---:|---:|
+| 1モデル | 40 | 280 | 40 | 320 |
+| 3モデル合計 | 120 | 840 | 120 | 960 |
+
+retryなしの件数。統合後の960 recordsに05の120 recordsが含まれるため、05をさらに足して集計しない。
 
 ## 1. 実行方法
 
-既存のMental Modeling / LLM-Xavier用環境を有効化します。[01の環境説明](../01_prompt_preview/README.md)と同じ `.venv`（Notebookでは `Python (mental-modeling)`）で、新規作成は不要です。
+05を今回のJoint・N=10設定で完了させる。[05の手順](../05_new_models_single/README.md)。
 
 ```bash
 cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
@@ -12,214 +21,216 @@ source .venv/bin/activate
 python experiments/06_new_models_n10/run.py
 ```
 
-フラグなしはdry-runでAPI 0。`results/dry_run/manifest.json/csv` に条件とquery一覧を保存します。`--dry-run` という引数はありません。API keyは不要です。
+フラグなしはAPI 0のdry-run。`results/dry_run/manifest.json/csv` に計画を保存する。
+06未着手なら新規840 query（280/model）を計画する。05の120件は送信batchへ入れず、最後に統合する。
+05の完了・設定一致が必須で、不足していればdry-runでもエラーになる。
 
-**Exp.5の結果との照合が全12件で通ることが必要**です。dry-runの `prerequisites` を確認してください。計画上は948件でも、前提が揃っていなければ実行可能という意味ではありません。
-
-実際に送信する場合は、`OPENAI_API_KEY` を環境変数に設定し、条件・費用を確認したうえで両フラグを指定します。
+`OPENAI_API_KEY` を環境変数に設定し、ユーザーが有料実行するときだけ：
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
 python experiments/06_new_models_n10/run.py --execute --confirm-paid-api
 ```
 
-全件成功・既定 `--retries 0` なら948 API試行です。両フラグが揃わない場合や、05の不足・不一致がある場合は送信を始めません。欠けた05の分を新規送信するfallbackはありません。
+05が未完了・不足・旧N1・非Joint・prompt不一致なら、最初の新規送信より前に止まる。
+05の不足を新規APIで補うfallbackはない。
+既定retry=0。タイムアウトのサーバー到達や課金はローカルログだけでは断定できないため、明示retryを増やすと同一queryの再送が起き得る。
+モデルID・API引数・question・queryの選択順は変更しない。
 
-retryを明示的に増やした場合、その試行数はN10に含めず別記録します。通信失敗時のサーバー到達・課金の有無は、試行ログだけで断定できないことがあります。
+既存resultsの上書き・自動再送はしない。`--resume` は非対応。結果を削除して再実行しないこと。
+今回の分割機能の検証はモックによるオフラインテストのみ。有料APIは呼んでいない。
 
-既存の06の結果があれば上書き・自動resumeせず停止します。再実行する場合は手動退避と再課金の確認が必要です。このREADMEの作成では実験・dry-run・API送信を行っていません。
+### まずPendulum・H5だけ実行する
 
-## 2. 入力元
+```bash
+# 予定確認：3モデル × 4 Metric × 10 query = 120件（40/model）
+python experiments/06_new_models_n10/run.py --task Pendulum-v1 --history 5
 
-| 入力 | 場所・用途 |
-| --- | --- |
-| 公式raw episodes | `data/llmx_data/offline_data/<dataset>/raw_transitions/<task>/episodes/*.npz`。新しい計画とpromptを生成 |
-| Exp.5 manifest | `experiments/05_new_models_single/results/manifest.json`。再利用すべきidentity全体を照合 |
-| Exp.5 summary | 同directoryの `summary.json`。全12件が採点済みで完了しているか確認 |
-| Exp.5 records | 同directoryの `records.jsonl`。実request・全raw response・scoreなどを再利用 |
-| 再現性情報 | 関連ソースhash、`configs/sources.json`、Git revision |
-
-rawは既存 [`dataset_adapters/llmx.py`](../../dataset_adapters/llmx.py) の `discover_episodes()` で取得済みファイルを探します。path順に並べ、各条件の先頭10有効queryを選びます。promptは [`preprocessing/llmx_original.py`](../../preprocessing/llmx_original.py) の `build_prompt_queries()` 経由で公式関数が生成します。
-
-1 episodeで不足したら次へ進みます。履歴はepisode境界を跨ぎません。ランダム抽出でも、rawを上書き加工する処理でもありません。
-
-### Exp.5と何を照合するか
-
-出典：[`experiments/common.py`](../common.py) の `check_inputs()`。
-
-- 05の実験名と関連ソースの `semantics_sha256`。
-- 再利用対象全12件の集合。重複・不足がないこと。
-- model ID、task、metric、質問名、H、episode path/hash、query index、両prompt SHAからなるquery identity。
-- 履歴開始/終了、実履歴長、公式history parameter、条件内の順番。
-- 05が完了し、採点済みrecordが12件あること。
-- raw responseのassistant text、保存score、prompt、index、取得元が整合すること。
-- 保存された実requestのmodel・messages・temperatureなどが現行の公式backendの引数と一致すること。
-- SDK responseをローカルで復元できること。
-
-これらは**06の最初のAPI送信より前**に確認します。再利用時にも実kwargsを比較します。05の `match` だけでなく `mismatch` / `ignored` も整合していれば再利用します。正解だけを選ぶ処理ではありません。
-
-01〜04の結果は入力にしません。03と同じなのはtask/metric/Hのgridであり、03のGPT-3.5応答は再利用しません。
-
-## 3. 出力先とファイルの見方
-
-出力先は `experiments/06_new_models_n10/results/` です。
-
-```text
-results/
-├── dry_run/                 # 計画確認時のmanifest.json/csv
-├── .started.json
-├── manifest.json
-├── manifest.csv
-├── requests.jsonl
-├── responses.jsonl
-├── records.jsonl
-├── run.log
-├── summary.json
-├── summary.csv
-└── runs/
-    └── sol__Pendulum-v1__next-action__H20/  # 条件例
-        └── episode_000/
-            ├── run.json
-            ├── config.effective.json
-            ├── metrics.json
-            └── predictions.jsonl
+# 実際に送信する場合のみ
+python experiments/06_new_models_n10/run.py --task Pendulum-v1 --history 5 --execute --confirm-paid-api
 ```
 
-結果はGitのignore対象です。Exp.5のファイルは変更しません。再利用したrecordも06のresultsへ含め、06だけで最終N10を確認できるようにします。
+`--task`はMountainCar-v0 / Pendulum-v1、`--history`は5 / 10 / 20 / 30。いずれも複数値を指定できる。省略した軸は全てを対象とする。モデルはsol/terra/luna、Metricは全4種類、N=10で固定する。
 
-| ファイル | 主な内容 |
-| --- | --- |
-| `manifest.json/csv` | 全960 queryの計画。JSONでは96条件の件数、新規948・再利用12を記録 |
-| `requests.jsonl` / `responses.jsonl` | 新規API試行の実kwargs/responseに加え、再利用であることを示す記録 |
-| `records.jsonl` | 正常完了時、再利用12件＋新規948件＝960 query records |
-| `summary.json` | 全体の完了状態、実logical/API/retry/成功/失敗/再利用件数と時間 |
-| `summary.csv` | 3 models×32条件＝96行の条件別集計（正常完了時） |
-| `runs/.../` | 公式CLIによるepisode別設定・指標・予測。再利用応答も同じ公式scorerに通す |
-| `.started.json` / `run.log` | 開始記録 / 公式CLIの出力・エラー |
+指定範囲に1条件でも完了済みのものがあれば、**「実行済みです」エラーで指定全体を拒否し、1件も送らない**。例えばH5完了後の`--history 5 10`も拒否する。明示指定に05取得済みのPendulum/H20が含まれる場合も同じ。query IDだけでなくmodel/task/metric/H単位の重複を検査し、別の指定方法でも重複を許さない。
 
-manifestは計画時点のスナップショットです。実API試行数は `summary.json` の `api_attempts` / `api_requests_made` を確認します。JSONLの行数をそのまま新規API件数とみなさないでください。
+### 完了済みを除く残りをまとめて実行する
 
-### 再利用recordの見分け方
+```bash
+python experiments/06_new_models_n10/run.py --remaining
+python experiments/06_new_models_n10/run.py --remaining --execute --confirm-paid-api
+```
 
-出典：[`experiments/common.py`](../common.py) の `RecordingSession.backend_class()` 内。
+**`--remaining`を明示したときだけ、完了済み条件を除外する。** 05と06のPendulum/H5が完了した状態なら、残り240件/model、全720件を新規送信する。`--remaining --task Pendulum-v1`のように範囲も限定できる。対象が全て完了していればエラーで終了する。
 
-| 項目 | 再利用queryでの値・意味 |
-| --- | --- |
-| `reused` | `true` |
-| `api_request_made` | `false`。06ではこのqueryを新規送信していない |
-| `source_experiment` | `05_new_models_single` |
-| `source_record` | 05の `records.jsonl` とquery IDを示す参照文字列 |
-| `api_attempts` / `retry_attempts` | 今回は両方0 |
-| `raw_response` / `usage` | 元の応答と元のusageを保持。今回の新規課金tokenという意味ではない |
-| `source_query_elapsed_seconds` | 05で記録した元query時間 |
-| `query_elapsed_seconds` | 06でのreplay処理時間。05のAPI推論時間とは異なる |
-| `request_elapsed_seconds` | 今回のSDK create実通信はないため0 |
+### 途中失敗の扱い（再開機能は実装しない）
 
-requests/responsesの再利用行には `attempt=0`、`attempt_id="<query_id>:reuse"` を付けます。新規API試行のattemptは1から始まります。`records.jsonl` のusageを全件合計すると、05のusageも含む最終datasetの量になり、06だけの追加課金量とは異なります。
+今回のsol/MountainCar/next-action/H5の2件目（index=6）の500エラーを単独確認するには、repository rootで`python tools/probe_exp06_query.py --execute --confirm-paid-api`を実行する。
+`612bf8080963456b9286c5481885a700`の保存済みrequestをそのまま1回だけ送信し、SDK自動retryも0にする。両フラグを外すと検証のみ。
+`outputs/exp06_single_query_probe/<日時>_<識別子>/`に`request.json`と`result.json`を新規保存し、成功時の全response/usage、失敗時のHTTPコード・error body・request ID、経過時間を記録する。認証ヘッダーは保存しない。
+実験の予約・結果には触れず、成功しても06の正式結果へは自動統合しない。再実行ごとに新たな有料試行になる。request IDとretry設定は[OpenAI SDK公式仕様](https://developers.openai.com/api/reference/python#request-ids)に従う。
 
-Accuracyは公式 `legacy_compatible_match_rate`。actionは全件、stateはparsed件数を分母にし、all/parsed/element精度・parse率も分けて保存します。API失敗をmismatchと置き換えたり、欠損usageを0で捏造したりしません。
+送信前にbatchの全対象条件をmanifestへ予約する。そのbatchが失敗・中断した場合、未送信だった条件も含めて予約を残し、同じ範囲の再指定や`--remaining`での自動再送を禁止する。エラーは「予約済み/未完了の条件です」。別の未予約条件を明示して実行することはできるが、全体統合は未完了batchがある限り停止する。復旧はログ確認のうえ別途対応する。API結果が不明なrequestを安易に再送しないための制約。
 
-エラー時は以降の送信を止め、取得済みprefixは可能な場合だけAPIなしで採点回収します。部分出力は `episode_000_partial/` などに保存します。強制終了・安全性違反・ディスク障害では回収を保証しません。再利用があることと、06の途中結果を自動resumeできることは別です。
+### 全条件が揃ったら統合（APIなし）
 
-## 4. `run.py` の中身
+```bash
+python experiments/06_new_models_n10/run.py --merge
+```
 
-出典：[`experiments/06_new_models_n10/run.py`](run.py)。
+05の120件と、全batchの重複しない840件を検証し、960件を`results/merged/<識別子>/`へ新規保存する。足りない条件・重複・未完了・prompt/設定不一致があれば統合しない。`--merge`に有料実行フラグは付けない。再実行時も別snapshotを作り、既存snapshotを上書きしない。
+
+統合後は通常の`analysis/analyze.py`を使う。分割結果がある場合、解析コマンドは同じ統合処理を先に自動実行するため、手動の`--merge`を省略してもよい。全条件が揃うまで全体の評価は生成しない。
+
+## 2. 入力と重複防止
+
+入力は公式raw episodesと、05の `results/manifest.json / summary.json / records.jsonl`。
+rawの書換えや再取得はしない。各条件はpath順episodeの先頭10有効query。
+
+[run.py](run.py)の設定：
 
 ```python
 EXPERIMENT = common.Experiment(
     name="06_new_models_n10", models=common.NEW_MODELS,
     tasks=common.TASKS, metrics=common.METRICS, histories=common.H_VALUES, n=10,
     reuse_from="05_new_models_single",
+    reuse_n=10,
+    questions=JOINT_QUESTIONS,
 )
 ```
 
-`Experiment` の型定義は [`experiments/common.py`](../common.py) にあります。上は条件のインスタンスを作って `EXPERIMENT` に代入する処理です。
+[common.py](../common.py) の `make_plan()` は、Pendulum・H20・ordinal<reuse_nの全queryを必須再利用に指定する。
+今回はその4条件×10件を丸ごと再利用する。残り28条件×10件のみを新規送信する。
 
-同じ `run.py` の `common.run(EXPERIMENT)` で、`common.py` の `run(spec, argv=None)` に渡します。`spec` にこの設定が入ります。インスタンスを作るだけではAPIを呼ばず、`run()` が二重フラグ・入力・出力を検査します。05を自動実行して不足を埋める機能はありません。
+`check_inputs()` は、再利用対象の集合全120件について以下を送信前に照合する：
 
-先頭のpath設定はrepositoryをimport可能にし、`sys.dont_write_bytecode=True` は公式ソースへのpycache書込を防ぎます。
+- model、task、metric、question、H、episode path/hash、query index、system/user prompt SHAで構成するquery ID。
+- 05の全query集合との完全一致、重複・不足の不在、履歴範囲・ordinal。
+- 05の完了状態と120件のrecord。
+- assistant_textとraw_responseの一致、保存requestのmodel/messages/reasoning_effortの一致とtemperatureが存在しないこと。その他の生成パラメータが追加されていた場合も拒否する。
+- upstream/preprocessingのsemantics hash。
 
-## 5. 各設定がどこで使われるか
+### 実行前の費用・時間見積もり
 
-| 設定 | 値 | 使用場所・意味 |
-| --- | --- | --- |
-| `name` | `06_new_models_n10` | `common.py:run()` の出力先とmanifestの実験名 |
-| `models` | sol / terra / luna | `common.py:NEW_MODELS`、`MODELS`。各 `gpt-5.6-*` IDへ解決 |
-| `tasks` | MountainCar-v0 / Pendulum-v1 | `common.py:TASKS` と `make_plan()` の対象選択 |
-| `metrics` | 4 family | `common.py:METRICS` と `QUESTIONS` による質問選択 |
-| `histories` | `(5, 10, 20, 30)` | `common.py:H_VALUES`。実際の履歴長。公式パラメータはH−1 |
-| `n` | `10` | 最終的に各条件へ揃えるquery数。新規送信だけの件数ではない |
-| `preview` | `False`（既定） | フラグなしはdry-run、二重フラグで有料実行 |
-| `preview_from` | `None`（既定） | 01とのpreview照合はしない |
-| `reuse_from` | `05_new_models_single` | `common.py:make_plan()` で必須再利用queryを指定し、`check_inputs()` で05を照合 |
+05の完了後、`python experiments/05_new_models_single/analysis/estimate_exp06.py`で06の追加280件/modelのtoken・金額・時間を概算できる。05の40件/modelの実測を単純に7倍する。再利用する40件分は追加料金に含めない。05＋06累計（8倍）も別表で出力する。
+出力は05の`analysis/cost_estimates/<日時>_<識別子>/RESULTS.md`と`estimate.json`。詳しい入出力・前提は[05解析README](../05_new_models_single/analysis/README.md)を参照。06の実験コード・結果には触れず、APIも呼ばない。
 
-出典：[`experiments/common.py`](../common.py) の `make_plan()` 内（整形した抜粋）。
+### APIの生成設定
 
-```python
-row["reuse_required"] = bool(
-    spec.reuse_from
-    and task == "Pendulum-v1"
-    and H == 20
-    and row["ordinal"] == 0
-)
-```
+05と同じく、sol / terra / lunaは`reasoning_effort="medium"`のみ明示し、`temperature`は送らない。`model`・`messages`以外の他の生成パラメータは未指定（API既定値）。通信・再試行・課金確認の安全設定は変更しない。
 
-再利用対象は「Pendulum、H20、各条件の先頭query」です。これは現在の05の条件に合わせた指定で、任意の過去実験を自動検索する汎用cacheではありません。05の条件を変更すると、06の前提検査が止まる可能性があります。
+単なる数値補完ではなくagent historyからreasoningしてmental modelを作れるかを評価するため、03_1の説明を求めるJoint questionを維持する。プロンプトによるCoTの促しとAPIのreasoning effortは別の設定である。研究上の意図・実装箇所・記録先は[05のAPI設定](../05_new_models_single/README.md#apiの生成設定0506共通)を参照。05の旧設定の結果を混ぜず、再利用前に実際のrequest全体を照合する。
 
-### 件数はどう計算するか
+分割方式では05の応答を新規送信batchへ含めず、最後のオフライン統合時に保存済み応答・公式scoreをコピーする。
+05不足時に新規送信へ切り替えない。
+API成功を意味する `ignored` recordも内容が整合していれば再利用し、正解だけを選ばない。
 
-1 modelあたりの計算は次のとおりです（コード引用ではなく条件の内訳）。
+## 3. Joint questionと評価の分離
 
-| 条件群 | 条件数 | 最終query/条件 | 再利用/条件 | 新規API query数 |
-| --- | ---: | ---: | ---: | ---: |
-| Pendulum・H20・4 metrics | 4 | 10 | 1 | 4×9＝36 |
-| 残りのtask/metric/H | 28 | 10 | 0 | 28×10＝280 |
-| 1 model合計 | 32 | — | 計4 | 316 |
-| 3 models合計 | 96 | — | 計12 | 948 |
+対応表は [joint_questions.py](../joint_questions.py) の `JOINT_QUESTIONS` を03_1/05/06で共有。
+question本体は既存 [feedback.py](../../upstream/LLM-Xavier/llm_x/feedback.py) にある。
 
-最終件数は320/model、960合計です。05の12件をさらに足して「972個の異なるquery」と数えるものではありません。06の960件に05の12件が含まれます。
+| 対象 | 呼ぶquestion |
+|---|---|
+| MountainCar Next/Last Action | next_action_prediction / last_action_prediction |
+| Pendulum Next/Last Action | next_action_prediction_continuous_joint / last_action_prediction_continuous_joint |
+| 両Task Next/Last State | next_state_prediction_more_options_joint / last_state_prediction_more_options_joint |
 
-出典：[`experiments/common.py`](../common.py) の `make_plan()` 内。
+**実行時の旧scorer出力はログとして残すが、Jointの正式な評価値には使わない。**
+03_1から移した [common_analysis](../common_analysis/README.md) がassistant_textを再parseする。
+raw torqueとbin、directionとabsolute stateとdeltaを独立に評価する。
 
-```python
-reused = sum(row["reuse_required"] for row in selected)
-new = 0 if spec.preview else len(selected) - reused
-```
+## 4. 実行結果の出力
 
-この値を条件ごとに足してmanifestを作るため、948を送信件数としてhard-codeしていません。
-
-### 同じ公式評価に通し、送信だけ省く
-
-出典：[`experiments/common.py`](../common.py) の `RecordingSession.backend_class()` 内、`recording_create()` の再利用分岐（抜粋）。
-
-```python
-if cached:
-    if kwargs != cached["request"]:
-        raise SafetyStop("Replay API parameters differ from the saved request")
-    from openai.types.chat import ChatCompletion
-    latest.update(request=kwargs, raw_response=cached["raw_response"])
-    return ChatCompletion.model_validate(cached["raw_response"])
-```
-
-再利用時は保存済みSDK responseを復元して返すため、実ネットワーク送信に進みません。呼出元は同じファイルの `super().complete()` であり、その後も公式 [`llm_x/evaluation.py`](../../upstream/LLM-Xavier/llm_x/evaluation.py) のparser/scorerを通ります。05のscoreを無条件にコピーして採点を省く実装ではありません。
-
-## 6. 呼び出し順
+`experiments/06_new_models_n10/results/`の構造：
 
 ```text
-06_new_models_n10/run.py
-└─ common.run(EXPERIMENT)
-   ├─ make_plan() → 最終960 query、必須再利用12、新規948
-   ├─ check_inputs() → 05の全12件を照合・cachedへ格納
-   ├─ フラグなし → dry_run/manifest保存 → 終了（API 0）
-   └─ 二重フラグ＋前提条件OK → execute_plan() → invoke_cli()
-      └─ 公式cli.main() → _evaluate() → EvaluationConfig → _backend()
-         └─ evaluate_episode() → Recording backend → super().complete()
-            └─ recording_create()
-               ├─ cachedあり → kwargs照合 → 保存response復元（新規API 0）
-               └─ cachedなし → 実SDK create → request/response記録
-            → 同じ公式parser/scorer → 標準出力保存
-      → collect_scores() / summarize_scored() → 最終N10のrecords/summary
+results/
+  .execution.lock                 # 全分割実行・統合で共通の排他ロック
+  dry_run/                        # 計画のみ。条件予約には数えない
+  batches/<識別子>/               # 各回の新規送信結果。上書きしない
+  merged/<識別子>/                # 完成した全960件の派生snapshot
 ```
 
-公式CLIは [`llm_x/cli.py`](../../upstream/LLM-Xavier/llm_x/cli.py)、公式backendは [`llm_x/backends.py`](../../upstream/LLM-Xavier/llm_x/backends.py) にあります。入力pilotは [Exp.5](../05_new_models_single/README.md)、共通ログの詳細は [Exp.2](../02_gpt35_single/README.md) を参照してください。
+各`batches/<識別子>/`の内容：
+
+| ファイル | 内容・生成元 |
+|---|---|
+| manifest.json/csv | 今回選んだ条件・queryのみ。`make_plan → select_plan → save_manifest` |
+| requests.jsonl / responses.jsonl | 新規API試行の送受信ログ。`RecordingSession` |
+| records.jsonl | 今回新規送信したqueryのみ。Pendulum/H5なら120行。`collect_scores` |
+| summary.json/csv | 完了状態・実API試行数・旧score等。`execute_plan` |
+| runs/<condition>/episode_000/... | 公式CLIの設定・旧prediction/metrics。`invoke_cli` |
+| run.log / .started.json | ログ・上書き防止記録 |
+
+統合snapshotには`manifest.json/csv`、`records.jsonl`（960行）、`summary.json`、`runs/source_*/...`を保存する。元の送受信ログは各batchに残す。コピーしたrunsとrecordsを既存の共通評価コードへ渡す。
+
+統合後の05由来recordは `reused=true`、`api_request_made=false`、`api_attempts=0`。
+`source_experiment=05_new_models_single` と `source_record` で出典を追える。
+全recordの`source_record`・`source_upstream_output`から元ファイルを追える。統合manifestの`merge_source_sha256`で元manifest/summary/recordsのhashを記録する。
+
+`raw_response / usage` は05の元応答を保持する。
+`query_elapsed_seconds / request_elapsed_seconds`も05の実測時間を保持する。統合はSDK再生ではなくファイルコピーなので、架空の`replay_elapsed_seconds`は生成しない。
+したがってrecordsのtoken/time全件合計は「05を含む最終dataset」の量であり、「06の追加課金・実行wall time」ではない。
+追加通信は各batchのrequests/responsesの`api_request_made=true`とsummaryの試行数で確認する。
+統合summaryは実行ログではない。`merge_api_calls=0`、`source_api_attempts`は06各batchの試行数合計、`source_06_experiment_seconds`は各batchの実験処理時間合計（05や各回の間の待ち時間を含まない）。
+
+### コードの呼び出し順
+
+`run.py` → [`split_execution.run()`](../split_execution.py) → 共通ロック → `common.make_plan()` / `common.check_inputs()` → `scan_batches()` → `select_plan()` → 新batchの予約・保存 → 既存の`common.execute_plan()`。
+prompt生成・API送信・公式scorerは既存common/upstreamを再利用し、再実装していない。
+
+統合は`merge_results()`が全条件・各recordと公式scoreを検証し、元runsをコピーしてmanifest順に960件を並べる。共通解析runnerは分割結果があるときだけこの関数を呼び、その後従来の`load_and_parse()` / 評価関数を使う。旧方式のroot直下の結果がある場合、分割実行との混在は禁止し、旧解析経路は維持する。
+
+## 5. N=10だけを共通解析する
+
+06完了後：
+
+```bash
+python experiments/06_new_models_n10/analysis/analyze.py
+```
+
+APIなし。05を含む06の960 recordsを一度だけ読み、05のraw responseとの一致と再送の不在も照合する。
+**05のrecordsをさらに追加結合しない。**
+
+```text
+analysis/
+  analyze.py
+  sol/
+    cross_task_10/     # Accuracy、confusion、state連続指標
+    pendulum_10/       # torque、bin MAE、delta theta
+    diagnostics_10/    # parse、token、元の推論時間
+    tables/           # 12種類のCSV
+    query_subsets.json
+    validation.json
+    analysis_metadata.json
+  terra/              # 同じ構造
+  luna/               # 同じ構造
+```
+
+モデルごとに22図×PNG/SVG、3モデルで66図（132画像ファイル）。
+N20/N30 directoryは生成しない。各条件の10件すべてを使い、parse失敗の補充抽出はしない。
+model/model_aliasを表にも残し、モデルをpoolしない。
+
+既定seed=42、bootstrap=1,000。解析再実行は `--overwrite-derived` を明示する。
+新しい保存先にしたい場合は `--output-dir experiments/06_new_models_n10/analysis/<名前>`。
+これらは解析派生ファイルだけの指定で、実験resultsは変更しない。
+
+計算式、欠損、分母、正規化、図・CSV一覧は [共通解析README](../common_analysis/README.md) と
+[03_1の定義](../03_1_gpt35_history_n30_joint/analysis/README.md) を参照。
+
+## 6. 呼出順と検証
+
+```text
+run.py → common.run() → make_plan() → check_inputs()
+  → dry-run、または execute_plan()
+    → 必須cached条件：保存responseをreplay（新規API 0）
+    → 残りの条件：公式backendで送信・ログ記録
+
+analysis/analyze.py → common_analysis.runner.main()
+  → load_and_parse() → モデル別に分割 → select_subsets(sizes=(10,))
+  → aggregate_all() → make_figures(sizes=(10,)) → CSV/PNG/SVG/監査JSON
+```
+
+[tests/test_joint_modern_experiments.py](../../tests/test_joint_modern_experiments.py) で、
+40+280=320/model、再利用120件の全一致、不足・重複・旧question時の送信前停止、cached条件のclient未生成、
+元推論時間の保持、03_1の全既存数値との一致、N10だけの図出力をオフライン検証する。

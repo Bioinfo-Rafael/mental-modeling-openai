@@ -193,6 +193,19 @@ NPZのndarray
 
 preprocessing/llmx_original.py は上流の `Episode`, `system_prompt`, `user_prompt`, `render_question` とquery planning helperを直接利用する。Mental Modeling promptを独自再実装しない。質問原文は `llm_x/feedback.py`、task/state説明は `llm_x/task.py` にある。
 
+### Joint Prediction質問variant
+
+既存LLM-Xavier promptとの差分を最小限にした、次の4つのJoint question variantを追加した。
+
+1. `next_action_prediction_continuous_joint`
+2. `last_action_prediction_continuous_joint`
+3. `next_state_prediction_more_options_joint`
+4. `last_state_prediction_more_options_joint`
+
+Action Jointは、既存continuous no-bins promptのraw action valueと、既存continuous bins promptの10-bin IDを一度のqueryで回答させる。State Jointは、既存more-options promptの`INC` / `DEC` / `UNCH`とthreshold `1e-4`を維持し、target stateのraw valueとforward方向のstate deltaを追加する。Stateの10-bin分類は採用しない。
+
+これらを使うGPT-3.5 N30実験は[`experiments/03_1_gpt35_history_n30_joint/`](experiments/03_1_gpt35_history_n30_joint/)にある。現段階ではprompt生成と通常実行経路への接続までで、Joint出力全体のparser/scoringは未実装である。
+
 ### 数値表示とrawの違い
 
 `data.py` と `questions.py` は `np.array2string(value, precision=4, separator=", ")`。小数点以下4桁固定ではなくNumPyの表示設定。dtype metadataやNPZ bytes自体は入力に入らず、ブラケット階層は維持する。linewidth/thresholdは指定されず、NumPy設定による改行・大きい配列の `...` があり得る。

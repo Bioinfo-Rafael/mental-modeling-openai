@@ -28,6 +28,19 @@ Supported evaluation families are:
 
 Run `llm-x list-questions` for the complete model/prompt variant registry.
 
+## Joint Prediction質問variant
+
+既存promptを基礎として、continuous actionおよびstateを一度のqueryで複数形式により予測する、次のquestion variantを追加している。
+
+1. `next_action_prediction_continuous_joint`
+2. `last_action_prediction_continuous_joint`
+3. `next_state_prediction_more_options_joint`
+4. `last_state_prediction_more_options_joint`
+
+Action Jointは既存のcontinuous no-bins promptによるraw action valueと、既存の10-bin定義によるbin IDを同時に要求する。State Jointは既存more-options promptの`INC` / `DEC` / `UNCH`を維持し、target stateのraw valueとforward方向のstate deltaを追加する。Stateの10-bin分類は含まない。
+
+これらのvariantはquestion registryに登録済みである。現段階の標準scorerはJoint出力全体には未対応であり、Stateの既存Direction部分のみ従来どおり評価できる。Joint Actionのvalue/binおよびJoint Stateのvalue/deltaを評価するparserとmetricは別途接続する必要がある。
+
 ## Installation
 
 LLM-X requires Python 3.10 or newer.

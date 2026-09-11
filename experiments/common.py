@@ -70,6 +70,21 @@ IDENTITY_FIELDS = (
 SCORED_STATUSES = {"match", "mismatch", "ignored"}
 
 
+def api_request_options(model):
+    """Explicit generation options; omitted options use the API defaults."""
+    if model in {MODELS[alias] for alias in NEW_MODELS}:
+        return {"reasoning_effort": "medium"}
+    return {"temperature": 0}  # Preserve the existing GPT-3.5 experiments.
+
+
+def expected_api_request(model, system_prompt, user_prompt):
+    """Single request contract shared by sending, reuse, and resume validation."""
+    return {"model": model, **api_request_options(model), "messages": [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
+    ]}
+
+
 @dataclass(frozen=True)
 class Experiment:
     name: str
@@ -81,6 +96,8 @@ class Experiment:
     preview: bool = False
     preview_from: str | None = None
     reuse_from: str | None = None
+    questions: dict[str, dict[str, str]] | None = None
+    reuse_n: int = 1  # Pendulum H20 prefix required from reuse_from; old specs retain N1 behavior.
 
 
 class SafetyStop(BaseException):
@@ -210,7 +227,10 @@ def provenance():
 
 def make_plan(spec, retries):
     """Use existing discovery + prompt wrapper, taking each episode's valid prefix."""
+    if spec.reuse_from and not 1 <= spec.reuse_n <= spec.n:
+        raise ValueError("reuse_n must be between 1 and the condition's N")
     sources = sorted(discover_episodes(DEFAULT_DATA_ROOT), key=lambda s: str(s.path))
+    questions = spec.questions or QUESTIONS
     conditions, queries = [], []
     for alias in spec.models: # @Rafa: モデルの選択、aliasがモデルの略称
         model = MODELS[alias] # @Rafa: モデルの略称から正式名称を取得
@@ -218,7 +238,7 @@ def make_plan(spec, retries):
         for task in spec.tasks:
             for metric in spec.metrics:
                 for H in spec.histories:
-                    question = QUESTIONS[task][metric]
+                    question = questions[task][metric]
                     upstream_h = history_size(H)
                     config = EvaluationConfig(task, metric, question, upstream_h) # @Rafa:型定義
                     cid = f"{alias}__{task}__{metric}__H{H}"
@@ -246,7 +266,7 @@ def make_plan(spec, retries):
                             row["query_id"] = query_id(row)
                             # These are required reuse slots, not optional cache hits.
                             row["reuse_required"] = bool(spec.reuse_from and task == "Pendulum-v1"
-                                                         and H == 20 and row["ordinal"] == 0)
+                                                         and H == 20 and row["ordinal"] < spec.reuse_n)
                             selected.append(row)
                             if len(selected) == spec.n:
                                 break
@@ -269,6 +289,7 @@ def make_plan(spec, retries):
         "schema_version": 1, "experiment": spec.name, "created_at_utc": utc_now(),
         "provenance": provenance(), "selection": "path-sorted episodes; valid query prefixes",
         "sdk_max_retries": 0, "upstream_retries": retries,
+        "api_request_options_by_model": {MODELS[a]: api_request_options(MODELS[a]) for a in spec.models},
         "conditions": conditions, "queries": queries,
         "planned_logical_queries": len(queries),
         "planned_api_requests": sum(c["planned_api_requests"] for c in conditions),
@@ -335,14 +356,11 @@ def check_inputs(spec, plan):
                           record["request"]["messages"][1]["content"])
             if record["request"]["model"] != record["model"]:
                 raise ValueError("Exp.5 request model mismatch")
-            # Check the complete current upstream request shape before ANY Exp.6 call.
-            # This is a validation contract, not an alternate API request implementation.
-            expected_request = {"model": record["model"], "temperature": 0, "messages": [
-                {"role": "system", "content": expected[qid]["system_prompt"]},
-                {"role": "user", "content": expected[qid]["user_prompt"]},
-            ]}
+            # Check the actual experiment request shape before ANY Exp.6 call.
+            expected_request = expected_api_request(
+                record["model"], expected[qid]["system_prompt"], expected[qid]["user_prompt"])
             if record["request"] != expected_request:
-                raise ValueError("Exp.5 API parameters differ from the current upstream backend")
+                raise ValueError("Exp.5 API parameters differ from the current experiment settings")
             from openai.types.chat import ChatCompletion
             ChatCompletion.model_validate(raw)  # Local schema validation; no client/network.
             cached[qid] = {**record, "source_record": f"{source.relative_to(ROOT)}/records.jsonl#{qid}"}
@@ -423,6 +441,14 @@ class RecordingSession:
                     verify_prompt(row, kwargs["messages"][0]["content"], kwargs["messages"][1]["content"])
                     if kwargs["model"] != row["model"]:
                         raise SafetyStop("Actual API model differs from plan")
+                    # Upstream supplies temperature=0. Override only modern-model
+                    # generation options here, before journaling, replay, or sending.
+                    options = api_request_options(row["model"])
+                    if "reasoning_effort" in options:
+                        kwargs.pop("temperature", None)
+                        kwargs.update(options)
+                    if kwargs != expected_api_request(row["model"], row["system_prompt"], row["user_prompt"]):
+                        raise SafetyStop("Actual API parameters differ from experiment settings")
                     if cached:
                         if kwargs != cached["request"]:
                             raise SafetyStop("Replay API parameters differ from the saved request")
@@ -489,11 +515,12 @@ class RecordingSession:
                     finished.update(source_experiment=cached["source_experiment"],
                                     source_record=cached.get("source_record"),
                                     source_query_elapsed_seconds=cached["query_elapsed_seconds"])
-                    if cached["source_experiment"] == session.experiment:
-                        finished.update(replay_elapsed_seconds=finished["query_elapsed_seconds"],
-                                        query_elapsed_seconds=cached["query_elapsed_seconds"],
-                                        request_elapsed_seconds=cached.get("request_elapsed_seconds", 0),
-                                        query_time_recovered_from_request=cached.get("query_time_recovered_from_request", False))
+                    # Cross-experiment reuse must also retain inference latency for analysis.
+                    # New communication remains zero via api_request_made/api_attempts.
+                    finished.update(replay_elapsed_seconds=finished["query_elapsed_seconds"],
+                                    query_elapsed_seconds=cached["query_elapsed_seconds"],
+                                    request_elapsed_seconds=cached.get("request_elapsed_seconds"),
+                                    query_time_recovered_from_request=cached.get("query_time_recovered_from_request", False))
                 usage = latest["raw_response"].get("usage") or {}
                 finished.update(input_tokens=usage.get("prompt_tokens"), output_tokens=usage.get("completion_tokens"),
                                 total_tokens=usage.get("total_tokens"), usage=usage)
@@ -697,9 +724,7 @@ def prepare_resume(plan, directory, retry_uncertain=False):
             if qid not in expected or aid in requests:
                 raise ValueError("Invalid resume request journal")
             q = expected[qid]
-            wanted = {"model": q["model"], "temperature": 0, "messages": [
-                {"role": "system", "content": q["system_prompt"]},
-                {"role": "user", "content": q["user_prompt"]}]}
+            wanted = expected_api_request(q["model"], q["system_prompt"], q["user_prompt"])
             if request["kwargs"] != wanted:
                 raise ValueError("Resume request parameters changed")
             requests[aid] = request
@@ -775,8 +800,10 @@ def _run(spec, argv=None):
                         help="Explicit upstream retries per query; default 0 avoids uncertain duplicate billing")
     args = parser.parse_args(argv)
     # --resume は、再開処理を実装している Exp.3 だけで許可する。
-    if args.resume and spec.name != "03_gpt35_history_n30":
-        parser.error("--resume is currently supported for Exp.3 only")
+    if args.resume and spec.name not in {
+        "03_gpt35_history_n30", "03_1_gpt35_history_n30_joint",
+    }:
+        parser.error("--resume is currently supported for the Exp.3 N30 runs only")
     # 結果不明requestの再送指定は、resumeと組み合わせた場合だけ許可する。
     if args.retry_uncertain and not args.resume:
         parser.error("--retry-uncertain requires --resume")

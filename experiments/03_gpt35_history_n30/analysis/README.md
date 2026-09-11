@@ -105,10 +105,10 @@ stateのparse失敗はaccuracyを欠損にし、平均の分母から除外し�
 | ファイル | 内容／今回の形状（ヘッダ除く） |
 | --- | --- |
 | [plot_metrics.py](plot_metrics.py) | 読込→検証→採点→subset→集計→作図の実行コード |
-| [test_plot_metrics.py](test_plot_metrics.py) | 手計算できる小さな5つのテスト |
+| [test_plot_metrics.py](test_plot_metrics.py) | 手計算できる小さな6つのテスト |
 | [computed_metrics.csv](computed_metrics.csv) | 1 query＝1行、960行。元prediction/GTと追加accuracyを区別 |
 | [state_dimension_metrics.csv](state_dimension_metrics.csv) | 1 state query×dimension＝1行、1,200行 |
-| [aggregated_metrics.csv](aggregated_metrics.csv) | 32条件×3subset×3measure＝288行。図は `measure=accuracy_pct` の96行 |
+| [aggregated_metrics.csv](aggregated_metrics.csv) | 32条件×3 subsetについて、Accuracy、実行時間、token使用量などを集計 |
 | [state_dimension_aggregated.csv](state_dimension_aggregated.csv) | 条件×subset×state dimensionのmean/std/N、120行 |
 | [query_subsets.json](query_subsets.json) | seed・条件seed・選択ordinal/query ID |
 | [bin_edges.json](bin_edges.json) | Pendulumの公式action bin edges・境界規則 |
@@ -128,7 +128,7 @@ CSVはUTF-8、数値欠損は空欄、配列はJSON文字列です。`mean` / `s
 | `select_subsets()` | query行・seed → 条件別の固定nested subset |
 | `summarize_values()` / `aggregate()` | 同じsubsetの値 → mean/std/N。既存 `experiments.analysis.describe()` を再利用 |
 | `action_bin_settings()` | manifest → 公式のbin設定を記録するdict |
-| `plot_figures()` | 集計行 → 2×4パネルを3図、PNG/SVGに保存 |
+| `plot_figures()` | 集計行 → Accuracy・実行時間・token使用量の2×4パネルを各3図、PNG/SVGに保存 |
 | `main()` | 上記を順に呼び、CSV/JSON出力と前後のsource hash照合を行う |
 
 既存の `experiments/common.py`、`experiments/analysis.py`、`upstream/LLM-Xavier/llm_x/` の関数はimportして再利用するだけで、この解析のために変更していません。Exp.4の「先頭N」方式とは別で、ここは固定seedによるnested samplingです。
@@ -143,4 +143,11 @@ CSVはUTF-8、数値欠損は空欄、配列はJSON文字列です。`mean` / `s
 | N=20 | [図](figures/paper_matching_accuracy/paper_matching_accuracy_n20.png) | [vector](figures/paper_matching_accuracy/paper_matching_accuracy_n20.svg) |
 | N=10 | [図](figures/paper_matching_accuracy/paper_matching_accuracy_n10.png) | [vector](figures/paper_matching_accuracy/paper_matching_accuracy_n10.svg) |
 
-ユーザーの最終指定により、時間・token・MSE・Pearson相関・10-bin単独指標の図は作成していません。特にstateは方向ラベル、Pendulum actionはbin IDなので、それを連続値とみなしたMSEや相関は計算していません。
+同じsubset・パネル構成で、query単位の実行時間と総token使用量も出力する。
+
+| 指標 | N=30 | N=20 | N=10 |
+| --- | --- | --- | --- |
+| 実行時間（秒/query） | [図](figures/paper_matching_execution_time/paper_matching_execution_time_n30.png) | [図](figures/paper_matching_execution_time/paper_matching_execution_time_n20.png) | [図](figures/paper_matching_execution_time/paper_matching_execution_time_n10.png) |
+| 総token（input＋output/query） | [図](figures/paper_matching_token_usage/paper_matching_token_usage_n30.png) | [図](figures/paper_matching_token_usage/paper_matching_token_usage_n20.png) | [図](figures/paper_matching_token_usage/paper_matching_token_usage_n10.png) |
+
+MSE・Pearson相関・10-bin単独指標の図は作成していません。特にstateは方向ラベル、Pendulum actionはbin IDなので、それを連続値とみなしたMSEや相関は計算していません。

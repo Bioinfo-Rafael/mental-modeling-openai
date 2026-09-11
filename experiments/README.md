@@ -18,10 +18,12 @@
    現行実装はN=30/20/10を同じパネル内の系列として描き、task×metricでパネル分割しているため、この縦方向の配置は未反映。ここでは希望をメモとして残し、描画コードは変更していない。
 
 5. **[05：Sol・Terra・Lunaのpilot](05_new_models_single/README.md)**
-   Sol・Terra・Lunaについて、H=20、Pendulum、行動予測と状態予測の4通りを各1回送信する。返ってきた値は全てログなどへ保存して確認する。**3モデル×4条件＝12件**。これを06の該当条件の先頭1件として再利用する。
+   Sol・Terra・Lunaについて、H=20、Pendulum、行動予測と状態予測の4通りを**各10 query**送信する。questionは03_1と同じJoint版。返ってきた値は全てログへ保存する。**40件/model、3モデルで120件**。この全120件を06で再利用する。
 
 6. **[06：新3モデルで全条件N10](06_new_models_n10/README.md)**
-   Sol・Terra・Lunaについて、03と同じtask/metric/Hの全32条件を、各条件N=10まで揃える。05で実行済みのqueryは照合して再利用し、重複送信しない。概算では約300回/model、正確には **32×10−4＝316件/model、3モデルで948件の追加送信**。再利用分を含む最終結果は **320件/model、計960件**。05で扱った条件を丸ごと除くのではなく、その4条件では残り9件ずつを送る。
+   Sol・Terra・Lunaについて、03_1と同じJoint question・全32条件を各N=10で揃える。05のPendulum/H20の4条件は10件ずつ丸ごと再利用し、残り28条件だけ新規送信する。**280件/model、3モデルで840件の追加送信**。05+06の新規送信合計・最終ユニーク件数は **320件/model、計960件**。評価は[common_analysis](common_analysis/README.md)を共有し、06はN=10だけをモデル別に生成する。
+
+   `--task Pendulum-v1 --history 5`で120件だけ先に実行できる。実行済み条件を含む指定はエラー。残りの完了済み除外は`--remaining`で明示する。各回を`results/batches/<識別子>/`へ保存し、`--merge`または解析コマンドで全960件を統合する。途中失敗からの再開は非対応。[分割の手順](06_new_models_n10/README.md#まずpendulumh5だけ実行する)を参照。
 
 ## 実装・実行状況について
 
@@ -36,8 +38,8 @@
 | 02_gpt35_single：GPT-3.5 pilot | raw＋01のmanifest | 8 | 8 | `02_gpt35_single/results/` |
 | 03_gpt35_history_n30：GPT-3.5 H sweep | 公式raw episodes | 32条件×30＝960 | 960 | `03_gpt35_history_n30/results/` |
 | 04_sample_size_analysis：N30/20/10の先頭subset比較 | 03のrecords＋manifest/summary | 新規queryなし | 0 | `04_sample_size_analysis/results/` |
-| 05_new_models_single：Sol/Terra/Luna pilot | Pendulum、H20、4 metrics | 12 | 12 | `05_new_models_single/results/` |
-| 06_new_models_n10：新モデルの全条件N10 | raw＋05の一致する12 records | 320/model＝960 | 316/model＝948 | `06_new_models_n10/results/` |
+| 05_new_models_single：Joint N10 pilot | Pendulum、H20、4 metrics | 40/model＝120 | 40/model＝120 | `05_new_models_single/results/` |
+| 06_new_models_n10：Joint全条件N10 | raw＋05の一致する120 records | 320/model＝960 | 280/model＝840 | `06_new_models_n10/results/` |
 
 ## コマンド（ユーザーが後日実行するとき）
 
@@ -70,7 +72,7 @@ API keyは `OPENAI_API_KEY` 環境変数のみから読みます。キーをコ�
 - 有料実験はフラグなしではmanifestのみ。dry-runは `results/dry_run/` に保存し、実行済みの `results/manifest.json` を上書きしません。表示件数はplanから計算します。
 - `--execute --confirm-paid-api` の両方が必要。既存結果の上書き・自動再送はしません。Exp.3は明示的な `--resume` で保存済み応答を再利用できます。まず `python experiments/03_gpt35_history_n30/run.py --resume` で計画を確認してください。タイムアウト等の結果不明queryの再送には、重複課金の可能性を確認したうえで `--retry-uncertain` も必要です。[再開手順と保存先](03_gpt35_history_n30/README.md#途中から再開する方法)を参照してください。
 - SDK内部retryは0。upstream retryも既定0ですが、ユーザーが `--retries N` で明示できます。retry込み上限もplanに表示します。`api_attempts` はSDK create試行数であり、通信失敗がサーバーに到達/課金されたかまでは保証できません。
-- APIはupstreamのChat Completions・`temperature=0`を維持します。モデルIDは既存token estimatorと同じです。アカウントの利用可否・モデルの引数互換性は未検証で、エラー時にモデル/API/引数を自動変更しません。
+- APIはChat Completionsを維持します。05・06のsol/terra/lunaは`temperature`を送らず、`reasoning_effort="medium"`のみ明示し、他の生成設定はAPI既定値です。agent historyからのreasoningを評価する意図で、03_1の説明を求めるJoint questionを維持します（[設定詳細](05_new_models_single/README.md)）。GPT-3.5の既存実験は`temperature=0`のままです。モデルIDは既存token estimatorと同じで、エラー時にモデル/API/引数を自動変更しません。通信・再試行の安全設定は維持し、実APIでの再検証はしていません。
 - `data/`・`upstream/`・既存Notebookは変更しません。結果は各experimentの `results/` のみ。ユーザー指定でExp.1の開始記録・manifest・prompt txtはGitで共有し、他の実験結果は `.gitkeep` のみを含めます。
 
 ## 保存内容・再利用
@@ -82,7 +84,7 @@ API keyは `OPENAI_API_KEY` 環境変数のみから読みます。キーをコ�
 `summary.json/csv` にAccuracy・parse率・全件/parsed/elementの精度と経過時間、JSONに実験全体の試行数・成功/失敗数を記録します。成功は採点済み（`ignored`も含む）であり、正解数とは別です。
 
 APIエラー時は以降の送信を止めます。先に取得できたprefixのresponseはAPIなしで同じCLIへreplayし、`episode_<番号>_partial/` に標準スコアを回収します。強制終了・安全性違反・ディスク障害では回収を保証できませんが、送受信は都度flush/fsyncします。未完了結果を04/06が完了結果として使うことはありません。
-06のreuseは `reused=true`、`api_request_made=false`、`source_experiment`、`source_record` で示し、新規試行数は0。元response/usageと元query時間を残し、今回のreplay時間と区別します。
+06の統合snapshotでは05のreuseを`reused=true`、`api_request_made=false`、`source_experiment`、`source_record`で示し、新規試行数は0。元response/usageと元query時間を残します。分割方式の統合はファイルコピーであり、SDK replayは行いません。
 
 04は `statistics.csv/json` と `figures/`（Accuracy、time、input/output/total tokensを別図）を生成します。primary Accuracyはupstreamの `legacy_compatible_match_rate`。actionは全件、stateはparsed件数が分母です。全件のcorrect=1/0統計（ignored=0）とは区別します。分散/標準偏差はddof=0/1を両方保存し、time/token図は母標準偏差、Accuracy図は分母混同を避けerror barなし。欠損usageは0で埋めません。
 

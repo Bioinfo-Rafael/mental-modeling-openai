@@ -1,4 +1,4 @@
-"""Exp.3 accuracy analysis only: saved responses in, CSV/figures out, no API calls.
+"""Exp.3 analysis: saved responses in, CSV/figures out, no API calls.
 
 Run from the repository root:
     python experiments/03_gpt35_history_n30/analysis/plot_metrics.py
@@ -35,7 +35,42 @@ TASKS = ("MountainCar-v0", "Pendulum-v1")
 METRICS = ("next-action", "last-action", "next-state", "last-state")
 TITLES = ("Next Action (NA)", "Last Action (LA)", "Next State (NS)", "Last State (LS)")
 SUBSET_SIZES = (30, 20, 10)
-FIGURE_STEM = "paper_matching_accuracy"
+FIGURE_SPECS = (
+    {
+        "measure": "accuracy_pct", "stem": "paper_matching_accuracy",
+        "ylabel": "Paper Metric Accuracy (%)", "suptitle": "action matching and state-change accuracy",
+        "ylim": (0, 100), "yticks": [0, 25, 50, 75, 100],
+        "footer": ("Pendulum actions: direct-bin matching. States: 3-class re-analysis of INC/DEC-only responses.\n"
+                   "Action parse failures count as incorrect; state parse failures are excluded. Not an exact paper replication."),
+    },
+    {
+        "measure": "query_elapsed_seconds", "stem": "paper_matching_execution_time",
+        "ylabel": "Execution Time per Query (seconds)", "suptitle": "query execution time",
+        "footer": ("Execution time is query_elapsed_seconds: end-to-end time for each query, including the API request and local CLI processing.\n"
+                   "Replayed queries retain their originally recorded execution time."),
+    },
+    {
+        "measure": "total_tokens", "stem": "paper_matching_token_usage",
+        "ylabel": "Tokens per Query (input + output)", "suptitle": "total token consumption",
+        "footer": ("Token consumption is total_tokens reported by the API for each query: input_tokens + output_tokens.\n"
+                   "Replayed queries retain their originally recorded token usage."),
+    },
+)
+SCORING_SEMANTICS = {
+    "upstream/LLM-Xavier/llm_x/data.py",
+    "upstream/LLM-Xavier/llm_x/evaluation.py",
+    "upstream/LLM-Xavier/llm_x/metrics.py",
+}
+
+
+def semantics_drift(manifest: dict) -> dict[str, dict[str, str]]:
+    """Report source drift while distinguishing files used by saved-response scoring."""
+    drift = {}
+    for relative, expected in manifest["provenance"]["semantics_files_sha256"].items():
+        actual = common.file_sha256(ROOT / relative)
+        if actual != expected:
+            drift[relative] = {"expected": expected, "actual": actual}
+    return drift
 
 
 def load_results() -> tuple[Path, dict, list[dict]]:
@@ -65,9 +100,9 @@ def load_results() -> tuple[Path, dict, list[dict]]:
             raise ValueError("Unscored result")
         if record["raw_response"]["choices"][0]["message"]["content"] != record["assistant_text"]:
             raise ValueError("Raw response and assistant text differ")
-    for relative, expected in manifest["provenance"]["semantics_files_sha256"].items():
-        if common.file_sha256(ROOT / relative) != expected:
-            raise ValueError(f"Official semantics changed: {relative}")
+    blocking_drift = SCORING_SEMANTICS & semantics_drift(manifest).keys()
+    if blocking_drift:
+        raise ValueError(f"Official scoring semantics changed: {sorted(blocking_drift)}")
     return source, manifest, records
 
 
@@ -111,6 +146,10 @@ def score_queries(records: list[dict], manifest: dict) -> tuple[list[dict], list
             official_exact_match_pct=100.0 * (record["status"] == "match"),
             accuracy_pct=None, original_element_accuracy_pct=None,
             unchanged_dimensions=0, state_dimensions=None, na_reason="",
+            query_elapsed_seconds=record["query_elapsed_seconds"],
+            request_elapsed_seconds=record["request_elapsed_seconds"],
+            input_tokens=record["input_tokens"], output_tokens=record["output_tokens"],
+            total_tokens=record["total_tokens"],
         )
         if record["metric"].endswith("action"):
             # Official action matching denominator includes ignored responses as failures.
@@ -190,7 +229,9 @@ def aggregate(computed: list[dict], dimensions: list[dict], subsets: dict) -> tu
             ids = entry["subsets"][str(n)]["query_ids"]
             selected = [by_id[qid] for qid in ids]
             metadata = {k: selected[0][k] for k in ("condition_id", "task", "metric", "H", "evaluation_kind")}
-            for key in ("accuracy_pct", "original_element_accuracy_pct", "official_exact_match_pct"):
+            for key in ("accuracy_pct", "original_element_accuracy_pct", "official_exact_match_pct",
+                        "query_elapsed_seconds", "request_elapsed_seconds", "input_tokens",
+                        "output_tokens", "total_tokens"):
                 stats = summarize_values(selected, key, n)
                 reason = "" if stats["N"] else ("state_only_metric" if key == "original_element_accuracy_pct"
                                                  and selected[0]["metric"].endswith("action") else "no_parsed_predictions")
@@ -238,7 +279,7 @@ def action_bin_settings(manifest: dict) -> dict:
 
 
 def plot_figures(aggregated: list[dict], output: Path, seed: int) -> list[str]:
-    """One common percent scale and the same 2x4 panel layout for N30/N20/N10."""
+    """Use the same 2x4 panel layout for accuracy, execution time, and token usage."""
     os.environ["MPLCONFIGDIR"] = str(output / "cache" / "matplotlib")
     import matplotlib
     matplotlib.use("Agg")
@@ -247,47 +288,56 @@ def plot_figures(aggregated: list[dict], output: Path, seed: int) -> list[str]:
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 10,
                          "axes.spines.top": False, "axes.spines.right": False,
                          "svg.fonttype": "none"})
-    folder = output / "figures" / FIGURE_STEM
-    folder.mkdir(parents=True, exist_ok=True)
     files = []
-    for n in SUBSET_SIZES:
-        fig, axes = plt.subplots(2, 4, figsize=(14, 7), sharey=True)
-        for i, task in enumerate(TASKS):
-            for j, metric in enumerate(METRICS):
-                ax = axes[i, j]
-                points = sorted((r for r in aggregated if r["task"] == task and r["metric"] == metric
-                                 and r["subset_n"] == n and r["measure"] == "accuracy_pct"), key=lambda r: r["H"])
-                histories = [r["H"] for r in points]
-                mean = [r["mean"] if r["mean"] is not None else math.nan for r in points]
-                std = [r["std"] if r["std"] is not None else math.nan for r in points]
-                color = "#2463A6" if i == 0 else "#B75628"
-                ax.plot(histories, mean, "o-", color=color, linewidth=1.6, markersize=4)
-                # The unclipped mean/SD is saved in CSV; percentages have a 0..100 display range.
-                ax.fill_between(histories, [max(0, m-s) if math.isfinite(m) else math.nan for m, s in zip(mean, std)],
-                                [min(100, m+s) if math.isfinite(m) else math.nan for m, s in zip(mean, std)], color=color, alpha=0.16)
-                ax.set(xticks=histories, ylim=(0, 100), yticks=[0, 25, 50, 75, 100],
-                       xlabel="History size H (timesteps)")
-                ax.grid(axis="y", alpha=0.2, linewidth=0.6)
-                if i == 0:
-                    ax.set_title(TITLES[j], pad=14)
-                if j == 0:
-                    ax.set_ylabel(f"{task.split('-')[0]}\nPaper Metric Accuracy (%)")
-                valid = ", ".join(f"{r['H']}:{r['N']}" for r in points)
-                ax.text(0.02, 1.015, f"Valid N by H = {valid}", transform=ax.transAxes, fontsize=8)
-                if all(r["N"] == 0 for r in points):
-                    ax.text(0.5, 0.5, "N/A\nNo parsed predictions", transform=ax.transAxes, ha="center")
-        fig.suptitle(f"GPT-3.5: action matching and state-change accuracy | n={n}", fontsize=14, y=0.985)
-        fig.text(0.5, 0.925, f"Line: mean; band: query SD (ddof=0), clipped to 0–100%. Seed={seed}; nested subsets.", ha="center", fontsize=10)
-        fig.text(0.5, 0.035,
-                 "Pendulum actions: direct-bin matching. States: 3-class re-analysis of INC/DEC-only responses.\n"
-                 "Action parse failures count as incorrect; state parse failures are excluded. Not an exact paper replication.",
-                 ha="center", fontsize=9)
-        fig.subplots_adjust(left=0.075, right=0.985, top=0.83, bottom=0.15, hspace=0.45, wspace=0.2)
-        for extension in ("png", "svg"):
-            path = folder / f"{FIGURE_STEM}_n{n}.{extension}"
-            fig.savefig(path, dpi=180)
-            files.append(str(path.relative_to(output)))
-        plt.close(fig)
+    for spec in FIGURE_SPECS:
+        folder = output / "figures" / spec["stem"]
+        folder.mkdir(parents=True, exist_ok=True)
+        for n in SUBSET_SIZES:
+            fig, axes = plt.subplots(2, 4, figsize=(14, 7), sharey=True)
+            if "ylim" in spec:
+                shared_ylim = spec["ylim"]
+            else:
+                visible = [r for r in aggregated if r["subset_n"] == n and r["measure"] == spec["measure"]
+                           and r["mean"] is not None and r["std"] is not None]
+                shared_ylim = (0, max(r["mean"] + r["std"] for r in visible) * 1.05)
+            for i, task in enumerate(TASKS):
+                for j, metric in enumerate(METRICS):
+                    ax = axes[i, j]
+                    points = sorted((r for r in aggregated if r["task"] == task and r["metric"] == metric
+                                     and r["subset_n"] == n and r["measure"] == spec["measure"]), key=lambda r: r["H"])
+                    histories = [r["H"] for r in points]
+                    mean = [r["mean"] if r["mean"] is not None else math.nan for r in points]
+                    std = [r["std"] if r["std"] is not None else math.nan for r in points]
+                    color = "#2463A6" if i == 0 else "#B75628"
+                    ax.plot(histories, mean, "o-", color=color, linewidth=1.6, markersize=4)
+                    lower = [max(0, m-s) if math.isfinite(m) else math.nan for m, s in zip(mean, std)]
+                    upper = [(min(100, m+s) if spec["measure"] == "accuracy_pct" else m+s)
+                             if math.isfinite(m) else math.nan for m, s in zip(mean, std)]
+                    ax.fill_between(histories, lower, upper, color=color, alpha=0.16)
+                    settings = {"xticks": histories, "xlabel": "History size H (timesteps)",
+                                "ylim": shared_ylim}
+                    if "ylim" in spec:
+                        settings.update(yticks=spec["yticks"])
+                    ax.set(**settings)
+                    ax.grid(axis="y", alpha=0.2, linewidth=0.6)
+                    if i == 0:
+                        ax.set_title(TITLES[j], pad=14)
+                    if j == 0:
+                        ax.set_ylabel(f"{task.split('-')[0]}\n{spec['ylabel']}")
+                    valid = ", ".join(f"{r['H']}:{r['N']}" for r in points)
+                    ax.text(0.02, 1.015, f"Valid N by H = {valid}", transform=ax.transAxes, fontsize=8)
+                    if all(r["N"] == 0 for r in points):
+                        ax.text(0.5, 0.5, "N/A\nNo valid observations", transform=ax.transAxes, ha="center")
+            fig.suptitle(f"GPT-3.5: {spec['suptitle']} | n={n}", fontsize=14, y=0.985)
+            band_note = ", clipped to 0–100%" if spec["measure"] == "accuracy_pct" else ""
+            fig.text(0.5, 0.925, f"Line: mean; band: query SD (ddof=0){band_note}. Seed={seed}; nested subsets.", ha="center", fontsize=10)
+            fig.text(0.5, 0.035, spec["footer"], ha="center", fontsize=9)
+            fig.subplots_adjust(left=0.075, right=0.985, top=0.83, bottom=0.15, hspace=0.45, wspace=0.2)
+            for extension in ("png", "svg"):
+                path = folder / f"{spec['stem']}_n{n}.{extension}"
+                fig.savefig(path, dpi=180)
+                files.append(str(path.relative_to(output)))
+            plt.close(fig)
     return files
 
 
@@ -330,6 +380,7 @@ def main(argv: list[str] | None = None) -> int:
         "state_ground_truth_dimensions_changed_vs_original": sum(row["ground_truth_class"] != row["saved_ground_truth_class"] for row in dimensions),
         "nested_subsets_verified": True, "source_results_unchanged": before == after,
         "raw_episodes_unchanged": True, "figure_count": len(figures), "api_requests_made": 0,
+        "non_scoring_semantics_drift": semantics_drift(manifest),
     }
     write_json(output / "validation.json", validation)
     write_json(output / "analysis_metadata.json", {
@@ -338,6 +389,7 @@ def main(argv: list[str] | None = None) -> int:
         "histories": sorted({r["H"] for r in computed}), "subset_sizes": SUBSET_SIZES,
         "std_ddof": 0, "python_version": sys.version, "paper_reference": "https://arxiv.org/html/2406.18505v1",
         "state_definition": "official state_directions(allow_unchanged=True), threshold from manifest, decimals=5",
+        "non_scoring_semantics_drift": semantics_drift(manifest),
         "figures": figures,
     })
     print(json.dumps(validation, indent=2))

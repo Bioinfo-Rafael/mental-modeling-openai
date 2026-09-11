@@ -188,6 +188,37 @@ class NextActionPredictionContinuousNoBins:
     def render(self, i: int, action_dim: int, state):
         return self.question.format(i=i, action_dim=action_dim, state=state)
 
+# Base: NextActionPredictionContinuousNoBins. The bin definition and bin-index
+# wording are copied from NextActionPredictionContinuousBins; only the joint
+# output requirement and the bin marker are new.
+class NextActionPredictionContinuousJoint:
+
+    question_name = "next_action_prediction_continuous_joint"
+
+    def __init__(self, task_name=None) -> None:
+        self.question = """
+        In next step {i} (indexed from 0), the agent transitted to the state s{i} = {state}. Based on your observation and understanding of the agent's behaviour, predict the action a{i} that the RL agent will most likely take at state s{i}.
+        The action space dimension is {action_dim}, with each dimension ranging from [-2, 2].
+        Each dimension has 10 discrete bins ranging from [-2, 2]: [-2., -1.6), [-1.6, -1.2), [-1.2, -0.8), [-0.8, -0.4), [-0.4, 0.), [0., 0.4), [0.4, 0.8), [0.8, 1.2), [1.2, 1.6), [1.6, 2.]. Also predict which bin (indexed from 0 to 9) each element of action a{i} will fall into. Begin with a compact reasoning, followed by a step-by-step prediction for each element of a{i}, using the template in your provided answer:
+
+        1. [Reasoning]:
+        2. [Prediction]:
+        3. [Formatting]:
+            Action element [i] is a real value from the action range above, where "i" indicates the i-th action element (also indexed from 0).
+            Return a list with the following example format,
+            ```python
+            # For example, if the action dim is 2, and the predicted action element [0] is -1.52 and element [1] is 1.25, then the predictions would be [-1.52, 1.25]
+            predictions = [-1.52, 1.25]
+            ```
+            Action element [i] is also assigned a bin index from 0 to 9. After the real-valued predictions list, return the corresponding bin indices using this final marker:
+            >>Final action bins: [1, 8]
+            Note that the provided examples need to be adapted to the current action dim, which is {action_dim}. Predict a real value with up to two decimal places and a single integer from 0 to 9 for each action dim.
+        """
+        del task_name
+
+    def render(self, i: int, action_dim: int, state):
+        return self.question.format(i=i, action_dim=action_dim, state=state)
+
 class NextActionPredictionContinuousNoBinsFetch:
 
     question_name = "next_action_prediction_continuous_no_bins_fetch"
@@ -480,6 +511,37 @@ class LastActionPredictionContinuousNoBins:
     def render(self, i: int, k: int, action_dim: int, state, next_state):
         return self.question.format(i=i, k=k, action_dim=action_dim, state=state, next_state=next_state)
 
+# Base: LastActionPredictionContinuousNoBins. The bin definition and bin-index
+# wording are copied from LastActionPredictionContinuousBins; only the joint
+# output requirement and the bin marker are new.
+class LastActionPredictionContinuousJoint:
+
+    question_name = "last_action_prediction_continuous_joint"
+
+    def __init__(self, task_name=None) -> None:
+        self.question = """
+        In next step {i} (indexed from 0), the agent's state was s{i} = {state}. Then the agent took an action a{i} and the state transitted to s{k} = {next_state}. Based on your observation and understanding of the agent's behaviour, predict the action a{i} taken by the RL agent.
+        The action space dimension is {action_dim}, with each dimension ranging from [-2, 2].
+        Each dimension has 10 discrete bins ranging from [-2, 2]: [-2., -1.6), [-1.6, -1.2), [-1.2, -0.8), [-0.8, -0.4), [-0.4, 0.), [0., 0.4), [0.4, 0.8), [0.8, 1.2), [1.2, 1.6), [1.6, 2.]. Also predict which bin (indexed from 0 to 9) each element of action a{i} will fall into. Begin with a compact reasoning, followed by a step-by-step prediction for each element of a{i}, using the template in your provided answer:
+
+        1. [Reasoning]:
+        2. [Prediction]:
+        3. [Formatting]:
+            Action element [i] is a real value from the action range above, where "i" indicates the i-th action element (also indexed from 0).
+            Return a list with the following example format,
+            ```python
+            # For example, if the action dim is 2, and the predicted action element [0] is -1.52 and element [1] is 1.25, then the predictions would be [-1.52, 1.25]
+            predictions = [-1.52, 1.25]
+            ```
+            Action element [i] is also assigned a bin index from 0 to 9. After the real-valued predictions list, return the corresponding bin indices using this final marker:
+            >>Final action bins: [1, 8]
+            Note that the provided examples need to be adapted to the current action dim, which is {action_dim}. Predict a real value with up to two decimal places and a single integer from 0 to 9 for each action dim.
+        """
+        del task_name
+
+    def render(self, i: int, k: int, action_dim: int, state, next_state):
+        return self.question.format(i=i, k=k, action_dim=action_dim, state=state, next_state=next_state)
+
 class LastActionPredictionContinuousNoBinsFetch:
 
     question_name = "last_action_prediction_continuous_no_bins_fetch"
@@ -747,6 +809,37 @@ class NextStatePredictionMoreOptions:
             # element [0] increases, element [1] decreases, and element [2] remains unchanged
             predictions = ["INC", "DEC", "UNCH"]
             ```
+            Please ensure each state element prediction explicitly states either "INC", "DEC", or "UNCH", even in cases of uncertainty or multiple possibilities.
+        """
+        del task_name
+
+    def render(self, j: int, i: int, state, action, reward):
+        return self.question.format(j=j, i=i, state=state, action=action, reward=reward)
+
+# Base: NextStatePredictionMoreOptions. Its direction semantics and threshold
+# are retained; only numerical target-state and forward-delta outputs are new.
+class NextStatePredictionMoreOptionsJoint:
+
+    question_name = "next_state_prediction_more_options_joint"
+
+    def __init__(self, task_name=None) -> None:
+        self.question = """
+        Using the history of states, actions, and rewards up to step {j} (indexed from 0), predict the next state s{i} (the agent will transition to) that follows from the current state s{j} = {state}, action a{j} = {action}, and reward r{j} = {reward} received at step {j}. Deduce whether each element of the next state s{i} increases (symbolized as "INC"), decreases (symbolized as "DEC"), or remains unchanged (symbolized as "UNCH") compared to the current state s{j} = {state} after taking action a{j}. The state element can stay unchanged if the difference between elements of two successive states is less than a threshold of 1e-4. Consider the patterns and transition dynamics observed in the historical data up to step {j} to inform your prediction. Begin with a compact reasoning, followed by a step-by-step prediction for each element of s{i}, using the template in your provided answer:
+
+        1. [Reasoning]:
+        2. [Prediction]:
+        3. [Formatting]:
+            State element [i] INC (increase), DEC (decrease), or UNCH (unchange), where "i" indicates the index of the state element (indexed from 0).
+            Return a list with the following example format,
+            ```python
+            # element [0] increases, element [1] decreases, and element [2] remains unchanged
+            predictions = ["INC", "DEC", "UNCH"]
+            ```
+            Also predict the numerical value of each element of the target state. Also predict the signed change of each state element, defined in the forward time direction as delta_state = s{i} - s{j}.
+            Return the state values and state deltas using these final markers:
+            >>Final state values: [v0, v1, v2]
+            >>Final state deltas: [d0, d1, d2]
+            All three lists must follow the same state-dimension order and contain one element for each state dimension.
             Please ensure each state element prediction explicitly states either "INC", "DEC", or "UNCH", even in cases of uncertainty or multiple possibilities.
         """
         del task_name
@@ -1047,6 +1140,39 @@ class LastStatePredictionMoreOptions:
     def render(self, j: int, i: int, k: int, action, next_state):
         return self.question.format(j=j, i=i, k=k, action=action, next_state=next_state)
 
+# Base: LastStatePredictionMoreOptions. Its direction remains the forward
+# transition from s{i} to s{k}; only previous-state values and that transition's
+# forward signed deltas are new.
+class LastStatePredictionMoreOptionsJoint:
+
+    question_name = "last_state_prediction_more_options_joint"
+
+    def __init__(self, task_name=None) -> None:
+
+        self.question = """
+        In step {i} (indexed from 0), the state was s{i}. Then the agent took an action a{i} = {action} and the state transitted to s{k} = {next_state} from s{i}. Deduce the previous state s{i} by comparing it to s{k}. Deduce whether each element of the state s{i} was lower, higher, or the same, compared to s{k}, before the action a{i} was taken at state s{i}. The state element can stay unchanged if the difference between elements of two successive states is less than a threshold of 1e-4. Consider the patterns and transition dynamics observed in the historical data up to step {j} to inform your prediction. Predict if each element of s{i} increased (symbolized as "INC"), decreased (symbolized as "DEC"), or stayed unchanged (symbolized as "UNCH") to reach s{k}. Begin with a compact reasoning, followed by a step-by-step prediction for each element of s{i}, using the template in your provided answer:
+
+        1. [Reasoning]:
+        2. [Prediction]:
+        3. [Formatting]:
+            State element [i] INC (increase), DEC (decrease), or UNCH (unchange) to reach the next state, where "i" indicates the index of the state element (indexed from 0).
+            Return a list with the following example format,
+            ```python
+            # element [0] increased, element [1] decreased, and element [2] stayed unchanged to reach the next state
+            predictions = ["INC", "DEC", "UNCH"]
+            ```
+            Also predict the numerical value of each element of the target previous state s{i}. Also predict the signed change of each state element, defined in the forward time direction as delta_state = s{k} - s{i}.
+            Return the state values and state deltas using these final markers:
+            >>Final state values: [v0, v1, v2]
+            >>Final state deltas: [d0, d1, d2]
+            All three lists must follow the same state-dimension order and contain one element for each state dimension.
+            Please choose either INC, DEC, or UNCH for each element, even in cases of uncertainty or multiple possibilities.
+        """
+        del task_name
+
+    def render(self, j: int, i: int, k: int, action, next_state):
+        return self.question.format(j=j, i=i, k=k, action=action, next_state=next_state)
+
 class LastStatePrediction:
 
     question_name = "last_state_prediction"
@@ -1177,6 +1303,7 @@ NextActionPrediction_CLS = [
     NextActionPrediction,
     NextActionPredictionLlama3,
     NextActionPredictionContinuousBins,
+    NextActionPredictionContinuousJoint,
     NextActionPredictionContinuousBinsFetch,
     NextActionPredictionContinuousBinsMJPen,
     NextActionPredictionContinuousNoBins,
@@ -1188,6 +1315,7 @@ LastActionPrediction_CLS = [
     LastActionPrediction,
     LastActionPredictionLlama3,  # repeated
     LastActionPredictionContinuousBins,
+    LastActionPredictionContinuousJoint,
     LastActionPredictionContinuousBinsFetch,
     LastActionPredictionContinuousBinsMJPen,
     LastActionPredictionContinuousNoBins,
@@ -1198,6 +1326,7 @@ LastActionPrediction_CLS = [
 NextStatePrediction_CLS = [
     NextStatePrediction,
     NextStatePredictionMoreOptions,
+    NextStatePredictionMoreOptionsJoint,
     NextStatePredictionVicuna,
     NextStatePredictionMoreOptionsVicuna,
     NextStatePredictionLlama3,
@@ -1207,6 +1336,7 @@ NextStatePrediction_CLS = [
 LastStatePrediction_CLS = [
     LastStatePrediction,
     LastStatePredictionMoreOptions,
+    LastStatePredictionMoreOptionsJoint,
     LastStatePredictionVicuna,
     LastStatePredictionMoreOptionsVicuna,
     LastStatePredictionLlama3,

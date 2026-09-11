@@ -34,6 +34,17 @@ def test_missing_state_is_not_zero_filled():
     assert empty["N"] == 0 and empty["mean"] is None and empty["std"] is None
 
 
+def test_runtime_and_token_statistics_use_per_query_values():
+    rows = [
+        {"query_elapsed_seconds": 1.0, "total_tokens": 800},
+        {"query_elapsed_seconds": 3.0, "total_tokens": 1200},
+    ]
+    runtime = analysis.summarize_values(rows, "query_elapsed_seconds", 2)
+    tokens = analysis.summarize_values(rows, "total_tokens", 2)
+    assert runtime["mean"] == pytest.approx(2.0) and runtime["std"] == pytest.approx(1.0)
+    assert tokens["mean"] == pytest.approx(1000) and tokens["std"] == pytest.approx(200)
+
+
 def test_nested_subsets_are_reproducible_and_not_the_first_ten():
     rows = [{"condition_id": "condition", "ordinal": i, "query_id": f"q{i}"} for i in range(30)]
     first = analysis.select_subsets(rows, 42)
