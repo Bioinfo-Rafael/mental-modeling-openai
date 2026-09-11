@@ -1,3 +1,8 @@
+# @Rafaメモ：
+- ./experimentsが実験に用いたコードです。
+- upstreamがgit cloneしたmental modelingのコード
+- notebooksは最初のデータ可視化用。それ以外はcodexの作成したコード置き場です
+- ./experimentsでの実行も./upstream/LLM-Xavier/README.mdの実行方法や関数を利用して送信するようになってます。
 # Mental Modeling / LLM-Xavier 再評価環境
 
 作業先: `/Users/cls-lab/Git/Matsuo/mental-modeling-openai`。raw readerと前処理を分離済み。**local token countは実行済み、OpenAI API request=0**。LLM精度評価・RL学習・simulation・paid pilotは実行していません。
