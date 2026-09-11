@@ -107,6 +107,200 @@ def test_split_selection_exact_120_and_overlap_rules(plans):
     assert len(split.select_plan(full, {})["queries"]) == 840
 
 
+def test_model_order_changes_only_order_and_accepts_old_batches(plans):
+    from experiments import split_execution as split
+    full = plans[1][1]
+    default = split.select_plan(full, {})
+    assert default["model_order"] == ["terra", "luna", "sol"]
+    assert [q["model_alias"] for q in default["queries"]] == ["terra"] * 280 + ["luna"] * 280 + ["sol"] * 280
+    assert default["continue_on_api_error"] is True
+    custom = split.select_plan(full, {}, model_order=["luna", "sol", "terra"])
+    assert [q["model_alias"] for q in custom["queries"]] == ["luna"] * 280 + ["sol"] * 280 + ["terra"] * 280
+    for alias in common.NEW_MODELS:
+        assert [q for q in default["queries"] if q["model_alias"] == alias] == [
+            q for q in full["queries"] if q["model_alias"] == alias and not q["reuse_required"]]
+    old = split.select_plan(full, {}, model_order=common.NEW_MODELS)
+    del old["model_order"], old["continue_on_api_error"]
+    for plan in (old, default, custom):
+        assert len(split.validate_plan(plan, full)) == 84
+    with pytest.raises(ValueError, match="exactly once"):
+        split.select_plan(full, {}, model_order=["sol", "sol", "terra"])
+
+
+@pytest.fixture
+def api_error_batch(split_world, monkeypatch):
+    """Real CLI/prompt/scorer + fake SDK transport: success, API error, then success."""
+    from types import SimpleNamespace
+    import httpx
+    from openai import InternalServerError
+    from openai.types.chat import ChatCompletion
+
+    split, spec, full, root, _ = split_world
+    plan = split.select_plan(full, {})
+    plan["conditions"] = plan["conditions"][:1]
+    cid = plan["conditions"][0]["condition_id"]
+    plan["queries"] = [q for q in plan["queries"] if q["condition_id"] == cid]
+    plan.update(planned_api_requests=10, planned_logical_queries=10, maximum_api_attempts=10)
+    source = root / "batches/api-error-test"
+    source.mkdir(parents=True)
+    common.write_json(source / "manifest.json", plan)
+    response = httpx.Response(500, request=httpx.Request("POST", "https://api.openai.com/v1/chat/completions"),
+                              headers={"x-request-id": "req_offline_fixture"})
+    error = InternalServerError("offline simulated error", response=response,
+                                body={"message": "offline simulated error", "type": "server_error"})
+    calls = []
+
+    def send(**kwargs):
+        calls.append(copy.deepcopy(kwargs))
+        if len(calls) == 2:
+            raise error
+        return ChatCompletion.model_validate({"id": "offline", "object": "chat.completion", "created": 0,
+            "model": kwargs["model"], "choices": [{"index": 0, "finish_reason": "stop",
+            "message": {"role": "assistant", "content": "2"}}],
+            "usage": {"prompt_tokens": 10, "completion_tokens": 1, "total_tokens": 11}})
+
+    def initialize(backend, **kwargs):
+        client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=send)),
+                                 base_url="https://api.openai.com/v1", close=Mock())
+        client.with_options = Mock(return_value=client)
+        backend.model, backend.retries, backend._client = kwargs["model"], kwargs["retries"], client
+
+    monkeypatch.setattr(common.OpenAIChatBackend, "__init__", initialize)
+    monkeypatch.setattr(httpx.Client, "send", Mock(side_effect=AssertionError("real network forbidden")))
+    return spec, plan, source, calls
+
+
+def test_continue_after_api_error_keeps_exact_next_query_and_durable_details(api_error_batch, split_world):
+    spec, plan, source, calls = api_error_batch
+    split, _, full, root, save = split_world
+    common.execute_plan(spec, plan, source, {}, 0)
+    assert calls == [common.expected_api_request(q["model"], q["system_prompt"], q["user_prompt"])
+                     for q in plan["queries"]]
+    summary = common.read_json(source / "summary.json")
+    assert summary["status"] == "complete_with_errors"
+    assert (summary["logical_queries"], summary["successful_queries"], summary["failed_queries"],
+            summary["api_attempts"], summary["unstarted_queries"], summary["unscored_queries"]) == (10, 9, 1, 10, 0, 0)
+    rows = split.completed_records(source, plan)
+    assert [r["query_index"] for r in rows] == list(range(5, 15))
+    failed = rows[1]
+    assert failed == common.read_jsonl(source / "failed_queries.jsonl")[0]
+    detail = failed["attempts"][0]["exception"]
+    assert detail["status_code"] == 500 and detail["request_id"] == "req_offline_fixture"
+    assert detail["type"] == "InternalServerError" and detail["body"]["type"] == "server_error"
+    assert failed["request"] == calls[1] and failed["user_prompt"] == plan["queries"][1]["user_prompt"]
+    assert failed["usage"] is None and failed["input_tokens"] is None and "score" not in failed
+    assert failed["query_id"] in (source / "run.log").read_text()
+    assert len(common.read_jsonl(source / "requests.jsonl")) == len(common.read_jsonl(source / "responses.jsonl")) == 10
+
+    claims, _ = split.scan_batches(root, full)
+    with pytest.raises(ValueError, match="実行済み"):
+        split.select_plan(full, claims)
+    rest = split.select_plan(full, claims, remaining=True)
+    assert len(rest["queries"]) == 830 and not {r["query_id"] for r in rows} & {q["query_id"] for q in rest["queries"]}
+    save(root / "batches/rest", rest)
+    protected = {p: p.read_bytes() for p in source.rglob("*") if p.is_file()}
+    output = split.merge_results(spec)
+    merged = common.read_jsonl(output / "records.jsonl")
+    assert len(merged) == 960 and sum(r["status"] == "failed" for r in merged) == 1
+    assert common.read_json(output / "summary.json")["successful_queries"] == 959
+    merged_failed = common.read_jsonl(output / "failed_queries.jsonl")[0]
+    assert merged_failed["source_record"] and merged_failed["source_requests"] and merged_failed["source_responses"]
+    assert all(p.read_bytes() == old for p, old in protected.items())
+    with pytest.raises(ValueError, match="API failures remain"):
+        data.load_and_parse(output, spec)
+    _, _, parsed_with_failure, _ = data.load_and_parse(output, spec, allow_api_failures=True)
+    assert len(parsed_with_failure) == 960
+    missing = [r for r in parsed_with_failure if r["api_error"]]
+    assert len(missing) == 1 and missing[0]["components"]["action"]["error"] == "api_error"
+    assert missing[0]["source_run"] is None and missing[0]["response_sha256"] is None
+    assert missing[0]["input_tokens"] is None and missing[0]["query_elapsed_seconds"] is None
+    assert missing[0]["failed_attempt_elapsed_seconds"] >= 0
+    from experiments.common_analysis.joint_aggregate import accuracy_rows, diagnostic_rows
+    selected = [r for r in parsed_with_failure if r["condition_id"] == missing[0]["condition_id"]]
+    accuracy = accuracy_rows(selected)[0][0]
+    # The successful mock response is bare "2", not the required Joint marker.
+    # Keep API success distinct from component parse success.
+    assert accuracy["selected_n"] == 10 and accuracy["valid_n"] == 0
+    timing = next(r for r in diagnostic_rows(selected) if r["metric_name"] == "query_elapsed_seconds")
+    assert timing["valid_n"] == 9
+    # An altered failure log must prevent further duplicate checks/merges.
+    common.write_text(source / "responses.jsonl", "")
+    with pytest.raises(ValueError, match="response journal mismatch"):
+        split.scan_batches(root, full)
+
+
+@pytest.mark.parametrize("filename", ["requests.jsonl", "responses.jsonl", "records.jsonl", "failed_queries.jsonl"])
+def test_continue_mode_still_stops_on_journal_failure(api_error_batch, monkeypatch, filename):
+    spec, plan, source, calls = api_error_batch
+    original = common.append_jsonl
+    def append(path, row):
+        if path.name == filename and len(calls) >= 2:
+            raise common.SafetyStop("simulated disk failure")
+        original(path, row)
+    monkeypatch.setattr(common, "append_jsonl", append)
+    with pytest.raises(common.SafetyStop, match="disk failure"):
+        common.execute_plan(spec, plan, source, {}, 0)
+    assert len(calls) == 2
+    assert common.read_json(source / "summary.json")["status"] == "incomplete"
+
+
+def test_default_failfast_behavior_is_unchanged(api_error_batch):
+    spec, plan, source, calls = api_error_batch
+    plan.pop("continue_on_api_error")
+    with pytest.raises(RuntimeError, match="Upstream CLI exited"):
+        common.execute_plan(spec, plan, source, {}, 0)
+    assert len(calls) == 2
+    summary = common.read_json(source / "summary.json")
+    assert summary["status"] == "incomplete" and summary["successful_queries"] == 1
+
+
+def test_real_cli_finishes_each_model_before_starting_next(api_error_batch, split_world):
+    spec, plan, source, calls = api_error_batch
+    split, _, full, _, _ = split_world
+    ordered = split.select_plan(full, {}, ["MountainCar-v0"], [5])
+    plan["conditions"] = [c for c in ordered["conditions"] if c["metric"] == "next-action"]
+    plan["queries"] = [q for q in ordered["queries"] if q["metric"] == "next-action"]
+    common.execute_plan(spec, plan, source, {}, 0)
+    assert [call["model"] for call in calls] == [common.MODELS[a] for a in ("terra", "luna", "sol") for _ in range(10)]
+    assert [r["query_id"] for r in common.read_jsonl(source / "records.jsonl")] == [q["query_id"] for q in plan["queries"]]
+
+
+@pytest.mark.parametrize("failure", ["connection", "local", "interrupt", "empty"])
+def test_only_sdk_api_errors_are_skipped(api_error_batch, monkeypatch, failure):
+    import httpx
+    from openai import APIConnectionError
+    from openai.types.chat import ChatCompletion
+    spec, plan, source, calls = api_error_batch
+    initialize = common.OpenAIChatBackend.__init__
+    def init(backend, **kwargs):
+        initialize(backend, **kwargs)
+        send = backend._client.chat.completions.create
+        def wrapped(**request):
+            if len(calls) == 1:
+                calls.append(copy.deepcopy(request))
+                if failure == "connection":
+                    raise APIConnectionError(request=httpx.Request("POST", "https://api.openai.com/v1/chat/completions"))
+                if failure == "local":
+                    raise RuntimeError("local bug")
+                if failure == "interrupt":
+                    raise KeyboardInterrupt()
+                return ChatCompletion.model_validate({"id": "offline", "object": "chat.completion", "created": 0,
+                    "model": request["model"], "choices": [{"index": 0, "finish_reason": "stop",
+                    "message": {"role": "assistant", "content": ""}}]})
+            return send(**request)
+        backend._client.chat.completions.create = wrapped
+    monkeypatch.setattr(common.OpenAIChatBackend, "__init__", init)
+    if failure == "connection":
+        common.execute_plan(spec, plan, source, {}, 0)
+        assert len(calls) == 10
+        assert common.read_json(source / "summary.json")["status"] == "complete_with_errors"
+    else:
+        with pytest.raises((RuntimeError, KeyboardInterrupt)):
+            common.execute_plan(spec, plan, source, {}, 0)
+        assert len(calls) == 2
+        assert common.read_json(source / "summary.json")["status"] == "incomplete"
+
+
 def test_split_cli_mock_send_duplicate_error_and_failed_reservation(split_world, monkeypatch):
     split, spec, full, root, save = split_world
     monkeypatch.setenv("OPENAI_API_KEY", "offline-fixture")
@@ -147,6 +341,18 @@ def test_split_missing_prerequisite_and_lock_prevent_send(split_world, monkeypat
     assert split.run(spec, args) == 2
     execute.assert_not_called()
     assert not (root / "batches").exists()
+
+
+def test_split_cli_signals_errors_after_all_attempts(split_world, monkeypatch, capsys):
+    split, spec, _, _, _ = split_world
+    monkeypatch.setenv("OPENAI_API_KEY", "offline-fixture")
+    def execute(spec, plan, directory, cached, retries):
+        assert plan["continue_on_api_error"] and plan["model_order"] == ["luna", "terra", "sol"]
+        common.write_json(directory / "summary.json", {"status": "complete_with_errors"})
+    monkeypatch.setattr(common, "execute_plan", execute)
+    assert split.run(spec, ["--task", "Pendulum-v1", "--history", "5", "--model-order", "luna", "terra", "sol",
+                            "--execute", "--confirm-paid-api"]) == 2
+    assert "All queries attempted" in capsys.readouterr().out
 
 
 def test_split_merge_full_grid_immutable_and_compatible_with_analysis(split_world):

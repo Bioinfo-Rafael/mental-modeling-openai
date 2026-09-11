@@ -6,7 +6,7 @@ Run entry points are intentionally small; offline statistics live in analysis.py
 from __future__ import annotations
 
 import argparse
-from contextlib import contextmanager, redirect_stderr, redirect_stdout
+from contextlib import contextmanager, nullcontext, redirect_stderr, redirect_stdout
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 import csv
@@ -386,13 +386,19 @@ def save_manifest(directory, plan):
 
 
 def exception_info(exc):
-    return redact({"type": type(exc).__name__, "message": str(exc)})
+    info = {"type": type(exc).__name__, "message": str(exc)}
+    # Never persist HTTP headers (which can contain credentials).
+    for key in ("status_code", "request_id", "body", "code", "param"):
+        value = getattr(exc, key, None)
+        if value is not None:
+            info[key] = value
+    return redact(info)
 
 
 class RecordingSession:
     """One episode CLI call; queue joins upstream complete() calls to query identities."""
 
-    def __init__(self, rows, directory, experiment, cached, *, replay_only=False):
+    def __init__(self, rows, directory, experiment, cached, *, replay_only=False, select_indices=False):
         self.rows, self.directory, self.experiment = rows, directory, experiment
         self.cached, self.replay_only = cached, replay_only
         self.completed = []
@@ -400,6 +406,7 @@ class RecordingSession:
         self.api_attempts = 0
         self.retry_attempts = 0
         self.clients = []
+        self.select_indices = select_indices
 
     # @Rafa: 元論文の実装のOpenAIChatBackendをRecordingOpenAIBackendに置き換えるための関数
     def backend_class(self):
@@ -433,6 +440,7 @@ class RecordingSession:
                     raise SafetyStop("Required replay is missing; no API fallback is allowed")
                 start, clock = utc_now(), time.perf_counter()
                 attempts = []
+                journaled_attempts = []
                 latest = {}
                 resource = self._client.chat.completions
                 original_create = None if session.replay_only else resource.create
@@ -455,6 +463,7 @@ class RecordingSession:
                         from openai.types.chat import ChatCompletion
                         latest.update(request=kwargs, raw_response=cached["raw_response"])
                         return ChatCompletion.model_validate(cached["raw_response"])
+                    latest["request"] = kwargs
                     attempt = len(attempts) + 1
                     attempt_id = f"{qid}:{attempt}"
                     request_start, request_clock = utc_now(), time.perf_counter()
@@ -471,7 +480,9 @@ class RecordingSession:
                     try:
                         response = original_create(**kwargs)
                     except BaseException as exc:
+                        from openai import APIError
                         result.update(exception=exception_info(exc), raw_response=None,
+                                      api_error=isinstance(exc, APIError),
                                       request_elapsed_seconds=time.perf_counter() - request_clock)
                         raise
                     else:
@@ -491,18 +502,25 @@ class RecordingSession:
                         result["attempt_finished_at_utc"] = utc_now()
                         attempts.append(result)
                         append_jsonl(session.directory / "responses.jsonl", result)
+                        journaled_attempts.append(attempt_id)
 
                 try:
                     with patch.object(resource, "create", recording_create, create=session.replay_only):
                         text = super().complete(system_prompt=system_prompt, user_prompt=user_prompt)
                 except BaseException as exc:
-                    failed = {**row, "status": "failed", "exception": exception_info(exc),
+                    failed = {**row, **latest, "status": "failed", "exception": exception_info(exc),
+                              "api_error": (bool(attempts) and len(attempts) == len(journaled_attempts)
+                                            and all(a.get("api_error") for a in attempts)),
+                              "source_experiment": session.experiment,
+                              "request_elapsed_seconds": sum(a["request_elapsed_seconds"] for a in attempts),
+                              "input_tokens": None, "output_tokens": None, "total_tokens": None,
+                              "usage": None,
                               "query_started_at_utc": start, "query_finished_at_utc": utc_now(),
                               "query_elapsed_seconds": time.perf_counter() - clock,
                               "api_attempts": len(attempts), "retry_attempts": max(0, len(attempts) - 1),
                               "api_request_made": bool(attempts), "reused": False, "attempts": attempts}
-                    session.failed.append(failed)
                     append_jsonl(session.directory / "records.jsonl", failed)
+                    session.failed.append(failed)
                     raise
                 finished = {**row, **latest, "assistant_text": text,
                             "query_started_at_utc": start, "query_finished_at_utc": utc_now(),
@@ -559,7 +577,11 @@ def quiet_sdk_logging():
 
 # @Rafa: 元論文の実装(../upstream/LLM-Xavier)の実行を行う部分。
 def invoke_cli(session, output, retries):
-    """Only the CLI backend symbol is patched; evaluate_episode and scorer are untouched."""
+    """Use the upstream CLI; optionally select exact planned indices, not a prefix.
+
+    Only query selection and the backend are patched. Prompt generation and
+    scoring are unchanged, and every generated prompt is checked before sending.
+    """
     row = session.rows[0]
     output = output_path(output)
     if output.exists():
@@ -575,9 +597,22 @@ def invoke_cli(session, output, retries):
         "--indexed-history", "--include-prompts", "--output-dir", str(output),
     ]
     captured = io.StringIO()
+    selection = nullcontext()
+    if session.select_indices:
+        from llm_x import evaluation
+        original_indices = evaluation._query_indices
+        wanted = [q["query_index"] for q in session.rows]
+
+        def selected_indices(metric, history_size, length):
+            available = original_indices(metric, history_size, length)
+            if len(set(wanted)) != len(wanted) or any(i not in available for i in wanted):
+                raise SafetyStop("Planned query index is not valid for this episode")
+            return wanted
+
+        selection = patch.object(evaluation, "_query_indices", selected_indices)
     try:
         # @Rafa: 元論文の実装のOpenAIChatBackendをRecordingOpenAIBackendに置き換えて、llmx_cli.main(argv)を実行する.
-        with patch.object(llmx_cli, "OpenAIChatBackend", session.backend_class()), quiet_sdk_logging(), \
+        with selection, patch.object(llmx_cli, "OpenAIChatBackend", session.backend_class()), quiet_sdk_logging(), \
                 redirect_stdout(captured), redirect_stderr(captured):
             return llmx_cli.main(argv)
     finally:
@@ -587,7 +622,10 @@ def invoke_cli(session, output, retries):
             except Exception as exc:
                 captured.write("Client close error: " + json_text(exception_info(exc)) + "\n")
         with output_path(session.directory / "run.log").open("a", encoding="utf-8") as handle:
+            handle.write(f"query_ids={','.join(q['query_id'] for q in session.rows)}\n")
             handle.write(redact(captured.getvalue()))
+            handle.flush()
+            os.fsync(handle.fileno())
 
 
 def collect_scores(session, output):
@@ -615,7 +653,10 @@ def summarize_scored(records, metric):
 
 # @Rafa: ここから元論文のコマンド実行を行う
 def execute_plan(spec, plan, directory, cached, retries):
-    """Fail fast. Recover completed prefix scores by OFFLINE replay after an API failure."""
+    """Fail fast by default; Exp.06 may continue after journaled per-query API errors."""
+    continue_api = plan.get("continue_on_api_error", False)
+    if continue_api and spec.name != "06_new_models_n10":
+        raise SafetyStop("Continue-on-API-error is supported only for Exp.06")
     started, clock = utc_now(), time.perf_counter()
     summary = {"experiment": spec.name, "status": "running", "started_at_utc": started,
                "planned_logical_queries": len(plan["queries"]), "logical_queries": 0,
@@ -623,6 +664,8 @@ def execute_plan(spec, plan, directory, cached, retries):
                "failed_queries": 0, "reused_queries": 0, "conditions": []}
     for name in ("requests.jsonl", "responses.jsonl", "records.jsonl", "run.log"):
         write_text(directory / name, "", exclusive=True)
+    if continue_api:
+        write_text(directory / "failed_queries.jsonl", "", exclusive=True)
     write_json(directory / "summary.json", summary)
     try:
         for condition in plan["conditions"]:
@@ -634,15 +677,20 @@ def execute_plan(spec, plan, directory, cached, retries):
             counters_before = {k: summary[k] for k in ("logical_queries", "api_attempts", "retry_attempts", "failed_queries")}
             summary["conditions"].append(csummary)
             try:
-                for number, path in enumerate(episode_paths):
-                    batch = [q for q in rows if q["episode_path"] == path]
+                batches = ([[q] for q in rows] if continue_api else
+                           [[q for q in rows if q["episode_path"] == path] for path in episode_paths])
+                for number, batch in enumerate(batches):
                     session = RecordingSession(batch, directory, spec.name, cached,
-                                               replay_only=all(q["query_id"] in cached for q in batch))
-                    output = directory / "runs" / condition["condition_id"] / f"episode_{number:03d}"
+                                               replay_only=all(q["query_id"] in cached for q in batch),
+                                               select_indices=continue_api)
+                    leaf = f"query_{number:03d}" if continue_api else f"episode_{number:03d}"
+                    output = directory / "runs" / condition["condition_id"] / leaf
                     error = None
+                    cli_returned = False
                     try:
                         # @Rafa: これが元論文のコマンド実行
                         rc = invoke_cli(session, output, retries)
+                        cli_returned = True
                         if rc != 0:
                             error = RuntimeError(f"Upstream CLI exited {rc}; see run.log")
                     except BaseException as exc:
@@ -653,11 +701,25 @@ def execute_plan(spec, plan, directory, cached, retries):
                         summary["logical_queries"] += len(session.completed) + len(session.failed)
                         summary["failed_queries"] += len(session.failed)
                     if error:
+                        # Only a normally returned CLI failure backed by an SDK
+                        # APIError is skippable. Local errors, Ctrl-C, failed
+                        # journal writes and safety violations must still stop.
+                        if (continue_api and cli_returned and not session.completed
+                                and len(session.failed) == 1 and session.failed[0]["api_error"]):
+                            failed = session.failed[0]
+                            append_jsonl(directory / "failed_queries.jsonl", failed)
+                            detail = failed["attempts"][-1]["exception"]
+                            print(f"API error; continuing: {failed['model_alias']} / "
+                                  f"{failed['condition_id']} / index={failed['query_index']} / "
+                                  f"query_id={failed['query_id']} / {detail['type']} / "
+                                  f"request_id={detail.get('request_id', 'unavailable')}", flush=True)
+                            continue
                         # No further paid calls. Preserve scores for responses returned before failure.
                         if session.completed and not isinstance(error, (SafetyStop, KeyboardInterrupt)):
                             replay_rows = batch[:len(session.completed)]
                             replay = RecordingSession(replay_rows, directory, spec.name,
-                                                      {r["query_id"]: r for r in session.completed}, replay_only=True)
+                                                      {r["query_id"]: r for r in session.completed}, replay_only=True,
+                                                      select_indices=session.select_indices)
                             partial = output.parent / (output.name + "_partial")
                             if invoke_cli(replay, partial, 0) == 0:
                                 condition_records.extend(collect_scores(session, partial))
@@ -665,7 +727,8 @@ def execute_plan(spec, plan, directory, cached, retries):
                     if len(session.completed) != len(batch):
                         raise SafetyStop("CLI returned without completing its planned prefix")
                     condition_records.extend(collect_scores(session, output))
-                csummary["status"] = "complete"
+                csummary["status"] = ("complete_with_errors" if summary["failed_queries"] >
+                                      counters_before["failed_queries"] else "complete")
             finally:
                 csummary.update(finished_at_utc=utc_now(),
                                 condition_elapsed_seconds=time.perf_counter() - condition_clock,
@@ -675,12 +738,12 @@ def execute_plan(spec, plan, directory, cached, retries):
                 csummary.update({"actual_" + k: summary[k] - value for k, value in counters_before.items()})
                 csummary["successful_queries"] = len(condition_records)
                 csummary["reused_queries"] = sum(r["reused"] for r in condition_records)
-                if csummary["status"] != "complete":
+                if csummary["status"] not in {"complete", "complete_with_errors"}:
                     csummary["status"] = "incomplete"
                 summary["successful_queries"] += len(condition_records)
                 summary["reused_queries"] += sum(r["reused"] for r in condition_records)
                 write_json(directory / "summary.json", summary)
-        summary["status"] = "complete"
+        summary["status"] = "complete_with_errors" if summary["failed_queries"] else "complete"
     except BaseException as exc:
         summary.update(status="incomplete", exception=exception_info(exc))
         raise

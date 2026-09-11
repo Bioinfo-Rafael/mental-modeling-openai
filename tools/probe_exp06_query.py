@@ -1,5 +1,6 @@
 """Probe the saved failing second Exp.06 request exactly once; never resume a batch."""
 import argparse
+import copy
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -45,23 +46,30 @@ def save(path, value):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--model", choices=("sol", "terra", "luna"), default="sol",
+                        help="Change only the model; reuse the exact saved sol messages/options")
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--confirm-paid-api", action="store_true")
     args = parser.parse_args(argv)
     if args.execute != args.confirm_paid_api:
         parser.error("Both --execute and --confirm-paid-api are required")
-    kwargs = load_request()
-    print(f"Query: {QUERY_ID}\nsol / MountainCar / next-action / H5 / ordinal=1 / index=6")
+    original = load_request()
+    kwargs = copy.deepcopy(original)
+    kwargs["model"] = common.MODELS[args.model]
+    metadata = {"source_query_id": QUERY_ID, "model": kwargs["model"], "model_alias": args.model,
+                "source_model": original["model"], "model_only_override": kwargs["model"] != original["model"]}
+    print(f"Source query: {QUERY_ID}\n{args.model} / MountainCar / next-action / H5 / ordinal=1 / index=6")
     if not args.execute:
-        print("DRY RUN: exact saved kwargs validated. Maximum API attempts: 1; retries: 0. API calls: 0.")
+        print("DRY RUN: saved request validated; only model selected. Maximum API attempts: 1; retries: 0. API calls: 0.")
         return 0
     if not os.environ.get("OPENAI_API_KEY"):
         raise ValueError("OPENAI_API_KEY must be set in your terminal")
-    destination = OUTPUT / (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ_") + uuid.uuid4().hex[:8])
+    destination = OUTPUT / (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ_") + args.model + "_" + uuid.uuid4().hex[:8])
     if destination.resolve() != destination:
         raise ValueError("Symlinked output directory is not allowed")
     destination.mkdir(parents=True, exist_ok=False)
     save(destination / "request.json", {"query_id": QUERY_ID, "source": str(SOURCE), "kwargs": kwargs,
+         **metadata,
          "source_requests_sha256": hashlib.sha256((SOURCE / "requests.jsonl").read_bytes()).hexdigest(),
          "sdk_max_retries": 0, "included_in_experiment": False})
     print(f"Probe output: {destination}", flush=True)
@@ -69,6 +77,7 @@ def main(argv=None):
     with OpenAI(api_key=os.environ["OPENAI_API_KEY"], base_url="https://api.openai.com/v1",
                 max_retries=0, timeout=60.0) as client:
         result = {"query_id": QUERY_ID, "started_at_utc": datetime.now(timezone.utc).isoformat(),
+                  **metadata,
                   "included_in_experiment": False, "sdk_create_calls": 1}
         started = time.perf_counter()
         try:

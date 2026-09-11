@@ -34,7 +34,8 @@ python experiments/06_new_models_n10/run.py --execute --confirm-paid-api
 05が未完了・不足・旧N1・非Joint・prompt不一致なら、最初の新規送信より前に止まる。
 05の不足を新規APIで補うfallbackはない。
 既定retry=0。タイムアウトのサーバー到達や課金はローカルログだけでは断定できないため、明示retryを増やすと同一queryの再送が起き得る。
-モデルID・API引数・question・queryの選択順は変更しない。
+モデルID・API引数・question・各条件内のqueryの選択順は変更しない。
+新規batchのモデル実行順は **terra → luna → sol**。terraの選択対象を全件試行した後、luna、その後solへ進む（モデル間で並列送信しない）。
 
 既存resultsの上書き・自動再送はしない。`--resume` は非対応。結果を削除して再実行しないこと。
 今回の分割機能の検証はモックによるオフラインテストのみ。有料APIは呼んでいない。
@@ -62,14 +63,49 @@ python experiments/06_new_models_n10/run.py --remaining --execute --confirm-paid
 
 **`--remaining`を明示したときだけ、完了済み条件を除外する。** 05と06のPendulum/H5が完了した状態なら、残り240件/model、全720件を新規送信する。`--remaining --task Pendulum-v1`のように範囲も限定できる。対象が全て完了していればエラーで終了する。
 
-### 途中失敗の扱い（再開機能は実装しない）
+### モデル順とAPIエラー後の継続
+
+既定順も明示できる。以下は全対象が未予約、または完了済みの場合のコマンド：
+
+```bash
+# 計画だけ確認（APIなし）
+python experiments/06_new_models_n10/run.py --remaining --model-order terra luna sol
+
+# 有料実行
+python experiments/06_new_models_n10/run.py --remaining --model-order terra luna sol --execute --confirm-paid-api
+```
+
+`--model-order luna terra sol`等へ変更可能。3モデルを重複なく1回ずつ指定する。省略は`terra luna sol`。
+`manifest.json`の`model_order`、`continue_on_api_error`と、conditions/queriesの並びに記録する。
+順番だけの変更なのでquery ID・履歴・promptは変わらず、以前のsol先行batchも統合できる。
+
+06の新規batchは1 queryずつ公式CLIを呼ぶ。保存済み計画の`query_index`を指定し、生成promptとの一致確認後に送信する。
+SDKの`APIError`（HTTP 4xx/5xx・接続エラー・timeout等）が発生したqueryは、リクエストと例外を永続保存してから**次のquery**へ進む。
+空応答などの非SDKエラー、prompt/データ不一致、ログ保存失敗、Ctrl-C等では停止する。失敗を空文字のモデル応答として採点しない。
+SDK retry=0、upstream retry既定0。`--retries`を明示した場合だけ、指定回数を使い切ってから次へ進む。失敗queryを別のqueryで補充しない。
+
+| 最終status | 意味 | 再指定・統合 |
+|---|---|---|
+| `complete` | 全queryの応答を取得・採点済み（正解とは限らない） | 再指定は「実行済み」。`--remaining`で除外、統合可 |
+| `complete_with_errors` | 全queryの試行終了、一部APIエラー | 再指定は「実行済み」。`--remaining`で除外、失敗行も含め統合可。自動再送しない |
+| `incomplete` | 中断・安全性/保存エラー等で途中停止 | 条件予約を維持。`--remaining`でも自動再開しない |
+
+`complete_with_errors`では最後に件数を保存して終了コード2を返す。**この2は途中停止ではなく、全件試行済みだがAPI失敗が残るという意味**。
+`summary.json`の`successful_queries` / `failed_queries` / `unstarted_queries`を確認する。
+API失敗時のtoken数は不明なので`null`とし、0 token・無料とはみなさない。サーバー側の処理/課金状況はローカルログだけでは確定しない。
+
+### 単独probeと、過去の途中停止batch（再開機能は実装しない）
 
 今回のsol/MountainCar/next-action/H5の2件目（index=6）の500エラーを単独確認するには、repository rootで`python tools/probe_exp06_query.py --execute --confirm-paid-api`を実行する。
+同じ入力をterra/lunaで検証するときは、それぞれ`--model terra` / `--model luna`を付ける（省略時はsol）。保存済みsol requestの`model`だけを変更し、system/user prompt・履歴・質問・reasoning_effortは一切変更しない。1コマンドにつき指定モデルへ1回送信する。
+新規出力directoryは`<日時>_<model alias>_<識別子>`。request/resultには実際の`model`と`source_query_id`を記録する。互換性のため残した`query_id`は元sol queryのIDであり、terra/lunaの正式な実験query IDではない。
 `612bf8080963456b9286c5481885a700`の保存済みrequestをそのまま1回だけ送信し、SDK自動retryも0にする。両フラグを外すと検証のみ。
 `outputs/exp06_single_query_probe/<日時>_<識別子>/`に`request.json`と`result.json`を新規保存し、成功時の全response/usage、失敗時のHTTPコード・error body・request ID、経過時間を記録する。認証ヘッダーは保存しない。
 実験の予約・結果には触れず、成功しても06の正式結果へは自動統合しない。再実行ごとに新たな有料試行になる。request IDとretry設定は[OpenAI SDK公式仕様](https://developers.openai.com/api/reference/python#request-ids)に従う。
 
-送信前にbatchの全対象条件をmanifestへ予約する。そのbatchが失敗・中断した場合、未送信だった条件も含めて予約を残し、同じ範囲の再指定や`--remaining`での自動再送を禁止する。エラーは「予約済み/未完了の条件です」。別の未予約条件を明示して実行することはできるが、全体統合は未完了batchがある限り停止する。復旧はログ確認のうえ別途対応する。API結果が不明なrequestを安易に再送しないための制約。
+送信前にbatchの全対象条件をmanifestへ予約する。そのbatchが`incomplete`で中断した場合、未送信だった条件も含めて予約を残し、同じ範囲の再指定や`--remaining`での自動再送を禁止する。エラーは「予約済み/未完了の条件です」。別の未予約条件を明示して実行することはできるが、全体統合は未完了batchがある限り停止する。復旧はログ確認のうえ別途対応する。API結果が不明なrequestを安易に再送しないための制約。
+
+**今回の変更は過去の`incomplete`を完了扱いに書き換えない。** 以前停止した`612bf8080963456b9286c5481885a700`が`results/batches/`に残っていれば、上記の`--remaining`も予約エラーになる。既存結果の自動削除・退避はしない。先に過去batchをどう扱うか決める必要がある。
 
 ### 全条件が揃ったら統合（APIなし）
 
@@ -79,7 +115,10 @@ python experiments/06_new_models_n10/run.py --merge
 
 05の120件と、全batchの重複しない840件を検証し、960件を`results/merged/<識別子>/`へ新規保存する。足りない条件・重複・未完了・prompt/設定不一致があれば統合しない。`--merge`に有料実行フラグは付けない。再実行時も別snapshotを作り、既存snapshotを上書きしない。
 
-統合後は通常の`analysis/analyze.py`を使う。分割結果がある場合、解析コマンドは同じ統合処理を先に自動実行するため、手動の`--merge`を省略してもよい。全条件が揃うまで全体の評価は生成しない。
+API失敗を含む場合も、全queryを試行済みなら失敗行・出典を残して統合できる。統合statusは`complete_with_errors`となり、`failed_queries.jsonl`にも失敗だけを出力する。
+ただし、現在のN=10共通解析は全応答が必要なので、API失敗が残るsnapshotの作図・評価は明示的に停止する。失敗を黙って除外したり、0点として計算したりしない。欠損を含む評価方針は別途決める。
+
+全件応答取得後は通常の`analysis/analyze.py`を使う。分割結果がある場合、解析コマンドは同じ統合処理を先に自動実行するため、手動の`--merge`を省略してもよい。全条件が揃うまで全体の評価は生成しない。
 
 ## 2. 入力と重複防止
 
@@ -157,16 +196,22 @@ results/
 |---|---|
 | manifest.json/csv | 今回選んだ条件・queryのみ。`make_plan → select_plan → save_manifest` |
 | requests.jsonl / responses.jsonl | 新規API試行の送受信ログ。`RecordingSession` |
-| records.jsonl | 今回新規送信したqueryのみ。Pendulum/H5なら120行。`collect_scores` |
+| records.jsonl | 成功・失敗を含む試行済みquery。全試行終了ならPendulum/H5は120行。成功は`collect_scores`、失敗は`RecordingSession.complete` |
+| failed_queries.jsonl | APIエラーで次へ進んだqueryのみ（1行/query）。`execute_plan` |
 | summary.json/csv | 完了状態・実API試行数・旧score等。`execute_plan` |
-| runs/<condition>/episode_000/... | 公式CLIの設定・旧prediction/metrics。`invoke_cli` |
+| runs/<condition>/query_000/... | 新方式は応答取得済みの1 queryごとに公式CLI設定・旧prediction/metrics。`invoke_cli`。旧batchは`episode_000/...` |
 | run.log / .started.json | ログ・上書き防止記録 |
 
 統合snapshotには`manifest.json/csv`、`records.jsonl`（960行）、`summary.json`、`runs/source_*/...`を保存する。元の送受信ログは各batchに残す。コピーしたrunsとrecordsを既存の共通評価コードへ渡す。
 
+失敗調査はまず`failed_queries.jsonl`を読む。`query_id`、model/task/metric/H、ordinal/query_index、episode path/hash、system/user prompt全文、`request`（実際のAPI引数）、時間、`attempts`を保存する。
+`attempts[].exception`にはSDK例外名・メッセージ・取得できたHTTP status、error body、request IDが入る。接続失敗ではrequest IDが存在しない場合がある。
+同じ`query_id` / `attempt_id`で`requests.jsonl`と`responses.jsonl`を照合できる。`run.log`にもquery IDとCLIエラーを残す。認証ヘッダー・APIキーは保存しない。
+送信前request、受信直後response、結果recordを都度flush/fsyncする。失敗queryには公式scoreや架空の応答を作らない。
+
 統合後の05由来recordは `reused=true`、`api_request_made=false`、`api_attempts=0`。
 `source_experiment=05_new_models_single` と `source_record` で出典を追える。
-全recordの`source_record`・`source_upstream_output`から元ファイルを追える。統合manifestの`merge_source_sha256`で元manifest/summary/recordsのhashを記録する。
+全recordの`source_record`から元ファイルを追える。成功行は`source_upstream_output`、失敗行は`source_requests` / `source_responses`も保持する。統合manifestの`merge_source_sha256`で元manifest/summary/recordsと存在する送受信・失敗ログのhashを記録する。
 
 `raw_response / usage` は05の元応答を保持する。
 `query_elapsed_seconds / request_elapsed_seconds`も05の実測時間を保持する。統合はSDK再生ではなくファイルコピーなので、架空の`replay_elapsed_seconds`は生成しない。
@@ -182,6 +227,9 @@ prompt生成・API送信・公式scorerは既存common/upstreamを再利用し�
 統合は`merge_results()`が全条件・各recordと公式scoreを検証し、元runsをコピーしてmanifest順に960件を並べる。共通解析runnerは分割結果があるときだけこの関数を呼び、その後従来の`load_and_parse()` / 評価関数を使う。旧方式のroot直下の結果がある場合、分割実行との混在は禁止し、旧解析経路は維持する。
 
 ## 5. N=10だけを共通解析する
+
+**GPT-3.5も含めた4モデル比較・PNGのみ**は、`python experiments/06_new_models_n10/analysis/compare_models.py --allow-api-failures`を使う。
+固定色、状態成分別の図、モデル別CM、API欠損を明示する新しい解析入口。詳細は[比較README](analysis/COMPARISON_README.md)。以下は従来のモデル別PNG/SVG解析。
 
 06完了後：
 

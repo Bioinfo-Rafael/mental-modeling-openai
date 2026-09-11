@@ -1,0 +1,105 @@
+task,metric,component,model,model_alias,selected_n,valid_n,failed_n,failure_reasons
+MountainCar-v0,next-action,action,gpt-3.5-turbo,3.5,40,40,0,{}
+MountainCar-v0,next-action,all_required,gpt-3.5-turbo,3.5,40,40,0,{}
+MountainCar-v0,last-action,action,gpt-3.5-turbo,3.5,40,38,2,"{""missing_marker"": 2}"
+MountainCar-v0,last-action,all_required,gpt-3.5-turbo,3.5,40,38,2,"{""one_or_more_components_failed"": 2}"
+MountainCar-v0,next-state,direction,gpt-3.5-turbo,3.5,40,39,1,"{""missing_marker"": 1}"
+MountainCar-v0,next-state,state_value,gpt-3.5-turbo,3.5,40,36,4,"{""non_literal_or_placeholder"": 3, ""missing_marker"": 1}"
+MountainCar-v0,next-state,state_delta,gpt-3.5-turbo,3.5,40,37,3,"{""non_literal_or_placeholder"": 2, ""missing_marker"": 1}"
+MountainCar-v0,next-state,all_required,gpt-3.5-turbo,3.5,40,35,5,"{""one_or_more_components_failed"": 5}"
+MountainCar-v0,last-state,direction,gpt-3.5-turbo,3.5,40,40,0,{}
+MountainCar-v0,last-state,state_value,gpt-3.5-turbo,3.5,40,37,3,"{""missing_marker"": 3}"
+MountainCar-v0,last-state,state_delta,gpt-3.5-turbo,3.5,40,17,23,"{""non_literal_or_placeholder"": 20, ""missing_marker"": 3}"
+MountainCar-v0,last-state,all_required,gpt-3.5-turbo,3.5,40,17,23,"{""one_or_more_components_failed"": 23}"
+Pendulum-v1,next-action,action_value,gpt-3.5-turbo,3.5,40,38,2,"{""missing_marker"": 1, ""non_literal_or_placeholder"": 1}"
+Pendulum-v1,next-action,action_bin,gpt-3.5-turbo,3.5,40,39,1,"{""non_literal_or_placeholder"": 1}"
+Pendulum-v1,next-action,all_required,gpt-3.5-turbo,3.5,40,38,2,"{""one_or_more_components_failed"": 2}"
+Pendulum-v1,last-action,action_value,gpt-3.5-turbo,3.5,40,38,2,"{""missing_marker"": 1, ""wrong_dimension"": 1}"
+Pendulum-v1,last-action,action_bin,gpt-3.5-turbo,3.5,40,39,1,"{""wrong_dimension"": 1}"
+Pendulum-v1,last-action,all_required,gpt-3.5-turbo,3.5,40,38,2,"{""one_or_more_components_failed"": 2}"
+Pendulum-v1,next-state,direction,gpt-3.5-turbo,3.5,40,39,1,"{""non_literal_or_placeholder"": 1}"
+Pendulum-v1,next-state,state_value,gpt-3.5-turbo,3.5,40,36,4,"{""non_literal_or_placeholder"": 2, ""missing_marker"": 2}"
+Pendulum-v1,next-state,state_delta,gpt-3.5-turbo,3.5,40,35,5,"{""non_literal_or_placeholder"": 3, ""missing_marker"": 2}"
+Pendulum-v1,next-state,all_required,gpt-3.5-turbo,3.5,40,34,6,"{""one_or_more_components_failed"": 6}"
+Pendulum-v1,last-state,direction,gpt-3.5-turbo,3.5,40,39,1,"{""missing_marker"": 1}"
+Pendulum-v1,last-state,state_value,gpt-3.5-turbo,3.5,40,38,2,"{""non_literal_or_placeholder"": 1, ""missing_marker"": 1}"
+Pendulum-v1,last-state,state_delta,gpt-3.5-turbo,3.5,40,36,4,"{""non_literal_or_placeholder"": 3, ""missing_marker"": 1}"
+Pendulum-v1,last-state,all_required,gpt-3.5-turbo,3.5,40,36,4,"{""one_or_more_components_failed"": 4}"
+MountainCar-v0,next-action,action,gpt-5.6-terra,terra,40,40,0,{}
+MountainCar-v0,next-action,all_required,gpt-5.6-terra,terra,40,40,0,{}
+MountainCar-v0,last-action,action,gpt-5.6-terra,terra,40,40,0,{}
+MountainCar-v0,last-action,all_required,gpt-5.6-terra,terra,40,40,0,{}
+MountainCar-v0,next-state,direction,gpt-5.6-terra,terra,40,40,0,{}
+MountainCar-v0,next-state,state_value,gpt-5.6-terra,terra,40,36,4,"{""non_literal_or_placeholder"": 4}"
+MountainCar-v0,next-state,state_delta,gpt-5.6-terra,terra,40,36,4,"{""non_literal_or_placeholder"": 4}"
+MountainCar-v0,next-state,all_required,gpt-5.6-terra,terra,40,36,4,"{""one_or_more_components_failed"": 4}"
+MountainCar-v0,last-state,direction,gpt-5.6-terra,terra,40,40,0,{}
+MountainCar-v0,last-state,state_value,gpt-5.6-terra,terra,40,39,1,"{""non_literal_or_placeholder"": 1}"
+MountainCar-v0,last-state,state_delta,gpt-5.6-terra,terra,40,39,1,"{""non_literal_or_placeholder"": 1}"
+MountainCar-v0,last-state,all_required,gpt-5.6-terra,terra,40,39,1,"{""one_or_more_components_failed"": 1}"
+Pendulum-v1,next-action,action_value,gpt-5.6-terra,terra,40,40,0,{}
+Pendulum-v1,next-action,action_bin,gpt-5.6-terra,terra,40,40,0,{}
+Pendulum-v1,next-action,all_required,gpt-5.6-terra,terra,40,40,0,{}
+Pendulum-v1,last-action,action_value,gpt-5.6-terra,terra,40,40,0,{}
+Pendulum-v1,last-action,action_bin,gpt-5.6-terra,terra,40,40,0,{}
+Pendulum-v1,last-action,all_required,gpt-5.6-terra,terra,40,40,0,{}
+Pendulum-v1,next-state,direction,gpt-5.6-terra,terra,40,40,0,{}
+Pendulum-v1,next-state,state_value,gpt-5.6-terra,terra,40,39,1,"{""non_literal_or_placeholder"": 1}"
+Pendulum-v1,next-state,state_delta,gpt-5.6-terra,terra,40,39,1,"{""non_literal_or_placeholder"": 1}"
+Pendulum-v1,next-state,all_required,gpt-5.6-terra,terra,40,39,1,"{""one_or_more_components_failed"": 1}"
+Pendulum-v1,last-state,direction,gpt-5.6-terra,terra,40,40,0,{}
+Pendulum-v1,last-state,state_value,gpt-5.6-terra,terra,40,40,0,{}
+Pendulum-v1,last-state,state_delta,gpt-5.6-terra,terra,40,40,0,{}
+Pendulum-v1,last-state,all_required,gpt-5.6-terra,terra,40,40,0,{}
+MountainCar-v0,next-action,action,gpt-5.6-luna,luna,40,32,8,"{""missing_marker"": 8}"
+MountainCar-v0,next-action,all_required,gpt-5.6-luna,luna,40,32,8,"{""one_or_more_components_failed"": 8}"
+MountainCar-v0,last-action,action,gpt-5.6-luna,luna,40,36,4,"{""missing_marker"": 4}"
+MountainCar-v0,last-action,all_required,gpt-5.6-luna,luna,40,36,4,"{""one_or_more_components_failed"": 4}"
+MountainCar-v0,next-state,direction,gpt-5.6-luna,luna,40,40,0,{}
+MountainCar-v0,next-state,state_value,gpt-5.6-luna,luna,40,3,37,"{""non_literal_or_placeholder"": 37}"
+MountainCar-v0,next-state,state_delta,gpt-5.6-luna,luna,40,3,37,"{""non_literal_or_placeholder"": 37}"
+MountainCar-v0,next-state,all_required,gpt-5.6-luna,luna,40,3,37,"{""one_or_more_components_failed"": 37}"
+MountainCar-v0,last-state,direction,gpt-5.6-luna,luna,40,40,0,{}
+MountainCar-v0,last-state,state_value,gpt-5.6-luna,luna,40,4,36,"{""non_literal_or_placeholder"": 36}"
+MountainCar-v0,last-state,state_delta,gpt-5.6-luna,luna,40,4,36,"{""non_literal_or_placeholder"": 36}"
+MountainCar-v0,last-state,all_required,gpt-5.6-luna,luna,40,4,36,"{""one_or_more_components_failed"": 36}"
+Pendulum-v1,next-action,action_value,gpt-5.6-luna,luna,40,40,0,{}
+Pendulum-v1,next-action,action_bin,gpt-5.6-luna,luna,40,40,0,{}
+Pendulum-v1,next-action,all_required,gpt-5.6-luna,luna,40,40,0,{}
+Pendulum-v1,last-action,action_value,gpt-5.6-luna,luna,40,40,0,{}
+Pendulum-v1,last-action,action_bin,gpt-5.6-luna,luna,40,40,0,{}
+Pendulum-v1,last-action,all_required,gpt-5.6-luna,luna,40,40,0,{}
+Pendulum-v1,next-state,direction,gpt-5.6-luna,luna,40,40,0,{}
+Pendulum-v1,next-state,state_value,gpt-5.6-luna,luna,40,39,1,"{""non_literal_or_placeholder"": 1}"
+Pendulum-v1,next-state,state_delta,gpt-5.6-luna,luna,40,39,1,"{""non_literal_or_placeholder"": 1}"
+Pendulum-v1,next-state,all_required,gpt-5.6-luna,luna,40,39,1,"{""one_or_more_components_failed"": 1}"
+Pendulum-v1,last-state,direction,gpt-5.6-luna,luna,40,40,0,{}
+Pendulum-v1,last-state,state_value,gpt-5.6-luna,luna,40,38,2,"{""non_literal_or_placeholder"": 1, ""missing_marker"": 1}"
+Pendulum-v1,last-state,state_delta,gpt-5.6-luna,luna,40,38,2,"{""non_literal_or_placeholder"": 1, ""missing_marker"": 1}"
+Pendulum-v1,last-state,all_required,gpt-5.6-luna,luna,40,38,2,"{""one_or_more_components_failed"": 2}"
+MountainCar-v0,next-action,action,gpt-5.6-sol,sol,40,40,0,{}
+MountainCar-v0,next-action,all_required,gpt-5.6-sol,sol,40,40,0,{}
+MountainCar-v0,last-action,action,gpt-5.6-sol,sol,40,40,0,{}
+MountainCar-v0,last-action,all_required,gpt-5.6-sol,sol,40,40,0,{}
+MountainCar-v0,next-state,direction,gpt-5.6-sol,sol,40,40,0,{}
+MountainCar-v0,next-state,state_value,gpt-5.6-sol,sol,40,40,0,{}
+MountainCar-v0,next-state,state_delta,gpt-5.6-sol,sol,40,40,0,{}
+MountainCar-v0,next-state,all_required,gpt-5.6-sol,sol,40,40,0,{}
+MountainCar-v0,last-state,direction,gpt-5.6-sol,sol,40,35,5,"{""api_error"": 5}"
+MountainCar-v0,last-state,state_value,gpt-5.6-sol,sol,40,35,5,"{""api_error"": 5}"
+MountainCar-v0,last-state,state_delta,gpt-5.6-sol,sol,40,35,5,"{""api_error"": 5}"
+MountainCar-v0,last-state,all_required,gpt-5.6-sol,sol,40,35,5,"{""one_or_more_components_failed"": 5}"
+Pendulum-v1,next-action,action_value,gpt-5.6-sol,sol,40,40,0,{}
+Pendulum-v1,next-action,action_bin,gpt-5.6-sol,sol,40,40,0,{}
+Pendulum-v1,next-action,all_required,gpt-5.6-sol,sol,40,40,0,{}
+Pendulum-v1,last-action,action_value,gpt-5.6-sol,sol,40,40,0,{}
+Pendulum-v1,last-action,action_bin,gpt-5.6-sol,sol,40,40,0,{}
+Pendulum-v1,last-action,all_required,gpt-5.6-sol,sol,40,40,0,{}
+Pendulum-v1,next-state,direction,gpt-5.6-sol,sol,40,39,1,"{""api_error"": 1}"
+Pendulum-v1,next-state,state_value,gpt-5.6-sol,sol,40,39,1,"{""api_error"": 1}"
+Pendulum-v1,next-state,state_delta,gpt-5.6-sol,sol,40,39,1,"{""api_error"": 1}"
+Pendulum-v1,next-state,all_required,gpt-5.6-sol,sol,40,39,1,"{""one_or_more_components_failed"": 1}"
+Pendulum-v1,last-state,direction,gpt-5.6-sol,sol,40,40,0,{}
+Pendulum-v1,last-state,state_value,gpt-5.6-sol,sol,40,40,0,{}
+Pendulum-v1,last-state,state_delta,gpt-5.6-sol,sol,40,40,0,{}
+Pendulum-v1,last-state,all_required,gpt-5.6-sol,sol,40,40,0,{}

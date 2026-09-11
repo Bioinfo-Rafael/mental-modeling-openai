@@ -92,7 +92,7 @@ def parse_response(text: str, task: str, metric: str) -> dict:
     return result
 
 
-def load_and_parse(source=None, spec=None) -> tuple[Path, dict, list[dict], dict]:
+def load_and_parse(source=None, spec=None, *, allow_api_failures=False) -> tuple[Path, dict, list[dict], dict]:
     if spec is None:
         from importlib import import_module
         spec = import_module("experiments.03_1_gpt35_history_n30_joint.run").EXPERIMENT
@@ -103,7 +103,16 @@ def load_and_parse(source=None, spec=None) -> tuple[Path, dict, list[dict], dict
     expected = {(common.MODELS[a], t, m, h): spec.n for a in spec.models
                 for t in spec.tasks for m in spec.metrics for h in spec.histories}
     count = sum(expected.values())
-    if manifest["experiment"] != spec.name or summary["status"] != "complete" or len(records) != count:
+    with_api_errors = summary["status"] == "complete_with_errors"
+    if with_api_errors and not allow_api_failures:
+        raise ValueError("API failures remain: see failed_queries.jsonl. N=10 analysis requires all responses; "
+                         "failed queries must not be silently dropped or scored as zero.")
+    if with_api_errors:
+        failed_count = sum(r["status"] == "failed" for r in records)
+        if (spec.name != "06_new_models_n10" or manifest.get("mode") != "offline_merge"
+                or failed_count != summary["failed_queries"] or failed_count + summary["successful_queries"] != count):
+            raise ValueError("API-error analysis requires a validated, fully attempted Exp.06 merged grid")
+    if manifest["experiment"] != spec.name or summary["status"] not in {"complete", "complete_with_errors"} or len(records) != count:
         raise ValueError(f"Require completed {spec.name}: {count} queries")
     grid = Counter((r["model"], r["task"], r["metric"], r["H"]) for r in records)
     if grid != Counter(expected):
@@ -119,20 +128,30 @@ def load_and_parse(source=None, spec=None) -> tuple[Path, dict, list[dict], dict
             raise ValueError("Record and manifest differ")
         if common.query_id(r) != r["query_id"]:
             raise ValueError("Query hash mismatch")
-        text = r["assistant_text"]
-        if text != r["raw_response"]["choices"][0]["message"]["content"]:
-            raise ValueError("assistant_text differs from raw_response")
-        run_path = ROOT / r["upstream_output"] / "predictions.jsonl"
-        if not run_path.resolve().is_relative_to((source / "runs").resolve()):
-            raise ValueError("Run source is outside the specified results/runs")
-        if str(run_path) not in run_records:
-            run_records[str(run_path)] = common.read_jsonl(run_path)
-        matching_run_rows = [x for x in run_records[str(run_path)] if x["index"] == r["query_index"]]
-        if len(matching_run_rows) != 1:
-            raise ValueError("Missing or duplicated source run query")
-        run_row = matching_run_rows[0]
-        if run_row["prompt"] != r["user_prompt"] or run_row["ground_truth"] != r["ground_truth"]:
-            raise ValueError("Run prompt or ground truth differs from records.jsonl")
+        api_failed = r["status"] == "failed"
+        if api_failed:
+            if (not with_api_errors or not allow_api_failures or r.get("api_error") is not True
+                    or r.get("raw_response") or r.get("score") or not r.get("attempts")
+                    or not all(a.get("api_error") and a.get("exception") for a in r["attempts"])
+                    or r["request"] != common.expected_api_request(r["model"], r["system_prompt"], r["user_prompt"])):
+                raise ValueError("Invalid API failure record")
+            common.verify_prompt(r, r["system_prompt"], r["user_prompt"])
+            text, run_path = None, None  # No fabricated model response or upstream score.
+        else:
+            text = r["assistant_text"]
+            if text != r["raw_response"]["choices"][0]["message"]["content"]:
+                raise ValueError("assistant_text differs from raw_response")
+            run_path = ROOT / r["upstream_output"] / "predictions.jsonl"
+            if not run_path.resolve().is_relative_to((source / "runs").resolve()):
+                raise ValueError("Run source is outside the specified results/runs")
+            if str(run_path) not in run_records:
+                run_records[str(run_path)] = common.read_jsonl(run_path)
+            matching_run_rows = [x for x in run_records[str(run_path)] if x["index"] == r["query_index"]]
+            if len(matching_run_rows) != 1:
+                raise ValueError("Missing or duplicated source run query")
+            run_row = matching_run_rows[0]
+            if run_row["prompt"] != r["user_prompt"] or run_row["ground_truth"] != r["ground_truth"]:
+                raise ValueError("Run prompt or ground truth differs from records.jsonl")
         path = r["episode_path"]
         if path not in episodes:
             episodes[path] = Episode.load(ROOT / path)
@@ -143,16 +162,24 @@ def load_and_parse(source=None, spec=None) -> tuple[Path, dict, list[dict], dict
         if r["question_name"] != spec.questions[task][metric]:
             raise ValueError("Results use different questions; old non-Joint runs are not compatible")
         config = configs[r["condition_id"]]
-        components = parse_response(text, task, metric)
+        if api_failed:
+            components = {c: {"value": None, "ok": False,
+                              "error": "api_error" if c in required_components(task, metric) else "not_applicable"}
+                          for c in COMPONENTS}
+        else:
+            components = parse_response(text, task, metric)
         row = {k: r[k] for k in ("query_id", "condition_id", "task", "metric", "H", "ordinal", "query_index", "episode_path", "model", "model_alias")}
         row.update(reused=r.get("reused", False), source_experiment=r.get("source_experiment"),
                    api_request_made=r.get("api_request_made", False), source_record=r.get("source_record"))
         row.update(source_line=line, source_records=str((source / "records.jsonl").relative_to(ROOT)),
-                   source_run=str(run_path.relative_to(ROOT)), response_sha256=hashlib.sha256(text.encode()).hexdigest(),
+                   source_run=str(run_path.relative_to(ROOT)) if run_path else None,
+                   response_sha256=hashlib.sha256(text.encode()).hexdigest() if text is not None else None,
                    components=components, all_required=all(components[c]["ok"] for c in required_components(task, metric)))
         for key in ("input_tokens", "output_tokens", "total_tokens", "query_elapsed_seconds", "request_elapsed_seconds"):
             value = r.get(key)
-            row[key] = value if type(value) in (int, float) and math.isfinite(value) else None
+            row[key] = value if not api_failed and type(value) in (int, float) and math.isfinite(value) else None
+        if allow_api_failures:
+            row.update(api_error=api_failed, failed_attempt_elapsed_seconds=r.get("request_elapsed_seconds") if api_failed else None)
         if metric.endswith("state"):
             raw_early, raw_late = episode.state_vector(index), episode.state_vector(index + 1)
             direction = state_directions(raw_early, raw_late, threshold=config.state_threshold, allow_unchanged=True)
@@ -161,21 +188,21 @@ def load_and_parse(source=None, spec=None) -> tuple[Path, dict, list[dict], dict
             row.update(early=early.tolist(), late=late.tolist(), gt_direction=direction,
                        gt_state_value=(late if metric == "next-state" else early).tolist(),
                        gt_state_delta=(late - early).tolist())
-            if direction != r["ground_truth"]:
+            if not api_failed and direction != r["ground_truth"]:
                 raise ValueError("Trajectory direction disagrees with recorded GT")
         else:
             action = episode.action_vector(index).astype(float).tolist()
             row["gt_action_value"] = action
             if task == TASKS[0]:
                 row["gt_action"] = [episode.discrete_action(index)]
-                if row["gt_action"][0] != r["ground_truth"]:
+                if not api_failed and row["gt_action"][0] != r["ground_truth"]:
                     raise ValueError("Trajectory action disagrees with recorded GT")
             else:
                 start, stop = _action_range(config)
                 if (start, stop, config.action_bins) != (-2, 2, 10):
                     raise ValueError("Unexpected Pendulum action normalization/bin range")
                 row["gt_action_bin"] = bin_actions(action, start=start, stop=stop, bins=config.action_bins)
-                if row["gt_action_bin"] != r["ground_truth"]:
+                if not api_failed and row["gt_action_bin"] != r["ground_truth"]:
                     raise ValueError("Trajectory action bin disagrees with recorded GT")
         parsed.append(row)
     return source, manifest, parsed, {p: e.sha256 for p, e in episodes.items()}

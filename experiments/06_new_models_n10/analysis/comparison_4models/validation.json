@@ -1,0 +1,57 @@
+{
+  "models": {
+    "3.5": {
+      "record_count": 960,
+      "condition_count": 32,
+      "source_run_prompt_and_gt_checks": 960,
+      "ground_truth_delta_checks": 480,
+      "nested_subsets": true,
+      "accuracy_denominators": true,
+      "macro_equals_mean_dimension_nrmse": true,
+      "valid_n_bounds": true,
+      "undefined_metrics_have_reason": true
+    },
+    "terra": {
+      "record_count": 320,
+      "condition_count": 32,
+      "source_run_prompt_and_gt_checks": 320,
+      "ground_truth_delta_checks": 160,
+      "nested_subsets": true,
+      "accuracy_denominators": true,
+      "macro_equals_mean_dimension_nrmse": true,
+      "valid_n_bounds": true,
+      "undefined_metrics_have_reason": true
+    },
+    "luna": {
+      "record_count": 320,
+      "condition_count": 32,
+      "source_run_prompt_and_gt_checks": 320,
+      "ground_truth_delta_checks": 160,
+      "nested_subsets": true,
+      "accuracy_denominators": true,
+      "macro_equals_mean_dimension_nrmse": true,
+      "valid_n_bounds": true,
+      "undefined_metrics_have_reason": true
+    },
+    "sol": {
+      "record_count": 320,
+      "condition_count": 32,
+      "source_run_prompt_and_gt_checks": 320,
+      "ground_truth_delta_checks": 160,
+      "nested_subsets": true,
+      "accuracy_denominators": true,
+      "macro_equals_mean_dimension_nrmse": true,
+      "valid_n_bounds": true,
+      "undefined_metrics_have_reason": true
+    }
+  },
+  "selected_queries": 1280,
+  "api_failed_queries": 6,
+  "raw_data_unchanged": true,
+  "protected_inputs_unchanged": true,
+  "png_count": 65,
+  "svg_count": 0,
+  "image_readback_checks": 65,
+  "csv_readback_checks": 13,
+  "api_calls": 0
+}

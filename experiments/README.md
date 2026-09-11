@@ -83,7 +83,9 @@ API keyは `OPENAI_API_KEY` 環境変数のみから読みます。キーをコ�
 `runs/<condition>/episode_<番号>/` にupstreamの `run.json`、`config.effective.json`、`metrics.json`、`predictions.jsonl` をそのまま保存します。upstreamの `raw_responses_stored=false` はその標準出力についての値で、追加JSONLにはraw responseを保存します。
 `summary.json/csv` にAccuracy・parse率・全件/parsed/elementの精度と経過時間、JSONに実験全体の試行数・成功/失敗数を記録します。成功は採点済み（`ignored`も含む）であり、正解数とは別です。
 
-APIエラー時は以降の送信を止めます。先に取得できたprefixのresponseはAPIなしで同じCLIへreplayし、`episode_<番号>_partial/` に標準スコアを回収します。強制終了・安全性違反・ディスク障害では回収を保証できませんが、送受信は都度flush/fsyncします。未完了結果を04/06が完了結果として使うことはありません。
+06以外はAPIエラー時に以降の送信を止めます。先に取得できたprefixのresponseはAPIなしで同じCLIへreplayし、`episode_<番号>_partial/` に標準スコアを回収します。強制終了・安全性違反・ディスク障害では回収を保証できませんが、送受信は都度flush/fsyncします。未完了結果を04/06が完了結果として使うことはありません。
+
+06の新規batchは既定で**terra → luna → sol**の順（`--model-order`で変更可能）。APIエラーをquery・request・例外/request IDとともに保存して次へ進みます。全試行後、一部失敗なら`complete_with_errors`とし、失敗行も統合に残します。ログ保存失敗や安全性違反では停止します。過去の途中停止batchは自動再開・削除しません。[06の詳細](06_new_models_n10/README.md#モデル順とapiエラー後の継続)を参照。
 06の統合snapshotでは05のreuseを`reused=true`、`api_request_made=false`、`source_experiment`、`source_record`で示し、新規試行数は0。元response/usageと元query時間を残します。分割方式の統合はファイルコピーであり、SDK replayは行いません。
 
 04は `statistics.csv/json` と `figures/`（Accuracy、time、input/output/total tokensを別図）を生成します。primary Accuracyはupstreamの `legacy_compatible_match_rate`。actionは全件、stateはparsed件数が分母です。全件のcorrect=1/0統計（ignored=0）とは区別します。分散/標準偏差はddof=0/1を両方保存し、time/token図は母標準偏差、Accuracy図は分母混同を避けerror barなし。欠損usageは0で埋めません。
