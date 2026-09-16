@@ -153,3 +153,20 @@ predictions = [-1.45]
 元データを保存記録として保持するため、statusは書き換えていません。06の評価を確認するときはanalysisの成分別解析結果を参照してください。
 
 HTML上部は、回答本文が保存されている場合の「応答あり」だけを表示します。回答がない場合は空欄とし、採点結果やAPI失敗のステータス文言は表示しません。詳細表・折りたたみJSONには保存済みのstatusを保持していますが、これは旧parserの結果であり、Joint全出力の評価として解釈しないでください。Notebookは元のままです。
+
+
+## Reasoning採点用CSV
+
+[reasoning_for_scoring.csv](reasoning_for_scoring.csv) は `model, Task, Metrics, H, Reasoning, score` の6列です。scoreは全行空欄です。UTF-8 BOM付きで、Reasoning内の改行・引用符をCSVの引用規則に従って保存しています。
+
+06の統合records（05の120件を含む）の全960件と03_1の全960件を対象にしています。05を追加連結せず重複を避けています。HTMLと違い、GPT-3.5は各条件30件すべてを含みます。モデル別の行数はsol/terra/lunaが各320件、3.5が960件、合計1,920件です。
+
+Reasoning見出し直後からPrediction見出し直前までの本文のみを抽出し、見出しと前後の空白を除いています。太字・角括弧の有無、`Prediction by element` の表記揺れに対応しています。本文内の改行、Markdown、数式表現は保持し、翻訳・要約はしていません。
+
+抽出成功は1,794件。残る126件のReasoningは空欄です（solのAPI失敗6件、3.5のReasoning見出しがない120件）。見出しのない回答から推測で文章を切り出してはいません。空欄のscoreは元のstatusや自動採点と無関係で、手動記入用です。
+
+行順はモデル（sol、terra、luna、3.5）、Task、Metrics、H、ordinalの順です。Task/Metricsは文字列の昇順、H/ordinalは数値の昇順です。H列は履歴ステップ数です。ordinalはCSVには含めていません。元records・HTML・Notebookは変更していません。
+
+採点済みデータは [reasoning_for_scoring_scored_astra_high.csv](reasoning_for_scoring_scored_astra_high.csv)、採点依頼の原文は [reasoning_score_analysis/Prompt.md](reasoning_score_analysis/Prompt.md) に保存しています。全1,920行を採点し、Score 1〜4は順に437・546・293・644件です。
+
+Model × HとPendulum Last/Next Actionの可視化コード、PNG図10点、条件別集計、再実行方法は [reasoning_score_analysis/README.md](reasoning_score_analysis/README.md) を参照してください。PDFは生成しません。
