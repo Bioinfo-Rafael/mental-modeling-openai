@@ -1,5 +1,51 @@
 # 段階的な Mental Modeling 実験
 
+## 4モデルの入出力の生データを見る場所
+
+**Sol / Terra / Lunaは06の `merged/<ID>/records.jsonl`、同じJoint質問を使ったGPT-3.5は03_1の `results/records.jsonl` を見る。** `records.jsonl` は1行＝1 queryで、入力と応答全文の両方を持つ。`runs/` 内の `predictions.jsonl` は採点用に解釈した予測であり、応答全文を見る場所ではない。
+
+2026-09-16に保存データを全行確認した結果：
+
+| 見たいモデル・実験 | 入出力をまとめて読めるファイル（このREADMEからの相対パス） | 保存件数 |
+| --- | --- | --- |
+| Sol / Terra / Luna：Joint全条件N10 | [06の統合records.jsonl](06_new_models_n10/results/merged/c189af3036db4adfb9e4da5bb632ea48/records.jsonl) | 各320行。Luna/Terraは各320件の応答、Solは314件の応答＋6件のAPI失敗 |
+| GPT-3.5：Joint全条件N30（新3モデルと同じ質問方式） | [03_1のrecords.jsonl](03_1_gpt35_history_n30_joint/results/records.jsonl) | 960件、全行に入力と応答あり |
+| GPT-3.5：元の質問方式、全条件N30 | [03の再開完了版records.jsonl](03_gpt35_history_n30/results/resumes/0001/records.jsonl) | 960件、再利用分も含め全行に入力と応答あり |
+| GPT-3.5：各条件1件のpilot | [02のrecords.jsonl](02_gpt35_single/results/records.jsonl) | 8件 |
+
+03直下の `results/records.jsonl` は中断した初回の記録なので、全条件を見るには `resumes/0001/` を使う。03と03_1は異なる質問方式の別実験。新3モデルとN10で揃えて読む場合は、03_1の各条件で `ordinal < 10` を選ぶ（ファイル全体の先頭10行ではない）。
+
+### 1行のどの項目を見るか
+
+| 項目 | 内容 |
+| --- | --- |
+| `model_alias` | `sol` / `terra` / `luna` / `3.5`。06の統合ファイルはこの値でモデルを選ぶ |
+| `condition_id`, `task`, `metric`, `H`, `ordinal` | 条件と条件内のsample番号。ordinalは0始まり |
+| `request.messages` | 実際の送信引数に含まれるsystem/userの入力全文。`request` 全体にはモデルや生成設定もある |
+| `system_prompt`, `user_prompt` | 上記入力を個別の文字列として保持したもの |
+| `assistant_text` | 取得した回答本文。まず人間が回答を読みたいときはここを見る |
+| `raw_response` | 保存されたSDK応答全体。回答は通常 `choices[0].message.content`、他にusage、model、finish_reason等を保持 |
+| `status`, `exception` | API失敗の確認。Solの失敗6件には回答がなく、例外が保存されている。`ignored` は回答があるが採点用parserで解釈できなかった状態 |
+| `source_record` | mergedや再利用行の元ログの所在。リポジトリ基準パスと `#` 以降の識別子を保持 |
+
+`prediction` / `ground_truth` / `score` は採点用の加工値なので、モデルが実際に何と言ったかは `assistant_text` / `raw_response` で確認する。JSONLは改行で区切られたJSONオブジェクトで、各行を開けばそのqueryの入出力を一緒に読める。
+
+### mergedと元の送受信ログの関係
+
+06のmergedは元recordをコピーして統合したもの。**入力 `request` と出力 `raw_response` / `assistant_text` も保持するため、通常の入出力確認はmergedだけで足りる。** ただし送信試行ごとの元ログを確認したいときは、下記ディレクトリの `requests.jsonl`（入力：`kwargs.messages`）と `responses.jsonl`（出力：`assistant_text` / `raw_response`）を読む。両者は `query_id` と `attempt_id` で対応する。
+
+| 元ログのディレクトリ | 対象 |
+| --- | --- |
+| [05 results](05_new_models_single/results/) | 3モデルのPendulum H20、120件。06に再利用された元データ |
+| [06 batch b36e…](06_new_models_n10/results/batches/b36e550af1174766af12f84678e075ce/) | 3モデルのPendulum H5、120件 |
+| [06 batch a44a…](06_new_models_n10/results/batches/a44a962437a94614a4b870b4e9366437/) | その他の条件720件。SolのAPI失敗6件もここに記録 |
+| [03_1 results](03_1_gpt35_history_n30_joint/results/) | GPT-3.5のJoint質問960件 |
+| [03 results](03_gpt35_history_n30/results/) と [resumes/0001](03_gpt35_history_n30/results/resumes/0001/) | 元の質問方式のGPT-3.5。初回ログと再開時の新規送信ログに分かれる |
+
+merged直下には `requests.jsonl` / `responses.jsonl` 自体はない。`archived_batches/` は中断実行の退避で、現在の統合960件には含まれない。mergedと05・batchを単純に連結すると重複する。
+
+生成元は [common.py](common.py) の `RecordingSession.backend_class()`（送受信・応答保存）と `collect_scores()`（入出力と採点の結合）、[split_execution.py](split_execution.py) の `merge_results()`（06の統合）。構成の詳細は [03_1 results README](03_1_gpt35_history_n30_joint/results/README.md)、[03 results README](03_gpt35_history_n30/results/README.md)、[06 results README](06_new_models_n10/results/README.md) を参照。
+
 ## 実験の意図・作業メモ
 
 以下は各実験で何を確認したいかのメモです。「4通り」は `next-action`、`last-action`、`next-state`、`last-state` を指します。送信件数はretryなしの場合です。
