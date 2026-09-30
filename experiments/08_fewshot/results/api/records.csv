@@ -1,0 +1,1062 @@
+query_id,condition_id,model_alias,task,metric,H,shots,score_pattern,ordinal,status,prediction,ground_truth,assistant_text,input_tokens,output_tokens,total_tokens,request_elapsed_seconds,action_value_prediction,action_value_ground_truth,absolute_error,scoring_version
+b71d4e2ddcb25f1a42847039d8a895092186667cfa1e313bd271397b36d72785,terra__MountainCar-v0__next-action__H5__shots4__pattern1,terra,MountainCar-v0,next-action,5,4,pattern1,0,match,0,0,"1. [Reasoning]: The car is moving left with substantial negative velocity, and the agent has consistently selected action 0 to accelerate left over the preceding steps. At position \(-0.7024\), continuing left helps build momentum for the eventual climb up the right hill.
+
+2. [Prediction]: The agent will accelerate to the left.
+
+3. >>Final action choice: [0]",3251,337,3588,6.989920124877244,[0],[0.0],0.0,08_joint_final_action_v1
+ed9e14d6422c5f8b1c98d7afe0fafeac4855986bb811f4367c254a39c34ef9b7,terra__MountainCar-v0__next-action__H5__shots4__pattern1,terra,MountainCar-v0,next-action,5,4,pattern1,1,match,0,0,"1. [Reasoning]: The car is moving strongly left with negative velocity, and the agent has consistently selected action 0 to build leftward momentum. At \(s_{21}\), it has not yet reached the left turning region, so continuing to accelerate left is most likely.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",3251,290,3541,4.805072374874726,[0],[0.0],0.0,08_joint_final_action_v1
+d97f35a7c303ea463f0f518d7856fa915cf28bbbdaa916ca20fa4d38a8d69572,terra__MountainCar-v0__next-action__H5__shots4__pattern1,terra,MountainCar-v0,next-action,5,4,pattern1,2,match,0,0,"1. [Reasoning]: The car is moving left with substantial negative velocity and is still climbing the left hill. The preceding actions are all 0, and action 0 continues to build the leftward swing needed to later gain momentum toward the right-side goal. Thus, the agent will most likely keep accelerating left.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",3250,349,3599,6.004569000098854,[0],[0.0],0.0,08_joint_final_action_v1
+a3003e08d46c2e3fda8a5f9bf90c98c4ad53157173c895d6e278b05a673ef48c,terra__MountainCar-v0__next-action__H5__shots4__pattern2,terra,MountainCar-v0,next-action,5,4,pattern2,0,match,0,0,"1. [Reasoning]: The agent has consistently selected action 0 while moving left, maintaining a large negative velocity to build momentum up the left side of the valley. At \(s_{20}\), it is still moving left and will likely continue accelerating left.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",3119,201,3320,3.5862716250121593,[0],[0.0],0.0,08_joint_final_action_v1
+fc20347ff906db5ff8640e958a150a810559784efc232df8bed6e6a53117531d,terra__MountainCar-v0__next-action__H5__shots4__pattern2,terra,MountainCar-v0,next-action,5,4,pattern2,1,match,0,0,"1. [Reasoning]: The agent has consistently selected action 0 while moving left with substantial negative velocity. At \(s_{21}=[-0.7214,-0.0190]\), it is still building leftward momentum to climb the left hill, so continuing left acceleration is most likely.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",3119,395,3514,6.112289167009294,[0],[0.0],0.0,08_joint_final_action_v1
+336347cef3fa255b3815ca6bd046b85798e372777e10053263126c0fde35c541,terra__MountainCar-v0__next-action__H5__shots4__pattern2,terra,MountainCar-v0,next-action,5,4,pattern2,2,match,0,0,"1. [Reasoning]: The car is moving left with substantial negative velocity, and the agent has consistently selected action 0 to build leftward momentum. At \(s_{22}=[-0.7400,-0.0186]\), it is still traveling left, so continuing left acceleration is most likely.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",3118,500,3618,7.575677042128518,[0],[0.0],0.0,08_joint_final_action_v1
+7170835c98ec5bd009e5782f1313671173cb1fa80f0957719b827f1c1aea3aad,terra__MountainCar-v0__next-action__H5__shots8__pattern1,terra,MountainCar-v0,next-action,5,8,pattern1,0,match,0,0,"1. [Reasoning]: At \(s_{20}=[-0.7024,-0.0193]\), the car is still moving strongly leftward. The agent has consistently selected action 0 over the preceding steps to build leftward momentum for the swing. It will most likely continue accelerating left before switching direction nearer the left turning point.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",5707,803,6510,11.287297040922567,[0],[0.0],0.0,08_joint_final_action_v1
+46124e4f917ab094b89522b8fbfcde868d16e4deccd5a768429636fc50aa6b85,terra__MountainCar-v0__next-action__H5__shots8__pattern1,terra,MountainCar-v0,next-action,5,8,pattern1,1,match,0,0,"1. [Reasoning]: The car is still moving strongly leftward at \(s_{21}\) with velocity \(-0.0190\). The preceding actions were all 0, building momentum toward the left side of the valley. Continuing to accelerate left is most consistent with this swing-up behavior.
+
+2. [Prediction]: The agent will accelerate to the left.
+
+3. >>Final action choice: [0]",5707,467,6174,6.944317209068686,[0],[0.0],0.0,08_joint_final_action_v1
+d1705b591a68a3c858f70a5181b3e7f8ed160ad9a4507c4abfb2c8694fa723bc,terra__MountainCar-v0__next-action__H5__shots8__pattern1,terra,MountainCar-v0,next-action,5,8,pattern1,2,match,0,0,"1. [Reasoning]: The agent has repeatedly chosen action 0 while the car is moving left with substantial negative velocity. At \(s_{22}\), the car is still moving leftward (\(v=-0.0186\)) and has not yet reached the left-side turning region, so continuing to accelerate left is most likely.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",5706,614,6320,10.15273387497291,[0],[0.0],0.0,08_joint_final_action_v1
+bc90332500935f0573c5485aea9cc367293c67d89d08e20de5f0843864e6215a,terra__MountainCar-v0__next-action__H5__shots8__pattern2,terra,MountainCar-v0,next-action,5,8,pattern2,0,match,0,0,"1. [Reasoning]: The agent has repeatedly selected action 0 while moving leftward and building negative velocity. At \(s_{20}=[-0.7024,-0.0193]\), it is still moving left and likely continues accelerating left to gain momentum for the later rightward climb.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",5568,184,5752,2.990364250028506,[0],[0.0],0.0,08_joint_final_action_v1
+69be9b76dc792fed151b0bb5079083af3def88b6c2ff67e163b6dbb6d7e0fda9,terra__MountainCar-v0__next-action__H5__shots8__pattern2,terra,MountainCar-v0,next-action,5,8,pattern2,1,match,0,0,"1. [Reasoning]: The car is moving strongly leftward with a consistently negative velocity, and the agent has selected action 0 (accelerate left) for five consecutive steps to build momentum while descending the left slope. At \(s_{21}\), continuing left acceleration is most consistent with this momentum-building behavior.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",5568,150,5718,2.6682999588083476,[0],[0.0],0.0,08_joint_final_action_v1
+b69ea31e00ee15c5de8b1d8ecbbb2501f29fd93dbc527621a61e7d4d2a9fd14e,terra__MountainCar-v0__next-action__H5__shots8__pattern2,terra,MountainCar-v0,next-action,5,8,pattern2,2,match,0,0,"1. [Reasoning]: From steps 17–21, the agent consistently selects action 0 while the car moves leftward with sustained negative velocity. At \(s_{22}=[-0.74,-0.0186]\), it is still building leftward momentum, so continuing left acceleration is most likely.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",5567,92,5659,1.7437797919847071,[0],[0.0],0.0,08_joint_final_action_v1
+47bf648add51dab395e468e2b4badcf40fa4c5352b2c3ca60ba17e5acfb4adf5,terra__MountainCar-v0__next-action__H5__shots12__pattern1,terra,MountainCar-v0,next-action,5,12,pattern1,0,match,0,0,"1. [Reasoning]: The agent has repeatedly selected action 0 while the car moves leftward. At \(s_{20}\), the car still has substantial negative velocity (\(-0.0193\)) and is continuing toward the left side of the valley, so continuing left acceleration is most consistent with the observed behavior.
+
+2. [Prediction]: The agent will accelerate to the left.
+
+3. >>Final action choice: [0]",8128,423,8551,6.388879083096981,[0],[0.0],0.0,08_joint_final_action_v1
+81791de48440511fac1ff7e96499f148bc1e655f8fbb03da3aecc1356051cd59,terra__MountainCar-v0__next-action__H5__shots12__pattern1,terra,MountainCar-v0,next-action,5,12,pattern1,1,match,0,0,"1. [Reasoning]: The agent has consistently selected action 0 while moving leftward. At \(s_{21}\), the car still has substantial negative velocity and is climbing the left side, so continuing to accelerate left is most consistent with the observed momentum-building behavior.
+
+2. [Prediction]: The agent will accelerate to the left.
+
+3. >>Final action choice: [0]",8128,599,8727,10.267475541913882,[0],[0.0],0.0,08_joint_final_action_v1
+c5079703fd9832145d32390eb0269cb3acd0ed86a3c31de04c8d1586fb3190dd,terra__MountainCar-v0__next-action__H5__shots12__pattern1,terra,MountainCar-v0,next-action,5,12,pattern1,2,match,0,0,"1. [Reasoning]: The agent has repeatedly selected action 0 while the car moves leftward and builds momentum toward the left hill. At \(s_{22}\), the car is still moving left with substantial negative velocity, so continuing left acceleration is most consistent with the observed behavior.
+
+2. [Prediction]: The agent will accelerate to the left.
+
+3. >>Final action choice: [0]",8127,547,8674,8.339430291904137,[0],[0.0],0.0,08_joint_final_action_v1
+9c86454b64eff19815192ffc572b6bfca95e29625d50cda08cf44e76d44f8028,terra__MountainCar-v0__next-action__H5__shots12__pattern2,terra,MountainCar-v0,next-action,5,12,pattern2,0,match,0,0,"1. [Reasoning]: The agent has consistently selected action 0 while moving leftward and maintaining substantial negative velocity. At \(s_{20}\), it is still descending toward the left side of the valley, so it will most likely continue accelerating left to build momentum.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",8528,82,8610,1.9069992080330849,[0],[0.0],0.0,08_joint_final_action_v1
+f411e27950fbbebda77b689dc5ded105f2c61e24c14c4ace79e43952b6ee3424,terra__MountainCar-v0__next-action__H5__shots12__pattern2,terra,MountainCar-v0,next-action,5,12,pattern2,1,match,0,0,"1. [Reasoning]: The agent has consistently selected action 0 while moving left with substantial negative velocity. At \(s_{21}\), it is still traveling left and has not yet reached the left turnaround region, so continuing left acceleration is most likely.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",8528,79,8607,1.4755262499675155,[0],[0.0],0.0,08_joint_final_action_v1
+10ab8b57ba894366ff1f484b8ca9f049bb67fafde5169a83871cf6077605a084,terra__MountainCar-v0__next-action__H5__shots12__pattern2,terra,MountainCar-v0,next-action,5,12,pattern2,2,match,0,0,"1. [Reasoning]: The agent has consistently selected action 0 while moving left with substantial negative velocity. At \(s_{22}=[-0.7400,-0.0186]\), it is still descending/building leftward momentum, so the learned behavior is most likely to continue accelerating left rather than reverse yet.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",8527,94,8621,1.9457422499544919,[0],[0.0],0.0,08_joint_final_action_v1
+2f4065e27bbefd950f84368aa3a1a32b4bc689c726273ff942be61dd76c38b69,terra__MountainCar-v0__next-action__H20__shots4__pattern1,terra,MountainCar-v0,next-action,20,4,pattern1,0,match,0,0,"1. [Reasoning]: The agent has selected action 0 at every preceding state while the car moves left with negative velocity. At \(s_{20}\), the car is still moving left (\(v=-0.0193\)) and has not approached the left boundary or reversed direction, so continuing to accelerate left is most consistent with the observed behavior.
+
+2. [Prediction]: The agent will accelerate to the left.
+
+3. >>Final action choice: [0]",3724,617,4341,9.71761199994944,[0],[0.0],0.0,08_joint_final_action_v1
+52c416bbcae9deb21ce1f837650f1d7a4d67c712b3286d7c13a775afa8428a78,terra__MountainCar-v0__next-action__H20__shots4__pattern1,terra,MountainCar-v0,next-action,20,4,pattern1,1,match,0,0,"1. [Reasoning]: The agent has taken action 0 continuously while moving left and building negative velocity. At \(s_{21}=[-0.7214,-0.0190]\), it is still traveling left toward the left hill, so continuing to accelerate left is most consistent with the observed swing-building behavior.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",3725,768,4493,11.746945332968608,[0],[0.0],0.0,08_joint_final_action_v1
+8562b373de48666a09ea3455354cd0e3ad0f97f96d94b4be9cb01e81193438c9,terra__MountainCar-v0__next-action__H20__shots4__pattern1,terra,MountainCar-v0,next-action,20,4,pattern1,2,mismatch,1,0,"1. [Reasoning]: Although the prior actions were all left accelerations, at \(s_{22}=[-0.7400,-0.0186]\) the leftward velocity is becoming less negative, indicating the car is moving up the left slope and being slowed by gravity. The trained policy is likely transitioning away from sustained left acceleration at this point; a neutral action is the most likely next choice.
+
+2. [Prediction]: The agent will take no acceleration.
+
+3. >>Final action choice: [1]",3724,923,4647,14.43873833399266,[1],[0.0],1.0,08_joint_final_action_v1
+c204126fe2cf83ee7b2ef2c37c3ff1b6451601d2475c76a3ab5cef4cc92c8e88,terra__MountainCar-v0__next-action__H20__shots4__pattern2,terra,MountainCar-v0,next-action,20,4,pattern2,0,match,0,0,"1. [Reasoning]: The agent has selected action 0 continuously while building leftward momentum. At \(s_{20}\), it is still moving left with substantial negative velocity, so it will most likely continue accelerating left to gain momentum for the eventual rightward climb.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",3592,532,4124,8.548044541152194,[0],[0.0],0.0,08_joint_final_action_v1
+9cd82038d72713b862523301b0f151181fbeb92496fa44ffd283c9612d3a7c94,terra__MountainCar-v0__next-action__H20__shots4__pattern2,terra,MountainCar-v0,next-action,20,4,pattern2,1,match,0,0,"1. [Reasoning]: From steps 1–20, the agent consistently chooses action 0, building substantial leftward momentum while descending the left side of the valley. At \(s_{21}=[-0.7214,-0.0190]\), it is still moving left and has not yet reached the left turnaround region, so it will likely continue accelerating left to gain momentum for the eventual climb to the right.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",3593,114,3707,2.2316875839605927,[0],[0.0],0.0,08_joint_final_action_v1
+85e10b1ed544daaf63881a933bb6939b42de210b79946c874ebe88c9d777365b,terra__MountainCar-v0__next-action__H20__shots4__pattern2,terra,MountainCar-v0,next-action,20,4,pattern2,2,match,0,0,"1. [Reasoning]: The agent has selected action 0 continuously while building substantial leftward momentum. At \(s_{22}=[-0.7400,-0.0186]\), it is still moving left and has not yet reached the left side where it would need to reverse direction, so continuing left acceleration is most likely.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",3592,321,3913,5.760285292053595,[0],[0.0],0.0,08_joint_final_action_v1
+06d027b58bcbe6d2d8266f49445f2c9386eb23b7a441bb7cf56af0e3a0f55201,terra__MountainCar-v0__next-action__H20__shots8__pattern1,terra,MountainCar-v0,next-action,20,8,pattern1,0,match,0,0,"1. [Reasoning]: At \(s_{20}\), the car is moving left with velocity \(-0.0193\) and is climbing toward the left side of the valley. Continuing action 0 provides leftward acceleration, counteracting the rightward gravitational effect and helping preserve momentum for the leftward swing.
+
+2. [Prediction]: The agent will most likely accelerate to the left.
+
+3. >>Final action choice: [0]",6180,874,7054,13.346686166943982,[0],[0.0],0.0,08_joint_final_action_v1
+4254d274587eb2a356578709fb11426698715cc58ed2d5338cfd2e70650de685,terra__MountainCar-v0__next-action__H20__shots8__pattern1,terra,MountainCar-v0,next-action,20,8,pattern1,1,match,0,0,"1. [Reasoning]: The agent has consistently selected action 0 while moving left and building negative momentum. At \(s_{21}\), the car is still moving left with velocity \(-0.019\) and has not yet reached the left side needed to reverse direction for the final rightward climb. Continuing to accelerate left is most likely.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",6181,919,7100,14.521660959115252,[0],[0.0],0.0,08_joint_final_action_v1
+1d1be6d438a86099879086934f5a51a1f18eb386159e6b73f0205e8d99f4dea0,terra__MountainCar-v0__next-action__H20__shots8__pattern1,terra,MountainCar-v0,next-action,20,8,pattern1,2,match,0,0,"1. [Reasoning]: The agent has consistently selected action 0 (accelerate left) throughout the observed descent. At \(s_{22}\), the car is still moving left with negative velocity and has not yet reached the left-side turning region, so continuing to accelerate left is most likely.
+
+2. [Prediction]: The agent will accelerate to the left.
+
+3. >>Final action choice: [0]",6180,449,6629,6.48804383398965,[0],[0.0],0.0,08_joint_final_action_v1
+9618778f202b910cc06483230850c0202aed151b5f4ede26dddbc0b5224cc5d9,terra__MountainCar-v0__next-action__H20__shots8__pattern2,terra,MountainCar-v0,next-action,20,8,pattern2,0,match,0,0,"1. [Reasoning]: The agent has selected action 0 continuously from steps 0–19, building leftward momentum as it descends the left side of the valley. At \(s_{20}\), it is still moving left with substantial negative velocity, so continuing left acceleration is most likely to maintain momentum.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",6041,187,6228,2.929011416854337,[0],[0.0],0.0,08_joint_final_action_v1
+febc7fc8dbcffff5deb9cd266d1fc66b2da59db7f0724fbe02c9767a8ba1e071,terra__MountainCar-v0__next-action__H20__shots8__pattern2,terra,MountainCar-v0,next-action,20,8,pattern2,1,match,0,0,"1. [Reasoning]: The agent has selected action 0 (accelerate left) continuously from steps 1–20, building substantial leftward momentum while descending the left side of the valley. At \(s_{21}=[-0.7214,-0.0190]\), it is still moving left, so continuing action 0 is most consistent with the observed momentum-building behavior.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",6042,107,6149,1.93438975000754,[0],[0.0],0.0,08_joint_final_action_v1
+a97330544916d346e83e3b22aba527449098f8aa49c00222f8122aece77603e9,terra__MountainCar-v0__next-action__H20__shots8__pattern2,terra,MountainCar-v0,next-action,20,8,pattern2,2,match,0,0,"1. [Reasoning]: The agent has selected action 0 continuously from steps 2–21, building leftward momentum as it descends the left side of the valley. At \(s_{22}=[-0.7400,-0.0186]\), it is still moving left, so continuing left acceleration is most consistent with the observed policy.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",6041,100,6141,1.8079451250378042,[0],[0.0],0.0,08_joint_final_action_v1
+e316f54d943256b364a14bb59a225dc3a688aad553825b50d70fb84ab6e2d8b5,terra__MountainCar-v0__next-action__H20__shots12__pattern1,terra,MountainCar-v0,next-action,20,12,pattern1,0,match,0,0,"1. [Reasoning]: The agent has applied action 0 consistently while the car moves leftward and builds negative velocity. At \(s_{20}\), the car is still moving left (\(v=-0.0193\)), so continuing left acceleration is most consistent with the observed momentum-building behavior.
+
+2. [Prediction]: The agent will accelerate to the left.
+
+3. >>Final action choice: [0]",8601,510,9111,7.588556499918923,[0],[0.0],0.0,08_joint_final_action_v1
+2e9849b2bdc2b1f33445e09654af84f4bcb205df10f48d4956c93958f34e691e,terra__MountainCar-v0__next-action__H20__shots12__pattern1,terra,MountainCar-v0,next-action,20,12,pattern1,1,match,0,0,"1. [Reasoning]: The agent has selected action 0 continuously while the car moves leftward and builds negative velocity. At \(s_{21}=[-0.7214,-0.0190]\), it is still moving left and has not yet reached the left-side turnaround region, so continuing left acceleration is most likely.
+
+2. [Prediction]: The agent will accelerate to the left.
+
+3. >>Final action choice: [0]",8602,335,8937,5.0642858748324215,[0],[0.0],0.0,08_joint_final_action_v1
+58d0a08967966eab0fa0a59f2d03763c6d9f23a8cd5bf3c1499b11804294bd88,terra__MountainCar-v0__next-action__H20__shots12__pattern1,terra,MountainCar-v0,next-action,20,12,pattern1,2,match,0,0,"1. [Reasoning]: The agent has consistently selected action 0 while moving leftward and building negative velocity. At \(s_{22}\), the car is still moving left (\(v=-0.0186\)) and has not reached the left-side turning region, so continuing left acceleration is most consistent with the observed behavior.
+
+2. [Prediction]: The agent will accelerate to the left.
+
+3. >>Final action choice: [0]",8601,612,9213,9.390859124949202,[0],[0.0],0.0,08_joint_final_action_v1
+4e4b54d846cb6f66f1b12bdc126e3bb59b04731d4f9fad1f37a00e02237d9f84,terra__MountainCar-v0__next-action__H20__shots12__pattern2,terra,MountainCar-v0,next-action,20,12,pattern2,0,match,0,0,"1. [Reasoning]: The agent has selected action 0 continuously from steps 0–19, accelerating left to build negative momentum while descending the left side of the valley. At \(s_{20}\), it is still moving left and has not yet reached the left turning region, so it will most likely continue action 0.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",9001,95,9096,1.7946864999830723,[0],[0.0],0.0,08_joint_final_action_v1
+007e474dcef9a3cb4df2d7b1c176894baae2b3d53644819148428c51758139db,terra__MountainCar-v0__next-action__H20__shots12__pattern2,terra,MountainCar-v0,next-action,20,12,pattern2,1,match,0,0,"1. [Reasoning]: The agent has selected action 0 at every shown step, continually accelerating left while the car moves leftward and builds negative momentum. At \(s_{21}\), it is still moving left with substantial negative velocity, so the observed policy most likely continues action 0.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",9002,87,9089,1.7521417499519885,[0],[0.0],0.0,08_joint_final_action_v1
+85b2b6d7dc096e6d4e3975e70b0aa17869df831a2d44d894d39f7667992fe9e4,terra__MountainCar-v0__next-action__H20__shots12__pattern2,terra,MountainCar-v0,next-action,20,12,pattern2,2,match,0,0,"1. [Reasoning]: The agent has selected action 0 continuously while moving left and building negative momentum. At \(s_{22}=[-0.74,-0.0186]\), it is still traveling left, and the recent velocity has only begun to decrease slightly, so continuing left acceleration is most consistent with the observed policy.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",9001,144,9145,2.62980162515305,[0],[0.0],0.0,08_joint_final_action_v1
+d788d1348e14dcab582aa4ec847e730b8123cc7c7918b5033d45d3769521727c,terra__Pendulum-v1__next-action__H5__shots4__pattern1,terra,Pendulum-v1,next-action,5,4,pattern1,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is still substantially below the upright position on the negative-angle side and is moving counterclockwise toward upright. The policy has applied saturated positive torque for several consecutive steps, because maximum positive torque is needed to counter the strong negative gravitational acceleration and maintain the upward swing. At \(s_{20}\), this corrective strategy is still appropriate.
+
+2. **[Prediction]:** Action element [0] is predicted to be \(2.00\), in bin 9, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6152,464,6616,7.438150249887258,[2.0],[2.0],0.0,08_joint_final_action_v1
+e3f437e1520bc748db699cc1dc0f0635cc75d77602e2d95d4e839c052d6fbf9c,terra__Pendulum-v1__next-action__H5__shots4__pattern1,terra,Pendulum-v1,next-action,5,4,pattern1,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position on the negative-angle side and moving counterclockwise toward upright. The agent has applied saturated positive torque for five consecutive steps, while the angular velocity steadily decreases due to gravity. Continuing strong positive torque is consistent with maintaining the swing-up trajectory.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately `2.00`, in the interval `[1.6, 2.0]`, bin `9`.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6150,419,6569,6.791107833152637,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+14320a1065d4792ad35913ce34c0a5fec4ede3a06b0ce1e910516c001a0846ed,terra__Pendulum-v1__next-action__H5__shots4__pattern1,terra,Pendulum-v1,next-action,5,4,pattern1,2,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is still below the upright point on the negative-angle side, but it is moving counterclockwise toward upright and its angular velocity is decreasing. The agent has reduced torque from the saturation value \(2.0\) to \(1.679\) as it approaches the target, so a further reduced but still positive corrective torque is likely.
+
+2. **[Prediction]:** Action element 0 is predicted to be approximately \(1.30\), which falls in bin 8, \([1.2, 1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [1.30]
+```
+
+>>Final action bins: [8]",6151,669,6820,9.892727917060256,[1.3],[1.9895559549331665],0.6895559549331665,08_joint_final_action_v1
+8c65eb4738d8949d80815ca8e0c6746333ed8d27e79cdaedb35e332006246d13,terra__Pendulum-v1__next-action__H5__shots4__pattern2,terra,Pendulum-v1,next-action,5,4,pattern2,0,match,[9],[9],"1. **[Reasoning]:** The pendulum remains below the upright position on the negative-angle side but is moving counterclockwise toward upright. The agent has consistently applied maximum positive torque while the angular velocity decreases, likely sustaining the swing-up trajectory against the opposing gravitational effect. It will most likely keep the torque saturated positively.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, in bin **9**.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6267,408,6675,7.364433249924332,[2.0],[2.0],0.0,08_joint_final_action_v1
+a67846078b115ce1f09332503aa2bb742561c107ef8dcbc7c28cb73bd26d0513,terra__Pendulum-v1__next-action__H5__shots4__pattern2,terra,Pendulum-v1,next-action,5,4,pattern2,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position on the negative-angle side and moving toward upright with positive angular velocity. Across steps 16–20, the agent consistently applies maximum positive torque, steadily reducing angular velocity while bringing the pendulum upward. It will most likely maintain saturated positive torque at \(s_{21}\).
+
+2. **[Prediction]:**  
+   Action element [0] is predicted to be approximately **2.00**, in bin **9**.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6265,323,6588,5.261495791841298,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+850948346418cc325d04bab3e05727e30d092260cf51c8acef66b07385485554,terra__Pendulum-v1__next-action__H5__shots4__pattern2,terra,Pendulum-v1,next-action,5,4,pattern2,2,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum remains below and to the negative-angle side of upright, while its positive angular velocity is decreasing as it approaches the target. The policy has used strong positive torque to counter gravity and sustain/control the upward swing, but reduced it from saturation at step 21. At \(s_{22}\), it will likely retain a substantial positive torque, with a somewhat lower magnitude than the preceding action.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **1.45**, which falls in bin **8**, \([1.2, 1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [1.45]
+```
+
+>>Final action bins: [8]",6266,678,6944,10.449640999780968,[1.45],[1.9895559549331665],0.5395559549331665,08_joint_final_action_v1
+3a5cd603c06eedd5256efb4dae3366154e1af9bb33739f7f32483ae6b1ec03c0,terra__Pendulum-v1__next-action__H5__shots8__pattern1,terra,Pendulum-v1,next-action,5,8,pattern1,0,match,[9],[9],"1. **[Reasoning]:** At \(s_{20}\), the pendulum is still substantially displaced from upright (\(\theta \approx -0.77\) rad) but is moving toward upright with positive angular velocity. The preceding actions are saturated at \(+2\), which counteracts the negative gravitational acceleration and continues reducing the velocity while the pendulum approaches the target. The agent will likely maintain maximum positive torque.
+
+2. **[Prediction]:**
+   - Action element [0]: approximately \(2.00\)
+   - This falls in bin 9, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11072,386,11458,5.494160832837224,[2.0],[2.0],0.0,08_joint_final_action_v1
+5c9c957cbc094d69b17eb3aa54d8ff3667fb1f4bec961fa59722784182c62733,terra__Pendulum-v1__next-action__H5__shots8__pattern1,terra,Pendulum-v1,next-action,5,8,pattern1,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position on the negative-angle side (\(\sin\theta=-0.6542\)) but is moving counterclockwise toward upright with positive angular velocity. The policy has consistently selected maximum positive torque through steps 16–20 to regulate this motion and continue reducing the angle error. The most likely action at \(s_{21}\) remains saturated positive torque.
+
+2. **[Prediction]:**  
+   - Action element [0]: approximately \(2.00\)  
+   - This falls in bin 9, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11070,269,11339,3.8842115001752973,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+67a51cd3bce370d60cc692bd6f7a31f1a15bcff4605a6bbe6a52003ad5bb5a02,terra__Pendulum-v1__next-action__H5__shots8__pattern1,terra,Pendulum-v1,next-action,5,8,pattern1,2,match,[9],[9],"1. **[Reasoning]:** At \(s_{22}\), the pendulum is still substantially below the upright position (\(\theta\approx-0.67\) rad) but moving toward it with positive angular velocity. The preceding policy applied maximum positive torque until step 21, then only slightly reduced it. A strong positive torque remains likely to continue supplying energy against gravity and complete the swing-up.
+
+2. **[Prediction]:**  
+   - Action element [0]: approximately \(2.00\)  
+   - This is in bin 9, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11071,1654,12725,24.886981749907136,[2.0],[1.9895559549331665],0.010444045066833496,08_joint_final_action_v1
+4566ae103b7173db471d6516e15a4bcb33cbc3b43a929e6c8cd689306bbca21b,terra__Pendulum-v1__next-action__H5__shots8__pattern2,terra,Pendulum-v1,next-action,5,8,pattern2,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position on the negative-angle side, but it is moving counterclockwise toward upright. The agent has maintained saturated positive torque from steps 16–19, steadily improving the angle and reducing the magnitude of the velocity. It will likely continue applying maximum positive torque to carry the pendulum toward the upright equilibrium.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, in bin **9** (\([1.6, 2.0]\)).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11281,307,11588,5.203911333112046,[2.0],[2.0],0.0,08_joint_final_action_v1
+82fa4962932682efda35fdd63732ba90db92e83bb895c5d99b6ad8a4df8f28fa,terra__Pendulum-v1__next-action__H5__shots8__pattern2,terra,Pendulum-v1,next-action,5,8,pattern2,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is still substantially displaced from upright (negative sine component) while moving counterclockwise with positive angular velocity. Across steps 16–20, the agent consistently uses maximal positive torque, which is steadily reducing the angular velocity and moving the pendulum toward upright. It will most likely continue this strong corrective torque at \(s_{21}\).
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, in bin **9** (\([1.6, 2.0]\)).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11279,149,11428,2.1526602499652654,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+d375ac031f174d8bb2cca2f94fc84e30af6df32fbddb30955e8459a36c1d5f65,terra__Pendulum-v1__next-action__H5__shots8__pattern2,terra,Pendulum-v1,next-action,5,8,pattern2,2,match,[9],[9],"1. **[Reasoning]:** The pendulum remains on the negative-angle side but is moving toward upright with a decreasing positive angular velocity. The agent has used strong positive torque to sustain the swing-up motion, only slightly reducing it at step 21. At \(s_{22}\), a strong positive corrective torque is still likely, though below saturation.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **1.80**, which falls in bin **9** (\([1.6, 2.0]\)).
+
+3. **[Formatting]:**
+```python
+predictions = [1.80]
+```
+
+>>Final action bins: [9]",11280,571,11851,8.935401916969568,[1.8],[1.9895559549331665],0.18955595493316646,08_joint_final_action_v1
+8b0662443bfcb36bec5e310644b7e6de29e2a9c6b73a3b3f4ba960c639d44a85,terra__Pendulum-v1__next-action__H5__shots12__pattern1,terra,Pendulum-v1,next-action,5,12,pattern1,0,match,[9],[9],"1. **[Reasoning]:** The pendulum remains on the negative-angle side while moving counterclockwise toward upright (\(\dot{\theta}=1.2645>0\)). The agent has consistently applied maximal positive torque over the preceding steps to counter gravity and guide the pendulum upward. Thus, it will most likely continue applying the saturated positive torque.
+
+2. **[Prediction]:**  
+   - Action element [0]: approximately \(2.00\)  
+   - This is in \([1.6, 2.0]\), bin 9.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",15889,322,16211,5.163748500170186,[2.0],[2.0],0.0,08_joint_final_action_v1
+d0b33a98d0a055530886df9d5eed18e46e95457a16333cf7a31b34874b3dc2c9,terra__Pendulum-v1__next-action__H5__shots12__pattern1,terra,Pendulum-v1,next-action,5,12,pattern1,1,match,[9],[9],"1. **[Reasoning]:** The agent has selected the maximum positive torque, \(+2.0\), for each of steps 16–20. At \(s_{21}\), the pendulum is still on the negative-angle side (\(\sin\theta=-0.6542\)) and moving counterclockwise toward upright (\(\dot\theta=1.0448\)). Continuing strong positive torque is consistent with the observed swing-up policy.
+
+2. **[Prediction]:** Action element [0] is predicted as approximately \(2.00\), in bin 9, \([1.6,2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",15887,364,16251,5.433935417095199,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+64f24da9c92c186b0600559abe4081171411f452addf02af3892839da5b0085b,terra__Pendulum-v1__next-action__H5__shots12__pattern1,terra,Pendulum-v1,next-action,5,12,pattern1,2,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is on the negative-angle side and moving counterclockwise toward upright, while its angular velocity is decreasing from \(2.14\) to \(0.81\). The agent has used strong positive torque to brake this motion, reducing it from saturation (\(+2\)) to \(+1.679\) at step 21. At \(s_{22}\), a still-positive but further reduced corrective torque is likely.
+
+2. **[Prediction]:**  
+   - Action element [0]: approximately \(1.35\)  
+   - This is in \([1.2, 1.6)\), bin \(8\).
+
+3. **[Formatting]:**
+```python
+predictions = [1.35]
+```
+
+>>Final action bins: [8]",15888,1160,17048,16.79834416694939,[1.35],[1.9895559549331665],0.6395559549331664,08_joint_final_action_v1
+1416777989591500296937c6da4ad3dcbe089b520fe3e2e4cd25992ac1899898,terra__Pendulum-v1__next-action__H5__shots12__pattern2,terra,Pendulum-v1,next-action,5,12,pattern2,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is still substantially below the upright position on the negative-angle side, while its positive angular velocity is carrying it toward upright. The agent has applied saturated positive torque for four consecutive steps, steadily reducing the angular speed while improving the angle and reward. It will most likely continue the strong positive torque at \(s_{20}\).
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, in bin **9** (\([1.6, 2.0]\)).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",17424,210,17634,3.1446825838647783,[2.0],[2.0],0.0,08_joint_final_action_v1
+6640e09c2405e6f5a80d69bd734751066d0e0e1fd0560c434845d97386790fa2,terra__Pendulum-v1__next-action__H5__shots12__pattern2,terra,Pendulum-v1,next-action,5,12,pattern2,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is moving counterclockwise toward the upright position: its negative angle is decreasing in magnitude while its positive angular velocity is gradually reducing. The agent has consistently applied maximum positive torque over the preceding steps, so it will most likely continue applying strong positive torque to maintain the swing-up trajectory.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, in bin **9** \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",17422,268,17690,3.9494734581094235,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+074aa5139f5b981667f466089f651e0160dde3bb53256d54ecb95ec61d12474e,terra__Pendulum-v1__next-action__H5__shots12__pattern2,terra,Pendulum-v1,next-action,5,12,pattern2,2,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is still below the upright position (\(y<0\)) but moving toward it with a decreasing positive angular velocity. The agent has used strong positive torque to brake/control the swing, reducing from \(2.0\) to \(1.679\) as the velocity falls. At \(s_{22}\), a somewhat smaller but still positive corrective torque is likely.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **1.35**, which falls in bin **8** (\([1.2, 1.6)\)).
+
+3. **[Formatting]:**
+```python
+predictions = [1.35]
+```
+
+>>Final action bins: [8]",17423,976,18399,14.854719208087772,[1.35],[1.9895559549331665],0.6395559549331664,08_joint_final_action_v1
+a28217ecf399f5011fd5a6fce30079608c35ff85bc9bcaae7cba8a04d0603b8e,terra__Pendulum-v1__next-action__H20__shots4__pattern1,terra,Pendulum-v1,next-action,20,4,pattern1,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position on the negative-angle side and is moving counterclockwise toward upright. Recent actions from steps 16–19 are saturated at the maximum positive torque, indicating the policy continues accelerating/supporting the swing toward the target.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(2.00\), in bin 9, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6820,362,7182,4.990615207934752,[2.0],[2.0],0.0,08_joint_final_action_v1
+9ccc084439727666417a8e3e24ad3688194fc9058fd4ee46479556e048edd34d,terra__Pendulum-v1__next-action__H20__shots4__pattern1,terra,Pendulum-v1,next-action,20,4,pattern1,1,match,[9],[9],"1. **[Reasoning]:** At \(s_{21}\), the pendulum is still displaced to the negative-angle side and moving counterclockwise (\(\dot\theta=1.0448\)). The policy has applied saturated positive torque repeatedly from steps 16–20 to continue reducing the displacement and control the motion toward upright. A near-maximum positive torque remains most likely.
+
+2. **[Prediction]:** Action element [0] is predicted as \(2.00\), in bin 9, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6817,312,7129,4.809496957808733,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+728fec01a40ff64e36edee06efda73fde16d2b07cae75d9269b41f56024dd8b9,terra__Pendulum-v1__next-action__H20__shots4__pattern1,terra,Pendulum-v1,next-action,20,4,pattern1,2,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position (\(\sin\theta<0\)) but moving counterclockwise toward it with a reduced positive angular velocity. The policy has maintained strong positive torque to oppose gravity and preserve enough momentum for the swing-up, though it reduced torque slightly at step 21. A similarly strong positive action is therefore likely at \(s_{22}\).
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(1.80\), in bin 9 (\([1.6, 2.0]\)).
+
+3. **[Formatting]:**
+```python
+predictions = [1.80]
+```
+
+>>Final action bins: [9]",6815,1191,8006,18.2086119169835,[1.8],[1.9895559549331665],0.18955595493316646,08_joint_final_action_v1
+c3bd557dadd7ebeb16b201b73bc8cba29c17abcc0b992433985dae75f2bb56ce,terra__Pendulum-v1__next-action__H20__shots4__pattern2,terra,Pendulum-v1,next-action,20,4,pattern2,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is on the negative-angle side and moving counterclockwise toward upright, while its positive angular velocity has been decreasing. The agent has consistently maintained near-maximum positive torque from steps 16–19 to continue driving the pendulum upward, so a strong positive torque remains most likely at \(s_{20}\).
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, in bin **9** (\([1.6, 2.0]\)).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6935,413,7348,7.074924417072907,[2.0],[2.0],0.0,08_joint_final_action_v1
+01101926ec5d7d6f42770c120c902449d448f910cfe0b75037ed5d4dc9e6cce1,terra__Pendulum-v1__next-action__H20__shots4__pattern2,terra,Pendulum-v1,next-action,20,4,pattern2,1,match,[9],[9],"1. **[Reasoning]:** The pendulum remains below the upright position on the negative-angle side and is moving counterclockwise toward upright. Recent actions have consistently been at or near the maximum positive torque, supporting the swing toward stabilization. A strong positive torque is therefore most likely to continue.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, in bin **9**.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6932,405,7337,7.336923082824796,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+6642d9ed84b810bd305e492a5e0a61a4606f5b6a8d94581c9b46f514b4def223,terra__Pendulum-v1__next-action__H20__shots4__pattern2,terra,Pendulum-v1,next-action,20,4,pattern2,2,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position (\(\theta<0\)) and moving counterclockwise toward upright, though its positive angular velocity is decreasing. The preceding behavior applies strong positive torque to sustain the upward swing against gravity, so the agent will likely return to near-maximum positive torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, in bin **9** \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6930,1046,7976,15.615524375112727,[2.0],[1.9895559549331665],0.010444045066833496,08_joint_final_action_v1
+69423d58be5fe3694ad7fd8af551f331ebf4b12ffeedc7d20f997427d2390048,terra__Pendulum-v1__next-action__H20__shots8__pattern1,terra,Pendulum-v1,next-action,20,8,pattern1,0,match,[9],[9],"1. **[Reasoning]:** At \(s_{20}\), the pendulum is still below the upright position on the negative-angle side (\(\theta \approx -0.77\) rad) and moving counterclockwise toward upright with positive angular velocity. Strong positive torque counteracts the negative gravitational acceleration and controls the approach. The preceding four actions were saturated at \(+2\), so the agent will most likely continue applying maximum positive torque.
+
+2. **[Prediction]:**  
+   - Action element [0]: approximately \(2.00\)  
+   - This falls in bin 9, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11740,417,12157,6.056920666946098,[2.0],[2.0],0.0,08_joint_final_action_v1
+891cd9a447f7cad212ea2b7e0ecc5ba4b34fdd29f583bd5f2ab580a3e1d4fcf1,terra__Pendulum-v1__next-action__H20__shots8__pattern1,terra,Pendulum-v1,next-action,20,8,pattern1,1,match,[9],[9],"1. **[Reasoning]:** At \(s_{21}\), the pendulum is still substantially below upright on the negative-angle side (\(\theta\approx -0.71\) rad) and moving counterclockwise toward upright (\(\dot\theta=1.0448\)). The agent has applied maximum positive torque consistently from steps 16–20 to sustain the swing and oppose gravity, so it will likely continue applying saturated positive torque.
+
+2. **[Prediction]:**  
+   - Action element [0]: approximately \(2.00\)  
+   - This is in \([1.6, 2.0]\), bin 9.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11737,433,12170,6.479724957840517,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+be952f59bd49be50747ac56251320de2549e01f7b8a41cc4d4504eb7d34ca3a1,terra__Pendulum-v1__next-action__H20__shots8__pattern1,terra,Pendulum-v1,next-action,20,8,pattern1,2,match,[9],[9],"1. **[Reasoning]:** At \(s_{22}\), the pendulum is still below the upright position (\(\theta \approx -0.67\) rad) but moving toward it with positive angular velocity. The preceding actions are strongly positive, counteracting gravity and sustaining the swing toward upright. A near-maximal positive torque remains most likely.
+
+2. **[Prediction]:**  
+   - Action element [0]: approximately \(2.00\)  
+   - This is in bin 9, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11735,882,12617,13.088976791128516,[2.0],[1.9895559549331665],0.010444045066833496,08_joint_final_action_v1
+c2aeabff3ef986ff32752a4b852ac5169d4b35d6bf297bb7d1253f6f6c7d6e16,terra__Pendulum-v1__next-action__H20__shots8__pattern2,terra,Pendulum-v1,next-action,20,8,pattern2,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is approaching the upright position from the negative-angle side while maintaining positive angular velocity. The agent has applied maximum positive torque for the recent steps to sustain the swing toward upright, so it will likely continue with strong positive torque at \(s_{20}\).
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, in bin **9** (\([1.6, 2.0]\)).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11949,290,12239,4.429925084114075,[2.0],[2.0],0.0,08_joint_final_action_v1
+99e60acdcc30322da16774ae4bb07ce345c79624003dd41f9d42f22dd628701d,terra__Pendulum-v1__next-action__H20__shots8__pattern2,terra,Pendulum-v1,next-action,20,8,pattern2,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position on the negative-angle side and is moving toward upright with positive angular velocity. The agent has applied saturated or near-saturated positive torque for several consecutive steps while reducing the angle magnitude and angular velocity, so it will most likely continue with strong positive torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, in bin **9**.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11946,300,12246,3.963685082970187,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+ce2aaae1073325c5009868328fcd81e54f78b47ad225e2db37e32f63407b00a9,terra__Pendulum-v1__next-action__H20__shots8__pattern2,terra,Pendulum-v1,next-action,20,8,pattern2,2,match,[9],[9],"1. **[Reasoning]:** The pendulum is on the negative-angle side and moving counterclockwise toward upright, but gravity is reducing its positive angular velocity. The recent policy actions remain strongly positive to sustain the swing-up motion. At \(s_{22}\), a near-maximal positive torque is therefore likely.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **1.90**, in bin **9** (\([1.6, 2.0]\)).
+
+3. **[Formatting]:**
+```python
+predictions = [1.90]
+```
+
+>>Final action bins: [9]",11944,603,12547,8.78800274990499,[1.9],[1.9895559549331665],0.08955595493316659,08_joint_final_action_v1
+0e626b4b7f880384427a97ad48d45fda55ca9248108872897b079cc306865eb6,terra__Pendulum-v1__next-action__H20__shots12__pattern1,terra,Pendulum-v1,next-action,20,12,pattern1,0,match,[9],[9],"1. **[Reasoning]:** At \(s_{20}\), the pendulum is still on the negative-angle side (\(\sin\theta=-0.6928\)) and moving toward upright with positive angular velocity. The recent policy actions at steps 16–19 are all saturated at the maximum positive torque, indicating the agent continues applying strong counterclockwise torque to counter gravity and maintain the swing toward upright.
+
+2. **[Prediction]:** Action element [0] is predicted as approximately \(2.00\), in bin 9, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",16557,510,17067,7.678001958876848,[2.0],[2.0],0.0,08_joint_final_action_v1
+8d498af2a109eb9b41e4ba3dada7f19adeeb7243a90e92f72a422e1d2c18a690,terra__Pendulum-v1__next-action__H20__shots12__pattern1,terra,Pendulum-v1,next-action,20,12,pattern1,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position on the negative-angle side (\(\sin\theta=-0.6542\)) and is rotating counterclockwise with positive velocity. Across steps 16–20, the policy consistently selects maximum positive torque to continue swinging upward while reducing the magnitude of the negative angle. At \(s_{21}\), the same strong positive corrective torque is most likely.
+
+2. **[Prediction]:**  
+   - Action element [0]: approximately \(2.00\)  
+   - This is in bin 9, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",16554,325,16879,4.920984499854967,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+c2464fb2d9edd9a628deab3303ea2790c16786f8b7789eaa82fe0dcb9846f5d5,terra__Pendulum-v1__next-action__H20__shots12__pattern1,terra,Pendulum-v1,next-action,20,12,pattern1,2,match,[9],[9],"1. **[Reasoning]:** At \(s_{22}\), the pendulum is still on the negative-angle side (\(\theta\approx-0.67\) rad) but moving toward upright with positive angular velocity. The preceding policy behavior uses strong positive torque throughout this swing-up phase to oppose gravity and preserve momentum. A near-maximum positive torque is therefore most likely.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(2.00\), in bin 9, \([1.6,2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",16552,570,17122,8.822282958077267,[2.0],[1.9895559549331665],0.010444045066833496,08_joint_final_action_v1
+38db7a113fcfb7a13b0651dee823b07b0f68d689f606b9b24528a0088b346e1b,terra__Pendulum-v1__next-action__H20__shots12__pattern2,terra,Pendulum-v1,next-action,20,12,pattern2,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is on the negative-angle side and moving toward upright with positive angular velocity. The agent has applied saturated positive torque over the recent steps, steadily reducing the large positive velocity while continuing the swing-up trajectory. At \(s_{20}\), it is still substantially below upright, so strong positive torque is likely to continue.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, which belongs to bin **9** \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",18092,396,18488,5.531432667048648,[2.0],[2.0],0.0,08_joint_final_action_v1
+48a7e10c83902b34f067210ab76c09150dbed960f20f6670fa2e46ba5014a610,terra__Pendulum-v1__next-action__H20__shots12__pattern2,terra,Pendulum-v1,next-action,20,12,pattern2,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is approaching the upright position from the negative-angle side while still carrying substantial positive angular velocity. The agent has consistently used near-maximum positive torque over recent steps to brake and guide this motion toward upright, so it will likely maintain saturated positive torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, in bin **9** (\([1.6, 2.0]\)).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",18089,418,18507,6.453034624923021,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+62b04ece9f456196b301d769a09f84f3faa3851a007b77907bddc927a493cc92,terra__Pendulum-v1__next-action__H20__shots12__pattern2,terra,Pendulum-v1,next-action,20,12,pattern2,2,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position (\(y=-0.6232\)) but is moving counterclockwise toward it with positive angular velocity. Throughout this swing-up portion, the agent consistently applies strong positive torque to sustain momentum and continue lifting the pendulum toward upright. A near-maximum positive action is therefore most likely.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **1.90**, which lies in \([1.6, 2.0]\), bin **9**.
+
+3. **[Formatting]:**
+```python
+predictions = [1.90]
+```
+
+>>Final action bins: [9]",18087,334,18421,4.783404167043045,[1.9],[1.9895559549331665],0.08955595493316659,08_joint_final_action_v1
+7bc2a9faefa21278a777f2e01307468b982b0e19ad885dc814b6900c2af65d75,luna__MountainCar-v0__next-action__H5__shots4__pattern1,luna,MountainCar-v0,next-action,5,4,pattern1,0,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 while moving left, and at \(s_{20}\) the car still has substantial negative velocity \((-0.0193)\). Continuing the leftward acceleration is therefore most likely.
+2. [Prediction]: The agent will accelerate to the left.
+3. >>Final action choice: [0]",3251,437,3688,5.7779812081716955,[0],[0.0],0.0,08_joint_final_action_v1
+96ea1fbdfd1c2d18d71d2fb59d8b8b67ff6b5198e104e3e8c5d909d0866c6741,luna__MountainCar-v0__next-action__H5__shots4__pattern1,luna,MountainCar-v0,next-action,5,4,pattern1,1,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 while moving left, and the car is still traveling left with substantial negative velocity at \(s_{21}\). This suggests it will continue accelerating left to build momentum on the left side of the valley.
+
+2. [Prediction]: The agent will choose action 0.
+
+3. >>Final action choice: [0]",3251,593,3844,7.571091499878094,[0],[0.0],0.0,08_joint_final_action_v1
+b799824da207384f3fca874edd4a3cb7da30e31eeb8b23ab97ecbb9fa321e2fa,luna__MountainCar-v0__next-action__H5__shots4__pattern1,luna,MountainCar-v0,next-action,5,4,pattern1,2,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 to accelerate left, maintaining a strong negative velocity as the car moves down the left side. At \(s_{22}\), the car is still moving left and has not yet begun reversing direction, so continuing with action 0 is most likely.
+2. [Prediction]: The agent will accelerate to the left.
+3. >>Final action choice: [0]",3250,267,3517,3.7895612500142306,[0],[0.0],0.0,08_joint_final_action_v1
+478fc250498aa1df1df69ffd77652727a4fe8524ede0d8573d750879ef6d6c32,luna__MountainCar-v0__next-action__H5__shots4__pattern2,luna,MountainCar-v0,next-action,5,4,pattern2,0,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 (accelerate left) from steps 15–19, while the car continues moving left with a negative velocity. At \(s_{20}\), the position is still decreasing and the behavior is consistent, so action 0 is most likely.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",3119,132,3251,1.963996292091906,[0],[0.0],0.0,08_joint_final_action_v1
+1e69f19d0bac84155f340963383b6d9a1d4d944ad890c262165ef01201fae20b,luna__MountainCar-v0__next-action__H5__shots4__pattern2,luna,MountainCar-v0,next-action,5,4,pattern2,1,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 (accelerate left) from steps 16–20, and the car continues moving left with increasingly negative position and velocity. At \(s_{21}\), it will most likely continue this pattern.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",3119,113,3232,2.372736666118726,[0],[0.0],0.0,08_joint_final_action_v1
+b944333c809eac6c61a05334e358d046593c0eb748ca176085a13e47c23fab7e,luna__MountainCar-v0__next-action__H5__shots4__pattern2,luna,MountainCar-v0,next-action,5,4,pattern2,2,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 (accelerate left) from steps 17–21, while the car continues moving left with negative velocity. At \(s_{22}=[-0.74,-0.0186]\), it is likely to maintain this leftward acceleration to build momentum for the subsequent climb.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",3118,203,3321,2.8567796659190208,[0],[0.0],0.0,08_joint_final_action_v1
+eb45a1fc8534819d00fa9403c598e67e0584cbdeca351d99879d7ba84c90c7a8,luna__MountainCar-v0__next-action__H5__shots8__pattern1,luna,MountainCar-v0,next-action,5,8,pattern1,0,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0, accelerating left, while the car continues moving left with negative velocity. At \(s_{20}\), the car is still traveling left and has not yet begun reversing direction, so continuing action 0 is most likely.
+
+2. [Prediction]: The agent will accelerate to the left.
+
+3. >>Final action choice: [0]",5707,515,6222,7.860499833012,[0],[0.0],0.0,08_joint_final_action_v1
+65d45264e11b2303cb9b75c430c7b6121ddc320e848ca9325571a0aefda97cfa,luna__MountainCar-v0__next-action__H5__shots8__pattern1,luna,MountainCar-v0,next-action,5,8,pattern1,1,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 to accelerate left, and the car is still moving left with negative velocity at \(s_{21}\). Continuing this action is most likely to build leftward momentum before reversing direction.
+2. [Prediction]: The agent will most likely choose action 0.
+3. >>Final action choice: [0]",5707,440,6147,4.973015999887139,[0],[0.0],0.0,08_joint_final_action_v1
+4aeed603d178a3c6fcc121d395a68dcbb7e4f68ca68a19a517bcf5f96104143c,luna__MountainCar-v0__next-action__H5__shots8__pattern1,luna,MountainCar-v0,next-action,5,8,pattern1,2,match,0,0,"1. [Reasoning]: The agent has consistently selected action 0 (accelerate left). The velocity remains negative, and the observed transition from step 21 to step 22 is consistent with continued leftward acceleration while moving down the left side of the valley. Thus, the agent will most likely continue with action 0.
+
+2. [Prediction]: The agent will accelerate to the left.
+
+3. >>Final action choice: [0]",5706,314,6020,4.683533625211567,[0],[0.0],0.0,08_joint_final_action_v1
+242917948d6ebad105ffe57172d67596dac3358452349c595a0af2175dfee232,luna__MountainCar-v0__next-action__H5__shots8__pattern2,luna,MountainCar-v0,next-action,5,8,pattern2,0,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 (accelerate left) while moving leftward with increasingly negative position and sustained negative velocity. At state \(s_{20}\), it is likely continuing this momentum-building phase, so it will most likely maintain action 0.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",5568,140,5708,2.380161042092368,[0],[0.0],0.0,08_joint_final_action_v1
+f04ebe0ae2c5e8f419b18b7fc55d062cb45a8fbf3513de679daabf1d3e3f7f36,luna__MountainCar-v0__next-action__H5__shots8__pattern2,luna,MountainCar-v0,next-action,5,8,pattern2,1,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 (accelerate left) over steps 16–20, while the car continues moving left with substantial negative velocity. At the nearby state \(s_{21}\), this established behavior is most likely to continue.
+2. [Prediction]: The agent will most likely choose action 0 — accelerate to the left.
+3. >>Final action choice: [0]",5568,123,5691,2.0910612498410046,[0],[0.0],0.0,08_joint_final_action_v1
+7404d0ddd201248dc2fa963e4c295847d71b04a1065c1ea5f15b3a12a67d1979,luna__MountainCar-v0__next-action__H5__shots8__pattern2,luna,MountainCar-v0,next-action,5,8,pattern2,2,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 (accelerate left) over steps 17–21, and the car is still moving left with negative velocity. Although the velocity is beginning to become slightly less negative, the recent behavior suggests it will continue accelerating left at step 22.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",5567,182,5749,2.982972790952772,[0],[0.0],0.0,08_joint_final_action_v1
+4615a1f7f2e92b0c68ac953180a525ba8ae1ee980c3dcf884a8ab4e9f1bce492,luna__MountainCar-v0__next-action__H5__shots12__pattern1,luna,MountainCar-v0,next-action,5,12,pattern1,0,match,0,0,"1. [Reasoning]: The car is still moving left with substantial negative velocity, and the agent has repeatedly chosen action 0 to build momentum toward the left side of the valley. Since it has not yet reached the leftmost turning point, continuing the leftward acceleration is most likely.
+2. [Prediction]: The agent will most likely choose action 0 (accelerate to the left).
+3. >>Final action choice: [0]",8128,435,8563,5.434712500078604,[0],[0.0],0.0,08_joint_final_action_v1
+2ce2b54e4b07bc86204484e65ac91f87caaaf81655a9e3169bfc077db26e18b5,luna__MountainCar-v0__next-action__H5__shots12__pattern1,luna,MountainCar-v0,next-action,5,12,pattern1,1,match,0,0,"1. [Reasoning]: The car is moving left with substantial negative velocity, and the agent has consistently selected action 0 to accelerate left over the preceding steps. Since it is still traveling toward the left hill, continuing this pattern is most likely.
+
+2. [Prediction]: The agent will most likely choose action 0 (accelerate to the left).
+
+3. >>Final action choice: [0]",8128,195,8323,2.813982916995883,[0],[0.0],0.0,08_joint_final_action_v1
+ffd00871ae863815aecc396889213864cc1fa9dcd4c104163bec1c71483c5585,luna__MountainCar-v0__next-action__H5__shots12__pattern1,luna,MountainCar-v0,next-action,5,12,pattern1,2,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 while the car moves leftward with substantial negative velocity. At \(s_{22}\), the car is still moving left and has not reached the left boundary, so continuing to accelerate left is most likely.
+
+2. [Prediction]: The agent will most likely choose action 0 (accelerate to the left).
+
+3. >>Final action choice: [0]",8127,468,8595,6.2554134170059115,[0],[0.0],0.0,08_joint_final_action_v1
+73063dec53ebef2e681be5124d4b6b4a7da56554db49ecd6f6faa07c5fb44fc6,luna__MountainCar-v0__next-action__H5__shots12__pattern2,luna,MountainCar-v0,next-action,5,12,pattern2,0,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 to accelerate left, while the car continues moving left with substantial negative velocity. At \(s_{20}\), the velocity remains negative and the recent behavior shows no indication of switching, so it will most likely continue accelerating left.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",8528,138,8666,2.3976820420939475,[0],[0.0],0.0,08_joint_final_action_v1
+8fbe5f9e7d020045377f84db10c02bf6639d17761dcb4381e8e9d2d48f9e5365,luna__MountainCar-v0__next-action__H5__shots12__pattern2,luna,MountainCar-v0,next-action,5,12,pattern2,1,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 while moving left, and the car continues to gain or maintain strong negative velocity. At \(s_{21}\), the same leftward momentum and behavior pattern suggest it will continue accelerating left.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",8528,111,8639,1.9657252500765026,[0],[0.0],0.0,08_joint_final_action_v1
+6de1ce54d766e86880c96274e120ccca5d09a8de7badd8fda3e717740133a8f1,luna__MountainCar-v0__next-action__H5__shots12__pattern2,luna,MountainCar-v0,next-action,5,12,pattern2,2,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 while moving left, and the car still has substantial negative velocity at \(s_{22}\). This ongoing leftward phase suggests it will continue accelerating left to build momentum.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",8527,122,8649,2.7371392499189824,[0],[0.0],0.0,08_joint_final_action_v1
+acbab4ae17bec5ad3ca3ac73802e82ceb46c261d9240438897913a8b708464f9,luna__MountainCar-v0__next-action__H20__shots4__pattern1,luna,MountainCar-v0,next-action,20,4,pattern1,0,match,0,0,"1. [Reasoning]: The agent has consistently selected action 0, accelerating left while the car moves down the left slope. At \(s_{20}\), the car is still moving left with substantial negative velocity, so continuing the same action is most likely.
+
+2. [Prediction]: The agent will accelerate to the left.
+
+3. >>Final action choice: [0]",3724,247,3971,3.774034749949351,[0],[0.0],0.0,08_joint_final_action_v1
+34933c1c2f141429d76c6a98d047a320dff119010d1b8ed9de174db4ff83c618,luna__MountainCar-v0__next-action__H20__shots4__pattern1,luna,MountainCar-v0,next-action,20,4,pattern1,1,mismatch,2,0,"1. [Reasoning]: The agent has been accelerating left to build negative momentum, but at \(s_{21}\) the car is near the left side of the valley and its velocity is beginning to decrease in magnitude. The policy will likely switch direction to accelerate right and begin the return swing.
+
+2. [Prediction]: The agent will accelerate to the right.
+
+3. >>Final action choice: [2]",3725,604,4329,8.79444450000301,[2],[0.0],2.0,08_joint_final_action_v1
+bc1039f0456954587d2f3724eb867d280f86cd43515429165fa3631815f82e00,luna__MountainCar-v0__next-action__H20__shots4__pattern1,luna,MountainCar-v0,next-action,20,4,pattern1,2,mismatch,2,0,"1. [Reasoning]: The agent has repeatedly accelerated left to build negative momentum. At \(s_{22}\), the car is far down the left side of the valley and is still moving left, so the learned strategy will likely switch direction and accelerate right to begin climbing toward the goal.
+2. [Prediction]: The agent will choose action 2, accelerating to the right.
+3. >>Final action choice: [2]",3724,451,4175,6.592736250022426,[2],[0.0],2.0,08_joint_final_action_v1
+38b45fd71d4a135a250e832b7b4fff0f0236267286564be8663eeefa17b4d6c5,luna__MountainCar-v0__next-action__H20__shots4__pattern2,luna,MountainCar-v0,next-action,20,4,pattern2,0,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 (accelerate left), and the car is still moving left with substantial negative velocity. At \(s_{20}=[-0.7024,-0.0193]\), the agent will most likely continue this leftward acceleration.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",3592,178,3770,2.610816374886781,[0],[0.0],0.0,08_joint_final_action_v1
+9eb383bc315245778eb63f31eda55ef5d9bd8a53d96c2665ff9def0849bc75af,luna__MountainCar-v0__next-action__H20__shots4__pattern2,luna,MountainCar-v0,next-action,20,4,pattern2,1,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 (accelerate left), steadily moving toward the left side while maintaining negative velocity. At \(s_{21}=[-0.7214,-0.019]\), it will most likely continue this established behavior.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",3593,239,3832,3.5490127908997238,[0],[0.0],0.0,08_joint_final_action_v1
+6db2e57ab0eb72ae550e04206b2597bf21040e511cc5e8a57528337e1b81c101,luna__MountainCar-v0__next-action__H20__shots4__pattern2,luna,MountainCar-v0,next-action,20,4,pattern2,2,mismatch,2,0,"1. [Reasoning]: The agent has consistently chosen action 0 to build strong leftward momentum. At \(s_{22}=[-0.74,-0.0186]\), it is near the leftward swing point, so it will most likely switch to right acceleration to begin climbing toward the goal.
+2. [Prediction]: Action 2 — accelerate to the right.
+3. >>Final action choice: [2]",3592,211,3803,3.6566482500638813,[2],[0.0],2.0,08_joint_final_action_v1
+37c15f6aa79c2e0ee6a062e7245662a90beff6770304896b545cdf2da9f4d700,luna__MountainCar-v0__next-action__H20__shots8__pattern1,luna,MountainCar-v0,next-action,20,8,pattern1,0,mismatch,2,0,"1. [Reasoning]: The agent has repeatedly accelerated left with action 0 to build substantial negative velocity. At \(s_{20}\), the car is far down the left slope with \(v=-0.0193\), so it is likely to switch direction and apply rightward acceleration to brake the leftward motion and build momentum toward the goal.
+
+2. [Prediction]: The agent will most likely choose action 2, accelerating to the right.
+
+3. >>Final action choice: [2]",6180,603,6783,8.831378999864683,[2],[0.0],2.0,08_joint_final_action_v1
+13d660caeb5a689494be09d9fde8547c527ad038ea5a197475e0a2abb304a2d2,luna__MountainCar-v0__next-action__H20__shots8__pattern1,luna,MountainCar-v0,next-action,20,8,pattern1,1,mismatch,2,0,"1. [Reasoning]: The agent has repeatedly accelerated left with action 0, building a strong negative velocity. At \(s_{21}\), the car is far down the left side and gravity is beginning to slow its leftward motion, so the learned strategy will likely switch to accelerating right to begin reversing direction and build momentum toward the goal.
+
+2. [Prediction]: The agent will most likely choose action 2, accelerating to the right.
+
+3. >>Final action choice: [2]",6181,1139,7320,15.614053167169914,[2],[0.0],2.0,08_joint_final_action_v1
+263ffe3fc8d64fa33a6d27a4e8416b186d49ef3a1d0bff70502cd3ba6bab5ccf,luna__MountainCar-v0__next-action__H20__shots8__pattern1,luna,MountainCar-v0,next-action,20,8,pattern1,2,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 to accelerate left, building negative velocity as it moves toward the left side of the valley. At \(s_{22}\), the car is still moving left with velocity \(-0.0186\), so continuing the same maneuver is most likely.
+2. [Prediction]: The agent will choose action 0 (accelerate to the left).
+3. >>Final action choice: [0]",6180,377,6557,5.545037166913971,[0],[0.0],0.0,08_joint_final_action_v1
+5e9c9247ca88eab7c20d79bafa9f281c9beb7a8bdec5ee0c932b0165829124a7,luna__MountainCar-v0__next-action__H20__shots8__pattern2,luna,MountainCar-v0,next-action,20,8,pattern2,0,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 (accelerate left) throughout the sequence, building substantial leftward momentum. At \(s_{20}=[-0.7024,-0.0193]\), the car is still moving left and the recent behavior suggests the agent will continue this strategy before switching direction.
+
+2. [Prediction]: The most likely action is 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",6041,618,6659,8.127154208021238,[0],[0.0],0.0,08_joint_final_action_v1
+36780c09de2afc00fd5dbcbf02d5ed3a979f7e972e04ceb009bcea1bb2d2240e,luna__MountainCar-v0__next-action__H20__shots8__pattern2,luna,MountainCar-v0,next-action,20,8,pattern2,1,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 (accelerate left) while the car moves leftward with increasingly negative velocity. At state \(s_{21}\), this pattern is still continuing, so the agent will most likely maintain action 0.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",6042,135,6177,2.5612601249013096,[0],[0.0],0.0,08_joint_final_action_v1
+4626e56b58eef3eddb5cab80f807f98a04e1993cae612b9a7d3fb34f5b3800b3,luna__MountainCar-v0__next-action__H20__shots8__pattern2,luna,MountainCar-v0,next-action,20,8,pattern2,2,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 (accelerate left) from steps 2–21, and the car continues moving left with negative velocity. At \(s_{22}\), the same behavior is likely to continue.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",6041,112,6153,2.126940625021234,[0],[0.0],0.0,08_joint_final_action_v1
+20aab6143ad20bd6b55703fc48772d6b9238a6f0a212c85da26ecb19bcc0587e,luna__MountainCar-v0__next-action__H20__shots12__pattern1,luna,MountainCar-v0,next-action,20,12,pattern1,0,mismatch,2,0,"1. [Reasoning]: The agent has accelerated left throughout the sequence, building a strong negative velocity and moving toward the left side of the valley. At \(s_{20}\), the car is near the leftward turning region, so switching to right acceleration is likely to brake the leftward motion and build momentum for climbing the right hill.
+
+2. [Prediction]: The agent will most likely choose action 2 (accelerate to the right).
+
+3. >>Final action choice: [2]",8601,503,9104,6.527987250126898,[2],[0.0],2.0,08_joint_final_action_v1
+18a44c2b6a54d863cce32f8fe3fb3121d35b1c316f46b567f5a66e05670a2021,luna__MountainCar-v0__next-action__H20__shots12__pattern1,luna,MountainCar-v0,next-action,20,12,pattern1,1,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 to accelerate left, building substantial negative velocity and moving toward the left side of the valley. At \(s_{21}\), the car is still moving left at \(-0.019\), so continuing the same action is most likely before reversing direction.
+
+2. [Prediction]: The agent will most likely accelerate to the left.
+
+3. >>Final action choice: [0]",8602,355,8957,5.110583791974932,[0],[0.0],0.0,08_joint_final_action_v1
+97d9b6970390b54d4f6bbe14c9e4460008fe75124a16f517e8f56913f7aee6a2,luna__MountainCar-v0__next-action__H20__shots12__pattern1,luna,MountainCar-v0,next-action,20,12,pattern1,2,match,0,0,"1. [Reasoning]: The agent has consistently selected action 0 while moving leftward, with the velocity still strongly negative at \(s_{22}\). Since the car remains well away from the left boundary and is continuing the leftward momentum-building phase, action 0 is most likely to continue.
+
+2. [Prediction]: The agent will accelerate to the left.
+
+3. >>Final action choice: [0]",8601,308,8909,5.046759125078097,[0],[0.0],0.0,08_joint_final_action_v1
+6aa0c39fcc2263d960d5b7bdeb3c92b4ac2119811da1d6577e25140e29854e73,luna__MountainCar-v0__next-action__H20__shots12__pattern2,luna,MountainCar-v0,next-action,20,12,pattern2,0,match,0,0,"1. [Reasoning]: The agent has consistently selected action 0, accelerating left while the car continues gaining negative velocity and moving down the left slope. Since this behavior is still ongoing at \(s_{20}\), it will most likely continue with action 0.
+
+2. [Prediction]: Action 0 — accelerate to the left.
+
+3. >>Final action choice: [0]",9001,127,9128,2.3347933751065284,[0],[0.0],0.0,08_joint_final_action_v1
+d5428e00bfc725160a00627032756b8f38d86a187d5ae4b26790d91274c653dc,luna__MountainCar-v0__next-action__H20__shots12__pattern2,luna,MountainCar-v0,next-action,20,12,pattern2,1,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 to accelerate left, building strong negative velocity as the car moves down the left side of the valley. At \(s_{21}=[-0.7214,-0.019]\), it is still following this established momentum-building pattern and has not yet reached the far-left turning point.
+
+2. [Prediction]: The agent will most likely continue accelerating to the left with action 0.
+
+3. >>Final action choice: [0]",9002,177,9179,2.477585499873385,[0],[0.0],0.0,08_joint_final_action_v1
+4d32417c2965bc83258b5751b0f7aece9c69fe71a53333bad533d29f3c90e23a,luna__MountainCar-v0__next-action__H20__shots12__pattern2,luna,MountainCar-v0,next-action,20,12,pattern2,2,match,0,0,"1. [Reasoning]: The agent has consistently chosen action 0 to accelerate left, and the car continues moving left with substantial negative velocity. Since it is still building momentum on the left side of the valley, the agent will most likely continue this pattern.
+2. [Prediction]: Action 0 — accelerate to the left.
+3. >>Final action choice: [0]",9001,131,9132,2.511997165856883,[0],[0.0],0.0,08_joint_final_action_v1
+30b847c8f822354874393c6fc1c3d868edfc69f36366f3e83e7a66904b15c2a7,luna__Pendulum-v1__next-action__H5__shots4__pattern1,luna,Pendulum-v1,next-action,5,4,pattern1,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is still substantially displaced from upright, with negative angle (\(y=-0.6928\)) and positive angular velocity \(1.2645\), indicating it is swinging toward the upright position. The agent has used the maximum positive torque at each preceding step, so it will most likely continue applying the maximum positive torque to maintain this swing.
+
+2. **[Prediction]:** Action element [0] is approximately `2.00`, which lies in the interval \([1.6, 2.0]\), corresponding to bin **9**.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6152,618,6770,6.27698720805347,[2.0],[2.0],0.0,08_joint_final_action_v1
+7499d5e5a24c04fa588c3d197c7862a51b175c6946f256bcebfa7218346073c1,luna__Pendulum-v1__next-action__H5__shots4__pattern1,luna,Pendulum-v1,next-action,5,4,pattern1,1,match,[9],[9],"1. **[Reasoning]:**  
+   The pendulum is still below the upright position (\(y=-0.6542\)) and moving toward it with positive angular velocity \(1.0448\). The agent has applied maximum positive torque at every preceding step, consistently driving the pendulum upward. It will most likely continue with the maximum torque.
+
+2. **[Prediction]:**  
+   Action element [0] is approximately `2.00`, which lies in bin 9, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6150,353,6503,3.9870404999237508,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+9bb16372ff3986715281b16d404e05f13a2b18805e775610fa5c0e6761ed5a4b,luna__Pendulum-v1__next-action__H5__shots4__pattern1,luna,Pendulum-v1,next-action,5,4,pattern1,2,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is moving toward the upright position with positive angular velocity, while the angular speed has decreased from \(1.0448\) to \(0.806\). The agent has begun reducing its positive torque from the saturated value of \(2.0\), so it will likely apply a moderately reduced positive torque, around \(1.3\).
+
+2. **[Prediction]:** Action element [0] is approximately \(1.30\), which lies in the interval \([1.2, 1.6)\), corresponding to bin 8.
+
+3. **[Formatting]:**
+```python
+predictions = [1.30]
+```
+
+>>Final action bins: [8]",6151,672,6823,6.681247915839776,[1.3],[1.9895559549331665],0.6895559549331665,08_joint_final_action_v1
+f9ab80ac56eae1d4ad0214576ed22d8b7708de73e6b9aabefc34fff7c51e2212,luna__Pendulum-v1__next-action__H5__shots4__pattern2,luna,Pendulum-v1,next-action,5,4,pattern2,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is still substantially displaced from upright, with a positive angular velocity of \(1.2645\). The agent has applied strong positive torque throughout the recent sequence, reducing the displacement while maintaining the swing toward upright. It will most likely continue with the maximum positive torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, which falls in bin **9**, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6267,311,6578,3.1866478328593075,[2.0],[2.0],0.0,08_joint_final_action_v1
+8fbbcc2c6b23220c034888f8527caf11015e1087295222b8b942fea2e8781f7a,luna__Pendulum-v1__next-action__H5__shots4__pattern2,luna,Pendulum-v1,next-action,5,4,pattern2,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is still substantially displaced from upright, with negative angle (\(\theta \approx -0.71\)) but positive angular velocity. The preceding actions have consistently used maximum positive torque, steadily reducing the displacement and velocity. The agent will most likely continue with the maximum positive torque to drive the pendulum toward upright.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, which falls in bin **9**, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6265,248,6513,2.920115833869204,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+37be64f69380c182cea9d71cabe3e24e8ddb37bd00590662ec15509da894e2f8,luna__Pendulum-v1__next-action__H5__shots4__pattern2,luna,Pendulum-v1,next-action,5,4,pattern2,2,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is moving toward the upright position with positive angular velocity, while the agent has progressively reduced its positive torque as the velocity decreased. At \(s_{22}\), a moderately strong positive torque is therefore likely, but below the previous value of \(1.679\).
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **1.35**, which falls in bin **8**, \([1.2, 1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [1.35]
+```
+
+>>Final action bins: [8]",6266,509,6775,4.787117291009054,[1.35],[1.9895559549331665],0.6395559549331664,08_joint_final_action_v1
+806e5c47714fac02fcb8a26fbb91002950e6ade7d89beef098a0b3293fd82c85,luna__Pendulum-v1__next-action__H5__shots8__pattern1,luna,Pendulum-v1,next-action,5,8,pattern1,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is still substantially displaced at a negative angle, while its positive angular velocity is carrying it toward the upright position. The agent has applied strong positive torque throughout the preceding steps, increasing from \(1.82\) to the maximum \(2.0\). It will most likely maintain the maximum positive torque at \(s_{20}\).
+
+2. **[Prediction]:** Action element [0] is approximately \(2.00\), which lies in the interval \([1.6, 2.0]\), corresponding to bin **9**.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11072,302,11374,3.2552428341004997,[2.0],[2.0],0.0,08_joint_final_action_v1
+d473351977822d0e978c67b05e1013ab34edc04278ecee8ab2ec99f77a91b438,luna__Pendulum-v1__next-action__H5__shots8__pattern1,luna,Pendulum-v1,next-action,5,8,pattern1,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is still substantially displaced from upright, with \(\theta \approx \arctan2(-0.6542,0.7563)\approx -0.71\) radians, while its angular velocity remains positive at \(1.0448\). The agent has consistently applied maximum positive torque during Steps 16–20, driving the pendulum toward upright and reducing its displacement and velocity. It will most likely continue using the maximum positive torque at \(s_{21}\).
+
+2. **[Prediction]:** Action element [0] is approximately \(2.00\), which lies in bin 9, \([1.6,2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11070,317,11387,3.3397304581012577,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+d63fe8a8e3263518ddeaef610b0a06a2a75b674095cd40c64ec5519e948ef019,luna__Pendulum-v1__next-action__H5__shots8__pattern1,luna,Pendulum-v1,next-action,5,8,pattern1,2,mismatch,[8],[9],"1. **[Reasoning]:**  
+   The agent has maintained a strong positive torque while the pendulum moves toward the upright position. As the angular velocity decreases from \(1.04\) to \(0.81\) and the angle approaches upright, the torque is likely reduced from \(1.679\) to a moderately positive value. A torque around \(1.35\) is a reasonable continuation of this trend.
+
+2. **[Prediction]:**  
+   Action element [0] is approximately \(1.35\), which lies in \([1.2,1.6)\), corresponding to bin index \(8\).
+
+3. **[Formatting]:**
+```python
+predictions = [1.35]
+```
+
+>>Final action bins: [8]",11071,1199,12270,11.230213625123724,[1.35],[1.9895559549331665],0.6395559549331664,08_joint_final_action_v1
+331cbc3519e01bb9821aad187e41d73f4236948a2cbfbd1f2205a7da51f14129,luna__Pendulum-v1__next-action__H5__shots8__pattern2,luna,Pendulum-v1,next-action,5,8,pattern2,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is still substantially displaced from upright, with positive angular velocity that is decreasing under sustained positive torque. Since the agent has applied near-maximal positive torque for the last several steps and the pendulum has not yet reached the upright region, it will likely continue using the maximum positive torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, which falls in bin **9**, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11281,228,11509,2.4970513328444213,[2.0],[2.0],0.0,08_joint_final_action_v1
+7dd8d4bed6fd77a819836418398cbac262efed595a322ddb0a45ea693ba4c160,luna__Pendulum-v1__next-action__H5__shots8__pattern2,luna,Pendulum-v1,next-action,5,8,pattern2,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position (\(\theta \approx -0.71\)) and moving toward it with positive angular velocity. The agent has consistently used the maximum positive torque while the state improves, so it will most likely continue with strong positive torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, which falls in bin **9**, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11279,607,11886,6.55318233394064,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+c12fe5c3d1bc80aa822fb06b560a052e763cfbc731764a02825897d549a1dac4,luna__Pendulum-v1__next-action__H5__shots8__pattern2,luna,Pendulum-v1,next-action,5,8,pattern2,2,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is still moving with positive angular velocity, while the agent has been applying strong positive torque. As the angular velocity decreases from \(1.0448\) to \(0.806\), the agent will likely reduce the torque from \(1.679\) but keep it moderately positive to maintain the swing toward the upright position.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **1.40**, which falls in bin **8**, \([1.2, 1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [1.40]
+```
+
+>>Final action bins: [8]",11280,560,11840,5.067283791024238,[1.4],[1.9895559549331665],0.5895559549331666,08_joint_final_action_v1
+1baeec523582559be7eb97c0a99f735bbdd8c68a569c4d51300f4a0fc288c13a,luna__Pendulum-v1__next-action__H5__shots12__pattern1,luna,Pendulum-v1,next-action,5,12,pattern1,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is still substantially displaced from upright, with \(\theta \approx \arctan2(-0.6928,0.7211)\approx -0.76\) radians, while its angular velocity is positive. The agent has applied increasingly strong positive torque as the pendulum swings upward, using the maximum \(+2\) torque for the last several steps. It will most likely continue with maximum positive torque at \(s_{20}\).
+
+2. **[Prediction]:** Action element [0] is approximately \(2.00\), which lies in the interval \([1.6,2.0]\), corresponding to bin index 9.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",15889,360,16249,3.599017333937809,[2.0],[2.0],0.0,08_joint_final_action_v1
+8606693f7303f5e8f902fe4d051c0e7aa700606c3f1004b6cb4e518c59fa0272,luna__Pendulum-v1__next-action__H5__shots12__pattern1,luna,Pendulum-v1,next-action,5,12,pattern1,1,match,[9],[9],"1. **[Reasoning]:** The agent has consistently applied the maximum positive torque while the pendulum moves from a large negative angle toward upright. Although the angular velocity is decreasing, it remains positive and the pendulum is still substantially below the upright position, so the agent will most likely continue using the maximum positive torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(2.00\), which lies in the interval \([1.6, 2.0]\), corresponding to bin index 9.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",15887,433,16320,4.672963625052944,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+1f7591dc74fbb6cea624f7326eead2c7b9f5002a880bef2ff041bd3c104cc6db,luna__Pendulum-v1__next-action__H5__shots12__pattern1,luna,Pendulum-v1,next-action,5,12,pattern1,2,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is moving toward the upright position with positive angular velocity, while the agent has begun reducing its positive torque from \(2.0\) to \(1.679\). At \(s_{22}\), the velocity is lower (\(0.806\)) and the angle is closer to upright, so the agent will likely continue tapering the positive torque to avoid overshoot. A torque around \(1.3\) is consistent with this trend.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(1.32\), which lies in \([1.2,1.6)\), corresponding to bin 8.
+
+3. **[Formatting]:**
+```python
+predictions = [1.32]
+```
+
+>>Final action bins: [8]",15888,1196,17084,11.247229625005275,[1.32],[1.9895559549331665],0.6695559549331664,08_joint_final_action_v1
+206ce692873c3b5813be593eede28e214cf4c2938a952aaf9d660a9545971b6c,luna__Pendulum-v1__next-action__H5__shots12__pattern2,luna,Pendulum-v1,next-action,5,12,pattern2,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is moving toward the upright position from a negative angle, with positive angular velocity. The agent has applied strong positive torque for the last several steps, and the angular velocity remains substantial, so it will likely continue using the maximum positive torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, which falls in bin **9**, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",17424,336,17760,3.6525114171672612,[2.0],[2.0],0.0,08_joint_final_action_v1
+2f1cfd9dadbea9b41ba955d82be75e099cfd1bee1d07dd00931546c4b9bb6de6,luna__Pendulum-v1__next-action__H5__shots12__pattern2,luna,Pendulum-v1,next-action,5,12,pattern2,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position (\(\theta \approx -0.71\) radians) and has positive angular velocity, moving toward the target. The agent has consistently used maximum positive torque over the preceding steps, so it will most likely continue applying \(+2\) to drive the pendulum upward.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, which falls in bin **9**, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",17422,346,17768,3.66615670803003,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+42c971870035311f13cdd7662e8b5da16dfe6fde67f0e37cef05e174ce2a9fa3,luna__Pendulum-v1__next-action__H5__shots12__pattern2,luna,Pendulum-v1,next-action,5,12,pattern2,2,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is still substantially displaced from upright, with positive angular velocity moving it toward equilibrium. The agent has maintained strong positive torque but reduced it from \(2.00\) to \(1.679\) as the velocity decreased, so it will likely continue with a moderately strong positive torque, around \(1.3\).
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **1.30**, which falls in \([1.2, 1.6)\), corresponding to bin **8**.
+
+3. **[Formatting]:**
+```python
+predictions = [1.30]
+```
+
+>>Final action bins: [8]",17423,657,18080,6.753210624912754,[1.3],[1.9895559549331665],0.6895559549331665,08_joint_final_action_v1
+2650970b5d6e7d216dfea364220787f7e86741899007af5e43986ee157befd15,luna__Pendulum-v1__next-action__H20__shots4__pattern1,luna,Pendulum-v1,next-action,20,4,pattern1,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position with a negative angle and positive angular velocity. The agent has applied strong positive torque for the preceding several steps, using the maximum action from steps 16–19. It will most likely continue applying maximum positive torque at \(s_{20}\) to maintain the swing toward upright.
+
+2. **[Prediction]:** Action element [0] is approximately \(2.00\), which lies in the interval \([1.6, 2.0]\), corresponding to bin 9.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6820,529,7349,5.114655290963128,[2.0],[2.0],0.0,08_joint_final_action_v1
+9a4438c5e7cc617bb932be23ffa5ac734eef575f5778a3d9089c74c77a8efa70,luna__Pendulum-v1__next-action__H20__shots4__pattern1,luna,Pendulum-v1,next-action,20,4,pattern1,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position with a positive angular velocity, and the agent has used maximum positive torque throughout the recent steps to continue driving it upward. Since the velocity is decreasing while the pendulum remains substantially displaced, the agent will most likely continue applying the maximum positive torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately `2.00`, which lies in the interval \([1.6, 2.0]\), corresponding to bin **9**.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6817,602,7419,7.577910416992381,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+8a42e8513dacb01857316612da8893bae6fb3c2ec6e1594f624bb54275695f08,luna__Pendulum-v1__next-action__H20__shots4__pattern1,luna,Pendulum-v1,next-action,20,4,pattern1,2,mismatch,[8],[9],"1. **[Reasoning]:**  
+   The pendulum is moving toward the upright position with positive angular velocity, while the agent has consistently applied a strong positive torque to control and slow this motion. Since the velocity has decreased to \(0.806\), the agent will likely reduce the torque slightly from the recent near-maximum values, while keeping it positive.
+
+2. **[Prediction]:**  
+   Action element [0] is predicted to be approximately \(1.55\), which lies in the interval \([1.2,1.6)\), corresponding to bin 8.
+
+3. **[Formatting]:**
+```python
+predictions = [1.55]
+```
+
+>>Final action bins: [8]",6815,1188,8003,11.241321041015908,[1.55],[1.9895559549331665],0.43955595493316646,08_joint_final_action_v1
+82191ffcb1fa1d66aa3f7bff54803b4c5c37cd5caadbae45c1be914d24e7194e,luna__Pendulum-v1__next-action__H20__shots4__pattern2,luna,Pendulum-v1,next-action,20,4,pattern2,0,match,[9],[9],"1. **[Reasoning]:**  
+   The pendulum is moving toward the upright position from a negative angle, with positive angular velocity \(1.2645\). The agent has consistently applied strong positive torque, using the maximum \(2.0\) at steps 16–19, so it will most likely continue with maximum positive torque at \(s_{20}\).
+
+2. **[Prediction]:**  
+   Action element [0] is predicted to be approximately **2.00**, which falls in bin **9**, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6935,284,7219,2.8725476250983775,[2.0],[2.0],0.0,08_joint_final_action_v1
+c2261727c36867a2814d629e766f18a195a23b04d09627bf54aaf8a96f8df214,luna__Pendulum-v1__next-action__H20__shots4__pattern2,luna,Pendulum-v1,next-action,20,4,pattern2,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is moving toward the upright position with positive angular velocity, while the agent has consistently applied strong positive torque throughout the trajectory. Since the velocity is still substantial and the recent actions are saturated at the positive limit, the agent will most likely continue with near-maximum positive torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, which falls in bin **9**, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",6932,543,7475,5.547576250042766,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+3d0cfbd945df3db87d3b004bb1a3974f34ccb53a3fe381d0006e3f790068c29d,luna__Pendulum-v1__next-action__H20__shots4__pattern2,luna,Pendulum-v1,next-action,20,4,pattern2,2,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is moving toward the upright position with positive angular velocity that has decreased to \(0.806\). The agent has consistently used strong positive torque, while slightly reducing it as the velocity falls, so it will likely continue with a moderately strong positive torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **1.50**, which falls in the interval \([1.2, 1.6)\), corresponding to bin **8**.
+
+3. **[Formatting]:**
+```python
+predictions = [1.50]
+```
+
+>>Final action bins: [8]",6930,656,7586,6.189512874931097,[1.5],[1.9895559549331665],0.4895559549331665,08_joint_final_action_v1
+419b2a3b46e26f527495bbb98ccaec22f628446ddf74d79a334d5a835896c768,luna__Pendulum-v1__next-action__H20__shots8__pattern1,luna,Pendulum-v1,next-action,20,8,pattern1,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is still substantially below the upright position, with \(\theta \approx \operatorname{atan2}(-0.6928,0.7211)\approx -0.76\) radians and positive angular velocity \(1.2645\). The agent has used maximum positive torque throughout the recent steps to continue driving the pendulum toward upright, so it will likely remain saturated at \(+2\).
+
+2. **[Prediction]:** Action element [0] is approximately \(2.00\), which lies in \([1.6,2.0]\), corresponding to bin 9.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11740,468,12208,4.3541293339803815,[2.0],[2.0],0.0,08_joint_final_action_v1
+4b8c16a20f1467a9c669ee4596039c5a250db9f9ad1123f2396011bfd5ed38c8,luna__Pendulum-v1__next-action__H20__shots8__pattern1,luna,Pendulum-v1,next-action,20,8,pattern1,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is still substantially below the upright position, with \(\theta \approx \operatorname{atan2}(-0.6542,0.7563)\approx -0.71\) radians. Its positive angular velocity is decreasing, but the recent policy has consistently applied maximum positive torque from steps 16–20 to continue driving it toward upright. Thus, the agent will most likely maintain the maximum positive action.
+
+2. **[Prediction]:** Action element [0] is approximately \(2.00\), which lies in bin 9, \([1.6,2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11737,429,12166,4.66298404103145,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+83d616b3412d8ea3c23e8bf1d10be711387c1c5f771586a86fdce57b22025057,luna__Pendulum-v1__next-action__H20__shots8__pattern1,luna,Pendulum-v1,next-action,20,8,pattern1,2,match,[9],[9],"1. **[Reasoning]:** The pendulum is still displaced to the negative-angle side, while its positive angular velocity is carrying it toward upright. The agent has consistently applied strong positive torque, though it reduced the torque slightly at step 21 as the velocity decreased. Thus, a strong positive action, likely around \(1.7\)–\(1.8\), is expected at \(s_{22}\).
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **1.75**, which lies in \([1.6, 2.0]\), corresponding to bin **9**.
+
+3. **[Formatting]:**
+```python
+predictions = [1.75]
+```
+
+>>Final action bins: [9]",11735,1067,12802,11.376370332902297,[1.75],[1.9895559549331665],0.2395559549331665,08_joint_final_action_v1
+5446f4414cceee9a5f3f210f9fd98bda0c38257ffe97294b012219cb088a9c30,luna__Pendulum-v1__next-action__H20__shots8__pattern2,luna,Pendulum-v1,next-action,20,8,pattern2,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is still below the upright position (\(\theta \approx -0.76\)) and has positive angular velocity, moving toward upright. The agent has consistently applied strong positive torque, including maximum torque over the last several steps, so it will most likely continue with near-maximum positive torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, which falls in bin **9**, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11949,577,12526,5.562345250044018,[2.0],[2.0],0.0,08_joint_final_action_v1
+7b6e62e977b1eb221cf643b69dcd86376da674929161175654b8cd8325a40ea8,luna__Pendulum-v1__next-action__H20__shots8__pattern2,luna,Pendulum-v1,next-action,20,8,pattern2,1,match,[9],[9],"1. **[Reasoning]:** The agent has consistently applied strong positive torque, with actions at the maximum \(2.0\) for steps 16–20. At \(s_{21}\), the pendulum is still moving toward the upright region with positive angular velocity, so the policy will most likely maintain this saturated positive torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, which falls in bin **9**, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",11946,500,12446,4.8995368329342455,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+6e785180ebe69171312772b874eac25b7050868042669dc7775f91fc1f91ef9c,luna__Pendulum-v1__next-action__H20__shots8__pattern2,luna,Pendulum-v1,next-action,20,8,pattern2,2,match,[9],[9],"1. **[Reasoning]:** The pendulum is moving toward the upright position with positive angular velocity, while the agent has consistently applied strong positive torque. Although the torque decreased slightly at step 21 as the velocity fell, the agent will likely continue with a strong positive torque at \(s_{22}\).
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **1.80**, which falls in the interval \([1.6, 2.0]\), corresponding to bin **9**.
+
+3. **[Formatting]:**
+```python
+predictions = [1.80]
+```
+
+>>Final action bins: [9]",11944,362,12306,3.722484583966434,[1.8],[1.9895559549331665],0.18955595493316646,08_joint_final_action_v1
+abb6633ff6c26d48ae9a572c8231eb9324b0fd58639ea916e92d0ec02eb025f2,luna__Pendulum-v1__next-action__H20__shots12__pattern1,luna,Pendulum-v1,next-action,20,12,pattern1,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is still displaced at a negative angle (\(\theta\approx -0.76\) radians) but moving toward upright with positive angular velocity. The agent has consistently applied maximum positive torque from steps 16–19, so it will most likely continue using a strong positive torque at \(s_{20}\).
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(2.00\), which lies in \([1.6,2.0]\), corresponding to bin 9.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",16557,352,16909,3.435075083980337,[2.0],[2.0],0.0,08_joint_final_action_v1
+f92e533dd6aa0c0a0e95ca451e6f15f5a34bec6458d2108611ddf15543f5220e,luna__Pendulum-v1__next-action__H20__shots12__pattern1,luna,Pendulum-v1,next-action,20,12,pattern1,1,match,[9],[9],"1. **[Reasoning]:** The agent has consistently applied strong positive torque from steps 16–20, while the pendulum moves toward the upright region and its angular velocity decreases from \(2.50\) to \(1.26\). At \(s_{21}\), the velocity remains positive and the pendulum is still displaced, so the policy will likely continue using the maximum positive torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(2.00\), which lies in \([1.6,2.0]\), corresponding to bin 9.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",16554,1498,18052,14.375992374960333,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+7e57a5b3a1f322374e075f0cef67d0d2996e83262a874150613069ffa22dd344,luna__Pendulum-v1__next-action__H20__shots12__pattern1,luna,Pendulum-v1,next-action,20,12,pattern1,2,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is moving toward the upright position with positive angular velocity, while the negative-angle gravity term is slowing it down. The agent has maintained strong positive torque, though it reduced the action from \(2.0\) to \(1.679\) as the pendulum approached upright. At \(s_{22}\), it will likely continue with a moderately strong positive torque, around \(1.5\).
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(1.50\), which lies in the interval \([1.2,1.6)\), corresponding to bin index 8.
+
+3. **[Formatting]:**
+```python
+predictions = [1.50]
+```
+
+>>Final action bins: [8]",16552,1723,18275,19.325135708088055,[1.5],[1.9895559549331665],0.4895559549331665,08_joint_final_action_v1
+163928d98464de7fccccfa20102264f100cc4238252c2d86211a0da52c3bf123,luna__Pendulum-v1__next-action__H20__shots12__pattern2,luna,Pendulum-v1,next-action,20,12,pattern2,0,match,[9],[9],"1. **[Reasoning]:** The pendulum is moving toward the upright position: its angle is still negative but its angular velocity remains strongly positive. The agent has applied sustained strong positive torque throughout the recent steps, including \(+2.00\) for steps 16–19, so it will most likely continue with maximum positive torque at \(s_{20}\).
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, which falls in bin **9**, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",18092,353,18445,3.665427332976833,[2.0],[2.0],0.0,08_joint_final_action_v1
+40a234a96a50f3b0db199a3107334345a6634041e7b4d746924d9d133581fb57,luna__Pendulum-v1__next-action__H20__shots12__pattern2,luna,Pendulum-v1,next-action,20,12,pattern2,1,match,[9],[9],"1. **[Reasoning]:** The pendulum is still well below the upright position, with a positive angular velocity of \(1.0448\). The agent has applied strong positive torque throughout the recent steps, using the maximum \(2.0\) from steps 16–20 while driving the pendulum toward upright. It will most likely continue with maximum positive torque at \(s_{21}\).
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **2.00**, which falls in bin **9**, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",18089,623,18712,6.562452625017613,[2.0],[1.6790494918823242],0.3209505081176758,08_joint_final_action_v1
+86211a8f121aad4a3a26d9ebec2c602d06418c21f18924bd9c8ac39e4cf6cb20,luna__Pendulum-v1__next-action__H20__shots12__pattern2,luna,Pendulum-v1,next-action,20,12,pattern2,2,match,[9],[9],"1. **[Reasoning]:** The pendulum is moving toward the upright region with positive angular velocity, and the agent has consistently applied strong positive torque. Although the torque decreased slightly at step 21, the angular velocity remains substantial, so a strong positive action is still most likely at \(s_{22}\).
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **1.76**, which lies in \([1.6, 2.0]\), corresponding to bin **9**.
+
+3. **[Formatting]:**
+```python
+predictions = [1.76]
+```
+
+>>Final action bins: [9]",18087,274,18361,3.0531913328450173,[1.76],[1.9895559549331665],0.2295559549331665,08_joint_final_action_v1

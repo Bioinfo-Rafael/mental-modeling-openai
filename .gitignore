@@ -38,3 +38,9 @@ experiments/08_fewshot/results/dry_run/*
 !experiments/08_fewshot/results/dry_run/preview.html
 # Finder metadata is local, including inside shared result directories.
 .DS_Store
+
+# Exp.08: share full experiment results, including API journals and scoring backups.
+!experiments/08_fewshot/results/
+!experiments/08_fewshot/results/**
+experiments/08_fewshot/results/**/.DS_Store
+experiments/08_fewshot/results/.execution.lock
