@@ -1,0 +1,23 @@
+{
+  "source_sha256": {
+    "experiments/08_fewshot/results/api/records.jsonl": "3bd9ba7a8ce9b099b6f4b2c9ded0fac95ce1b28895793bf7bab8fdbe36330062",
+    "experiments/08_fewshot/reasoning_for_scoring_scored_astra_high.csv": "980b34ec2163bfec2a2d50f027a8c0cdfec9b80f1940dbf75ad3ddef36c981a5",
+    "data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_1.npz": "4f3fbf6997ec293ae7417fc721754d97f04ac20ab1731c30e3915ad8baaa2d29",
+    "data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_1.npz": "e3320a406e3fe8474ca64b240b2a60341b57135c9ac05ce51915888b2ba61c6e"
+  },
+  "records": 144,
+  "groups": 28,
+  "accuracy_unparsed": 0,
+  "error_unparsed": 0,
+  "corrected_status_count": 59,
+  "totals": {
+    "MountainCar-v0": {
+      "correct": 65,
+      "legacy_correct": 65
+    },
+    "Pendulum-v1": {
+      "correct": 59,
+      "legacy_correct": 0
+    }
+  }
+}

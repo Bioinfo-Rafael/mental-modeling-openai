@@ -71,6 +71,10 @@ merged直下には `requests.jsonl` / `responses.jsonl` 自体はない。`archi
 
    `--task Pendulum-v1 --history 5`で120件だけ先に実行できる。実行済み条件を含む指定はエラー。残りの完了済み除外は`--remaining`で明示する。各回を`results/batches/<識別子>/`へ保存し、`--merge`または解析コマンドで全960件を統合する。途中失敗からの再開は非対応。[分割の手順](06_new_models_n10/README.md#まずpendulumh5だけ実行する)を参照。
 
+7. **[08：Next Action few-shotのdry-run](08_fewshot/README.md)**
+   07で選んだ同一Taskの正解例・不正解例を1:1で入力する。評価はnext-actionのみ、Terra/Luna、H=5/20、例数4/8/12、Scoreはパターン1＝正解1のみ＋不正解3以上、パターン2＝正解2以下＋不正解3以下。2 Task × 2 Model × 2 H × 3例数 × 2パターン × N3 = **144件**。例の予測対象・元モデル・Hは横断して選び、評価問題は例と別episodeの3問を条件間で揃える。
+   `08_fewshot/` で `python run.py` を実行すると、APIを呼ばず `results/dry_run/preview.html` と改行を保持したTXTを生成する。選択済みJSONが未配置なら不足内容だけを保存し、プロンプトを捏造しない。`--execute --confirm-paid-api` で確認済みプロンプトを送信し、`results/api/` へ保存する。
+
 ## 実装・実行状況について
 
 初回実装時は静的レビューのみを行い、実験・API呼び出しは実行していません。その後、ユーザーの指示でコードとExp.1の既存preview結果をcommit・pushしています。今回のメモ追記では実験・API送信を実行していません。
@@ -86,6 +90,7 @@ merged直下には `requests.jsonl` / `responses.jsonl` 自体はない。`archi
 | 04_sample_size_analysis：N30/20/10の先頭subset比較 | 03のrecords＋manifest/summary | 新規queryなし | 0 | `04_sample_size_analysis/results/` |
 | 05_new_models_single：Joint N10 pilot | Pendulum、H20、4 metrics | 40/model＝120 | 40/model＝120 | `05_new_models_single/results/` |
 | 06_new_models_n10：Joint全条件N10 | raw＋05の一致する120 records | 320/model＝960 | 280/model＝840 | `06_new_models_n10/results/` |
+| 08_fewshot：Next Action few-shot計画 | raw＋07からexportした選択済みJSON | 48条件×3＝144予定 | dry-runは0、API実行は144 | `08_fewshot/results/dry_run/`・`results/api/` |
 
 ## コマンド（ユーザーが後日実行するとき）
 
@@ -110,6 +115,7 @@ API keyは `OPENAI_API_KEY` 環境変数のみから読みます。キーをコ�
 | 04 | `python experiments/04_sample_size_analysis/run.py --dry-run`（03が必要） | `python experiments/04_sample_size_analysis/run.py`（APIなし） |
 | 05 | `python experiments/05_new_models_single/run.py` | `python experiments/05_new_models_single/run.py --execute --confirm-paid-api` |
 | 06 | `python experiments/06_new_models_n10/run.py` | `python experiments/06_new_models_n10/run.py --execute --confirm-paid-api` |
+| 08 | `python experiments/08_fewshot/run.py`（HTML/TXT確認） | `python experiments/08_fewshot/run.py --execute --confirm-paid-api` |
 
 ## 条件・安全性
 

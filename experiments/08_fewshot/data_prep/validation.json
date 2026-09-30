@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "records": 1920,
+  "unique_query_ids": 1920,
+  "by_model": {
+    "sol": 320,
+    "terra": 320,
+    "luna": 320,
+    "3.5": 960
+  },
+  "missing_reasoning": 126,
+  "missing_responses": 6,
+  "score_join": "CSV stable order + original CSV equality + nonblank reasoning text verified",
+  "source_sha256": {
+    "data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_0.npz": "c91b3e277decddff587601790c381096c5bab98fc726af94dba76d924e0ffa5b",
+    "data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz": "09c3c01c27f0a19af5d18bd6f5c70cbc8dd1b88eb8f3c70d2bbaac03ecf32fce",
+    "experiments/03_1_gpt35_history_n30_joint/results/records.jsonl": "3517021c6343b20be8fffa3f0fefdbb76da247f769b8d9cad0081dcec86dedaa",
+    "experiments/03_1_gpt35_history_n30_joint/results/manifest.json": "67bbcac2f4bf3287cc6fc5254777e9b4c7d7fc88b8cb22ce7e57eda629f493e9",
+    "experiments/03_1_gpt35_history_n30_joint/results/summary.json": "dd184e779359f3656aef83bba1f8f5e78a9b57ec42fef92ef1dbfbbf1f816606",
+    "experiments/06_new_models_n10/results/merged/c189af3036db4adfb9e4da5bb632ea48/records.jsonl": "6be3d9ca736985c19d5a62f4e42cd34e27298f8719938cbce9687ced046b5fd1",
+    "experiments/06_new_models_n10/results/merged/c189af3036db4adfb9e4da5bb632ea48/manifest.json": "8c4499d91e3c87f91bdd6542238e921dcac2631f8e937bf918dc5902c1c13ded",
+    "experiments/06_new_models_n10/results/merged/c189af3036db4adfb9e4da5bb632ea48/summary.json": "9192c3b0278df23d5f4d1dd9289ff4ed68e87bc987335f0695ce7d56a5605278",
+    "experiments/07_view_rawdata/reasoning_for_scoring_scored_astra_high.csv": "bf4a7e3acaead3c38216c52b6d0273311cb638369f6cc2163f489455bae1705b",
+    "experiments/07_view_rawdata/reasoning_for_scoring.csv": "c084e86027a51bf7656b7603a3fb14ff87c0562b68ecbf3a9d6e0463063c7403"
+  },
+  "direction_threshold": 0.0001,
+  "state_delta": "later - earlier for both next-state and last-state",
+  "continuous_correctness": "No arbitrary tolerance; absolute errors only"
+}

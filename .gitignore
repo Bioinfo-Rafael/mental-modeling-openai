@@ -28,3 +28,13 @@ experiments/**/results/*
 !experiments/01_prompt_preview/results/manifest.json
 !experiments/01_prompt_preview/results/manifest.csv
 !experiments/01_prompt_preview/results/*.txt
+
+# Exp.08 shared figures, summaries, and editable preview template.
+!experiments/08_fewshot/results/analysis/
+!experiments/08_fewshot/results/analysis/**
+!experiments/08_fewshot/results/dry_run/
+experiments/08_fewshot/results/dry_run/*
+!experiments/08_fewshot/results/dry_run/preview_template.html
+!experiments/08_fewshot/results/dry_run/preview.html
+# Finder metadata is local, including inside shared result directories.
+.DS_Store

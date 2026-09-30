@@ -1,14 +1,22 @@
-# 入出力の生データビューア
+# 入出力の生データビューア・few-shot選択
 
-clone後、[view_rawdata.html](view_rawdata.html) をブラウザで開いてください。サーバー、Python、APIキー、元のJSONLは不要です。
+[view_rawdata.html](view_rawdata.html) をブラウザで開いてください。サーバー、Python、APIキー、元JSONLは閲覧時には不要です。
 
-HTMLにはSol / Terra / Lunaの各320件と、GPT-3.5 Jointの各条件先頭10件（計320件）、合計1,280件を埋め込んでいます。元JSONLへのアクセスや外部通信は行いません。SolのAPI失敗6件も含みます。
+HTMLには03_1のGPT-3.5全960件と、05を含む06統合版のSol / Terra / Luna各320件、合計1,920件を埋め込んでいます。SolのAPI失敗6件も含みます。GPT-3.5は各条件30件、他モデルは各条件10件です。
 
-モデル・タスク・予測対象・Hを選択し、上部に固定された「前へ／次へ」で10件を切り替えられます。入力・回答は改行を保って表示し、条件や数値は別表に表示します。
+モデル・Task・予測対象・Hを選び、上部でReasoning scoreと一致／誤差を確認できます。回答の直後にも、Joint用の正解と予測の比較表を表示します。元の旧parserのstatusは新しい正誤表示には使いません。連続値に任意の正誤閾値は置かず、各次元の絶対誤差を表示します。
 
-データは2026-09-16時点のスナップショットです。元データの更新はHTMLへ自動反映されません。
+**正解例 / 不正解例**は手動の選択区分です。押すと色が変わり、同じボタンで解除、反対のボタンで区分変更します。右上の**選択済み**から一覧・メモ・並べ替え・JSON再読み込みを利用できます。API失敗で回答がない例は選択できません。
 
-[view_rawdata.ipynb](view_rawdata.ipynb) はローカルJSONLを読み込む別版です。元JSONLは通常Gitの除外対象なので、Notebookの再実行にはセル内で指定した元データを別途配置する必要があります。HTML版の閲覧には不要です。
+**出力**ではTask・予測対象・モデル・H・Reasoning score、正解例／不正解例の件数、seed・並び順を指定できます。全選択の候補集JSONと、指定件数のJSON／TXTを出力できます。Questionはuser入力だけ、Answerは回答全文、Labelは選択区分・Score・正解・比較結果です。systemは出力しません。
+
+保存先は **experiments/08_fewshot/data_prep/**。Chrome等では「保存先を選択（data_prep）」でフォルダを選べます。非対応ブラウザではダウンロード後に移動してください。選択はlocalStorageに保存しますが、JSONにも保存しておくとブラウザを変えて復元できます。
+
+コード・共通データ・08での件数指定CLI・JSON仕様・検証方法は [08 data_prepのREADME](../08_fewshot/data_prep/README.md) を参照してください。表示元は `viewer_template.html` / `viewer.css` / `viewer.js`、HTML再生成は08の `build_examples.py` で行います。
+
+取得済みの2026-09-16の回答を基にしたスナップショットです。正解と既存スコアを追加しましたが、新しいAPI送信・Reasoning再採点はありません。元データ更新はHTMLに自動反映されません。
+
+[view_rawdata.ipynb](view_rawdata.ipynb) は変更していません。従来の各条件先頭10件を元JSONLから読む別版です。Notebookの再実行には元データの配置が必要です。
 
 ## 1. 回答取得・採点・records.jsonl保存の呼び出し経路
 
@@ -152,20 +160,20 @@ predictions = [-1.45]
 
 元データを保存記録として保持するため、statusは書き換えていません。06の評価を確認するときはanalysisの成分別解析結果を参照してください。
 
-HTML上部は、回答本文が保存されている場合の「応答あり」だけを表示します。回答がない場合は空欄とし、採点結果やAPI失敗のステータス文言は表示しません。詳細表・折りたたみJSONには保存済みのstatusを保持していますが、これは旧parserの結果であり、Joint全出力の評価として解釈しないでください。Notebookは元のままです。
+HTML上部は「応答あり／回答なし」と、新しく結合したJointの項目別一致・誤差を表示します。詳細表・折りたたみJSONに残るstatusは旧parserの結果です。新しい比較結果はfewshot.comparisonに分けて保持しています。Notebookは元のままです。
 
 
 ## Reasoning採点用CSV
 
 [reasoning_for_scoring.csv](reasoning_for_scoring.csv) は `model, Task, Metrics, H, Reasoning, score` の6列です。scoreは全行空欄です。UTF-8 BOM付きで、Reasoning内の改行・引用符をCSVの引用規則に従って保存しています。
 
-06の統合records（05の120件を含む）の全960件と03_1の全960件を対象にしています。05を追加連結せず重複を避けています。HTMLと違い、GPT-3.5は各条件30件すべてを含みます。モデル別の行数はsol/terra/lunaが各320件、3.5が960件、合計1,920件です。
+06の統合records（05の120件を含む）の全960件と03_1の全960件を対象にしています。05を追加連結せず重複を避けています。現在のHTMLと同じく、GPT-3.5は各条件30件すべてを含みます。モデル別の行数はsol/terra/lunaが各320件、3.5が960件、合計1,920件です。
 
 Reasoning見出し直後からPrediction見出し直前までの本文のみを抽出し、見出しと前後の空白を除いています。太字・角括弧の有無、`Prediction by element` の表記揺れに対応しています。本文内の改行、Markdown、数式表現は保持し、翻訳・要約はしていません。
 
 抽出成功は1,794件。残る126件のReasoningは空欄です（solのAPI失敗6件、3.5のReasoning見出しがない120件）。見出しのない回答から推測で文章を切り出してはいません。空欄のscoreは元のstatusや自動採点と無関係で、手動記入用です。
 
-行順はモデル（sol、terra、luna、3.5）、Task、Metrics、H、ordinalの順です。Task/Metricsは文字列の昇順、H/ordinalは数値の昇順です。H列は履歴ステップ数です。ordinalはCSVには含めていません。元records・HTML・Notebookは変更していません。
+行順はモデル（sol、terra、luna、3.5）、Task、Metrics、H、ordinalの順です。Task/Metricsは文字列の昇順、H/ordinalは数値の昇順です。H列は履歴ステップ数です。ordinalはCSVには含めていません。このCSV抽出時には元records・HTML・Notebookを変更していません。
 
 採点済みデータは [reasoning_for_scoring_scored_astra_high.csv](reasoning_for_scoring_scored_astra_high.csv)、採点依頼の原文は [reasoning_score_analysis/Prompt.md](reasoning_score_analysis/Prompt.md) に保存しています。全1,920行を採点し、Score 1〜4は順に437・546・293・644件です。
 

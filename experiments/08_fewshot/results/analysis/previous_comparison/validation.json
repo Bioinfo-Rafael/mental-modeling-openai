@@ -1,0 +1,22 @@
+{
+  "input_sha256": {
+    "experiments/08_fewshot/data_prep/examples.json": "2b882ba1eb707bb075d8910685d183df82db15a7f9174c189b6c183ce14df6ee",
+    "experiments/07_view_rawdata/reasoning_for_scoring_scored_astra_high.csv": "bf4a7e3acaead3c38216c52b6d0273311cb638369f6cc2163f489455bae1705b",
+    "experiments/08_fewshot/reasoning_for_scoring_scored_astra_high.csv": "980b34ec2163bfec2a2d50f027a8c0cdfec9b80f1940dbf75ad3ddef36c981a5",
+    "experiments/08_fewshot/results/api/records.jsonl": "3bd9ba7a8ce9b099b6f4b2c9ded0fac95ce1b28895793bf7bab8fdbe36330062",
+    "experiments/06_new_models_n10/results/merged/c189af3036db4adfb9e4da5bb632ea48/records.jsonl": "6be3d9ca736985c19d5a62f4e42cd34e27298f8719938cbce9687ced046b5fd1",
+    "data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_0.npz": "c91b3e277decddff587601790c381096c5bab98fc726af94dba76d924e0ffa5b",
+    "data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz": "09c3c01c27f0a19af5d18bd6f5c70cbc8dd1b88eb8f3c70d2bbaac03ecf32fce",
+    "experiments/03_1_gpt35_history_n30_joint/results/records.jsonl": "3517021c6343b20be8fffa3f0fefdbb76da247f769b8d9cad0081dcec86dedaa",
+    "data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_1.npz": "4f3fbf6997ec293ae7417fc721754d97f04ac20ab1731c30e3915ad8baaa2d29",
+    "data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_1.npz": "e3320a406e3fe8474ca64b240b2a60341b57135c9ac05ce51915888b2ba61c6e"
+  },
+  "selected07": 160,
+  "selected08": 144,
+  "missing_responses": 0,
+  "missing_mae": 6,
+  "missing_reasoning": 0,
+  "accuracy_parse_failures": 6,
+  "group_rows": 228,
+  "png_files": 26
+}

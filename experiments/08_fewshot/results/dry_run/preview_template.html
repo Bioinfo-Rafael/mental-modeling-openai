@@ -1,0 +1,36 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>08 Few-shot — Dry-run preview</title><style>
+*{box-sizing:border-box}body{margin:auto;max-width:1440px;padding:28px;color:#172333;background:#f4f7fb;font:14px/1.65 system-ui,sans-serif;overflow-wrap:anywhere}h1{font-size:25px;margin:0}h2{font-size:18px;margin:0 0 12px}p{margin:8px 0 14px}.muted{color:#5e6b7c}.panel,.controls{background:white;border:1px solid #d7e0ed;border-radius:12px;padding:20px;margin:16px 0}.controls{position:sticky;top:0;z-index:2;box-shadow:0 5px 18px #17233315}.filters,.nav{display:flex;flex-wrap:wrap;gap:12px;align-items:end}.nav{align-items:center;margin-top:14px}label{display:flex;flex-direction:column;font-weight:600;gap:4px}select,button{font:inherit;border:1px solid #b9c6d8;border-radius:7px;padding:7px 10px;background:white;color:inherit}button{cursor:pointer}button:disabled{opacity:.4;cursor:default}a{color:#2457cf}button.primary{background:#2457cf;color:white;border-color:#2457cf}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.7 ui-monospace,monospace;margin:0}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:8px 10px;border-bottom:1px solid #e1e7ef;text-align:left;vertical-align:top}.scroll{overflow:auto}.pill{padding:5px 10px;background:#edf3ff;border-radius:7px}.warning{border-left:4px solid #e19e25}.panel{scroll-margin-top:240px}.jump{display:flex;gap:14px;margin-left:auto}.example-list{font-size:12px}summary{cursor:pointer;font-weight:600}details pre{margin-top:12px}#selection-note{font-size:12px;color:#5e6b7c;margin-top:10px}@media(max-width:700px){body{padding:12px}.controls{position:relative;padding:12px}.panel{padding:12px;scroll-margin-top:10px}select{max-width:260px}.jump{margin-left:0}th,td{padding:6px}}
+</style></head><body>
+<h1>08 Few-shot · 送信予定プロンプト</h1><p class="muted">Dry-runのみ · API呼び出しなし · 評価対象はnext-action</p>
+<section class="panel" id="summary"></section><section class="panel warning" id="messages" hidden></section>
+<details class="panel" id="inventory-panel"><summary>候補数と不足数（Task・Score・正解／不正解）</summary><div class="scroll" id="inventory"></div></details>
+<div class="controls" id="controls" hidden><div class="filters"><label>Task<select id="task"></select></label><label>予測対象<select id="metric"></select></label><label>モデル<select id="model_alias"></select></label><label>履歴長 H<select id="H"></select></label><label>例の総数 2k<select id="shots"></select></label><label>Scoreパターン<select id="score_pattern"></select></label><label>評価問題<select id="ordinal"></select></label></div>
+<div class="nav"><button id="previous">← 前の問題</button><span id="position" class="pill"></span><button id="next" class="primary">次の問題 →</button><a id="txt-link">この送信全文をTXTで開く</a><div class="jump"><a href="#system">system</a><a href="#user">user全文</a><a href="#target">今回の質問</a></div></div><div id="selection-note"></div></div>
+<main id="content"></main>
+<script id="dataset" type="application/json">__DATASET__</script><script>
+'use strict';
+const data=JSON.parse(document.getElementById('dataset').textContent),m=data.manifest,queries=m.queries,$=id=>document.getElementById(id);
+function el(tag,text){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e}
+function section(title,id){const e=el('section');e.className='panel';if(id)e.id=id;e.append(el('h2',title));return e}
+function table(rows,fields,names){const t=el('table'),head=el('tr');for(const n of names)head.append(el('th',n));t.append(head);for(const r of rows){const tr=el('tr');for(const f of fields)tr.append(el('td',Array.isArray(r[f])?r[f].join('・'):String(r[f]??'—')));t.append(tr)}return t}
+$('summary').append(el('h2',`Status: ${m.status}`),el('p',`${m.planned_conditions}条件 × ${m.config.n}問 = ${m.planned_queries}件予定 / 生成済み ${queries.length}件 / API送信 0件`),el('p',`実行日時: ${m.created_at_jst}`));
+const patterns=m.config.score_patterns.map(p=>`${p.name}: 正解例Score ${p.correct_scores.join('・')} / 不正解例Score ${p.incorrect_scores.join('・')}`).join('、');$('summary').append(el('p',patterns));
+if(m.messages.length){$('messages').hidden=false;for(const s of m.messages)$('messages').append(el('p',s));}
+$('inventory').append(table(m.candidate_inventory,['task','score_pattern','example_type','allowed_scores','original_available','required','available','missing'],['Task','パターン','区分','対象Score','元の候補数','必要数（最大条件）','採用候補数','不足数']));
+if(!queries.length){$('inventory-panel').open=true;$('content').append(section('入力が揃うと、送信予定のsystem/user全文がここに表示されます。'));}
+const fields=['task','metric','model_alias','H','shots','score_pattern','ordinal'];
+for(const key of fields){const values=[...new Set(queries.map(q=>q[key]))];if(['H','shots','ordinal'].includes(key))values.sort((a,b)=>a-b);for(const v of values)$(key).append(new Option(key==='ordinal'?`問題 ${v+1}`:key==='score_pattern'?`${v}（正解${m.config.score_patterns.find(p=>p.name===v).correct_scores.join('・')} / 不正解${m.config.score_patterns.find(p=>p.name===v).incorrect_scores.join('・')}）`:String(v),String(v)));$(key).addEventListener('change',render)}
+function current(){return queries.find(q=>fields.every(key=>String(q[key])===$(key).value))}
+function render(){
+ if(!queries.length)return;const q=current();$('content').replaceChildren();if(!q){$('content').append(el('p','該当するプロンプトがありません。'));return}
+ $('position').textContent=`問題 ${q.ordinal+1} / ${m.config.n}`;$('previous').disabled=q.ordinal===0;$('next').disabled=q.ordinal===m.config.n-1;$('txt-link').href=q.prompt_txt;
+ $('selection-note').textContent=`${q.episode_path} · index ${q.query_index} · 入力content ${q.input_content_tokens.toLocaleString()} tokens（o200k_base概算、APIメッセージ付加分は除外）`;
+ const examples=q.example_ids.map(id=>data.examples[id]);const chosen=section('今回のfew-shot例（この順に挿入）');const scroll=el('div');scroll.className='scroll example-list';scroll.append(table(examples.map((e,i)=>({...e,number:i+1,type:e.example_type==='correct'?'正解例':'不正解例'})),['number','type','reasoning_score','task','metric','model','H','query_id'],['順序','区分','Score','Task','例の予測対象','元モデル','例のH','例ID']));chosen.append(scroll);$('content').append(chosen);
+ const system=section('入力 1 — system','system');system.append(el('pre',q.system_prompt));$('content').append(system);
+ const user=section('入力 2 — user（few-shotを含む送信全文）','user');user.append(el('pre',q.user_prompt));$('content').append(user);
+ const target=section('今回の質問だけ（上のuser末尾と同一）','target');target.append(el('pre',q.target_user_prompt));$('content').append(target);
+ const meta=el('details');meta.className='panel';meta.append(el('summary','条件・ID・API設定（表示確認用）'),el('pre',JSON.stringify(Object.fromEntries(Object.entries(q).filter(([k])=>!['system_prompt','user_prompt','target_user_prompt','request'].includes(k))),null,2)),el('pre',JSON.stringify(Object.fromEntries(Object.entries(q.request).filter(([k])=>k!=='messages')),null,2)));$('content').append(meta);
+}
+$('previous').addEventListener('click',()=>{$('ordinal').value=Number($('ordinal').value)-1;render()});$('next').addEventListener('click',()=>{$('ordinal').value=Number($('ordinal').value)+1;render()});
+if(queries.length){$('controls').hidden=false;render()}
+</script></body></html>
