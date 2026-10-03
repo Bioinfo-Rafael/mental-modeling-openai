@@ -44,3 +44,12 @@ experiments/08_fewshot/results/dry_run/*
 !experiments/08_fewshot/results/**
 experiments/08_fewshot/results/**/.DS_Store
 experiments/08_fewshot/results/.execution.lock
+
+# Share saved experiment outputs across both repositories.
+!experiments/**/results/
+!experiments/**/results/**
+experiments/**/results/**/.DS_Store
+experiments/**/results/**/__pycache__/
+experiments/**/results/**/*.pyc
+experiments/**/results/**/.execution.lock
+experiments/**/results/**/*.partial

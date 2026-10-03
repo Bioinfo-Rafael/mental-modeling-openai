@@ -5,10 +5,11 @@ from pathlib import Path
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from importlib import import_module
-
-runner = import_module('experiments.08_fewshot.runner.fewshot_runner')
+# @Rafaメモ:experiments/08_fewshot/runner/fewshot_runner.pyをrunnerとしてimport
+runner = import_module('experiments.08_fewshot.runner.fewshot_runner') 
 
 # Conditions live here, following Exp.06's small run.py entry point.
+# @Rafaメモ: runner.pyのFewshotExperimentクラスを使って、実験の条件を定義。これは単なる型定義
 EXPERIMENT = runner.FewshotExperiment(
     name='08_fewshot',
     models=('terra', 'luna'),
@@ -29,6 +30,6 @@ EXPERIMENT = runner.FewshotExperiment(
 # If multiple exports exist, list the intended file(s), relative to this directory:
 # INPUT_FILES = ('data_prep/selected_examples_2026-....json',)
 INPUT_FILES = ()
-
+#@Rafaメモ: runner.pyのrun関数を呼び出して、実験を実行
 if __name__ == '__main__':
-    raise SystemExit(runner.run(EXPERIMENT, input_files=INPUT_FILES))
+    raise SystemExit(runner.run(EXPERIMENT, input_files=INPUT_FILES)) 

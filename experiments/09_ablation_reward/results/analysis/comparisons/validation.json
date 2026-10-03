@@ -1,0 +1,40 @@
+{
+  "samples": 96,
+  "matches": 29,
+  "missing": 0,
+  "group_counts": {
+    "timepoint": 4,
+    "reward": 4,
+    "interaction": 8,
+    "matrix_pooled": 16,
+    "matrix_per_model": 32
+  },
+  "n_per_group": {
+    "timepoint": 24,
+    "reward": 24,
+    "interaction": 12,
+    "matrix_pooled": 6,
+    "matrix_single_model": 3
+  },
+  "reasoning_counts": {
+    "2": 58,
+    "3": 35,
+    "1": 1,
+    "4": 2
+  },
+  "source_sha256": {
+    "results/api/records.jsonl": "845ebcb7d88ebcd76ce9f31b59b2a0cff1135ed5de6fd611346048db93275553",
+    "results/api/manifest.json": "8a2966af1df19ba8e545d490de01229ec127ddea5cd4642067711769c75a8f32",
+    "reasoning_for_scoring_scored_astra_high.csv": "a97598f19e3d6d41d7d827c0253cbe9ff3cf98c132c3f8fee5edb6adfcdc9826"
+  },
+  "figures": [
+    "figures/01_timepoint_by_model.png",
+    "figures/02_reward_by_model.png",
+    "figures/03_reward_timepoint_by_model.png",
+    "figures/04_matrix_pooled.png",
+    "figures/05_matrix_terra.png",
+    "figures/06_matrix_luna.png"
+  ],
+  "heatmap_mae_max": 4.0,
+  "note": "Repeated calls are not independent episodes. Timepoint changes state/action context as well as reward. Reward is removed only from target history; few-shot text is fixed. No confidence intervals or significance tests."
+}

@@ -1,3 +1,7 @@
+# @Rafaメモ
+- Fewshotで実験。fewshotに使う例は07で表示されているものから選択。144件のAPI送信
+- run.pyがrunner/fewshot_runner.pyの中のrunを呼び出し、そこで実行。make_plans関数が条件ごとにfewshotのプロンプトを作成しcompose_user関数でデフォルトのuser promptの上に追加する
+
 # Exp.8 — Next Action few-shot、Terra / Luna、N=3
 
 07で選択した正解例・不正解例を、同じTaskのNext Action質問の前に入れる。

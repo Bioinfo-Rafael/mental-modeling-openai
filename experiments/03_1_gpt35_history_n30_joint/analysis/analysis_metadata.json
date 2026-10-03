@@ -1,0 +1,374 @@
+{
+  "source": "experiments/03_1_gpt35_history_n30_joint/results",
+  "source_records_sha256": "3517021c6343b20be8fffa3f0fefdbb76da247f769b8d9cad0081dcec86dedaa",
+  "seed": 42,
+  "bootstrap_repetitions": 1000,
+  "normalization_bounds": {
+    "MountainCar-v0": [
+      [
+        -1.2,
+        0.6
+      ],
+      [
+        -0.07,
+        0.07
+      ]
+    ],
+    "Pendulum-v1": [
+      [
+        -1,
+        1
+      ],
+      [
+        -1,
+        1
+      ],
+      [
+        -8,
+        8
+      ]
+    ]
+  },
+  "normalization_widths": {
+    "MountainCar-v0": [
+      1.7999999999999998,
+      0.14
+    ],
+    "Pendulum-v1": [
+      2,
+      2,
+      16
+    ]
+  },
+  "torque_width": 4,
+  "angular_width": 3.141592653589793,
+  "range_source": "upstream/LLM-Xavier/llm_x/task.py",
+  "range_source_sha256": "6b41a1aec4bc68bda330358ed2870fc47428166063de680a2661b4b4ba1f2dcb",
+  "raw_episode_sha256": {
+    "data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_0.npz": "c91b3e277decddff587601790c381096c5bab98fc726af94dba76d924e0ffa5b",
+    "data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz": "09c3c01c27f0a19af5d18bd6f5c70cbc8dd1b88eb8f3c70d2bbaac03ecf32fce"
+  },
+  "accuracy_missing_policy": "valid_only; all_selected alternative in CSV",
+  "figures": 132,
+  "csv_rows": {
+    "accuracy_metrics": 120,
+    "direction_dimension_accuracy": 120,
+    "confusion_matrices": 648,
+    "diagnostics": 792,
+    "continuous_metrics": 1032,
+    "state_dimension_metrics": 720,
+    "state_macro_metrics": 96,
+    "pendulum_action_metrics": 96,
+    "pendulum_delta_theta_metrics": 144,
+    "all_metrics_long": 2064,
+    "parsed_records": 960,
+    "parse_summary": 26
+  },
+  "parse_summary": [
+    {
+      "task": "MountainCar-v0",
+      "metric": "next-action",
+      "component": "action",
+      "selected_n": 120,
+      "valid_n": 120,
+      "failed_n": 0,
+      "failure_reasons": {}
+    },
+    {
+      "task": "MountainCar-v0",
+      "metric": "next-action",
+      "component": "all_required",
+      "selected_n": 120,
+      "valid_n": 120,
+      "failed_n": 0,
+      "failure_reasons": {}
+    },
+    {
+      "task": "MountainCar-v0",
+      "metric": "last-action",
+      "component": "action",
+      "selected_n": 120,
+      "valid_n": 118,
+      "failed_n": 2,
+      "failure_reasons": {
+        "missing_marker": 2
+      }
+    },
+    {
+      "task": "MountainCar-v0",
+      "metric": "last-action",
+      "component": "all_required",
+      "selected_n": 120,
+      "valid_n": 118,
+      "failed_n": 2,
+      "failure_reasons": {
+        "one_or_more_components_failed": 2
+      }
+    },
+    {
+      "task": "MountainCar-v0",
+      "metric": "next-state",
+      "component": "direction",
+      "selected_n": 120,
+      "valid_n": 119,
+      "failed_n": 1,
+      "failure_reasons": {
+        "missing_marker": 1
+      }
+    },
+    {
+      "task": "MountainCar-v0",
+      "metric": "next-state",
+      "component": "state_value",
+      "selected_n": 120,
+      "valid_n": 106,
+      "failed_n": 14,
+      "failure_reasons": {
+        "missing_marker": 5,
+        "non_literal_or_placeholder": 9
+      }
+    },
+    {
+      "task": "MountainCar-v0",
+      "metric": "next-state",
+      "component": "state_delta",
+      "selected_n": 120,
+      "valid_n": 107,
+      "failed_n": 13,
+      "failure_reasons": {
+        "missing_marker": 5,
+        "non_literal_or_placeholder": 8
+      }
+    },
+    {
+      "task": "MountainCar-v0",
+      "metric": "next-state",
+      "component": "all_required",
+      "selected_n": 120,
+      "valid_n": 103,
+      "failed_n": 17,
+      "failure_reasons": {
+        "one_or_more_components_failed": 17
+      }
+    },
+    {
+      "task": "MountainCar-v0",
+      "metric": "last-state",
+      "component": "direction",
+      "selected_n": 120,
+      "valid_n": 119,
+      "failed_n": 1,
+      "failure_reasons": {
+        "non_literal_or_placeholder": 1
+      }
+    },
+    {
+      "task": "MountainCar-v0",
+      "metric": "last-state",
+      "component": "state_value",
+      "selected_n": 120,
+      "valid_n": 112,
+      "failed_n": 8,
+      "failure_reasons": {
+        "missing_marker": 8
+      }
+    },
+    {
+      "task": "MountainCar-v0",
+      "metric": "last-state",
+      "component": "state_delta",
+      "selected_n": 120,
+      "valid_n": 54,
+      "failed_n": 66,
+      "failure_reasons": {
+        "non_literal_or_placeholder": 58,
+        "missing_marker": 8
+      }
+    },
+    {
+      "task": "MountainCar-v0",
+      "metric": "last-state",
+      "component": "all_required",
+      "selected_n": 120,
+      "valid_n": 54,
+      "failed_n": 66,
+      "failure_reasons": {
+        "one_or_more_components_failed": 66
+      }
+    },
+    {
+      "task": "Pendulum-v1",
+      "metric": "next-action",
+      "component": "action_value",
+      "selected_n": 120,
+      "valid_n": 114,
+      "failed_n": 6,
+      "failure_reasons": {
+        "missing_marker": 5,
+        "non_literal_or_placeholder": 1
+      }
+    },
+    {
+      "task": "Pendulum-v1",
+      "metric": "next-action",
+      "component": "action_bin",
+      "selected_n": 120,
+      "valid_n": 119,
+      "failed_n": 1,
+      "failure_reasons": {
+        "non_literal_or_placeholder": 1
+      }
+    },
+    {
+      "task": "Pendulum-v1",
+      "metric": "next-action",
+      "component": "all_required",
+      "selected_n": 120,
+      "valid_n": 114,
+      "failed_n": 6,
+      "failure_reasons": {
+        "one_or_more_components_failed": 6
+      }
+    },
+    {
+      "task": "Pendulum-v1",
+      "metric": "last-action",
+      "component": "action_value",
+      "selected_n": 120,
+      "valid_n": 116,
+      "failed_n": 4,
+      "failure_reasons": {
+        "missing_marker": 1,
+        "wrong_dimension": 1,
+        "non_literal_or_placeholder": 2
+      }
+    },
+    {
+      "task": "Pendulum-v1",
+      "metric": "last-action",
+      "component": "action_bin",
+      "selected_n": 120,
+      "valid_n": 118,
+      "failed_n": 2,
+      "failure_reasons": {
+        "wrong_dimension": 2
+      }
+    },
+    {
+      "task": "Pendulum-v1",
+      "metric": "last-action",
+      "component": "all_required",
+      "selected_n": 120,
+      "valid_n": 116,
+      "failed_n": 4,
+      "failure_reasons": {
+        "one_or_more_components_failed": 4
+      }
+    },
+    {
+      "task": "Pendulum-v1",
+      "metric": "next-state",
+      "component": "direction",
+      "selected_n": 120,
+      "valid_n": 113,
+      "failed_n": 7,
+      "failure_reasons": {
+        "missing_marker": 5,
+        "non_literal_or_placeholder": 2
+      }
+    },
+    {
+      "task": "Pendulum-v1",
+      "metric": "next-state",
+      "component": "state_value",
+      "selected_n": 120,
+      "valid_n": 104,
+      "failed_n": 16,
+      "failure_reasons": {
+        "non_literal_or_placeholder": 6,
+        "missing_marker": 10
+      }
+    },
+    {
+      "task": "Pendulum-v1",
+      "metric": "next-state",
+      "component": "state_delta",
+      "selected_n": 120,
+      "valid_n": 97,
+      "failed_n": 23,
+      "failure_reasons": {
+        "non_literal_or_placeholder": 13,
+        "missing_marker": 10
+      }
+    },
+    {
+      "task": "Pendulum-v1",
+      "metric": "next-state",
+      "component": "all_required",
+      "selected_n": 120,
+      "valid_n": 92,
+      "failed_n": 28,
+      "failure_reasons": {
+        "one_or_more_components_failed": 28
+      }
+    },
+    {
+      "task": "Pendulum-v1",
+      "metric": "last-state",
+      "component": "direction",
+      "selected_n": 120,
+      "valid_n": 113,
+      "failed_n": 7,
+      "failure_reasons": {
+        "non_literal_or_placeholder": 4,
+        "missing_marker": 3
+      }
+    },
+    {
+      "task": "Pendulum-v1",
+      "metric": "last-state",
+      "component": "state_value",
+      "selected_n": 120,
+      "valid_n": 111,
+      "failed_n": 9,
+      "failure_reasons": {
+        "non_literal_or_placeholder": 3,
+        "missing_marker": 6
+      }
+    },
+    {
+      "task": "Pendulum-v1",
+      "metric": "last-state",
+      "component": "state_delta",
+      "selected_n": 120,
+      "valid_n": 102,
+      "failed_n": 18,
+      "failure_reasons": {
+        "non_literal_or_placeholder": 12,
+        "missing_marker": 6
+      }
+    },
+    {
+      "task": "Pendulum-v1",
+      "metric": "last-state",
+      "component": "all_required",
+      "selected_n": 120,
+      "valid_n": 98,
+      "failed_n": 22,
+      "failure_reasons": {
+        "one_or_more_components_failed": 22
+      }
+    }
+  ],
+  "analysis_seconds": 19.95281275000889,
+  "api_calls": 0,
+  "python": "3.14.5 (main, May 10 2026, 10:21:34) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "analysis_code_sha256": {
+    "joint_plots.py": "27019e31e0c89a8dbd8a92f2d48a1a6c8163ff378588eaebac929e7179d5b2b2",
+    "test_joint_analysis.py": "ebce16b129ece0c6929d7043de9fbf35336936df256e0dcd535439969e7add57",
+    "joint_aggregate.py": "bb9eaeccca6e616dd47d98ae3042fec8f828d20c03851870a4bcc4047d9eda41",
+    "joint_data.py": "c913485d1c5687a5ca493c7b51bbd1871d9d2611d573b481a33877108187b8e2",
+    "joint_metrics.py": "d849ca1876128293d5c5328b994716c6a1f43a658811a09d156913b1300fa953",
+    "analyze.py": "12de9a103a7fbf5ada94a7a7f9a2231c54ad2c46a502b351f7ab9218de848827"
+  }
+}

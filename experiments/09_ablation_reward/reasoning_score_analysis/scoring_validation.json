@@ -1,0 +1,23 @@
+{
+  "method": "All 96 Reasoning texts individually judged by the current assistant; code used only to transcribe predetermined scores and verify CSV integrity.",
+  "judge": "current assistant session",
+  "exact_model_id": null,
+  "reasoning_effort": null,
+  "filename_note": "Requested astra_high filename retained; exact runtime model and effort not independently verified.",
+  "scored_at_utc": "2026-10-01T04:10:01.058689+00:00",
+  "rubric": "08-compatible: 1 generic, 2 general policy, 3 specific evidence, 4 explicit quantitative reasoning",
+  "rows": 96,
+  "unscored": 0,
+  "counts": {
+    "1": 1,
+    "2": 58,
+    "3": 35,
+    "4": 2
+  },
+  "source_sha256": "64e2d3554bfa2de10c5c68d4314b895d14ca3ee5d1eb688b916c6d6927670c48",
+  "output_sha256": "a97598f19e3d6d41d7d827c0253cbe9ff3cf98c132c3f8fee5edb6adfcdc9826",
+  "prompt_sha256": "23d1d47beb67267bcf0ce087fdd38b728bcf1a39139529710e66e0c6e3176669",
+  "non_score_columns_unchanged": true,
+  "row_order_preserved": true,
+  "source_unchanged": true
+}

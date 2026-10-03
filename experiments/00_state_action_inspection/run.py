@@ -412,6 +412,76 @@ def plot_trajectories(
         plt.close(fig)
 
 
+def plot_scatter_trajectories(grouped, figures_dir: Path) -> None:
+    """Point-only time series from the same first episode as the line plots."""
+    plt = _pyplot()
+    for task in TASKS:
+        source, episode = grouped[task][0]
+        metadata = TASK_METADATA[task]
+        for key, label in (('states', 'state'), ('actions', 'action'), ('rewards', 'reward')):
+            values = _vectors(episode.arrays[key], key=key, path=source.path)
+            fig, axes = plt.subplots(values.shape[1], 1,
+                                     figsize=(8, 2.5 * values.shape[1] if values.shape[1] > 1 else 3.2),
+                                     sharex=True, squeeze=False)
+            for index, ax in enumerate(axes[:, 0]):
+                ax.scatter(np.arange(len(values)), values[:, index], s=14,
+                           color='#59788e', alpha=.85, linewidths=0)
+                ylabel = f'state[{index}]\n{metadata["state_names"][index]}' if key == 'states' else label
+                ax.set_ylabel(ylabel)
+                ax.grid(alpha=.2)
+                ax.set_axisbelow(True)
+                if key == 'actions' and metadata['action_kind'] == 'discrete':
+                    low, high = metadata['action_range']
+                    ax.set_yticks(np.arange(int(low), int(high) + 1))
+            axes[-1, 0].set_xlabel('timestep')
+            fig.suptitle(f'{task} {label} time series (scatter) — {source.episode}')
+            fig.tight_layout()
+            fig.savefig(figures_dir / f'{metadata["short_name"]}_{label}_scatter.png', bbox_inches='tight')
+            plt.close(fig)
+
+
+def plot_rewards(grouped, figures_dir: Path) -> None:
+    """Match existing plots: first episode for time series, all episodes for distribution."""
+    plt = _pyplot()
+    report = {}
+    for task in TASKS:
+        parts = []
+        for source, episode in grouped[task]:
+            rewards = _vectors(episode.arrays['rewards'], key='rewards', path=source.path)
+            if rewards.shape != (episode.length, 1) or not np.isfinite(rewards).all():
+                raise ValueError(f'Expected one finite reward per timestep: {source.path}')
+            parts.append(rewards[:, 0])
+        source, _ = grouped[task][0]
+        values = np.concatenate(parts)
+        short = TASK_METADATA[task]['short_name']
+        fig, ax = plt.subplots(figsize=(8, 3.2))
+        ax.plot(np.arange(len(parts[0])), parts[0], color='#59788e', linewidth=1.2)
+        ax.set(xlabel='timestep', ylabel='reward', title=f'{task} reward trajectory — {source.episode}')
+        ax.grid(alpha=.2)
+        fig.tight_layout()
+        fig.savefig(figures_dir / f'{short}_reward.png', bbox_inches='tight')
+        plt.close(fig)
+        fig, ax = plt.subplots(figsize=(8, 3.2))
+        constant = np.ptp(values) == 0
+        bins = [values[0]-.5, values[0]+.5] if constant else 50
+        counts, edges, _ = ax.hist(values, bins=bins, color='#59788e', alpha=.85)
+        assert int(counts.sum()) == len(values)
+        ax.set(xlabel='reward', ylabel='timestep count',
+               title=f'{task} reward distribution — all {len(parts)} episodes (n={len(values)})')
+        if constant:
+            ax.set_xticks([values[0]])
+            ax.text(.98, .94, f'All {len(values)} rewards = {values[0]:g}', transform=ax.transAxes, ha='right', va='top')
+        ax.grid(axis='y', alpha=.2)
+        fig.tight_layout()
+        fig.savefig(figures_dir / f'{short}_reward_distribution.png', bbox_inches='tight')
+        plt.close(fig)
+        report[task] = dict(trajectory_episode=source.episode, trajectory_count=len(parts[0]),
+            distribution_count=len(values), min=float(values.min()), max=float(values.max()),
+            mean=float(values.mean()), histogram_counts=counts.astype(int).tolist(), histogram_edges=edges.tolist(),
+            sources=[dict(path=str(s.path), sha256=e.sha256) for s,e in grouped[task]])
+    (figures_dir.parent / 'reward_summary.json').write_text(json.dumps(report, indent=2)+'\n')
+
+
 def plot_bin_comparisons(
     all_states: dict[str, np.ndarray],
     edges_by_dimension: dict[tuple[str, int], dict[str, np.ndarray]],
@@ -573,7 +643,7 @@ def verify_outputs(results_dir: Path, bin_rows: Iterable[dict[str, object]], del
     expected_files.update(
         f"figures/{TASK_METADATA[task]['short_name']}_{suffix}.png"
         for task in TASKS
-        for suffix in ("state", "action")
+        for suffix in ("state", "action", "reward", "reward_distribution", "state_scatter", "action_scatter", "reward_scatter")
     )
     expected_files.update(
         f"figures/{TASK_METADATA[task]['short_name']}_state{index}_{suffix}.png"
@@ -598,6 +668,8 @@ def main(argv: list[str] | None = None) -> int:
     summary, all_states, _all_actions = summarize(grouped)
     save_summary(summary, results_dir)
     plot_trajectories(grouped, figures_dir)
+    plot_rewards(grouped, figures_dir)
+    plot_scatter_trajectories(grouped, figures_dir)
     bin_rows, edges_by_dimension = build_bins(all_states)
     save_bins(bin_rows, results_dir)
     plot_bin_comparisons(all_states, edges_by_dimension, figures_dir)

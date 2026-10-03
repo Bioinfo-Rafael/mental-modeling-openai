@@ -1,0 +1,57 @@
+{
+  "source_directory": "data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1",
+  "description": "Stored states[t], actions[t], rewards[t]; no subsampling. Shared axes across episodes.",
+  "episodes": [
+    {
+      "source": "episodes/episode_0.npz",
+      "png": "episodes/episode_0.png",
+      "transitions": 200
+    },
+    {
+      "source": "episodes/episode_1.npz",
+      "png": "episodes/episode_1.png",
+      "transitions": 200
+    },
+    {
+      "source": "episodes/episode_2_seed42.npz",
+      "png": "episodes/episode_2_seed42.png",
+      "transitions": 200
+    },
+    {
+      "source": "episodes/episode_3_seed157.npz",
+      "png": "episodes/episode_3_seed157.png",
+      "transitions": 200
+    },
+    {
+      "source": "episodes/episode_4_seed123.npz",
+      "png": "episodes/episode_4_seed123.png",
+      "transitions": 200
+    },
+    {
+      "source": "episodes/episode_5_seed407.npz",
+      "png": "episodes/episode_5_seed407.png",
+      "transitions": 200
+    },
+    {
+      "source": "episodes/episode_6_seed512.npz",
+      "png": "episodes/episode_6_seed512.png",
+      "transitions": 200
+    },
+    {
+      "source": "episodes/episode_7_seed1024.npz",
+      "png": "episodes/episode_7_seed1024.png",
+      "transitions": 200
+    },
+    {
+      "source": "episodes/episode_8_seed1123.npz",
+      "png": "episodes/episode_8_seed1123.png",
+      "transitions": 200
+    },
+    {
+      "source": "episodes/episode_9_seed3407.npz",
+      "png": "episodes/episode_9_seed3407.png",
+      "transitions": 200
+    }
+  ],
+  "total_transitions": 2000
+}

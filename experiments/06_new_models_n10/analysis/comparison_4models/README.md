@@ -47,7 +47,7 @@ NRMSE等の式・正規化範囲・bootstrapは03_1共通コードをそのま�
 |---|---:|---|
 | cross_task_10/accuracy.png | 1 | 2 Task × 4 Metric、4モデル比較 |
 | cross_task_10/state_absolute_macro_nrmse.png、state_delta_macro_nrmse.png | 2 | 2 Task × Next/Last State、4モデル比較 |
-| cross_task_10/state_dimensions/state_{absolute,delta}_{成分}_{指標}.png | 30 | position/velocity/cos/sin/angular_velocity別。1行×Next/Last State。NRMSE/Pearson/Cosine別 |
+| cross_task_10/state_dimensions/{Task}/state_{absolute,delta}_{成分}_{指標}.png | 30 | position/velocity/cos/sin/angular_velocity別。1行×Next/Last State。NRMSE/Pearson/Cosine別 |
 | cm/ | 24 | 6 Task/Metric組 × 4モデル。各図H=5/10/20/30の2×2 |
 | pendulum_10/pendulum_action_metrics.png | 1 | NRMSE/Pearson/Cosine/bin MAE × Next/Last Action |
 | pendulum_10/pendulum_delta_theta_metrics_from_{absolute,delta}.png | 2 | 復元方法別。NRMSE/Pearson/Cosine × Next/Last State |
@@ -55,6 +55,11 @@ NRMSE等の式・正規化範囲・bootstrapは03_1共通コードをそのま�
 | 合計 | 65 | PNGのみ。SVGは生成しない |
 
 ファイル名は元実装と同じ`nrmse`表記（Normalized Root Mean Square Error）。
+
+生成後、画像の内容を変えず、`state_dimensions/`の下をTask別に整理した。
+`MountainCar-v0/`直下に12枚、`Pendulum-v1/`直下に18枚を移動した。
+一時的に設けた`state/`・`action/`は、画像を移動し空であることを確認してから空ディレクトリのみ削除した。
+画像は削除・再生成せず、`figure_index.json`のパスのみ追従した。生成コード自体は変更していない。
 
 ### 混同行列の番号
 

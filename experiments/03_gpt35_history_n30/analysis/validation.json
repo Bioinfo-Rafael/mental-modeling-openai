@@ -11,6 +11,20 @@
   "nested_subsets_verified": true,
   "source_results_unchanged": true,
   "raw_episodes_unchanged": true,
-  "figure_count": 6,
-  "api_requests_made": 0
+  "figure_count": 18,
+  "api_requests_made": 0,
+  "non_scoring_semantics_drift": {
+    "upstream/LLM-Xavier/llm_x/cli.py": {
+      "expected": "352ad8553194d45b76bfcc36653c1dce25b2987c10e61ffa8b6841de305cf607",
+      "actual": "dcf5c8c76502ace813d6ed674a21238d81cfe162823b156ffa4ff31c390df6cc"
+    },
+    "upstream/LLM-Xavier/llm_x/feedback.py": {
+      "expected": "39de0f36b0cee9b7d7cfeaf872db471ed9651ee99b9364014622992fdc0b8187",
+      "actual": "d9b861a1364fefe395b7cb0b12718f9c11b19afa2b20981ecc73189db9fd08ec"
+    },
+    "preprocessing/llmx_original.py": {
+      "expected": "8f496a4456aa77dc4defc49ee03f5d1708d4800c13fbdd4add6bb1269526cbef",
+      "actual": "2a1475ae20ff723ee462e902a7f17a3c9adf1dd8328bb50c957951aecbd5355d"
+    }
+  }
 }

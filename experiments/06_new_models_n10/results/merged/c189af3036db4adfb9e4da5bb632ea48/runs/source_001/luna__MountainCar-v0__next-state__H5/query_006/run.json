@@ -1,0 +1,12 @@
+{
+  "backend": "openai",
+  "created_at_utc": "2026-09-11T09:12:34.829442+00:00",
+  "data_sha256": "c91b3e277decddff587601790c381096c5bab98fc726af94dba76d924e0ffa5b",
+  "llm_x_version": "0.1.0",
+  "model": "gpt-5.6-luna",
+  "numpy_version": "2.5.3",
+  "python_version": "3.14.5",
+  "raw_responses_stored": false,
+  "schema_version": 1,
+  "system_prompt": "Below is a description of the \"MountainCar-v0\" task.\n\nTask description:\n\n        The Mountain Car MDP is a deterministic MDP that consists of a car placed stochastically at the bottom of a sinusoidal valley, with the only possible actions being the accelerations that can be applied to the car in either direction. The goal of the MDP is to strategically accelerate the car to reach the goal state on top of the right hill.\n        \n\nObservation space:\n\n        The observation is a ndarray with shape (2,) where the elements correspond to the following:\n        position of the car along the x-axis (range from -1.2 to 0.6), velocity of the car (range from -0.07 to 0.07)\n        \n\nAction space:\n\n        There are 3 discrete deterministic actions,\n        0: Accelerate to the left\n        1: Do not accelerate\n        2: Accelerate to the right\n        \n\nReward space:\n\n        The goal is to reach the flag placed on top of the right hill as quickly as possible, as such the agent is penalised with a reward of -1 for each timestep.\n        \n\nTransition dynamics:\n\n        Given an action, the mountain car follows the following transition dynamics,\n        velocity_t+1 = velocity_t + (action - 1) * force - cos(3 * position_t) * gravity\n        position_t+1 = position_t + velocity_t+1\n        where force = 0.001 and gravity = 0.0025. The collisions at either end are inelastic with the velocity set to 0 upon collision with the wall.\n        \n\nInitial state:\n\n        The position of the car is assigned a uniform random value in [-0.6 , -0.4]. The starting velocity of the car is always assigned to 0.\n        \n\nTermination:\n\n        The episode ends if the position of the car is greater than or equal to 0.5 (the goal position on top of the right hill)."
+}

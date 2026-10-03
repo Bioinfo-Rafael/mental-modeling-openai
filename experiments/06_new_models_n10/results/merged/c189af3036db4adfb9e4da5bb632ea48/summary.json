@@ -1,0 +1,13 @@
+{
+  "experiment": "06_new_models_n10",
+  "status": "complete_with_errors",
+  "mode": "offline_merge",
+  "logical_queries": 960,
+  "successful_queries": 954,
+  "failed_queries": 6,
+  "reused_queries": 120,
+  "merge_api_calls": 0,
+  "source_api_attempts": 840,
+  "source_06_experiment_seconds": 11384.163955540978,
+  "note": "Derived dataset, not an API run. Original source timings retained in records; 05 is reused."
+}

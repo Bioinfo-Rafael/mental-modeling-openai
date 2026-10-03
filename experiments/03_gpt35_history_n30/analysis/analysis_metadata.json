@@ -10,7 +10,7 @@
     "data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_0.npz": "c91b3e277decddff587601790c381096c5bab98fc726af94dba76d924e0ffa5b",
     "data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz": "09c3c01c27f0a19af5d18bd6f5c70cbc8dd1b88eb8f3c70d2bbaac03ecf32fce"
   },
-  "script_sha256": "ecb7859da574f05e471c7b42f8821bbec0cf5deb9fc728e25cb4c22ec8b3953e",
+  "script_sha256": "26bf5e27f3bf55418a1d57f650cde4ea46acad2fd8b20fc91eac130040eb0e56",
   "seed": 42,
   "histories": [
     5,
@@ -27,12 +27,38 @@
   "python_version": "3.14.5 (main, May 10 2026, 10:21:34) [Clang 21.0.0 (clang-2100.0.123.102)]",
   "paper_reference": "https://arxiv.org/html/2406.18505v1",
   "state_definition": "official state_directions(allow_unchanged=True), threshold from manifest, decimals=5",
+  "non_scoring_semantics_drift": {
+    "upstream/LLM-Xavier/llm_x/cli.py": {
+      "expected": "352ad8553194d45b76bfcc36653c1dce25b2987c10e61ffa8b6841de305cf607",
+      "actual": "dcf5c8c76502ace813d6ed674a21238d81cfe162823b156ffa4ff31c390df6cc"
+    },
+    "upstream/LLM-Xavier/llm_x/feedback.py": {
+      "expected": "39de0f36b0cee9b7d7cfeaf872db471ed9651ee99b9364014622992fdc0b8187",
+      "actual": "d9b861a1364fefe395b7cb0b12718f9c11b19afa2b20981ecc73189db9fd08ec"
+    },
+    "preprocessing/llmx_original.py": {
+      "expected": "8f496a4456aa77dc4defc49ee03f5d1708d4800c13fbdd4add6bb1269526cbef",
+      "actual": "2a1475ae20ff723ee462e902a7f17a3c9adf1dd8328bb50c957951aecbd5355d"
+    }
+  },
   "figures": [
     "figures/paper_matching_accuracy/paper_matching_accuracy_n30.png",
     "figures/paper_matching_accuracy/paper_matching_accuracy_n30.svg",
     "figures/paper_matching_accuracy/paper_matching_accuracy_n20.png",
     "figures/paper_matching_accuracy/paper_matching_accuracy_n20.svg",
     "figures/paper_matching_accuracy/paper_matching_accuracy_n10.png",
-    "figures/paper_matching_accuracy/paper_matching_accuracy_n10.svg"
+    "figures/paper_matching_accuracy/paper_matching_accuracy_n10.svg",
+    "figures/paper_matching_execution_time/paper_matching_execution_time_n30.png",
+    "figures/paper_matching_execution_time/paper_matching_execution_time_n30.svg",
+    "figures/paper_matching_execution_time/paper_matching_execution_time_n20.png",
+    "figures/paper_matching_execution_time/paper_matching_execution_time_n20.svg",
+    "figures/paper_matching_execution_time/paper_matching_execution_time_n10.png",
+    "figures/paper_matching_execution_time/paper_matching_execution_time_n10.svg",
+    "figures/paper_matching_token_usage/paper_matching_token_usage_n30.png",
+    "figures/paper_matching_token_usage/paper_matching_token_usage_n30.svg",
+    "figures/paper_matching_token_usage/paper_matching_token_usage_n20.png",
+    "figures/paper_matching_token_usage/paper_matching_token_usage_n20.svg",
+    "figures/paper_matching_token_usage/paper_matching_token_usage_n10.png",
+    "figures/paper_matching_token_usage/paper_matching_token_usage_n10.svg"
   ]
 }

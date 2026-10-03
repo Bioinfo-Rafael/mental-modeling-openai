@@ -1,0 +1,272 @@
+{
+  "schema_version": 1,
+  "pricing": {
+    "checked_on": "2026-09-11",
+    "currency": "USD",
+    "basis": "Standard short-context text rates; all input priced as uncached. No cache-write adjustment or discounts. Not an invoice.",
+    "models": {
+      "gpt-5.6-sol": {
+        "input_usd_per_million": 4.0,
+        "output_usd_per_million": 20.0,
+        "source_url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol"
+      },
+      "gpt-5.6-terra": {
+        "input_usd_per_million": 2.0,
+        "output_usd_per_million": 12.0,
+        "source_url": "https://developers.openai.com/api/docs/models/gpt-5.6-terra"
+      },
+      "gpt-5.6-luna": {
+        "input_usd_per_million": 0.2,
+        "output_usd_per_million": 1.2,
+        "source_url": "https://developers.openai.com/api/docs/models/gpt-5.6-luna"
+      }
+    }
+  },
+  "scenarios": {
+    "exp05_observed": {
+      "factor": 1,
+      "models": [
+        {
+          "model": "gpt-5.6-sol",
+          "queries": 40,
+          "input_tokens": 77755,
+          "output_tokens": 45723,
+          "total_tokens": 123478,
+          "api_seconds": 883.3545252917102,
+          "query_seconds": 883.7511532501085,
+          "condition_seconds": 884.4828103740001,
+          "input_usd": 0.31102,
+          "output_usd": 0.91446,
+          "total_usd": 1.2254800000000001
+        },
+        {
+          "model": "gpt-5.6-terra",
+          "queries": 40,
+          "input_tokens": 77755,
+          "output_tokens": 34663,
+          "total_tokens": 112418,
+          "api_seconds": 492.56115916522685,
+          "query_seconds": 492.72547496226616,
+          "condition_seconds": 493.0360375409946,
+          "input_usd": 0.15551,
+          "output_usd": 0.415956,
+          "total_usd": 0.571466
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "queries": 40,
+          "input_tokens": 77755,
+          "output_tokens": 62363,
+          "total_tokens": 140118,
+          "api_seconds": 862.7628484537126,
+          "query_seconds": 862.9275317074498,
+          "condition_seconds": 863.227014083066,
+          "input_usd": 0.015551000000000002,
+          "output_usd": 0.0748356,
+          "total_usd": 0.09038660000000001
+        }
+      ],
+      "total": {
+        "queries": 120,
+        "input_tokens": 233265,
+        "output_tokens": 142749,
+        "total_tokens": 376014,
+        "api_seconds": 2238.6785329106497,
+        "query_seconds": 2239.4041599198245,
+        "condition_seconds": 2240.7458619980607,
+        "input_usd": 0.48208100000000004,
+        "output_usd": 1.4052516000000002,
+        "total_usd": 1.8873326000000001
+      },
+      "experiment_seconds": 2240.77481858409
+    },
+    "exp06_additional_estimate": {
+      "factor": 7,
+      "models": [
+        {
+          "model": "gpt-5.6-sol",
+          "queries": 280,
+          "input_tokens": 544285,
+          "output_tokens": 320061,
+          "total_tokens": 864346,
+          "api_seconds": 6183.481677041971,
+          "query_seconds": 6186.258072750759,
+          "condition_seconds": 6191.379672618001,
+          "input_usd": 2.17714,
+          "output_usd": 6.40122,
+          "total_usd": 8.57836
+        },
+        {
+          "model": "gpt-5.6-terra",
+          "queries": 280,
+          "input_tokens": 544285,
+          "output_tokens": 242641,
+          "total_tokens": 786926,
+          "api_seconds": 3447.928114156588,
+          "query_seconds": 3449.078324735863,
+          "condition_seconds": 3451.252262786962,
+          "input_usd": 1.08857,
+          "output_usd": 2.911692,
+          "total_usd": 4.000262
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "queries": 280,
+          "input_tokens": 544285,
+          "output_tokens": 436541,
+          "total_tokens": 980826,
+          "api_seconds": 6039.339939175989,
+          "query_seconds": 6040.492721952149,
+          "condition_seconds": 6042.589098581462,
+          "input_usd": 0.10885700000000001,
+          "output_usd": 0.5238492,
+          "total_usd": 0.6327062000000001
+        }
+      ],
+      "total": {
+        "queries": 840,
+        "input_tokens": 1632855,
+        "output_tokens": 999243,
+        "total_tokens": 2632098,
+        "api_seconds": 15670.749730374548,
+        "query_seconds": 15675.829119438771,
+        "condition_seconds": 15685.221033986425,
+        "input_usd": 3.3745670000000003,
+        "output_usd": 9.8367612,
+        "total_usd": 13.2113282
+      },
+      "experiment_seconds": 15685.42373008863
+    },
+    "exp05_plus_06_estimate": {
+      "factor": 8,
+      "models": [
+        {
+          "model": "gpt-5.6-sol",
+          "queries": 320,
+          "input_tokens": 622040,
+          "output_tokens": 365784,
+          "total_tokens": 987824,
+          "api_seconds": 7066.836202333681,
+          "query_seconds": 7070.009226000868,
+          "condition_seconds": 7075.862482992001,
+          "input_usd": 2.48816,
+          "output_usd": 7.31568,
+          "total_usd": 9.803840000000001
+        },
+        {
+          "model": "gpt-5.6-terra",
+          "queries": 320,
+          "input_tokens": 622040,
+          "output_tokens": 277304,
+          "total_tokens": 899344,
+          "api_seconds": 3940.489273321815,
+          "query_seconds": 3941.8037996981293,
+          "condition_seconds": 3944.2883003279567,
+          "input_usd": 1.24408,
+          "output_usd": 3.327648,
+          "total_usd": 4.571728
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "queries": 320,
+          "input_tokens": 622040,
+          "output_tokens": 498904,
+          "total_tokens": 1120944,
+          "api_seconds": 6902.102787629701,
+          "query_seconds": 6903.4202536595985,
+          "condition_seconds": 6905.816112664528,
+          "input_usd": 0.12440800000000002,
+          "output_usd": 0.5986848,
+          "total_usd": 0.7230928000000001
+        }
+      ],
+      "total": {
+        "queries": 960,
+        "input_tokens": 1866120,
+        "output_tokens": 1141992,
+        "total_tokens": 3008112,
+        "api_seconds": 17909.428263285197,
+        "query_seconds": 17915.233279358596,
+        "condition_seconds": 17925.966895984486,
+        "input_usd": 3.8566480000000003,
+        "output_usd": 11.242012800000001,
+        "total_usd": 15.098660800000001
+      },
+      "experiment_seconds": 17926.19854867272
+    }
+  },
+  "details": {
+    "gpt-5.6-sol": {
+      "per_query_mean": {
+        "input_tokens": 1943.875,
+        "output_tokens": 1143.075,
+        "total_tokens": 3086.95,
+        "api_seconds": 22.083863132292755,
+        "query_seconds": 22.093778831252713,
+        "condition_seconds": 22.112070259350002,
+        "input_usd": 0.0077755,
+        "output_usd": 0.0228615,
+        "total_usd": 0.030637000000000005
+      },
+      "cached_input": {
+        "tokens": 0,
+        "known_queries": 40
+      },
+      "reasoning_output": {
+        "tokens": 35611,
+        "known_queries": 40
+      }
+    },
+    "gpt-5.6-terra": {
+      "per_query_mean": {
+        "input_tokens": 1943.875,
+        "output_tokens": 866.575,
+        "total_tokens": 2810.45,
+        "api_seconds": 12.314028979130672,
+        "query_seconds": 12.318136874056654,
+        "condition_seconds": 12.325900938524864,
+        "input_usd": 0.00388775,
+        "output_usd": 0.010398899999999999,
+        "total_usd": 0.014286650000000001
+      },
+      "cached_input": {
+        "tokens": 0,
+        "known_queries": 40
+      },
+      "reasoning_output": {
+        "tokens": 25188,
+        "known_queries": 40
+      }
+    },
+    "gpt-5.6-luna": {
+      "per_query_mean": {
+        "input_tokens": 1943.875,
+        "output_tokens": 1559.075,
+        "total_tokens": 3502.95,
+        "api_seconds": 21.569071211342816,
+        "query_seconds": 21.573188292686247,
+        "condition_seconds": 21.58067535207665,
+        "input_usd": 0.00038877500000000006,
+        "output_usd": 0.00187089,
+        "total_usd": 0.002259665
+      },
+      "cached_input": {
+        "tokens": 0,
+        "known_queries": 40
+      },
+      "reasoning_output": {
+        "tokens": 50938,
+        "known_queries": 40
+      }
+    }
+  },
+  "created_at_utc": "2026-09-11T04:09:31.444503+00:00",
+  "source_directory": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/experiments/05_new_models_single/results",
+  "source_sha256": {
+    "summary.json": "541f1444cccf44fea40605240cd0cbccc2fc20f14b269c8515dce737f5f7bd37",
+    "manifest.json": "a0a99a226eb4e26483ef1094066c1e001e72a9bf8913ce0c884b822d45dc70ca",
+    "records.jsonl": "c278f08221eda63eca71b9f8d2dac4daa7ae8d584ece767b995717c39f320da2"
+  },
+  "price_file": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/experiments/05_new_models_single/analysis/estimate_prices.json",
+  "price_sha256": "87899d8fcc13958bc7fc5aeec26423df628af780f877d5bbe741a36c2902e935"
+}

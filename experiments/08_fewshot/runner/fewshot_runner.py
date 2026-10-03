@@ -283,17 +283,20 @@ def compose_user(examples, target_user):
 
 
 def make_plan(spec, examples, input_hashes, data_root=DEFAULT_DATA_ROOT):
+    #@Rafaメモ: bundlesは、実験条件をkeyとし、few-shotに用いる例をvalueとするdictを返す。
     bundles=choose_demonstrations(spec,examples)
     targets=select_targets(spec,examples,data_root)
     import tiktoken
     encoding=tiktoken.get_encoding('o200k_base')
     rows=[]
     for condition in conditions(spec):
+        #@Rafaメモ:このshotsがconditionに対応するfew-shotの例
         shots=bundles[(condition['task'],condition['score_pattern'],condition['shots'])]
         for ordinal, aligned in enumerate(targets[condition['task']]):
             q=aligned[condition['H']]
             if q.history_end-q.history_start != condition['H']:
                 raise ValueError('History length mismatch')
+            #@Rafaメモ: compose_user関数で、few-shotの例と、元のuser promptを結合して、最終的なuser promptを生成する
             user,offset=compose_user(shots,q.user_prompt)
             request=common.expected_api_request(condition['model'],q.system_prompt,user)
             base={**condition,'ordinal':ordinal,'episode_path':str(q.episode_path.relative_to(ROOT)),
@@ -386,7 +389,9 @@ def run(spec, argv=None, *, input_files=()):
         validate_spec(spec)
     except ValueError as exc:
         parser.error(str(exc))
+    # @Rafaメモ: conditions関数は実験条件についてその全ての組み合わせを要素にするリストを返す。要素はdictでvalueとして条件を持つ
     all_conditions=conditions(spec)
+    # @Rafaメモ: manifestは実験の計画をまとめるためだけのdict
     manifest=dict(schema_version=2,experiment=spec.name,mode='dry_run',status='input_required',
                   config=asdict(spec),conditions=all_conditions,planned_conditions=len(all_conditions),
                   planned_queries=len(all_conditions)*spec.n,generated_queries=0,api_requests_made=0,
@@ -409,6 +414,7 @@ def run(spec, argv=None, *, input_files=()):
             manifest['status']='insufficient_candidates'
             manifest['messages'].append('候補が不足しています。candidate_inventory.csv／preview.htmlでTask・区分・Scoreごとの不足数を確認してください。')
         else:
+            #@Rafaメモ: このmake_plan関数で、実験条件ごとに、system/user promptを生成して、manifest['queries']に格納する
             manifest['queries']=make_plan(spec,examples,hashes)
             manifest['generated_queries']=len(manifest['queries'])
             for path,expected in hashes.items():

@@ -1,0 +1,467 @@
+{
+  "joined_rows": 1920,
+  "target_rows": 480,
+  "valid_bin": 477,
+  "valid_torque": 470,
+  "excluded_bin": 3,
+  "excluded_torque": 10,
+  "figures": 25,
+  "scales": {
+    "bin_accuracy": [
+      0,
+      100
+    ],
+    "bin_mae": [
+      0,
+      9
+    ],
+    "nrmse": [
+      0,
+      0.39273751239634136
+    ],
+    "pearson": [
+      -1,
+      1
+    ],
+    "cosine": [
+      -1,
+      1
+    ]
+  },
+  "input_sha256": {
+    "experiments/07_view_rawdata/reasoning_for_scoring_scored_astra_high.csv": "bf4a7e3acaead3c38216c52b6d0273311cb638369f6cc2163f489455bae1705b",
+    "experiments/06_new_models_n10/analysis/comparison_4models/tables/parsed_records.csv": "4651b2b88fadba602b7f2202efe6a93f3c10076aa89add0b909e08d1d2925e5e",
+    "experiments/03_1_gpt35_history_n30_joint/analysis/tables/parsed_records.csv": "da3d4ad66835bcc81510a630e6a3bd20f1b85e1d31ea5f4725fff669ee7534af",
+    "experiments/03_1_gpt35_history_n30_joint/results/records.jsonl": "3517021c6343b20be8fffa3f0fefdbb76da247f769b8d9cad0081dcec86dedaa",
+    "experiments/06_new_models_n10/results/merged/c189af3036db4adfb9e4da5bb632ea48/records.jsonl": "6be3d9ca736985c19d5a62f4e42cd34e27298f8719938cbce9687ced046b5fd1"
+  },
+  "na_cells": [
+    {
+      "model": "3.5",
+      "score": 1,
+      "metric": "last-action",
+      "measure": "bin_accuracy",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "3.5",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "bin_accuracy",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "3.5",
+      "score": 1,
+      "metric": "last-action",
+      "measure": "bin_mae",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "3.5",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "bin_mae",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "3.5",
+      "score": 1,
+      "metric": "last-action",
+      "measure": "nrmse",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "3.5",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "nrmse",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "3.5",
+      "score": 1,
+      "metric": "last-action",
+      "measure": "pearson",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "3.5",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "pearson",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "3.5",
+      "score": 1,
+      "metric": "last-action",
+      "measure": "cosine",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "3.5",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "cosine",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "bin_accuracy",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "bin_accuracy",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "bin_accuracy",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "bin_mae",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "bin_mae",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "bin_mae",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "nrmse",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "nrmse",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "nrmse",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "pearson",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "pearson",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "pearson",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "cosine",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "cosine",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "luna",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "cosine",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "bin_accuracy",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "bin_accuracy",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "bin_accuracy",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "bin_mae",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "bin_mae",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "bin_mae",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "nrmse",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "nrmse",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "nrmse",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "pearson",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "pearson",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "pearson",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 4,
+      "metric": "next-action",
+      "measure": "pearson",
+      "na_reason": "fewer_than_two_pairs"
+    },
+    {
+      "model": "terra",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "cosine",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "cosine",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "terra",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "cosine",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "bin_accuracy",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "bin_accuracy",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "bin_accuracy",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "bin_mae",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "bin_mae",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "bin_mae",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "nrmse",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "nrmse",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "nrmse",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "pearson",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "pearson",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "pearson",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "cosine",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 3,
+      "metric": "last-action",
+      "measure": "cosine",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "sol",
+      "score": 4,
+      "metric": "last-action",
+      "measure": "cosine",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "all",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "bin_accuracy",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "all",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "bin_mae",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "all",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "nrmse",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "all",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "pearson",
+      "na_reason": "no_samples"
+    },
+    {
+      "model": "all",
+      "score": 1,
+      "metric": "next-action",
+      "measure": "cosine",
+      "na_reason": "no_samples"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "record_count": 960,
+  "condition_count": 32,
+  "source_run_prompt_and_gt_checks": 960,
+  "ground_truth_delta_checks": 480,
+  "nested_subsets": true,
+  "accuracy_denominators": true,
+  "macro_equals_mean_dimension_nrmse": true,
+  "valid_n_bounds": true,
+  "undefined_metrics_have_reason": true,
+  "protected_files_unchanged": true,
+  "protected_file_count": 171,
+  "raw_episode_hashes_unchanged": true,
+  "png_figures": 66,
+  "svg_figures": 66,
+  "csv_readback_checks": 12,
+  "image_readback_checks": 132
+}
