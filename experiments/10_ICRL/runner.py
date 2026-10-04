@@ -121,7 +121,9 @@ def save_preview(manifest, root):
     print(f"Planned {len(manifest['queries'])} requests. Preview: {directory}")
 
 
-def summarize(root):
+def summarize(root, *, csv_fields=CSV_FIELDS,
+              condition_fields=('model_alias', 'model', 'method', 'K', 'E', 'context_episode_count'),
+              note='Bin accuracy uses parsed bins; MAE uses parsed numeric actions. Token/time aggregates use saved scored responses. Repeats share one target query.'):
     """Aggregate the existing scorer's outputs, with explicit parse denominators."""
     manifest = common.read_json(root / 'api/manifest.json')
     records_path = root / 'api/records.jsonl'
@@ -132,7 +134,7 @@ def summarize(root):
     for r in records:
         bin_ok = r['status'] in ('match', 'mismatch')
         action_ok = r.get('absolute_error') is not None
-        derived.append({**{k: r.get(k) for k in CSV_FIELDS}, 'bin_parse_success': bin_ok,
+        derived.append({**{k: r.get(k) for k in csv_fields}, 'bin_parse_success': bin_ok,
                         'action_parse_success': action_ok, 'parse_success': bin_ok and action_ok})
     lookup = {r['query_id']: r for r in derived}
     groups = defaultdict(list)
@@ -145,8 +147,7 @@ def summarize(root):
         errors = [r['absolute_error'] for r in results if r['action_parse_success']]
         matches = sum(r['status'] == 'match' for r in valid)
         q = queries[0]
-        metric = dict(condition_id=condition, **{k: q[k] for k in
-                      ('model_alias', 'model', 'method', 'K', 'E', 'context_episode_count')},
+        metric = dict(condition_id=condition, **{k: q[k] for k in condition_fields},
                       planned=len(queries), responses=len(results), parsed_bins=len(valid),
                       parsed_actions=len(errors), parse_successes=sum(r['parse_success'] for r in results),
                       matches=matches, bin_accuracy=matches/len(valid) if valid else None,
@@ -161,8 +162,7 @@ def summarize(root):
             metric[field + '_n'] = len(values)
         metrics.append(metric)
     output = root / 'analysis'
-    common.write_json(output / 'summary.json', dict(conditions=metrics,
-        note='Bin accuracy uses parsed bins; MAE uses parsed numeric actions. Token/time aggregates use saved scored responses. Repeats share one target query.'))
+    common.write_json(output / 'summary.json', dict(conditions=metrics, note=note))
     common.write_csv(output / 'conditions.csv', metrics)
     if derived:
         common.write_csv(output / 'per_query.csv', derived)

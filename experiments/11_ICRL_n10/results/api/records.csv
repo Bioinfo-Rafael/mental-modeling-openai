@@ -1,0 +1,410 @@
+query_id,condition_id,model_alias,task,metric,H,shots,score_pattern,ordinal,status,prediction,ground_truth,assistant_text,input_tokens,output_tokens,total_tokens,request_elapsed_seconds,action_value_prediction,action_value_ground_truth,absolute_error,scoring_version,model,method,K,E,context_episode_count,repeat_id,history_start,query_index,target_episode,reward_present,element_accuracy,parse_error,action_value_parse_error,pair_id,reward_mode,episode_path,history_end_exclusive
+2e83abc6758f28a2449c915bd1292a7a621a4433d4c420eec40d5d185c80b452,terra__icrfqi_k5__with_reward,terra,Pendulum-v1,next-action,20,,,0,mismatch,[6],[5],"1. [Reasoning]: The pendulum is slightly left of upright (\(y<0\)) with near-zero positive angular velocity. Recent actions in similar nearby states use moderate positive torque to counter the gravitational pull away from upright. The fitted value estimate therefore favors the \([0.4, 0.8)\) action bin.
+
+2. [Prediction]:
+```python
+predictions = [0.60]
+```
+
+3. [Formatting]:
+>>Final action bins: [6]",2320,594,2914,8.168619833886623,[0.6],[0.08882922679185867],0.5111707732081413,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,0,20,episode_0.npz,True,0.0,,,70046cc973d35ed55d2317aef9f1bb56356aa74b08809dc113b85ab733b2a88a,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,20
+da6d7d78fc39cbccbdb7818176300cfdfeb54a81345ffd48b59c4b5d1a78600c,terra__icrfqi_k5__with_reward,terra,Pendulum-v1,next-action,20,,,1,mismatch,[5],[6],"1. [Reasoning]: The query state is very close to the recent near-upright states with small negative angle and near-zero angular velocity. The fitted value estimate favors the small positive-torque behavior seen locally (bin 5), which gently counters the pendulum’s negative displacement without adding excessive velocity.
+
+2. [Prediction]:
+   - Action element [0]: predict a small positive torque, approximately `0.18`.
+
+3. [Formatting]:
+```python
+predictions = [0.18]
+```
+
+>>Final action bins: [5]",2321,891,3212,10.930548000149429,[0.18],[0.6434862613677979],0.46348626136779786,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,1,21,episode_0.npz,True,0.0,,,32e56d4bd70935de8821da635349ff84fe6e62656f9a48d1b48c594764ad923d,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,21
+22a61069bbdd956a620aa9d4bac8be4c2b520aa9a49c8ee0440595de906b26f8,terra__icrfqi_k5__with_reward,terra,Pendulum-v1,next-action,20,,,2,mismatch,[4],[2],"1. [Reasoning]: Near the upright position with a small negative angle and now-positive angular velocity, the agent is likely to apply a small negative damping torque to reduce the rightward motion while maintaining balance. This corresponds to bin 4, \([-0.4, 0)\).
+
+2. [Prediction]:
+```python
+predictions = [-0.15]
+```
+
+3. [Formatting]:
+>>Final action bins: [4]",2324,611,2935,8.188054959056899,[-0.15],[-1.0871518850326538],0.9371518850326538,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,2,22,episode_0.npz,True,0.0,,,eda27471ed24248d2ebf90b23960982e837f4a0279ca82c96de992a1c9fc05aa,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,22
+f980b716ac437ac64aabd9126c2cf66808ee636d886bca4d30ca802a6cfcdec0,terra__icrfqi_k5__with_reward,terra,Pendulum-v1,next-action,20,,,3,mismatch,[6],[8],"1. [Reasoning]:  
+   At \(s_{23}=(\cos\theta,\sin\theta,\dot\theta)\approx(0.9988,-0.0492,-0.1478)\), the pendulum is slightly clockwise from upright and moving further clockwise. Nearby corrective behavior uses positive torque to reverse this motion; the closest comparable states used actions around \(0.54\)–\(0.71\). The fitted value estimate therefore favors the positive-torque bin \([0.4,0.8)\).
+
+2. [Prediction]:  
+   ```python
+   predictions = [0.75]
+   ```
+
+3. [Formatting]:  
+   >>Final action bins: [6]",2327,833,3160,10.518785541178659,[0.75],[1.421302080154419],0.671302080154419,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,3,23,episode_0.npz,True,0.0,,,b1fab8cb97fbee1f63b2713033e68813b513ab6a507860411a220bafe2e4bdf7,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,23
+53c1058083f9f04d01020e589cfabe21fd526fedeccd05d7c59fd7f39d93f188,terra__icrfqi_k5__with_reward,terra,Pendulum-v1,next-action,20,,,4,match,[5],[5],"1. [Reasoning]: The query state is close to the upright balancing region with a small negative angle and small positive angular velocity. Nearby behavior indicates the controller generally applies a small positive torque to counter the negative-angle drift while avoiding excessive acceleration. The fitted value estimate favors the low positive-torque bin.
+
+2. [Prediction]:
+```python
+predictions = [0.20]
+```
+
+3. [Formatting]:
+>>Final action bins: [5]",2328,1437,3765,18.23969441698864,[0.2],[0.33447736501693726],0.13447736501693724,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,4,24,episode_0.npz,True,1.0,,,1e5b742c90c11a9927e4f60acabdbe8105f1a05148eb955d7bca3c1d009fa3da,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,24
+7f8ef4dce281d3668e906c21a6570f17f8d2550b1bd8cbefce79e898a2935513,terra__icrfqi_k5__with_reward,terra,Pendulum-v1,next-action,20,,,5,mismatch,[5],[3],"1. [Reasoning]:  
+   The query state is very close to the recent near-upright states, where the agent generally uses small positive corrective torques. The nearest observed behavior at a similar state used torque \(0.3345\); fitted value interpolation favors the low-positive torque bin over larger corrective actions.
+
+2. [Prediction]:  
+   Action element [0] is predicted as a small positive torque.
+
+3. [Formatting]:  
+```python
+predictions = [0.33]
+```
+
+>>Final action bins: [5]",2331,1013,3344,11.54634379199706,[0.33],[-0.48779454827308655],0.8177945482730866,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,5,25,episode_0.npz,True,0.0,,,2bf73c024cd797dcd471e88974003f3e4d5ee9cccef3b9b0bf8805a4932c8122,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,25
+d660bcfaccaf0b594aa4e3a041c76ebd51f45e69a26011157fa89571869bcd46,terra__icrfqi_k5__with_reward,terra,Pendulum-v1,next-action,20,,,6,match,[6],[6],"1. [Reasoning]:  
+   The query state is near the upright equilibrium but has a negative angle and negative angular velocity. Nearby observed states with similar negative angle/velocity use moderate positive torques (notably actions around 0.59–0.71), which counteract the negative swing without the excessive control cost of a large torque. The fitted value estimate therefore favors bin 6, `[0.4, 0.8)`.
+
+2. [Prediction]:  
+   ```python
+   predictions = [0.65]
+   ```
+
+3. [Formatting]:  
+   >>Final action bins: [6]",2330,733,3063,8.355140750063583,[0.65],[0.6751355528831482],0.02513555288314817,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,6,26,episode_0.npz,True,1.0,,,41e0ccbfc98f0033223d289c2616a90f57e09b925c69821ff79a27e8e173a792,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,26
+0fb671ed4037f1ba666a4cb31f95f93ae2e043b14ebaa857c1f27888dc21daa9,terra__icrfqi_k5__with_reward,terra,Pendulum-v1,next-action,20,,,7,mismatch,[5],[6],"1. [Reasoning]:  
+   The query state is near upright with a small negative angle and nearly zero angular velocity. Nearby trajectory states use small-to-moderate positive torques to counteract the pendulum’s negative displacement. The fitted value estimate therefore favors bin 5, corresponding to a small positive torque.
+
+2. [Prediction]:  
+   Action element [0]: predict a positive corrective torque of approximately `0.24`.
+
+3. [Formatting]:
+```python
+predictions = [0.24]
+```
+>>Final action bins: [5]",2338,1220,3558,14.443740082904696,[0.24],[0.7845479249954224],0.5445479249954224,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,7,27,episode_0.npz,True,0.0,,,59c1143136874f412b91a3fa077ce215d9c29065cb3338f816d36007e35bb89e,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,27
+8ad33d334deff3a565b227c87a3a89ed32a42350cec63870a01f3ce1ff125a04,terra__icrfqi_k5__with_reward,terra,Pendulum-v1,next-action,20,,,8,mismatch,[3],[1],"1. [Reasoning]:  
+   The query state is slightly left of upright (\(y<0\)) and has positive angular velocity, so a negative torque is appropriate to brake the counterclockwise motion. Nearby trajectory states with similar angle and positive velocity used negative corrective actions. The fitted local value estimate favors the moderately negative action region.
+
+2. [Prediction]:  
+   ```python
+   predictions = [-0.80]
+   ```
+
+3. [Formatting]:  
+   >>Final action bins: [3]",2336,626,2962,8.271158915944397,[-0.8],[-1.375152826309204],0.5751528263092041,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,8,28,episode_0.npz,True,0.0,,,03972ab2589b737e5614eb7e543cc7718dc2e7f08b804dccc878229a0913d362,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,28
+504bff924ab86b677bc78dc4815e8a267a05b5b3876d45a57020acf94d5830b1,terra__icrfqi_k5__with_reward,terra,Pendulum-v1,next-action,20,,,9,mismatch,[8],[9],"1. [Reasoning]:  
+   The query state has a small negative angle and a relatively strong negative angular velocity. The closest observed state is step 23, with state approximately \([0.9988,-0.0492,-0.1478]\), where the agent chose a positive corrective torque of \(1.4213\). Since \(s_{29}\) is slightly farther left and moving slightly faster clockwise, a similarly strong positive torque in bin 8 is most likely.
+
+2. [Prediction]:  
+   Action element 0: predict a positive corrective torque of approximately \(1.45\).
+
+3. [Formatting]:
+```python
+predictions = [1.45]
+```
+
+>>Final action bins: [8]",2338,523,2861,6.02932008379139,[1.45],[1.9077938795089722],0.4577938795089722,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,9,29,episode_0.npz,True,0.0,,,ca61bd5e3dfc7f2d106c77d3fb1ab1ebe7255839b15494055bd984c68a68f2b3,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,29
+a02bc389820aee892a3c0d4bbaf74e4c53a621c45497b457c58386f96965826f,terra__icrfqi_k5__without_reward,terra,Pendulum-v1,next-action,20,,,0,mismatch,[6],[5],"1. [Reasoning]:  
+   Near the upright position, the pendulum is slightly left of vertical (`sin(theta) < 0`) with nearly zero positive angular velocity. Recent local behavior uses moderate positive torques (`0.54`, `0.71`, `0.59`) to counter the negative displacement and stabilize the pendulum. The locally best-supported action bin is therefore bin 6, `[0.4, 0.8)`.
+
+2. [Prediction]:  
+   ```python
+   predictions = [0.59]
+   ```
+
+3. [Formatting]:  
+   >>Final action bins: [6]",2141,1458,3599,18.968923541950062,[0.59],[0.08882922679185867],0.5011707732081413,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,0,20,episode_0.npz,False,0.0,,,70046cc973d35ed55d2317aef9f1bb56356aa74b08809dc113b85ab733b2a88a,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,20
+05b9c9c0208a9a488e9bdc947e2254254eefedc7ecb0c18f279f8a61557fe6bd,terra__icrfqi_k5__without_reward,terra,Pendulum-v1,next-action,20,,,1,match,[6],[6],"1. [Reasoning]:  
+   Near the upright state, the policy applies a modest positive torque to counter the pendulum’s negative angle and slightly negative angular velocity. Recent nearby actions are predominantly positive, especially when the velocity is negative. The estimated action falls in the positive moderate-torque range.
+
+2. [Prediction]:  
+   ```python
+   predictions = [0.50]
+   ```
+
+3. [Formatting]:  
+   >>Final action bins: [6]",2142,610,2752,8.703771791886538,[0.5],[0.6434862613677979],0.14348626136779785,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,1,21,episode_0.npz,False,1.0,,,32e56d4bd70935de8821da635349ff84fe6e62656f9a48d1b48c594764ad923d,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,21
+d85ae263048a68427826f09c8492092ed5587e9369cbc9bf5580b1af79f90b72,terra__icrfqi_k5__without_reward,terra,Pendulum-v1,next-action,20,,,2,mismatch,[5],[2],"1. [Reasoning]:  
+   Near the upright position, the pendulum has a small negative angle and is moving counterclockwise (positive angular velocity). Local fitted-Q interpolation favors a small positive corrective torque: enough to offset the negative angle, but lower than the recent 0.4–0.8 actions because the pendulum is already moving toward upright and torque cost matters.
+
+2. [Prediction]:  
+   ```python
+   predictions = [0.12]
+   ```
+
+3. [Formatting]:  
+   >>Final action bins: [5]",2145,1364,3509,17.917389041977003,[0.12],[-1.0871518850326538],1.207151885032654,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,2,22,episode_0.npz,False,0.0,,,eda27471ed24248d2ebf90b23960982e837f4a0279ca82c96de992a1c9fc05aa,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,22
+472322e2a5778018860187544f3f555978597708f414f184bedfc866aec73bb5,terra__icrfqi_k5__without_reward,terra,Pendulum-v1,next-action,20,,,3,mismatch,[6],[8],"1. [Reasoning]:  
+   The pendulum is slightly left of upright with negative angular velocity, so it is moving farther left. Nearby states with similarly negative angle/velocity are generally corrected using a positive torque. The fitted value estimate favors the moderate positive-torque bin `[0.4, 0.8)`.
+
+2. [Prediction]:  
+   Action element 0: apply a positive corrective torque of approximately `0.70`.
+
+3. [Formatting]:
+```python
+predictions = [0.70]
+```
+>>Final action bins: [6]",2148,636,2784,8.382705790922046,[0.7],[1.421302080154419],0.721302080154419,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,3,23,episode_0.npz,False,0.0,,,b1fab8cb97fbee1f63b2713033e68813b513ab6a507860411a220bafe2e4bdf7,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,23
+382c09146119eb16985b568b5846545658da0b84e921b2af2cd76feb5ee8996f,terra__icrfqi_k5__without_reward,terra,Pendulum-v1,next-action,20,,,4,mismatch,[2],[5],"1. [Reasoning]: The query state is very close to the upright position but has a small positive angular velocity. Nearby behavior, especially at step 22 with a similar angle and positive velocity, uses a negative corrective torque to damp the motion. The fitted value estimate therefore favors the negative-torque bin around \([-1.2,-0.8)\).
+
+2. [Prediction]:
+```python
+predictions = [-1.09]
+```
+
+3. [Formatting]:
+>>Final action bins: [2]",2149,506,2655,6.355840791016817,[-1.09],[0.33447736501693726],1.4244773650169373,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,4,24,episode_0.npz,False,0.0,,,1e5b742c90c11a9927e4f60acabdbe8105f1a05148eb955d7bca3c1d009fa3da,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,24
+cfaaedc585ea10b35ff77de2c15989483a7726d29bf3a659266f5b0a6b47de88,terra__icrfqi_k5__without_reward,terra,Pendulum-v1,next-action,20,,,5,mismatch,[5],[3],"1. [Reasoning]:  
+   The query state is closest to step 24: the pendulum is slightly right of upright in the negative-angle convention (`sin(theta) < 0`) and moving slowly toward upright. The nearby observed policy action at step 24 is a small positive torque (`0.3345`), which is in bin 5 and is more locally consistent than the larger corrective torques in earlier, higher-velocity states. The fitted value estimate therefore favors a modest positive action.
+
+2. [Prediction]:  
+   Action element [0] is predicted as a small positive torque.
+
+3. [Formatting]:
+```python
+predictions = [0.33]
+```
+
+>>Final action bins: [5]",2151,977,3128,12.02556166681461,[0.33],[-0.48779454827308655],0.8177945482730866,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,5,25,episode_0.npz,False,0.0,,,2bf73c024cd797dcd471e88974003f3e4d5ee9cccef3b9b0bf8805a4932c8122,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,25
+caecdeeaf1caa47da19b7d069cd9671c4c663cbf216ddce60f15189b45e9f65d,terra__icrfqi_k5__without_reward,terra,Pendulum-v1,next-action,20,,,6,match,[6],[6],"1. [Reasoning]: The query state is closest to the stabilized near-upright states with a small negative angle and negative angular velocity (notably steps 18–21). In this region, the fitted action-bin value is highest for bin 6, corresponding to a moderate positive corrective torque. The observed actions in that local neighborhood are approximately 0.54–0.71.
+
+2. [Prediction]:
+```python
+predictions = [0.62]
+```
+
+3. [Formatting]:
+>>Final action bins: [6]",2150,592,2742,7.083120082970709,[0.62],[0.6751355528831482],0.0551355528831482,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,6,26,episode_0.npz,False,1.0,,,41e0ccbfc98f0033223d289c2616a90f57e09b925c69821ff79a27e8e173a792,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,26
+b41e348b0b7c2d103ddc2727145db0c804ded8ad1961945d90f315214c6015f2,terra__icrfqi_k5__without_reward,terra,Pendulum-v1,next-action,20,,,7,match,[6],[6],"1. [Reasoning]: The pendulum is slightly to the negative-angle side with nearly zero angular velocity. Nearby trajectory states use a modest positive torque to counteract the negative displacement and maintain upright balance. The fitted value estimate therefore favors the positive-torque bin \([0.4, 0.8)\).
+
+2. [Prediction]:
+```python
+predictions = [0.64]
+```
+
+3. [Formatting]:
+>>Final action bins: [6]",2158,563,2721,7.233222792157903,[0.64],[0.7845479249954224],0.14454792499542235,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,7,27,episode_0.npz,False,1.0,,,59c1143136874f412b91a3fa077ce215d9c29065cb3338f816d36007e35bb89e,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,27
+d840c60ad3650564707c037726200190f294fcf0a2f21afed0fd2c1d7eda9245,terra__icrfqi_k5__without_reward,terra,Pendulum-v1,next-action,20,,,8,mismatch,[5],[1],"1. [Reasoning]: The query state remains close to upright with a small negative angle and positive angular velocity. Local interpolation of the nearby stabilized states favors a modest positive corrective torque, rather than the larger swing-up torques. This corresponds to bin 5.
+
+2. [Prediction]:
+```python
+predictions = [0.33]
+```
+
+3. [Formatting]:
+>>Final action bins: [5]",2157,1297,3454,16.74425487499684,[0.33],[-1.375152826309204],1.7051528263092042,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,8,28,episode_0.npz,False,0.0,,,03972ab2589b737e5614eb7e543cc7718dc2e7f08b804dccc878229a0913d362,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,28
+b26fcd9e9d2807f8dbb5155a773e466927b729d5b9097964db3765248c058936,terra__icrfqi_k5__without_reward,terra,Pendulum-v1,next-action,20,,,9,mismatch,[8],[9],"1. [Reasoning]: At \(s_{29}\), the pendulum is slightly left of upright and moving further left (negative angular velocity), so a strong positive/counterclockwise corrective torque is favored. The closest observed state is step 23, which has similarly negative angle and velocity and uses action \(+1.4213\). This falls in bin 8.
+
+2. [Prediction]:
+```python
+predictions = [1.42]
+```
+
+3. [Formatting]:
+>>Final action bins: [8]",2159,405,2564,5.626401459099725,[1.42],[1.9077938795089722],0.48779387950897224,08_joint_final_action_v1,gpt-5.6-terra,icrfqi_k5,5,1,1,,9,29,episode_0.npz,False,0.0,,,ca61bd5e3dfc7f2d106c77d3fb1ab1ebe7255839b15494055bd984c68a68f2b3,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,29
+67c0a88c6eed0727f9fe18e0eeb1e38883c96a67e0a95e4a71c57c70f63227ab,luna__icrfqi_k5__with_reward,luna,Pendulum-v1,next-action,20,,,0,mismatch,[4],[5],"1. **[Reasoning]:** The pendulum is close to upright with a small negative angle and nearly zero angular velocity. Recent actions have been moderate positive corrections, but as the angular velocity reaches zero, the controller will likely reduce torque and apply a small counteracting action.
+
+2. **[Prediction]:**  
+   - Action element [0]: predict a small negative torque, approximately `-0.30`, falling in bin 4 (`[-0.4, 0.0)`).
+
+3. **[Formatting]:**
+```python
+predictions = [-0.30]
+```
+>>Final action bins: [4]",2320,650,2970,6.780490583041683,[-0.3],[0.08882922679185867],0.38882922679185866,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,0,20,episode_0.npz,True,0.0,,,c9bad535e40a32cfe32b56043bcb2171e06800f0fbde1b68410046c80d14e429,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,20
+146ed39efb30fd92a2bfc21338004c8549f60cf39ce3d47f263fed00495d24e9,luna__icrfqi_k5__with_reward,luna,Pendulum-v1,next-action,20,,,1,mismatch,[5],[6],"1. **[Reasoning]:** The pendulum is close to upright, with a small negative angle and slightly negative angular velocity. The recent actions have decreased toward zero as the system stabilized, so a small positive corrective torque is most likely.
+
+2. **[Prediction]:** Predict a small positive action, approximately \(0.10\), which falls in the \([0, 0.4)\) bin.
+
+3. **[Formatting]:**
+
+```python
+predictions = [0.10]
+```
+
+>>Final action bins: [5]",2321,634,2955,6.270144292153418,[0.1],[0.6434862613677979],0.5434862613677979,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,1,21,episode_0.npz,True,0.0,,,bcdce59ffae328ba5a530fc2e0465ce9f900054b32406eba196ae7f3965f2066,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,21
+4eb67f0210b711b163186b5d9056dd7279504dab4d263546adf260374eebc8b1,luna__icrfqi_k5__with_reward,luna,Pendulum-v1,next-action,20,,,2,mismatch,[6],[2],"1. **[Reasoning]:** The pendulum is very close to upright, with a small negative angle and small positive angular velocity. Nearby trajectory actions mostly use a moderate positive corrective torque (approximately \(0.5\)–\(0.7\)), corresponding to action bin 6. The fitted value estimate therefore favors bin 6.
+
+2. **[Prediction]:** Predict a moderate positive torque of approximately \(0.60\).
+
+3. **[Formatting]:**
+   ```python
+   predictions = [0.60]
+   ```
+   >>Final action bins: [6]",2324,641,2965,6.890544333029538,[0.6],[-1.0871518850326538],1.687151885032654,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,2,22,episode_0.npz,True,0.0,,,df0e1fcee245605b9f9214c14a80f4fb8484fcd823929ede4577b43341807101,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,22
+49f24bd8445da93be87961b334a76da28fa5ebefca37a6d2484ec6fb05408d66,luna__icrfqi_k5__with_reward,luna,Pendulum-v1,next-action,20,,,3,mismatch,[7],[8],"1. **[Reasoning]:** The pendulum is slightly left of upright and rotating further in the negative direction (\(\dot\theta=-0.1478\)). The agent’s recent behavior applies a positive corrective torque in this situation, typically in the moderate range. The estimated best action is therefore a positive torque in bin 7.
+
+2. **[Prediction]:** For the single action element, predict \(a_{23}\approx 0.85\), which lies in \([0.8,1.2)\), bin 7.
+
+3. **[Formatting]:**
+```python
+predictions = [0.85]
+```
+>>Final action bins: [7]",2327,648,2975,6.762452834052965,[0.85],[1.421302080154419],0.571302080154419,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,3,23,episode_0.npz,True,0.0,,,14b6859f4400657b285b6a4338f4737809554ac095d7e10f21a057389927a8ae,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,23
+4af85d7f9b73334b72079206992655051cd612a637cba3a494d014de2daed911,luna__icrfqi_k5__with_reward,luna,Pendulum-v1,next-action,20,,,4,mismatch,[2],[5],"1. [Reasoning]: The pendulum is close to upright with a small positive angular velocity. The agent has recently used a strong positive torque, so it will likely apply a moderate negative corrective torque to damp the motion. The closest observed behavior suggests an action near \(-0.9\), corresponding to bin 2.
+
+2. [Prediction]:
+   - Action element [0]: predict approximately \(-0.90\), which lies in bin 2 \([-1.2,-0.8)\).
+
+3. [Formatting]:
+```python
+predictions = [-0.90]
+```
+
+>>Final action bins: [2]",2328,1169,3497,11.493073457852006,[-0.9],[0.33447736501693726],1.2344773650169372,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,4,24,episode_0.npz,True,0.0,,,fceeeb84b282d3cd9fe0931963ed082875978b6685c4d8888a1e1a7809cb1d6c,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,24
+7a7566c40f7672a7ee6df51ab5a56d8f698e539db153baf79b11419c72699ac4,luna__icrfqi_k5__with_reward,luna,Pendulum-v1,next-action,20,,,5,mismatch,[5],[3],"1. [Reasoning]: The query state is very close to the upright states near Steps 20–24, where the agent applies small corrective torques. Since the angle is slightly negative and angular velocity is small and positive, a modest positive torque is most consistent with the local behavior. The predicted action is placed in bin 5, \([0.0, 0.4)\).
+
+2. [Prediction]:  
+   Action element [0] is predicted as \(0.30\).
+
+3. [Formatting]:
+```python
+predictions = [0.30]
+```
+
+>>Final action bins: [5]",2331,648,2979,6.508906249888241,[0.3],[-0.48779454827308655],0.7877945482730866,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,5,25,episode_0.npz,True,0.0,,,33e4d22098d42bf7ca24fe32109ea3a34056a911bf3a4f31a0e1c56560d2a436,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,25
+30f95fafeea6ff9c38bc640e3f0b04b006b0b7be98745660ffa167041b81cd16,luna__icrfqi_k5__with_reward,luna,Pendulum-v1,next-action,20,,,6,match,[6],[6],"1. **[Reasoning]:**  
+   The pendulum is very close to upright but has a small negative angle and negative angular velocity. The agent’s recent behavior applies small alternating torques to stabilize this oscillation. A modest positive torque is therefore most likely, rather than a large corrective action.
+
+2. **[Prediction]:**  
+   - Action element [0]: predict a small positive torque, approximately **0.45**, which lies in the interval \([0.4, 0.8)\).
+
+3. **[Formatting]:**
+   ```python
+   predictions = [0.45]
+   ```
+   >>Final action bins: [6]",2330,512,2842,5.161955790827051,[0.45],[0.6751355528831482],0.22513555288314818,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,6,26,episode_0.npz,True,1.0,,,695e27d86841997e9dd52defca54600e964fe1ef32a13ee2bb27c16a39fecb38,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,26
+c7220c50528f8929ec78723f4c9c52238a617253923ee905f136ded5e972c155,luna__icrfqi_k5__with_reward,luna,Pendulum-v1,next-action,20,,,7,match,[6],[6],"1. **[Reasoning]:** The pendulum is close to upright but slightly displaced with nearly zero angular velocity. Recent actions near this state mostly use a small positive corrective torque, and the FQI-style estimate favors the positive mid-range bin \([0.4, 0.8)\). A value around \(0.60\) is therefore most likely.
+
+2. **[Prediction]:**  
+   - Action element [0]: predict \(0.60\), which lies in bin 6 \([0.4, 0.8)\).
+
+3. **[Formatting]:**
+```python
+predictions = [0.60]
+```
+>>Final action bins: [6]",2338,664,3002,6.499829708132893,[0.6],[0.7845479249954224],0.18454792499542239,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,7,27,episode_0.npz,True,1.0,,,5dd559557678f4fb74f6e608ca88c748c1c3a28f921b34e02c15735972a96028,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,27
+f0e03fb3cb859947fb488ec158a1e96f2a7bf44704bced5cd5eb672362e74a4c,luna__icrfqi_k5__with_reward,luna,Pendulum-v1,next-action,20,,,8,mismatch,[3],[1],"1. [Reasoning]: Near the upright position, the pendulum has a small positive angular velocity (`0.0811`). The agent’s recent behavior alternates torque to damp these small oscillations, so a modest negative corrective action is most likely.
+
+2. [Prediction]:
+   - Action element [0]: predict approximately `-0.55`, which lies in bin 3, `[-0.8, -0.4)`.
+
+3. [Formatting]:
+```python
+predictions = [-0.55]
+```
+
+>>Final action bins: [3]",2336,637,2973,6.64782316586934,[-0.55],[-1.375152826309204],0.8251528263092041,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,8,28,episode_0.npz,True,0.0,,,222dbbaa633b5f3105e63610c21b5e255e52190c8f22b2eec53fbe6700db2e7a,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,28
+259d17ab6e7fc7ce862b559d5e3ac00fefc0c51aff0937f4a55df442bf061ea3,luna__icrfqi_k5__with_reward,luna,Pendulum-v1,next-action,20,,,9,mismatch,[8],[9],"1. [Reasoning]: The query state is very close to Step 23, where the angular velocity was similarly negative and the agent applied a strong positive corrective torque of 1.4213. A comparable action is therefore most likely.
+
+2. [Prediction]:  
+   - Action element [0]: predict a positive torque of approximately **1.42**, which counteracts the negative angular velocity.
+
+3. [Formatting]:
+```python
+predictions = [1.42]
+```
+>>Final action bins: [8]",2338,603,2941,5.382866124855354,[1.42],[1.9077938795089722],0.48779387950897224,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,9,29,episode_0.npz,True,0.0,,,e1871b4f8533a5e5037a86179a1f6da4c77e48194cf4ce8273fbecba4f85c7b4,with_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,29
+7316b7961f53ac85c664b252177834dab9e6cbff5d891dbccd08fcc0aedfe699,luna__icrfqi_k5__without_reward,luna,Pendulum-v1,next-action,20,,,0,mismatch,[6],[5],"1. **[Reasoning]:** The pendulum is close to upright with very small angular velocity. Recent actions have been moderate positive corrections, especially as the angular velocity approaches zero, so the agent will likely continue with a positive torque in the \(0.4\)–\(0.8\) range. The predicted action is approximately \(0.55\), corresponding to bin 6.
+
+2. **[Prediction]:**  
+   Action element [0] is predicted as \(0.55\), which lies in bin 6: \([0.4, 0.8)\).
+
+3. **[Formatting]:**
+```python
+predictions = [0.55]
+```
+
+>>Final action bins: [6]",2141,429,2570,4.477412374923006,[0.55],[0.08882922679185867],0.46117077320814137,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,0,20,episode_0.npz,False,0.0,,,c9bad535e40a32cfe32b56043bcb2171e06800f0fbde1b68410046c80d14e429,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,20
+8efc98eda307750a13e1558927110c0759c5182a5d613179a1590b3224de16e9,luna__icrfqi_k5__without_reward,luna,Pendulum-v1,next-action,20,,,1,mismatch,[5],[6],"1. **[Reasoning]:** The pendulum is close to upright but slightly displaced to the negative side with a small negative angular velocity. The recent control pattern uses small positive torques to correct this drift, so the next action is most likely a modest positive value in the \([0, 0.4)\) bin.
+
+2. **[Prediction]:** For the single action element, predict a small stabilizing positive torque of approximately \(0.25\).
+
+3. **[Formatting]:**
+```python
+predictions = [0.25]
+```
+
+>>Final action bins: [5]",2142,645,2787,7.1858640420250595,[0.25],[0.6434862613677979],0.39348626136779785,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,1,21,episode_0.npz,False,0.0,,,bcdce59ffae328ba5a530fc2e0465ce9f900054b32406eba196ae7f3965f2066,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,21
+9f1a0ae12b358bf78efa3d1375abd560ca3c2a73bb1a56bba3b885453a9a49f4,luna__icrfqi_k5__without_reward,luna,Pendulum-v1,next-action,20,,,2,mismatch,[6],[2],"1. **[Reasoning]:** The pendulum is close to upright with small positive angular velocity. Recent nearby states used small-to-moderate positive torques, especially \(0.59\) and \(0.64\), suggesting the learned policy favors a moderate positive corrective action in this region. The estimated best action bin is therefore bin 6, \([0.4, 0.8)\).
+
+2. **[Prediction]:** Predict a torque near the recent local behavior, approximately \(0.60\).
+
+3. **[Formatting]:**
+```python
+predictions = [0.60]
+```
+>>Final action bins: [6]",2145,657,2802,6.8879169169813395,[0.6],[-1.0871518850326538],1.687151885032654,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,2,22,episode_0.npz,False,0.0,,,df0e1fcee245605b9f9214c14a80f4fb8484fcd823929ede4577b43341807101,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,22
+93f34cb5c6f540eaa5d979dbde5fa90032780eaa23426026d7b453376c5c1986,luna__icrfqi_k5__without_reward,luna,Pendulum-v1,next-action,20,,,3,mismatch,[7],[8],"1. [Reasoning]: The pendulum is slightly displaced left of upright and has negative angular velocity, so the agent will likely apply a positive counterclockwise torque to damp the motion and return it toward equilibrium. Based on the nearby corrective actions, a moderate positive action is most likely.
+
+2. [Prediction]: The predicted action is approximately \(0.95\), which lies in the bin \([0.8, 1.2)\), indexed as bin 7.
+
+3. [Formatting]:
+```python
+predictions = [0.95]
+```
+
+>>Final action bins: [7]",2148,644,2792,6.232809457927942,[0.95],[1.421302080154419],0.471302080154419,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,3,23,episode_0.npz,False,0.0,,,14b6859f4400657b285b6a4338f4737809554ac095d7e10f21a057389927a8ae,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,23
+c2e44df7a70c8a2bf42e1af4d7198f2ecfbdac75ca5ba2ee844fd44b57b7a6ce,luna__icrfqi_k5__without_reward,luna,Pendulum-v1,next-action,20,,,4,match,[5],[5],"1. **[Reasoning]:** The pendulum is very close to upright with low angular velocity. Comparing to nearby near-equilibrium states, the agent tends to apply a small corrective torque, so a value near \(0.1\) is most likely.
+
+2. **[Prediction]:**  
+   - Action element [0]: predict \(0.09\), which lies in bin 5, \([0.0, 0.4)\).
+
+3. **[Formatting]:**
+```python
+predictions = [0.09]
+```
+>>Final action bins: [5]",2149,983,3132,9.253772750031203,[0.09],[0.33447736501693726],0.24447736501693726,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,4,24,episode_0.npz,False,1.0,,,fceeeb84b282d3cd9fe0931963ed082875978b6685c4d8888a1e1a7809cb1d6c,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,24
+09ceb493e49c430fdd3602ef8d1c58fa67999f12596d84fa0e0abcad46d5e25e,luna__icrfqi_k5__without_reward,luna,Pendulum-v1,next-action,20,,,5,mismatch,[4],[3],"1. **[Reasoning]:** The pendulum is very close to upright, with a small positive angular velocity. The recent actions oscillate around zero as the agent makes fine corrections; a small negative torque is most consistent with damping the positive motion.
+
+2. **[Prediction]:**
+   - Action element [0]: predict approximately **-0.35**, which lies in bin **4** \([-0.4, 0.0)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-0.35]
+```
+
+>>Final action bins: [4]",2151,935,3086,9.05691208387725,[-0.35],[-0.48779454827308655],0.13779454827308657,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,5,25,episode_0.npz,False,0.0,,,33e4d22098d42bf7ca24fe32109ea3a34056a911bf3a4f31a0e1c56560d2a436,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,25
+21de5e323ad742f44e388244e9a18542938e249cbcb476d2bf9737aa0138799d,luna__icrfqi_k5__without_reward,luna,Pendulum-v1,next-action,20,,,6,match,[6],[6],"1. **[Reasoning]:** The pendulum is close to upright but has a small negative angle and negative angular velocity. The nearby trajectory shows corrective positive torques when the pendulum begins moving negatively, so a moderate positive action is most likely. The estimated best action bin is bin 6, corresponding to \([0.4, 0.8)\).
+
+2. **[Prediction]:**  
+   - Action element [0]: predict \(0.70\), which falls in bin 6.
+
+3. **[Formatting]:**
+```python
+predictions = [0.70]
+```
+
+>>Final action bins: [6]",2150,1031,3181,10.040370125090703,[0.7],[0.6751355528831482],0.024864447116851762,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,6,26,episode_0.npz,False,1.0,,,695e27d86841997e9dd52defca54600e964fe1ef32a13ee2bb27c16a39fecb38,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,26
+7b27524b3bcd484f15efbbd214e13412974ccec03ff3f91a8a7b29c18a0a5e03,luna__icrfqi_k5__without_reward,luna,Pendulum-v1,next-action,20,,,7,mismatch,[5],[6],"1. [Reasoning]: The pendulum is very close to upright with nearly zero angular velocity. Recent actions around this state mostly apply small corrective torques, and the positive torque at step 26 brought the velocity essentially to zero. A small positive action is therefore most likely.
+
+2. [Prediction]:
+   - Action element [0]: predict \(0.10\), which lies in bin 5 \([0.0, 0.4)\).
+
+3. [Formatting]:
+```python
+predictions = [0.10]
+```
+>>Final action bins: [5]",2158,640,2798,6.542746166931465,[0.1],[0.7845479249954224],0.6845479249954224,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,7,27,episode_0.npz,False,0.0,,,5dd559557678f4fb74f6e608ca88c748c1c3a28f921b34e02c15735972a96028,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,27
+7ca2a3d6e7938a1025dde258b926b0b1590a0ced9f149c899f84f997ab0c2ed1,luna__icrfqi_k5__without_reward,luna,Pendulum-v1,next-action,20,,,8,mismatch,[6],[1],"1. [Reasoning]: The pendulum is close to upright with a small positive angular velocity. The learned behavior near this region tends to apply a small positive corrective torque, so an action around \(0.5\) is most plausible, corresponding to bin 6.
+
+2. [Prediction]:
+   - Action element [0]: predict \(0.50\), which lies in bin 6, \([0.4, 0.8)\).
+
+3. [Formatting]:
+```python
+predictions = [0.50]
+```
+
+>>Final action bins: [6]",2157,640,2797,7.011579416925088,[0.5],[-1.375152826309204],1.875152826309204,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,8,28,episode_0.npz,False,0.0,,,222dbbaa633b5f3105e63610c21b5e255e52190c8f22b2eec53fbe6700db2e7a,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,28
+f9fdf36ed1e7c897a553fde6ed4744432bad6c7b036ea7a60b90327c6896319c,luna__icrfqi_k5__without_reward,luna,Pendulum-v1,next-action,20,,,9,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is near upright but has negative angular velocity at \(s_{29}\). The trajectory commonly responds to this condition with a positive counterclockwise torque, typically around \(1.4\)–\(1.7\). The estimated best action bin is therefore bin 8, \([1.2, 1.6)\).
+
+2. **[Prediction]:**
+   - Action element [0]: predict \(a_{29}[0] \approx 1.42\)
+   - This lies in bin 8.
+
+3. **[Formatting]:**
+```python
+predictions = [1.42]
+```
+
+>>Final action bins: [8]",2159,381,2540,4.344220499973744,[1.42],[1.9077938795089722],0.48779387950897224,08_joint_final_action_v1,gpt-5.6-luna,icrfqi_k5,5,1,1,,9,29,episode_0.npz,False,0.0,,,e1871b4f8533a5e5037a86179a1f6da4c77e48194cf4ce8273fbecba4f85c7b4,without_reward,data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz,29

@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "queries": 40,
+  "prompt_files": 40,
+  "paired_targets": 20,
+  "conditions": {
+    "terra__fewshot4": 10,
+    "terra__episodes_E9": 10,
+    "luna__fewshot4": 10,
+    "luna__episodes_E9": 10
+  },
+  "checks": [
+    "test_grid_and_windows",
+    "test_saved_05_06_03_1_identity_and_prompt_hashes",
+    "test_frozen_examples_verbatim_order_and_no_direct_target_labels",
+    "test_paired_target_and_only_prefix_changes",
+    "test_e9_selection_hashes_windows_and_boundaries",
+    "test_api_parameters_match_existing_terra_luna"
+  ],
+  "api_requests_made": 0,
+  "manifest_sha256": "f3e0a2565f9c9f168d5fc8c93213812fc8c894cb0bbd06e15d59f4d503634bb5",
+  "note": "Checks run against the saved dry-run manifest and prompt files; network/client forbidden."
+}
