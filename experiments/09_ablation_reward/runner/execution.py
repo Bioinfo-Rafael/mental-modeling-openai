@@ -17,7 +17,8 @@ def journal(path):
     return common.read_jsonl(path) if path.exists() else []
 
 
-def execute(manifest, root, *, resume=False):
+def execute(manifest, root, *, resume=False, source_experiment='09_ablation_reward',
+            csv_fields=CSV_FIELDS):
     if manifest['status'] != 'ready':
         raise ValueError('Input is not ready; run python run.py and inspect the preview')
     reviewed = common.read_json(root / 'dry_run/manifest.json')
@@ -79,7 +80,7 @@ def execute(manifest, root, *, resume=False):
         record = {**row, **response, **evaluation, 'assistant_text': text,
                   'input_tokens': usage.get('prompt_tokens'), 'output_tokens': usage.get('completion_tokens'),
                   'total_tokens': usage.get('total_tokens'), 'usage': raw.get('usage'),
-                  'api_request_made': True, 'reused': False, 'source_experiment': '09_ablation_reward'}
+                  'api_request_made': True, 'reused': False, 'source_experiment': source_experiment}
         common.append_jsonl(directory / 'records.jsonl', record)
         records.append(record)
         completed.add(row['query_id'])
@@ -133,7 +134,7 @@ def execute(manifest, root, *, resume=False):
                        updated_at_utc=common.utc_now(), scoring_version=VERSION)
         common.write_json(directory / 'summary.json', summary)
         if records:
-            common.write_csv(directory / 'records.csv', [{k:r.get(k) for k in CSV_FIELDS} for r in records])
+            common.write_csv(directory / 'records.csv', [{k:r.get(k) for k in csv_fields} for r in records])
         if client is not None:
             client.close()
     print(f"API run [{status}]: {len(completed)}/{len(rows)} responses saved. Results: {directory}")
