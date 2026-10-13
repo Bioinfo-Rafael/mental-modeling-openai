@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "plan_id": "30c260de9d69c74fd96e131d965c4a80f9a0cdf9d05cbfb0f85be7f92665220f",
+  "after_sync": 220,
+  "scope": "prefix-completion",
+  "prefix_requests_sha256": "24324f878e23502d3c02fba76abf330c9b84c5f33b8435e77fc03b13f813afe6",
+  "prefix_responses_sha256": "6f3b305fb84d93daf021bc1f05f5e6667d24652b736ea416fc64e93844be3cfe",
+  "jobs": [
+    {
+      "name": "terra_000",
+      "model": "gpt-5.6-terra",
+      "input_file": "terra_000.input.jsonl",
+      "sha256": "86a134c64e2eb5397d4276e0ffb0e9ee2540517d4fe87b919b8591fbc2ce0968",
+      "query_ids": [
+        "84b2ead2d6367abac318381f148811f8c95288a30f479aaffb83261c95534cea",
+        "0f20469666a12fdcfb9b063466b7528d0e5691804191db22afbb1cefcc34a2c0"
+      ],
+      "estimated_input_tokens": 5175,
+      "status": "validating",
+      "job_key": "8883ccd466bee0eb93ef1841a248c777d490ccd3ff413ef89eada424130af1bb",
+      "file_id": "file-DfeeVjN8FYAD2wRZGKMtQ5",
+      "batch_id": "batch_6acca36520b081908f27142a044a36f2"
+    },
+    {
+      "name": "luna_000",
+      "model": "gpt-5.6-luna",
+      "input_file": "luna_000.input.jsonl",
+      "sha256": "c06aadb7962094f91a3958fb4fd75605325af7ed90c38c4c0648dfc31b9240ef",
+      "query_ids": [
+        "7b3482fbbbe99c1817150d01ae695311fded8ad5fbdc2bfa6afac7acd4ef3b89",
+        "8d60d8742177444daafb99031277bd83baf298d4fb3da99188240d80d9520902"
+      ],
+      "estimated_input_tokens": 5175,
+      "status": "validating",
+      "job_key": "b3dacad3149854769d299b1009d3c5744b579daab87991b62c1695557068f4a1",
+      "file_id": "file-NqwAy8EdiUuLLZCBwRnJ5H",
+      "batch_id": "batch_6acca36693a081909caff1f0239eec66"
+    },
+    {
+      "name": "sol_000",
+      "model": "gpt-5.6-sol",
+      "input_file": "sol_000.input.jsonl",
+      "sha256": "eb7beb925a5c31aada19e9ccb3c44a8b47e85e35c5bc3ad64109309d5ca1e525",
+      "query_ids": [
+        "6ad102ced28be27c2c3e89d3e343ec7b9b0a719fe3fe11764329fc6304baea4c"
+      ],
+      "estimated_input_tokens": 2581,
+      "status": "validating",
+      "job_key": "b974f22520677726d23be2dcb205c926a4b912ce4ddf7c53a08351eaba43ef51",
+      "file_id": "file-LYYYgodQZRbqZ25vzENfyb",
+      "batch_id": "batch_6acca3675a3881909e658254987a71ad"
+    }
+  ]
+}

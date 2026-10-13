@@ -1,0 +1,22 @@
+{
+  "plan_id": "30c260de9d69c74fd96e131d965c4a80f9a0cdf9d05cbfb0f85be7f92665220f",
+  "manifest_sha256": "671cfe5ab40b69356c1b503fe203760c4c56b0736526f64faf43e787598e4aed",
+  "csv_sha256": {
+    "mhi_v1.3_ic100601_win": "812a44c4ba2d2d3a285394722da48fd93189be2c9495cac2866632fa997282f4",
+    "ours_seed100100_ic100601_loss": "8884b108c6b0d2ae8d4f5adee2f83c6a8d69fe269c0c717d8d16d11a9060f4cc",
+    "ours_seed100100_ic100606_win": "43211744056a66d627a968f237d7ca55fd2d7f44354c987bd62192a2401b69fd"
+  },
+  "views": 600,
+  "groups": 30,
+  "unique_target_times": 177,
+  "dt_s": 0.2,
+  "before": 50,
+  "after": 10,
+  "prompts_reconstructed_and_verified": 600,
+  "notes": [
+    "One model-independent target-aircraft timeline per self/all paired problem.",
+    "All 10 states and 4 action IDs, including shoot (not predicted).",
+    "Recorded context outside supplied history is retrospective and not shown to the model.",
+    "Missing, invalid, or dead-object values are gaps, never interpolated. Angular wrap lines broken without modifying point values."
+  ]
+}
