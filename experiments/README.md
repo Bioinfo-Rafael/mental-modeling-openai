@@ -1,3 +1,11 @@
+# @Rafaメモ：
+- experiments01~06が[20260911Mental Modelind with SoTA models](https://docs.google.com/presentation/d/16cQSFwCrwF8cpC38aPuQ5KlKdEt0ujfWSDnvNEAL1sE/edit?usp=sharing)の実験。これはMental Modelingの再現実装。07で01~06の出力の可視化(html)と解析。
+- exp07が[20260916_MentalModeling_Reasoning](https://docs.google.com/presentation/d/19tNpUCiR2bspFk9i0gkJe16LWygPGzjLCovveByOqWY/edit?usp=sharing)。これは出力についてLLM as a judgeで調べたもの。
+- exp08が[20260927_Fewshot_MentalModeling](https://docs.google.com/presentation/d/1vGNFTt3TLBqfxhwiKxDS8g_o9EkrXnu0PETzS_vJ9No/edit?usp=sharing)の実験。Fewshotについて検討したもの。
+- exp09~12が[20261005, Reward Ablation, Reward Modeling, ICRL, 性能比較](https://docs.google.com/presentation/d/1CTYoPSuaYiDCpWBDpI5pXH9wGAtXUU2EkE0F0QGOqmY/edit?usp=sharing)の実験。Reward AblationでRewardを削除した場合、Reward Modeling(ICRL)でrewardについて明示的に利用方法を示した場合を検討した。experiments11, 12ではMental Modelingと同じデータでそれらの性能を再度検証した。
+- exp13はLAGのデータの整形・可視化。exp14でmental modelingと同じ条件で実行。exp15では次の10点を同時に答えさせるようにした。
+
+
 # 段階的な Mental Modeling 実験
 
 ## 実験一覧（15まで）
