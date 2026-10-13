@@ -1,6 +1,34 @@
 # 段階的な Mental Modeling 実験
 
+## 実験一覧（15まで）
+
+2026-10-13更新。01〜06はMountainCar・Pendulumでの基礎評価、07〜12は回答閲覧・few-shot・reward・推論指示の比較、13〜15はLAG 2v2のデータ整備と予測実験です。各実験名から条件・実行方法の詳細へ進めます。
+
+| 実験 | 目的・主な条件 | 保存済みデータ・結果の入口 |
+| --- | --- | --- |
+| [00：状態・行動のinspection](00_state_action_inspection/) | 基礎実験の入力データとepisodeの状態・行動を確認 | [inspection出力](00_state_action_inspection/inspect_all/) |
+| [01：prompt preview](01_prompt_preview/README.md) | 2 task × 4課題の8プロンプトを送信前に確認 | [preview結果](01_prompt_preview/results/) |
+| [02：GPT-3.5 pilot](02_gpt35_single/README.md) | 8条件を各1問で試す | [回答・採点](02_gpt35_single/results/) |
+| [03：GPT-3.5 H sweep](03_gpt35_history_n30/README.md) | H=5/10/20/30、32条件×N30＝960問 | [再開完了版](03_gpt35_history_n30/results/resumes/0001/) |
+| [03_1：GPT-3.5 Joint N30](03_1_gpt35_history_n30_joint/README.md) | 03の条件を維持し、値とbin／変化を併記するJoint質問へ変更 | [960問の結果](03_1_gpt35_history_n30_joint/results/) |
+| [04：sample size分析](04_sample_size_analysis/README.md) | 保存済みN30からN20/N10を取り、統計を比較。追加APIなし | [統計・図](04_sample_size_analysis/results/) |
+| [05：新3モデルpilot](05_new_models_single/README.md) | Sol/Terra/Luna、Pendulum H20、4課題×N10 | [120問の結果](05_new_models_single/results/) |
+| [06：新3モデル全条件N10](06_new_models_n10/README.md) | 3モデル×32条件×N10。05の120件を再利用 | [統合結果](06_new_models_n10/results/merged/) |
+| [07：生回答閲覧・例の選択](07_view_rawdata/README.md) | 03_1・06の1,920件を閲覧し、08用の例を選択 | [回答ビューア](07_view_rawdata/view_rawdata.html) |
+| [08：Next Action few-shot](08_fewshot/README.md) | Terra/Luna、2 task、H=5/20、4/8/12例、2スコアパターン、N3 | [144件の回答](08_fewshot/results/api/)・[集計・図](08_fewshot/results/analysis/) |
+| [09：reward ablation](09_ablation_reward/README.md) | Pendulum、0/4-shot、H=5/20、開始t=0/100、reward有無 | [96件の回答](09_ablation_reward/results/api/)・[集計・図](09_ablation_reward/results/analysis/) |
+| [10：ICRLの推論指示比較](10_ICRL/README.md) | Direct / PPO prior / ICR-FQI K2・K5、E=1/3/9、同一問題を3反復 | [72件の回答](10_ICRL/results/api/)・[集計・図](10_ICRL/results/analysis/) |
+| [11：ICRL N10 reward ablation](11_ICRL_n10/README.md) | ICR-FQI K5、H20、E1、履歴の数値reward有無、異なる10問 | [40件の回答](11_ICRL_n10/results/api/)・[集計・図](11_ICRL_n10/results/analysis/) |
+| [12：few-shotと参照episodeの比較](12_fewshots_episodes/README.md) | 固定4例と補助8 episodeを比較。Terra/Luna、H20、N10 | [40件の回答](12_fewshots_episodes/results/api/)・[集計・図](12_fewshots_episodes/results/analysis/) |
+| [13：LAGデータ統合](13_LAG/README.md) | 3試合のACMI・action CSVを統合。LLMへの送信なし | [統合CSV・列定義](13_LAG/data/processed/README.md)・[inspection Notebook](13_LAG/data/viz/inspect_acmi.ipynb) |
+| [14：LAG mental modeling](14_mental-modeling_LAG/README.md) | 3モデル、3試合、2機体、H=2/5/10/20/30、4課題、2入力範囲、各5窓 | [3,600件の実行結果](14_mental-modeling_LAG/results/sliding_window_v1/)・[比較図](14_mental-modeling_LAG/results/sliding_window_v1/analysis/comparison_plots_v1/index.html) |
+| [15：LAG trajectory予測](15_trajectory_LAG/README.md) | MHIの1試合、2機体、3モデル、H20から未来10 stepの状態・行動を一括予測 | [60件の実行結果](15_trajectory_LAG/results/trajectory_batch_v1/)・[比較図](15_trajectory_LAG/view_results.html)・[時系列図](15_trajectory_LAG/view_timelines.html) |
+
+HTMLビューアはダウンロードしてブラウザで開きます。画像などを相対パスで参照するレポートは、参照先のディレクトリも一緒に取得してください。13の動画ファイルはGitでの共有対象外です。
+
 ## 4モデルの入出力の生データを見る場所
+
+この節は02〜06の基礎実験を対象とします。08〜15の回答・集計への入口は上の一覧と下の各実験の説明を参照してください。
 
 **Sol / Terra / Lunaは06の `merged/<ID>/records.jsonl`、同じJoint質問を使ったGPT-3.5は03_1の `results/records.jsonl` を見る。** `records.jsonl` は1行＝1 queryで、入力と応答全文の両方を持つ。`runs/` 内の `predictions.jsonl` は採点用に解釈した予測であり、応答全文を見る場所ではない。
 
@@ -71,13 +99,39 @@ merged直下には `requests.jsonl` / `responses.jsonl` 自体はない。`archi
 
    `--task Pendulum-v1 --history 5`で120件だけ先に実行できる。実行済み条件を含む指定はエラー。残りの完了済み除外は`--remaining`で明示する。各回を`results/batches/<識別子>/`へ保存し、`--merge`または解析コマンドで全960件を統合する。途中失敗からの再開は非対応。[分割の手順](06_new_models_n10/README.md#まずpendulumh5だけ実行する)を参照。
 
-7. **[08：Next Action few-shotのdry-run](08_fewshot/README.md)**
+7. **[07：生回答ビューアとfew-shot例の選択](07_view_rawdata/README.md)**
+   03_1のGPT-3.5全960件と、05を含む06の新3モデル各320件をまとめて閲覧する。入力・回答・正解・推論スコアを確認し、08に使う正解例／不正解例を選択・JSON出力する。追加API送信はしない。
+
+8. **[08：Next Action few-shot](08_fewshot/README.md)**
    07で選んだ同一Taskの正解例・不正解例を1:1で入力する。評価はnext-actionのみ、Terra/Luna、H=5/20、例数4/8/12、Scoreはパターン1＝正解1のみ＋不正解3以上、パターン2＝正解2以下＋不正解3以下。2 Task × 2 Model × 2 H × 3例数 × 2パターン × N3 = **144件**。例の予測対象・元モデル・Hは横断して選び、評価問題は例と別episodeの3問を条件間で揃える。
    `08_fewshot/` で `python run.py` を実行すると、APIを呼ばず `results/dry_run/preview.html` と改行を保持したTXTを生成する。選択済みJSONが未配置なら不足内容だけを保存し、プロンプトを捏造しない。`--execute --confirm-paid-api` で確認済みプロンプトを送信し、`results/api/` へ保存する。
 
+9. **[09：評価対象履歴のreward ablation](09_ablation_reward/README.md)**
+   PendulumのNext Actionで、Terra/Luna × H=5/20 × 履歴開始t=0/100 × 0/4-shot × reward有無 × 3反復＝**96件**を比較する。対象はepisode_9の固定問題で、3反復は異なる3問ではない。削除するのは評価対象履歴の数値rewardのみで、few-shot内のrewardは残す。[回答ビューア](09_ablation_reward/view_rawdata.html)と`results/analysis/`に比較結果を保存している。
+
+10. **[10：Direct・PPO prior・ICR-FQI指示の比較](10_ICRL/README.md)**
+    Pendulum、H20、episode_9の同一Next Action問題について、Terra/Luna × 4手法 × E=1/3/9 × 3反復＝**72件**。Eはtargetを含むepisode数。ICR-FQIはK=2/5の推論手順をLLMに指示する条件で、数値FQIの再現実装ではない。PPO priorも実験的な仮定であり、データのpolicyがPPO由来と確認されたわけではない。[回答ビューア](10_ICRL/view_rawdata.html)で入力と応答を確認できる。
+
+11. **[11：ICR-FQI K5でのN10 reward ablation](11_ICRL_n10/README.md)**
+    H20・E1・ICR-FQI K5を固定し、Terra/Luna × 履歴の数値reward有無 × 異なる10問＝**40件**。episode_0のa20〜a29を予測し、05/06/03_1の該当N10と窓を揃える。reward関数の説明やBellman式は残す。窓は同一episode内で重なっている。[回答ビューア](11_ICRL_n10/view_rawdata.html)と`results/analysis/`に回答・比較図を保存している。
+
+12. **[12：few-shot例と参照episodeの比較](12_fewshots_episodes/README.md)**
+    11と同じPendulum H20・N10を用い、Terra/Luna × 固定4例の`fewshot4`／補助8 episodeの`episodes_E9` × 10問＝**40件**。Direct Joint質問を使い、ICR-FQIやPPO priorは加えない。few-shot例と評価対象は同じepisode_0由来で、08の別episode評価とは異なる。結果は[4指標の比較図](12_fewshots_episodes/results/analysis/plots/context_comparison.png)と`results/analysis/`に保存する。
+
+13. **[13：LAGデータ統合・inspection](13_LAG/README.md)**
+    3試合のACMIと行動CSVを1時刻×1オブジェクト、64列の統合CSVへ整理し、14・15の共通入力にする。機体・ミサイル・状態・行動の対応を確認し、欠損や未収録のrewardを推定補完しない。統合CSVは順に2,124行・1,893行・3,016行。[列定義・使用例](13_LAG/data/processed/README.md)と出典hash付きmanifestを保存し、LLMへのAPI送信は行わない。
+
+14. **[14：LAGでの4課題・入力範囲の比較](14_mental-modeling_LAG/README.md)**
+    Sol/Terra/Luna × 3試合 × A0100/A0200 × H=2/5/10/20/30 × 4課題 × `self`／`all_aircraft_missiles` × 異なる5窓＝**3,600件**。状態10成分、行動は移動3成分を予測する。1stepは0.2秒で、shootは履歴に含むが行動予測の出力には含めない。モデル間・入力範囲間で問題を揃えるが、H間・課題間では正解時刻が一致するとは限らない。
+    [生回答ビューア](14_mental-modeling_LAG/view_rawdata.html)、[条件別採点](14_mental-modeling_LAG/results/sliding_window_v1/analysis/lag-action3-state10-v1/)、[比較図・隣接実測値との比較](14_mental-modeling_LAG/results/sliding_window_v1/analysis/comparison_plots_v1/index.html)を保存している。[実行summary](14_mental-modeling_LAG/results/sliding_window_v1/api/summary.json)は3,600件の応答保存済み。120比較セットのうち全予測をパースできたセットは114で、応答回収完了と予測形式の成功は区別する。
+
+15. **[15：未来10 stepのtrajectory予測](15_trajectory_LAG/README.md)**
+    MHIの1試合、A0100/A0200、Sol/Terra/Luna、H20、2入力範囲、5窓＝**60件**。未来10 step（2秒）の状態10成分と移動行動3成分を1回答で同時予測し、途中の正解は与えない。モデル別の3 Batchで実行し、[実行summary](15_trajectory_LAG/results/trajectory_batch_v1/api/summary.json)では60件の応答を保存済み。
+    [生回答](15_trajectory_LAG/view_rawdata.html)、[予測距離別の採点](15_trajectory_LAG/results/trajectory_batch_v1/analysis/lag-trajectory10-action3-state10-v1/)、[実測・予測の時系列](15_trajectory_LAG/view_timelines.html)、[比較図](15_trajectory_LAG/view_results.html)を確認できる。比較図は各問題で10地点の誤差を合計してから問題間で平均する集計で、予測距離別の成績とは分けて読む。形式不正の回答は除外し、有効件数を表示する。
+
 ## 実装・実行状況について
 
-初回実装時は静的レビューのみを行い、実験・API呼び出しは実行していません。その後、ユーザーの指示でコードとExp.1の既存preview結果をcommit・pushしています。今回のメモ追記では実験・API送信を実行していません。
+01〜15のコード・データ・保存済み結果を共有しています（13の動画を除く）。08〜12のAPI summaryは`complete`、14は3,600件、15は60件の応答保存を記録しています。実行完了は全回答の正解やパース成功を意味しないため、採点結果の有効件数も確認してください。このREADMEの更新では追加の実験・API送信は行っていません。
 
 01でprompt確認 → 02でGPT-3.5 pilot → 03でH sweep → 04でNを再解析。
 新モデルは05のpilotを確認してから06へ進みます。
@@ -87,10 +141,19 @@ merged直下には `requests.jsonl` / `responses.jsonl` 自体はない。`archi
 | 01_prompt_preview：prompt全文確認 | 公式raw episodes | 8 | 0 | `01_prompt_preview/results/` |
 | 02_gpt35_single：GPT-3.5 pilot | raw＋01のmanifest | 8 | 8 | `02_gpt35_single/results/` |
 | 03_gpt35_history_n30：GPT-3.5 H sweep | 公式raw episodes | 32条件×30＝960 | 960 | `03_gpt35_history_n30/results/` |
+| 03_1_gpt35_history_n30_joint：Joint版H sweep | 03と同じデータ・条件、質問をJoint版へ変更 | 32条件×30＝960 | 960 | `03_1_gpt35_history_n30_joint/results/` |
 | 04_sample_size_analysis：N30/20/10の先頭subset比較 | 03のrecords＋manifest/summary | 新規queryなし | 0 | `04_sample_size_analysis/results/` |
 | 05_new_models_single：Joint N10 pilot | Pendulum、H20、4 metrics | 40/model＝120 | 40/model＝120 | `05_new_models_single/results/` |
 | 06_new_models_n10：Joint全条件N10 | raw＋05の一致する120 records | 320/model＝960 | 280/model＝840 | `06_new_models_n10/results/` |
-| 08_fewshot：Next Action few-shot計画 | raw＋07からexportした選択済みJSON | 48条件×3＝144予定 | dry-runは0、API実行は144 | `08_fewshot/results/dry_run/`・`results/api/` |
+| 07_view_rawdata：回答閲覧・例の選択 | 03_1＋06の保存済み回答 | 1,920件を閲覧 | 0 | `07_view_rawdata/view_rawdata.html` |
+| 08_fewshot：Next Action few-shot | raw＋07からexportした選択済みJSON | 48条件×3＝144 | 144 | `08_fewshot/results/api/`・`results/analysis/` |
+| 09_ablation_reward：reward有無の比較 | episode_9＋固定4-shot例 | 32条件×3反復＝96 | 96 | `09_ablation_reward/results/api/`・`results/analysis/` |
+| 10_ICRL：推論手法・参照episode数の比較 | episode_9＋補助episode | 24条件×3反復＝72 | 72 | `10_ICRL/results/api/`・`results/analysis/` |
+| 11_ICRL_n10：K5でreward有無の比較 | episode_0の異なるN10 | 4条件×10＝40 | 40 | `11_ICRL_n10/results/api/`・`results/analysis/` |
+| 12_fewshots_episodes：入力contextの比較 | N10＋固定4例／補助8 episode | 4条件×10＝40 | 40 | `12_fewshots_episodes/results/api/`・`results/analysis/` |
+| 13_LAG：データ統合・inspection | 3試合のACMI＋action CSV | LLM queryなし | 0 | `13_LAG/data/processed/`・`data/viz/` |
+| 14_mental-modeling_LAG：4課題の予測 | 13の統合CSV、3試合・2機体 | 720条件×5窓＝3,600 | 3,600 | `14_mental-modeling_LAG/results/sliding_window_v1/` |
+| 15_trajectory_LAG：未来10 step予測 | 13のMHI試合CSV、2機体 | 12条件×5窓＝60 | 60 | `15_trajectory_LAG/results/trajectory_batch_v1/` |
 
 ## コマンド（ユーザーが後日実行するとき）
 
@@ -105,19 +168,31 @@ python experiments/01_prompt_preview/run.py
 ```
 
 02〜06では最後の行を下表の対象コマンドに置き換えます。各実験のREADMEにも、`cd` と `source` を含めた実行例を記載しています。基本依存は既存projectのもの、04の図には既存の `notebook` extraにあるmatplotlibが必要です。
-API keyは `OPENAI_API_KEY` 環境変数のみから読みます。キーをコマンド引数・ファイル・ログに入れないでください。
+APIキーの指定方法は実験ごとに異なります。02〜06・08は`OPENAI_API_KEY`、09〜12は非表示の対話入力、14・15は環境変数が未設定なら非表示入力を使用します。キーをコマンド引数・ファイル・ログに入れないでください。
 
 | Experiment | dry-run / APIなし | execute |
 | --- | --- | --- |
 | 01 | `python experiments/01_prompt_preview/run.py`（preview保存） | 同左。paidフラグは拒否 |
 | 02 | `python experiments/02_gpt35_single/run.py` | `python experiments/02_gpt35_single/run.py --execute --confirm-paid-api` |
 | 03 | `python experiments/03_gpt35_history_n30/run.py` | `python experiments/03_gpt35_history_n30/run.py --execute --confirm-paid-api` |
+| 03_1 | `python experiments/03_1_gpt35_history_n30_joint/run.py` | `python experiments/03_1_gpt35_history_n30_joint/run.py --execute --confirm-paid-api` |
 | 04 | `python experiments/04_sample_size_analysis/run.py --dry-run`（03が必要） | `python experiments/04_sample_size_analysis/run.py`（APIなし） |
 | 05 | `python experiments/05_new_models_single/run.py` | `python experiments/05_new_models_single/run.py --execute --confirm-paid-api` |
 | 06 | `python experiments/06_new_models_n10/run.py` | `python experiments/06_new_models_n10/run.py --execute --confirm-paid-api` |
 | 08 | `python experiments/08_fewshot/run.py`（HTML/TXT確認） | `python experiments/08_fewshot/run.py --execute --confirm-paid-api` |
+| 09 | `python experiments/09_ablation_reward/run.py --dry-run` | `python experiments/09_ablation_reward/run.py` |
+| 10 | `python experiments/10_ICRL/run.py --dry-run` | `python experiments/10_ICRL/run.py` |
+| 11 | `python experiments/11_ICRL_n10/run.py --dry-run` | `python experiments/11_ICRL_n10/run.py` |
+| 12 | `python experiments/12_fewshots_episodes/run.py --dry-run` | `python experiments/12_fewshots_episodes/run.py` |
+| 13 | `python experiments/13_LAG/run.py --check`（既存CSV照合） | `python experiments/13_LAG/run.py`（ローカルCSV生成、APIなし） |
+| 14 | `python experiments/14_mental-modeling_LAG/run.py`（計画生成） | 保存済みBatch計画の操作は[14のBatch手順](14_mental-modeling_LAG/README.md#7-通常api-220件からbatch-apiへの切り替え)を参照 |
+| 15 | `python experiments/15_trajectory_LAG/run.py`（計画・Batch入力生成） | `python experiments/15_trajectory_LAG/run.py --execute --wait` |
+
+07は保存済みHTMLを開いて使用します。09〜12は**引数なしで有料API送信**となるため、計画確認には`--dry-run`を付けます。保存済み結果がある場合の再開・回収・再採点は各READMEを参照してください。14の既存runは通常APIからBatchへ移行済みのため、通常runnerの`--execute --resume`には戻しません。
 
 ## 条件・安全性
+
+以下は主に01〜06・08の共通実行系についての説明です。09〜12、14・15は実行フラグ・再開方法・保存形式が異なるため、上の表と各実験READMEを優先してください。
 
 - 条件は各 `run.py`、共通のpilot履歴長は `common.PILOT_H=5`。`H` は実際の履歴step数で、変換は `common.history_size()` の1か所だけ。履歴範囲は半開区間 `[history_start, history_end)` です。
 - episodeをpath順に並べ、upstreamで有効なqueryの先頭N件を採用します。足りなければ次のepisodeへ進み、境界は跨ぎません。01/02は同一8件。06は05とのidentity・model・prompt SHA・API引数・source hash一致を全件確認し、不足/不一致なら送信前に停止します。
@@ -125,9 +200,11 @@ API keyは `OPENAI_API_KEY` 環境変数のみから読みます。キーをコ�
 - `--execute --confirm-paid-api` の両方が必要。既存結果の上書き・自動再送はしません。Exp.3は明示的な `--resume` で保存済み応答を再利用できます。まず `python experiments/03_gpt35_history_n30/run.py --resume` で計画を確認してください。タイムアウト等の結果不明queryの再送には、重複課金の可能性を確認したうえで `--retry-uncertain` も必要です。[再開手順と保存先](03_gpt35_history_n30/README.md#途中から再開する方法)を参照してください。
 - SDK内部retryは0。upstream retryも既定0ですが、ユーザーが `--retries N` で明示できます。retry込み上限もplanに表示します。`api_attempts` はSDK create試行数であり、通信失敗がサーバーに到達/課金されたかまでは保証できません。
 - APIはChat Completionsを維持します。05・06のsol/terra/lunaは`temperature`を送らず、`reasoning_effort="medium"`のみ明示し、他の生成設定はAPI既定値です。agent historyからのreasoningを評価する意図で、03_1の説明を求めるJoint questionを維持します（[設定詳細](05_new_models_single/README.md)）。GPT-3.5の既存実験は`temperature=0`のままです。モデルIDは既存token estimatorと同じで、エラー時にモデル/API/引数を自動変更しません。通信・再試行の安全設定は維持し、実APIでの再検証はしていません。
-- `data/`・`upstream/`・既存Notebookは変更しません。結果は各experimentの `results/` のみ。ユーザー指定でExp.1の開始記録・manifest・prompt txtはGitで共有し、他の実験結果は `.gitkeep` のみを含めます。
+- 保存済みのmanifest・プロンプト・API回答・採点・図をGitで共有しています。通常は各experimentの`results/`に置き、閲覧用HTMLは実験直下にも配置します。13の原本・統合データ・inspectionは`13_LAG/data/`に置き、動画は共有対象外です。
 
 ## 保存内容・再利用
+
+この節は主に01〜06の共通保存形式です。08〜12は各`results/api/`・`results/analysis/`、14・15は各runの`api/`・`analysis/<scoring_version>/`を参照してください。
 
 `manifest.json/csv` はquery identity・source SHA・prompt SHA・H・条件別予定件数、JSONにはprompt全文も入ります。
 01は8つの `.txt`、有料実験は `requests.jsonl`（各試行の実kwargs）、`responses.jsonl`（全SDK response/usage/時刻/例外）、`records.jsonl`（query＋score＋raw response＋時間）を保存します。`query_id` と `attempt_id` で対応します。秘密情報はredactし、HTTP headerやclient/environmentそのものは保存しません。
