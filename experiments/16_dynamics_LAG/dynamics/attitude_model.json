@@ -1,0 +1,188 @@
+{
+  "schema_version": "lag-attitude-prior-1",
+  "model": "history_and_velocity",
+  "dt_seconds": 0.2,
+  "angle_order": [
+    "Roll",
+    "Pitch",
+    "Yaw"
+  ],
+  "feature_names": [
+    "previous_increment_Roll_deg",
+    "previous_increment_Pitch_deg",
+    "previous_increment_Yaw_deg",
+    "earlier_increment_Roll_deg",
+    "earlier_increment_Pitch_deg",
+    "earlier_increment_Yaw_deg",
+    "sin_Roll",
+    "sin_Pitch",
+    "sin_Yaw",
+    "cos_Roll",
+    "cos_Pitch",
+    "cos_Yaw",
+    "velocity_N_mps",
+    "velocity_E_mps",
+    "velocity_U_mps",
+    "velocity_last_difference_N_mps",
+    "velocity_last_difference_E_mps",
+    "velocity_last_difference_U_mps",
+    "velocity_earlier_difference_N_mps",
+    "velocity_earlier_difference_E_mps",
+    "velocity_earlier_difference_U_mps",
+    "tas_mps",
+    "tas_last_difference_mps",
+    "tas_earlier_difference_mps"
+  ],
+  "coefficient_rows_features_columns_angles": [
+    [
+      0.8739996006588663,
+      -0.016530914060107052,
+      0.03362385011036918
+    ],
+    [
+      0.043116143629110266,
+      0.7263278474408114,
+      -0.008168422443989139
+    ],
+    [
+      1.0510248670537248,
+      -0.04783275174198584,
+      0.4686347507428331
+    ],
+    [
+      -0.4456160196985098,
+      0.027235644887463353,
+      -0.015428508217535893
+    ],
+    [
+      -0.10776331755294202,
+      -0.1342498867594023,
+      -0.04605107816289018
+    ],
+    [
+      -0.06893509116246915,
+      -0.08384646053083165,
+      -0.08923186335047659
+    ],
+    [
+      -3.414637313136043,
+      0.4269037412059658,
+      1.178682684149772
+    ],
+    [
+      -5.032223121507728,
+      -1.6731278813661064,
+      -0.4425107531587
+    ],
+    [
+      0.41843874992473135,
+      -0.044880838727102745,
+      0.28402217596820445
+    ],
+    [
+      -1.0022469317533527,
+      0.3517048943309683,
+      -0.3383312001277949
+    ],
+    [
+      17.39283545929011,
+      -4.875497791520991,
+      3.0526333613210492
+    ],
+    [
+      -0.23245271622435676,
+      0.024324855225646664,
+      0.05332922339308777
+    ],
+    [
+      0.0002495911678830398,
+      0.00028945694796531226,
+      -0.00029942465650721395
+    ],
+    [
+      -0.0037899412259667906,
+      0.0005559259242717158,
+      -3.648700731246471e-05
+    ],
+    [
+      0.009065134935347309,
+      -3.74163473804807e-05,
+      -0.0006555618184135886
+    ],
+    [
+      0.1008199863527453,
+      -0.020205877689452967,
+      -0.005702172514247395
+    ],
+    [
+      -0.04749467936589786,
+      -0.019564252715797984,
+      0.005509768712740285
+    ],
+    [
+      -0.42244393750145826,
+      -0.11130838771909933,
+      0.0574068408425748
+    ],
+    [
+      0.012317716021851631,
+      0.028032987835887344,
+      0.041951795313027215
+    ],
+    [
+      0.06415402440557362,
+      0.01803767046880078,
+      -0.013406923821691383
+    ],
+    [
+      0.4324376240947113,
+      0.0034392543827370687,
+      -0.017019648712276614
+    ],
+    [
+      -0.0067687853686365825,
+      0.0008533389581706219,
+      -0.001026035345177161
+    ],
+    [
+      0.7822913529375238,
+      -0.19633665125148694,
+      0.11073259273919649
+    ],
+    [
+      -0.6337575870663174,
+      0.025502174703213497,
+      -0.0559573922512723
+    ]
+  ],
+  "intercept_deg": [
+    -14.761806809245765,
+    4.29431760650264,
+    -2.5205253811451325
+  ],
+  "alphas": [
+    100.0,
+    100.0,
+    100.0
+  ],
+  "training_windows": 3601,
+  "training_source_files": [
+    {
+      "name": "mhi_v1.3_ic100601_win_actions.csv",
+      "sha256": "bb24342d062140af31d610a8c9e20394a0cd509d9bebc57decb6c1ea736b4358"
+    },
+    {
+      "name": "ours_seed100100_ic100601_loss_actions.csv",
+      "sha256": "121c04fd78bcf292f297a1c64b880562913344b0e6d01d443b980c8e07be7e21"
+    },
+    {
+      "name": "ours_seed100100_ic100606_win_actions.csv",
+      "sha256": "87e8bd3421b5aaec2453d117bbd7031930063346b0cc0d5df226e5298c4eed78"
+    }
+  ],
+  "source_results": "experiments/13_LAG/analysis/attitude_prediction_20261013/results.json",
+  "source_results_sha256": "fc3ca1519a64c09ce5294a86b159055e09b71329b5c4ab8158b13cc471af1e13",
+  "source_report": "experiments/13_LAG/analysis/attitude_prediction_20261013/report.md",
+  "source_report_sha256": "e5477029a46101aef0f68e3650a64290e07453a36239c563cf2758e7a860a7fc",
+  "evaluation_overlap": "Fitted on all three recordings, including the MHI evaluation recording and its future intervals. This is an in-dataset empirical-prior experiment, not held-out dynamics generalization."
+}

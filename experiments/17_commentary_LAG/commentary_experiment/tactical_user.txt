@@ -1,0 +1,41 @@
+Analyze the following LAG engagement recording.
+
+Episode: {episode_alias}
+Center step t: {center_step}
+Center time: {center_time_s:.1f} seconds
+Window: steps {start_step} through {end_step}, inclusive
+Window times: {start_time_s:.1f} through {end_time_s:.1f} seconds
+Time points: 61
+Elapsed time: 12.0 seconds
+
+The records contain all aircraft and missiles recorded within this window, together with available movement actions, ammunition counts, and metadata.
+
+relative_step = step - t.
+
+State and action field orders, missing-value conventions, and evidence requirements are defined in the system message.
+
+BEGIN WINDOW DATA
+
+{window_data}
+
+END WINDOW DATA
+
+Reconstruct the most plausible tactical intentions of A0100, A0200, B0100, and B0200 across the ENTIRE 61-step window.
+
+For each aircraft, explain:
+
+- What it did over the window, including important changes in behavior.
+- What tactical objective its behavior most plausibly served.
+- Why it may have started or changed its maneuvers, considering the surrounding tactical situation.
+- How the actions of opponents, teammates, and missiles may explain its behavior.
+- How its intention and behavior developed across the window, including the observed consequences of its maneuvers.
+
+Interpret the complete sequence rather than focusing on the center step.
+
+Prioritize causal, goal-directed tactical explanations over telemetry summaries.
+
+Do not simply describe an aircraft as approaching, turning, climbing, descending, or accelerating. Explain what it was plausibly trying to achieve by doing so, and why that action made sense in the recorded circumstances.
+
+Select the best-supported primary interpretation rather than listing several equally weighted possibilities. Distinguish inference from observation and avoid inventing unsupported events.
+
+Return only the four aircraft intention narratives, as the JSON object specified in the system message. Do not include any other sections.

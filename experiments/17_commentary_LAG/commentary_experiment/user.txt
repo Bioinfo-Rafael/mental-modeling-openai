@@ -1,0 +1,51 @@
+Analyze the following engagement window.
+
+Episode: {episode_alias}
+Center step t: {center_step}
+Center time: {center_time_s} seconds
+Window: steps {start_step} through {end_step}, inclusive
+Window times: {start_time_s} through {end_time_s} seconds
+Time points: 61
+Elapsed time from the first to the last point: 12 seconds
+
+The records contain all aircraft and missiles recorded within this
+window, with available movement actions and recorded ammunition counts. relative_step is step minus t.
+State and action field orders are defined in the system message.
+
+BEGIN WINDOW DATA
+{window_data}
+END WINDOW DATA
+
+Explain what is happening around the center step and how the engagement
+evolves across the supplied window. Explain the plausible intentions
+behind each aircraft's behavior using the recorded states and available
+actions. Address all four aircraft, including any aircraft that is
+inactive or has insufficient data for an interpretation.
+
+Use the following sections:
+
+1. Scene overview
+Summarize the situation at the center step and the main developments
+before and after it.
+
+2. Key observed developments
+Describe the important changes in chronological order. Cite object IDs,
+steps or step ranges, and relevant numerical evidence. Distinguish
+commanded actions from observed motion.
+
+3. Aircraft-by-aircraft interpretation
+Provide one subsection for each of A0100, A0200, B0100, and B0200.
+For each, state the observed behavior, the most plausible intention,
+the supporting evidence, and any material alternative interpretation
+or uncertainty. Explicitly identify evidence after the center step
+when using it to interpret the aircraft's behavior at the center step.
+
+4. Missile activity and relationships
+Explain the recorded missile motion, appearances, and removals, and
+supported relationships to aircraft. Separate observed facts from
+hypotheses about targets or effects. If no missiles are recorded in
+the window, say so.
+
+5. Limits of the interpretation
+Identify the specific conclusions that cannot be established from this
+window and the missing evidence that prevents a stronger conclusion.

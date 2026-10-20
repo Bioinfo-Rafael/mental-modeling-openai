@@ -1,0 +1,1108 @@
+{
+  "sources": [
+    {
+      "file": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/experiments/13_LAG/data/raw/20261005_LAG_2v2_ACMI/actions/mhi_v1.3_ic100601_win_actions.csv",
+      "sha256": "bb24342d062140af31d610a8c9e20394a0cd509d9bebc57decb6c1ea736b4358"
+    },
+    {
+      "file": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/experiments/13_LAG/data/raw/20261005_LAG_2v2_ACMI/actions/ours_seed100100_ic100601_loss_actions.csv",
+      "sha256": "121c04fd78bcf292f297a1c64b880562913344b0e6d01d443b980c8e07be7e21"
+    },
+    {
+      "file": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/experiments/13_LAG/data/raw/20261005_LAG_2v2_ACMI/actions/ours_seed100100_ic100606_win_actions.csv",
+      "sha256": "87e8bd3421b5aaec2453d117bbd7031930063346b0cc0d5df226e5298c4eed78"
+    }
+  ],
+  "current_action_rows": 2178,
+  "action_summary": [
+    {
+      "action": "altitude_action",
+      "label": "down",
+      "n_current": 884,
+      "metrics": {
+        "current_vu": {
+          "n": 884,
+          "mean": -40.56133455577828,
+          "median": -44.61839183934278
+        },
+        "current_roll": {
+          "n": 884,
+          "mean": -2.1694683572852482,
+          "median": 0.4277260865133115
+        },
+        "current_tas": {
+          "n": 884,
+          "mean": 279.503715474201,
+          "median": 287.9859806203873
+        },
+        "dalt_1": {
+          "n": 883,
+          "mean": -8.166700611420648,
+          "median": -8.911448849004955
+        },
+        "dalt_5": {
+          "n": 879,
+          "mean": -41.86628191116182,
+          "median": -44.40553947080116
+        },
+        "dalt_10": {
+          "n": 872,
+          "mean": -85.28445882357695,
+          "median": -88.18549817195526
+        },
+        "dyaw_1": {
+          "n": 883,
+          "mean": 0.04474422582809673,
+          "median": 0.03991637977742357
+        },
+        "dyaw_5": {
+          "n": 879,
+          "mean": 0.5735617995316004,
+          "median": 0.23975050984088853
+        },
+        "dyaw_10": {
+          "n": 872,
+          "mean": 1.7980596198063319,
+          "median": 0.44122195326767155
+        },
+        "dtas_1": {
+          "n": 883,
+          "mean": 0.33599230910992434,
+          "median": 0.393190047540827
+        },
+        "dtas_5": {
+          "n": 879,
+          "mean": 1.7056187863113115,
+          "median": 2.2410134705017413
+        },
+        "dtas_10": {
+          "n": 872,
+          "mean": 3.4376369976619245,
+          "median": 4.315366376916259
+        }
+      },
+      "action_unchanged_through_5_steps_fraction": 0.9294653014789533,
+      "action_unchanged_through_10_steps_fraction": 0.8784403669724771,
+      "by_match": {
+        "mhi_v1.3_ic100601_win_actions.csv": 370,
+        "ours_seed100100_ic100601_loss_actions.csv": 80,
+        "ours_seed100100_ic100606_win_actions.csv": 434
+      }
+    },
+    {
+      "action": "altitude_action",
+      "label": "hold",
+      "n_current": 1132,
+      "metrics": {
+        "current_vu": {
+          "n": 1132,
+          "mean": -6.240213290809943,
+          "median": -2.5537664787993597
+        },
+        "current_roll": {
+          "n": 1132,
+          "mean": -7.691045115359231,
+          "median": -0.05189178902769808
+        },
+        "current_tas": {
+          "n": 1132,
+          "mean": 277.9374017518524,
+          "median": 276.55732769044846
+        },
+        "dalt_1": {
+          "n": 1128,
+          "mean": -1.2242164763105412,
+          "median": -0.5044188701754138
+        },
+        "dalt_5": {
+          "n": 1112,
+          "mean": -5.692692224623627,
+          "median": -2.450840139900265
+        },
+        "dalt_10": {
+          "n": 1099,
+          "mean": -10.799168431598755,
+          "median": -4.7812313001122675
+        },
+        "dyaw_1": {
+          "n": 1128,
+          "mean": -0.20567547552703894,
+          "median": -0.045226905000731676
+        },
+        "dyaw_5": {
+          "n": 1112,
+          "mean": -1.217160664261515,
+          "median": -0.10223374149981623
+        },
+        "dyaw_10": {
+          "n": 1099,
+          "mean": -2.6876101694240515,
+          "median": -0.21136486997158954
+        },
+        "dtas_1": {
+          "n": 1128,
+          "mean": 0.019117990683592097,
+          "median": 0.16510260881258887
+        },
+        "dtas_5": {
+          "n": 1112,
+          "mean": 0.12362745069394827,
+          "median": 0.9397784867161647
+        },
+        "dtas_10": {
+          "n": 1099,
+          "mean": 0.3061577573162753,
+          "median": 1.6148192947301254
+        }
+      },
+      "action_unchanged_through_5_steps_fraction": 0.9253597122302158,
+      "action_unchanged_through_10_steps_fraction": 0.8544131028207461,
+      "by_match": {
+        "mhi_v1.3_ic100601_win_actions.csv": 312,
+        "ours_seed100100_ic100601_loss_actions.csv": 384,
+        "ours_seed100100_ic100606_win_actions.csv": 436
+      }
+    },
+    {
+      "action": "altitude_action",
+      "label": "up",
+      "n_current": 162,
+      "metrics": {
+        "current_vu": {
+          "n": 162,
+          "mean": -4.365809789482084,
+          "median": -9.054131694521544
+        },
+        "current_roll": {
+          "n": 162,
+          "mean": 63.84381868073508,
+          "median": 79.29226748314672
+        },
+        "current_tas": {
+          "n": 162,
+          "mean": 280.48421030956433,
+          "median": 285.4302582401725
+        },
+        "dalt_1": {
+          "n": 161,
+          "mean": -0.7974126602094764,
+          "median": -1.7942718091426286
+        },
+        "dalt_5": {
+          "n": 157,
+          "mean": -2.2955270232963825,
+          "median": -8.736709208321372
+        },
+        "dalt_10": {
+          "n": 147,
+          "mean": -3.724224081769745,
+          "median": -16.118925983199006
+        },
+        "dyaw_1": {
+          "n": 161,
+          "mean": 2.0871010528187752,
+          "median": 2.6015114318071255
+        },
+        "dyaw_5": {
+          "n": 157,
+          "mean": 9.915887721120159,
+          "median": 12.829961513192757
+        },
+        "dyaw_10": {
+          "n": 147,
+          "mean": 19.123210978740893,
+          "median": 25.739888649219495
+        },
+        "dtas_1": {
+          "n": 161,
+          "mean": -0.6550856313535124,
+          "median": -0.632446808813711
+        },
+        "dtas_5": {
+          "n": 157,
+          "mean": -3.1128445970914647,
+          "median": -2.647987419960714
+        },
+        "dtas_10": {
+          "n": 147,
+          "mean": -5.6539830216682585,
+          "median": -5.029303059810445
+        }
+      },
+      "action_unchanged_through_5_steps_fraction": 0.7961783439490446,
+      "action_unchanged_through_10_steps_fraction": 0.6938775510204082,
+      "by_match": {
+        "mhi_v1.3_ic100601_win_actions.csv": 0,
+        "ours_seed100100_ic100601_loss_actions.csv": 40,
+        "ours_seed100100_ic100606_win_actions.csv": 122
+      }
+    },
+    {
+      "action": "heading_action",
+      "label": "left30",
+      "n_current": 392,
+      "metrics": {
+        "current_vu": {
+          "n": 392,
+          "mean": -15.775514193272146,
+          "median": -16.045322195429748
+        },
+        "current_roll": {
+          "n": 392,
+          "mean": -60.68255350677069,
+          "median": -77.52567468685385
+        },
+        "current_tas": {
+          "n": 392,
+          "mean": 263.161588277601,
+          "median": 263.72580483340573
+        },
+        "dalt_1": {
+          "n": 392,
+          "mean": -3.1419672620223857,
+          "median": -3.1867893794460542
+        },
+        "dalt_5": {
+          "n": 389,
+          "mean": -15.389620770477164,
+          "median": -15.821901524895111
+        },
+        "dalt_10": {
+          "n": 387,
+          "mean": -32.57316297295897,
+          "median": -32.315411206197496
+        },
+        "dyaw_1": {
+          "n": 392,
+          "mean": -2.127403324423103,
+          "median": -2.534570373067581
+        },
+        "dyaw_5": {
+          "n": 389,
+          "mean": -11.02459775239543,
+          "median": -12.873354896619503
+        },
+        "dyaw_10": {
+          "n": 387,
+          "mean": -20.071969138406065,
+          "median": -25.299141337082233
+        },
+        "dtas_1": {
+          "n": 392,
+          "mean": -0.6997765920873942,
+          "median": -0.6008823196198847
+        },
+        "dtas_5": {
+          "n": 389,
+          "mean": -3.517317524776905,
+          "median": -3.0510182798261667
+        },
+        "dtas_10": {
+          "n": 387,
+          "mean": -6.431476818648954,
+          "median": -5.6596113628417015
+        }
+      },
+      "action_unchanged_through_5_steps_fraction": 0.7455012853470437,
+      "action_unchanged_through_10_steps_fraction": 0.6821705426356589,
+      "by_match": {
+        "mhi_v1.3_ic100601_win_actions.csv": 102,
+        "ours_seed100100_ic100601_loss_actions.csv": 95,
+        "ours_seed100100_ic100606_win_actions.csv": 195
+      }
+    },
+    {
+      "action": "heading_action",
+      "label": "left15",
+      "n_current": 345,
+      "metrics": {
+        "current_vu": {
+          "n": 345,
+          "mean": -32.43186625114756,
+          "median": -42.01313732478124
+        },
+        "current_roll": {
+          "n": 345,
+          "mean": 1.5507917689739388,
+          "median": 4.463227529779105
+        },
+        "current_tas": {
+          "n": 345,
+          "mean": 296.84758381070105,
+          "median": 301.22328439626426
+        },
+        "dalt_1": {
+          "n": 345,
+          "mean": -6.3803671488384195,
+          "median": -8.250683099467096
+        },
+        "dalt_5": {
+          "n": 342,
+          "mean": -30.095994784424263,
+          "median": -38.19337129642781
+        },
+        "dalt_10": {
+          "n": 341,
+          "mean": -62.71358971437416,
+          "median": -78.83879608359075
+        },
+        "dyaw_1": {
+          "n": 345,
+          "mean": -0.504437841090776,
+          "median": -0.3489847077708532
+        },
+        "dyaw_5": {
+          "n": 342,
+          "mean": -2.666504767972073,
+          "median": -0.956745557603881
+        },
+        "dyaw_10": {
+          "n": 341,
+          "mean": -2.601350883602022,
+          "median": -0.949740368734723
+        },
+        "dtas_1": {
+          "n": 345,
+          "mean": 0.16376707420190056,
+          "median": 0.21908495264017347
+        },
+        "dtas_5": {
+          "n": 342,
+          "mean": 1.5630230720206655,
+          "median": 1.5417890642770544
+        },
+        "dtas_10": {
+          "n": 341,
+          "mean": 4.523114635126711,
+          "median": 4.721888461763854
+        }
+      },
+      "action_unchanged_through_5_steps_fraction": 0.18128654970760233,
+      "action_unchanged_through_10_steps_fraction": 0.017595307917888565,
+      "by_match": {
+        "mhi_v1.3_ic100601_win_actions.csv": 162,
+        "ours_seed100100_ic100601_loss_actions.csv": 25,
+        "ours_seed100100_ic100606_win_actions.csv": 158
+      }
+    },
+    {
+      "action": "heading_action",
+      "label": "hold",
+      "n_current": 605,
+      "metrics": {
+        "current_vu": {
+          "n": 605,
+          "mean": -8.83690304013655,
+          "median": -1.6116913474613335
+        },
+        "current_roll": {
+          "n": 605,
+          "mean": 2.104719097975038,
+          "median": 0.6076372870156553
+        },
+        "current_tas": {
+          "n": 605,
+          "mean": 276.04040821872815,
+          "median": 275.42213781205345
+        },
+        "dalt_1": {
+          "n": 605,
+          "mean": -1.7733651236570964,
+          "median": -0.3292475425414523
+        },
+        "dalt_5": {
+          "n": 604,
+          "mean": -8.929689231397695,
+          "median": -1.5970386967778722
+        },
+        "dalt_10": {
+          "n": 599,
+          "mean": -18.642085641710995,
+          "median": -2.7708024405865217
+        },
+        "dyaw_1": {
+          "n": 605,
+          "mean": 0.021409188703779967,
+          "median": -0.005538687201834591
+        },
+        "dyaw_5": {
+          "n": 604,
+          "mean": 0.08162958399395787,
+          "median": -0.058517134145631644
+        },
+        "dyaw_10": {
+          "n": 599,
+          "mean": -0.20380792493974836,
+          "median": -0.12770910424274007
+        },
+        "dtas_1": {
+          "n": 605,
+          "mean": 0.5720626390511755,
+          "median": 0.5980767453872886
+        },
+        "dtas_5": {
+          "n": 604,
+          "mean": 2.9009323821850077,
+          "median": 3.0691448744890693
+        },
+        "dtas_10": {
+          "n": 599,
+          "mean": 5.695401229964523,
+          "median": 5.906083289102668
+        }
+      },
+      "action_unchanged_through_5_steps_fraction": 0.8559602649006622,
+      "action_unchanged_through_10_steps_fraction": 0.7896494156928213,
+      "by_match": {
+        "mhi_v1.3_ic100601_win_actions.csv": 161,
+        "ours_seed100100_ic100601_loss_actions.csv": 235,
+        "ours_seed100100_ic100606_win_actions.csv": 209
+      }
+    },
+    {
+      "action": "heading_action",
+      "label": "right15",
+      "n_current": 302,
+      "metrics": {
+        "current_vu": {
+          "n": 302,
+          "mean": -29.631737397676567,
+          "median": -37.355159541201274
+        },
+        "current_roll": {
+          "n": 302,
+          "mean": -9.734074510808997,
+          "median": -2.6105817565082026
+        },
+        "current_tas": {
+          "n": 302,
+          "mean": 304.33961620877375,
+          "median": 302.6352687488443
+        },
+        "dalt_1": {
+          "n": 299,
+          "mean": -6.078371331039584,
+          "median": -7.5585031030386745
+        },
+        "dalt_5": {
+          "n": 290,
+          "mean": -33.31209119185256,
+          "median": -40.54150695402359
+        },
+        "dalt_10": {
+          "n": 282,
+          "mean": -64.66118597947946,
+          "median": -80.51504773803981
+        },
+        "dyaw_1": {
+          "n": 299,
+          "mean": 0.6146154661058922,
+          "median": 0.36528736330984657
+        },
+        "dyaw_5": {
+          "n": 290,
+          "mean": 3.198676940289955,
+          "median": 2.2817169933393586
+        },
+        "dyaw_10": {
+          "n": 282,
+          "mean": 4.905506217374086,
+          "median": 2.46744852933665
+        },
+        "dtas_1": {
+          "n": 299,
+          "mean": 0.6434807346934336,
+          "median": 0.645461096418046
+        },
+        "dtas_5": {
+          "n": 290,
+          "mean": 2.7240232815696594,
+          "median": 2.8116929685826335
+        },
+        "dtas_10": {
+          "n": 282,
+          "mean": 4.366094845086339,
+          "median": 4.8664692699049965
+        }
+      },
+      "action_unchanged_through_5_steps_fraction": 0.20689655172413793,
+      "action_unchanged_through_10_steps_fraction": 0.06028368794326241,
+      "by_match": {
+        "mhi_v1.3_ic100601_win_actions.csv": 126,
+        "ours_seed100100_ic100601_loss_actions.csv": 28,
+        "ours_seed100100_ic100606_win_actions.csv": 148
+      }
+    },
+    {
+      "action": "heading_action",
+      "label": "right30",
+      "n_current": 534,
+      "metrics": {
+        "current_vu": {
+          "n": 534,
+          "mean": -22.395685252081343,
+          "median": -22.412539293734504
+        },
+        "current_roll": {
+          "n": 534,
+          "mean": 46.13763818389475,
+          "median": 73.47935570099457
+        },
+        "current_tas": {
+          "n": 534,
+          "mean": 267.1499910965325,
+          "median": 283.0511056671971
+        },
+        "dalt_1": {
+          "n": 531,
+          "mean": -4.5146883288155175,
+          "median": -4.493754693111896
+        },
+        "dalt_5": {
+          "n": 523,
+          "mean": -23.246083860344317,
+          "median": -22.404451220977535
+        },
+        "dalt_10": {
+          "n": 509,
+          "mean": -45.95595919797936,
+          "median": -44.68266924728732
+        },
+        "dyaw_1": {
+          "n": 531,
+          "mean": 1.7980810910249678,
+          "median": 2.283883398163397
+        },
+        "dyaw_5": {
+          "n": 523,
+          "mean": 9.428422772958262,
+          "median": 11.253556383335706
+        },
+        "dyaw_10": {
+          "n": 509,
+          "mean": 17.326085123300302,
+          "median": 22.059644025746934
+        },
+        "dtas_1": {
+          "n": 531,
+          "mean": -0.20321720718164857,
+          "median": -0.31414787646559716
+        },
+        "dtas_5": {
+          "n": 523,
+          "mean": -1.0716085036172929,
+          "median": -1.6747617077106725
+        },
+        "dtas_10": {
+          "n": 509,
+          "mean": -2.344269767696678,
+          "median": -3.1346280999914597
+        }
+      },
+      "action_unchanged_through_5_steps_fraction": 0.6768642447418738,
+      "action_unchanged_through_10_steps_fraction": 0.5756385068762279,
+      "by_match": {
+        "mhi_v1.3_ic100601_win_actions.csv": 131,
+        "ours_seed100100_ic100601_loss_actions.csv": 121,
+        "ours_seed100100_ic100606_win_actions.csv": 282
+      }
+    },
+    {
+      "action": "speed_action",
+      "label": "down",
+      "n_current": 110,
+      "metrics": {
+        "current_vu": {
+          "n": 110,
+          "mean": -16.096117424754564,
+          "median": -12.793656222528384
+        },
+        "current_roll": {
+          "n": 110,
+          "mean": 1.3786521264137315,
+          "median": 71.6392680620381
+        },
+        "current_tas": {
+          "n": 110,
+          "mean": 262.09654910312304,
+          "median": 259.6684650411542
+        },
+        "dalt_1": {
+          "n": 109,
+          "mean": -3.232777887302491,
+          "median": -2.5078706880476602
+        },
+        "dalt_5": {
+          "n": 105,
+          "mean": -16.411854292339836,
+          "median": -11.730430515163789
+        },
+        "dalt_10": {
+          "n": 100,
+          "mean": -33.31891106604991,
+          "median": -22.600552394463193
+        },
+        "dyaw_1": {
+          "n": 109,
+          "mean": 0.06884119356081807,
+          "median": 2.5022108295639214
+        },
+        "dyaw_5": {
+          "n": 105,
+          "mean": -0.11902613110687796,
+          "median": -11.579885937354675
+        },
+        "dyaw_10": {
+          "n": 100,
+          "mean": -0.3640549565849045,
+          "median": -11.944145508060558
+        },
+        "dtas_1": {
+          "n": 109,
+          "mean": -1.354309799141574,
+          "median": -1.3904661123676476
+        },
+        "dtas_5": {
+          "n": 105,
+          "mean": -6.632426312481147,
+          "median": -7.303727478005413
+        },
+        "dtas_10": {
+          "n": 100,
+          "mean": -12.365707393228599,
+          "median": -12.999116396044371
+        }
+      },
+      "action_unchanged_through_5_steps_fraction": 0.8,
+      "action_unchanged_through_10_steps_fraction": 0.59,
+      "by_match": {
+        "mhi_v1.3_ic100601_win_actions.csv": 9,
+        "ours_seed100100_ic100601_loss_actions.csv": 29,
+        "ours_seed100100_ic100606_win_actions.csv": 72
+      }
+    },
+    {
+      "action": "speed_action",
+      "label": "hold",
+      "n_current": 751,
+      "metrics": {
+        "current_vu": {
+          "n": 751,
+          "mean": -16.155749651175988,
+          "median": -15.000131356613265
+        },
+        "current_roll": {
+          "n": 751,
+          "mean": -16.880126083991517,
+          "median": -27.725463573821578
+        },
+        "current_tas": {
+          "n": 751,
+          "mean": 259.9809181964939,
+          "median": 258.24045994774673
+        },
+        "dalt_1": {
+          "n": 748,
+          "mean": -3.2364964420139226,
+          "median": -3.0780624563321908
+        },
+        "dalt_5": {
+          "n": 736,
+          "mean": -16.421668359921643,
+          "median": -15.742379409246269
+        },
+        "dalt_10": {
+          "n": 724,
+          "mean": -33.79471112325941,
+          "median": -32.392892266152785
+        },
+        "dyaw_1": {
+          "n": 748,
+          "mean": -0.44617355025752553,
+          "median": -0.4823792891074561
+        },
+        "dyaw_5": {
+          "n": 736,
+          "mean": -2.2018539013288994,
+          "median": -1.7781067029674489
+        },
+        "dyaw_10": {
+          "n": 724,
+          "mean": -3.868338927694282,
+          "median": -3.0054280114794665
+        },
+        "dtas_1": {
+          "n": 748,
+          "mean": -0.3214193147045012,
+          "median": -0.335242407960223
+        },
+        "dtas_5": {
+          "n": 736,
+          "mean": -1.545082377982517,
+          "median": -1.7666490651396032
+        },
+        "dtas_10": {
+          "n": 724,
+          "mean": -2.8911971370700527,
+          "median": -3.0044843761130977
+        }
+      },
+      "action_unchanged_through_5_steps_fraction": 0.907608695652174,
+      "action_unchanged_through_10_steps_fraction": 0.8314917127071824,
+      "by_match": {
+        "mhi_v1.3_ic100601_win_actions.csv": 185,
+        "ours_seed100100_ic100601_loss_actions.csv": 225,
+        "ours_seed100100_ic100606_win_actions.csv": 341
+      }
+    },
+    {
+      "action": "speed_action",
+      "label": "up",
+      "n_current": 1317,
+      "metrics": {
+        "current_vu": {
+          "n": 1317,
+          "mean": -22.5693708987432,
+          "median": -23.313533267492826
+        },
+        "current_roll": {
+          "n": 1317,
+          "mean": 9.29684774717114,
+          "median": 1.713333333946705
+        },
+        "current_tas": {
+          "n": 1317,
+          "mean": 290.8645219176382,
+          "median": 291.45749446310117
+        },
+        "dalt_1": {
+          "n": 1315,
+          "mean": -4.5226039050297056,
+          "median": -4.697586214944749
+        },
+        "dalt_5": {
+          "n": 1307,
+          "mean": -22.709671524676533,
+          "median": -24.03796713458587
+        },
+        "dalt_10": {
+          "n": 1294,
+          "mean": -45.5831013760908,
+          "median": -52.61629128045274
+        },
+        "dyaw_1": {
+          "n": 1315,
+          "mean": 0.3572354448745492,
+          "median": 0.07842676684032313
+        },
+        "dyaw_5": {
+          "n": 1307,
+          "mean": 1.790768745592677,
+          "median": 0.08095049379357988
+        },
+        "dyaw_10": {
+          "n": 1294,
+          "mean": 3.2939870984993433,
+          "median": 0.08103546836790088
+        },
+        "dtas_1": {
+          "n": 1315,
+          "mean": 0.4568965256978236,
+          "median": 0.47912809815693436
+        },
+        "dtas_5": {
+          "n": 1307,
+          "mean": 2.28124057352839,
+          "median": 2.6207136299005356
+        },
+        "dtas_10": {
+          "n": 1294,
+          "mean": 4.507533848244304,
+          "median": 5.29444519216338
+        }
+      },
+      "action_unchanged_through_5_steps_fraction": 0.9502677888293802,
+      "action_unchanged_through_10_steps_fraction": 0.9126738794435858,
+      "by_match": {
+        "mhi_v1.3_ic100601_win_actions.csv": 488,
+        "ours_seed100100_ic100601_loss_actions.csv": 250,
+        "ours_seed100100_ic100606_win_actions.csv": 579
+      }
+    }
+  ],
+  "prediction": {
+    "n_windows": 2160,
+    "target_fields": [
+      "lon_deg",
+      "lat_deg",
+      "alt_m",
+      "roll_deg",
+      "pitch_deg",
+      "yaw_deg",
+      "tas_mps",
+      "vn_mps",
+      "ve_mps",
+      "vu_mps"
+    ],
+    "scores": {
+      "state_history": {
+        "rmse": [
+          3.831191614293752e-06,
+          1.1046207556461398e-06,
+          0.12948369812881527,
+          6.2848505115037145,
+          1.2115077718777179,
+          1.3170320920995493,
+          0.6060536724165966,
+          1.4481828137001138,
+          3.304073029693355,
+          1.7997453380736341
+        ],
+        "mae": [
+          2.807081453536146e-06,
+          6.889301073773054e-07,
+          0.09346990440553313,
+          4.970686530962064,
+          0.8245245463838315,
+          0.8829115117390874,
+          0.4608951333206499,
+          0.9028500220445822,
+          2.2242513140898836,
+          1.3394521791658354
+        ]
+      },
+      "state_history_and_action": {
+        "rmse": [
+          4.284786939605098e-06,
+          1.2341996405418348e-06,
+          0.12644988960809805,
+          5.068823194545047,
+          1.1479126268953377,
+          1.181256213251393,
+          0.5900984484785906,
+          1.6529403461867875,
+          2.7971124584458082,
+          1.5492740468270334
+        ],
+        "mae": [
+          3.2745836680526927e-06,
+          7.97457067636495e-07,
+          0.08942445662227844,
+          3.9970698036955405,
+          0.7435119098798388,
+          0.7394115983268053,
+          0.4478999720695382,
+          1.0722958586366529,
+          1.9730905756367734,
+          1.1318574528614735
+        ]
+      }
+    },
+    "rmse_reduction_pct": [
+      -11.839536389123209,
+      -11.730621956301992,
+      2.3430042272186813,
+      19.348547984281662,
+      5.249256047595464,
+      10.30923085797468,
+      2.6326420685457825,
+      -14.138928493669752,
+      15.343503811554582,
+      13.917040702808203
+    ],
+    "folds": [
+      {
+        "test_match": "mhi_v1.3_ic100601_win_actions.csv",
+        "model": "state_history",
+        "windows": 676,
+        "alphas": [
+          0.001,
+          0.001,
+          0.1,
+          10.0,
+          100.0,
+          10.0,
+          1000.0,
+          0.001,
+          0.001,
+          0.1
+        ],
+        "rmse": [
+          3.246286611581512e-06,
+          1.5561752056866053e-06,
+          0.16236975801492104,
+          7.626741077284027,
+          1.3505172867444988,
+          1.6851403186168012,
+          0.6242339555074164,
+          1.9817360463305307,
+          1.7564688477594237,
+          1.9092211197721891
+        ]
+      },
+      {
+        "test_match": "ours_seed100100_ic100601_loss_actions.csv",
+        "model": "state_history",
+        "windows": 498,
+        "alphas": [
+          0.001,
+          0.001,
+          0.001,
+          1.0,
+          1000.0,
+          1000.0,
+          0.001,
+          0.001,
+          1000.0,
+          100.0
+        ],
+        "rmse": [
+          1.377476242185862e-06,
+          5.693490979433715e-07,
+          0.0856738392612975,
+          4.248200648450552,
+          1.1445262893245147,
+          0.9766406607033453,
+          0.30075084267792834,
+          0.7781186686209502,
+          3.9960358760550476,
+          1.236664145368693
+        ]
+      },
+      {
+        "test_match": "ours_seed100100_ic100606_win_actions.csv",
+        "model": "state_history",
+        "windows": 986,
+        "alphas": [
+          0.001,
+          0.001,
+          0.1,
+          10.0,
+          1000.0,
+          1000.0,
+          1000.0,
+          0.001,
+          0.001,
+          1000.0
+        ],
+        "rmse": [
+          4.89604663452888e-06,
+          9.214133523061799e-07,
+          0.12225598704396068,
+          6.126627281787699,
+          1.141614488937885,
+          1.170997224258888,
+          0.7012811043322328,
+          1.2633309908872536,
+          3.7060750804873672,
+          1.9555674848129792
+        ]
+      },
+      {
+        "test_match": "mhi_v1.3_ic100601_win_actions.csv",
+        "model": "state_history_and_action",
+        "windows": 676,
+        "alphas": [
+          0.001,
+          0.001,
+          0.1,
+          100.0,
+          100.0,
+          100.0,
+          10.0,
+          0.001,
+          0.001,
+          10.0
+        ],
+        "rmse": [
+          4.356620581339853e-06,
+          1.5655495274343628e-06,
+          0.15001761351056575,
+          6.026739256087986,
+          1.2359907320815258,
+          1.4619041982233245,
+          0.7575843080037268,
+          1.9909925029064277,
+          1.9776538189008932,
+          1.8015967205831187
+        ]
+      },
+      {
+        "test_match": "ours_seed100100_ic100601_loss_actions.csv",
+        "model": "state_history_and_action",
+        "windows": 498,
+        "alphas": [
+          0.001,
+          0.001,
+          0.001,
+          10.0,
+          1000.0,
+          1000.0,
+          0.001,
+          0.001,
+          0.001,
+          100.0
+        ],
+        "rmse": [
+          1.7952212499127876e-06,
+          5.969754247928721e-07,
+          0.07935023751168949,
+          3.773933162075504,
+          1.1228901971658014,
+          0.8922024010951639,
+          0.2918273637833715,
+          0.8165456342969784,
+          1.0985941290853731,
+          1.1806858629198111
+        ]
+      },
+      {
+        "test_match": "ours_seed100100_ic100606_win_actions.csv",
+        "model": "state_history_and_action",
+        "windows": 986,
+        "alphas": [
+          0.001,
+          0.001,
+          0.1,
+          100.0,
+          1000.0,
+          1000.0,
+          100.0,
+          0.001,
+          0.001,
+          1.0
+        ],
+        "rmse": [
+          5.057555297755811e-06,
+          1.2151432932585384e-06,
+          0.12813323318838932,
+          4.9182587472561785,
+          1.0965615170633825,
+          1.0906423769051052,
+          0.5712484945297477,
+          1.7119787355115677,
+          3.7213457111101405,
+          1.5260387470760124
+        ]
+      }
+    ]
+  },
+  "method": {
+    "state_features": "45 features: for n,n-1,n-2, lon/lat/alt/TAS/vN/vE/vU and sin/cos of roll/pitch/yaw (39); two wrapped backward angle increments (6).",
+    "action_features": [
+      "altitude_action=down",
+      "altitude_action=up",
+      "heading_action=left30",
+      "heading_action=left15",
+      "heading_action=right15",
+      "heading_action=right30",
+      "speed_action=down",
+      "speed_action=up"
+    ],
+    "prediction_target": "One-step increments of all ten state fields in their original units; roll/yaw wrapped.",
+    "validation": "Outer leave-one-match-out; independent inner leave-one-training-match-out ridge tuning per output and per model. Only training data used for scaling.",
+    "scope": "Only alive A0100/A0200 rows with recorded movement actions. Blue aircraft have no recorded movement actions. Shoot is excluded from this aircraft-motion analysis.",
+    "causality": "Observational, temporally dependent samples. Action is selected from state; subsequent actions may change. No randomized intervention or significance claim.",
+    "limitation": "Three matches, two share the same initial configuration; pooled associations can reflect policy/match mixture. Ridge is only one predictive specification."
+  }
+}

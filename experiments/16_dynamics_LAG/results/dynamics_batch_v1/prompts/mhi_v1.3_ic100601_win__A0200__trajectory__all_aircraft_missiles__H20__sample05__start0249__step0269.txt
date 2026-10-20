@@ -1,0 +1,580 @@
+[SYSTEM]
+Below is a description of the "LAG-2v2" task.
+
+Task description:
+Light Aircraft Game (LAG) is an aircraft combat simulation. This
+experiment uses recorded episodes of a two-versus-two engagement
+between teams of F-16 aircraft equipped with missiles. The task
+objective is to defeat the opposing aircraft while surviving.
+
+Team A consists of A0100 and A0200, and Team B consists of B0100
+and B0200. In the supplied recordings, Team A uses learned policies
+and Team B uses rule-based pursuit controllers.
+
+Control is hierarchical: a high-level policy selects altitude,
+heading, speed, and firing commands. A fixed low-level policy
+translates the movement commands into aircraft control inputs.
+
+Observation space:
+The state is a 10-dimensional telemetry vector in the following
+fixed order:
+
+[lon_deg, lat_deg, alt_m, roll_deg, pitch_deg, yaw_deg, tas_mps, vn_mps, ve_mps, vu_mps]
+
+The fields and their reference ranges are:
+
+- lon_deg: longitude in degrees; [119, 121].
+- lat_deg: latitude in degrees; [59, 61].
+- alt_m: altitude above mean sea level in meters; [3500, 6500].
+- roll_deg: roll angle in degrees; [-180, 180].
+- pitch_deg: pitch angle in degrees; [-40, 40].
+- yaw_deg: heading angle in degrees; [0, 360).
+- tas_mps: true airspeed in meters per second; [170, 360].
+- vn_mps: northward velocity in meters per second; [-350, 370].
+- ve_mps: eastward velocity in meters per second; [-370, 380].
+- vu_mps: upward velocity in meters per second; [-150, 170].
+
+Heading is measured clockwise from north: 0 degrees is north,
+90 degrees is east, 180 degrees is south, and 270 degrees is west.
+Account for angular wraparound when interpreting changes in
+heading and roll.
+
+The telemetry vector is not the complete observation originally
+available to the policy. The upstream policy also uses information
+about other aircraft and missile threats.
+
+A null value means missing or unavailable information, not zero.
+A state marked invalid must not be interpreted as active flight.
+
+The reference ranges above describe aircraft telemetry.
+Missile states use the same field order and units. Their recorded
+positions and attitudes are provided; unrecorded speed and velocity
+components are null. Aircraft reference ranges do not bound missile states.
+
+Action space:
+Each action contains four discrete components in this order:
+
+[altitude_action, heading_action, speed_action, shoot_action]
+
+Each component takes one of the following values:
+
+- altitude_action: 0 = up; 1 = hold; 2 = down.
+- heading_action: 0 = left30; 1 = left15; 2 = hold; 3 = right15; 4 = right30.
+- speed_action: 0 = up; 1 = hold; 2 = down.
+- shoot_action: 0 = no; 1 = yes.
+
+The movement commands correspond to altitude offsets of
++100 / 0 / -100 meters, heading offsets of
+-30 / -15 / 0 / +15 / +30 degrees, and forward-speed offsets
+of approximately +17 / 0 / -17 meters per second.
+
+These are inputs to the low-level controller. They do not specify
+the actual state change completed within one time step.
+The speed command concerns forward speed, whereas tas_mps
+records true airspeed.
+
+The firing component specifies a launch request. A request does
+not guarantee that a missile is launched.
+
+Historical actions contain all four component IDs, including the
+firing command. For action prediction, predict only the altitude,
+heading, and speed components, in that order.
+
+Transition dynamics:
+Aircraft motion is simulated using JSBSim. Movement commands pass
+through the low-level controller before affecting the aircraft's
+subsequent position, attitude, and velocity.
+
+Recorded steps are separated by 0.2 seconds. At step t, s_t denotes
+the state before action a_t is applied. The action acts over the
+interval from step t to step t+1, producing s_(t+1).
+
+s_t -- a_t --> s_(t+1)
+
+Empirical aircraft attitude dynamics (0.2-second step):
+
+Use the following fitted relationship as approximate guidance for aircraft
+attitude prediction alongside the supplied history and action context.
+It is not an exact JSBSim equation or a complete state-transition model.
+It does not determine position, velocity, TAS, or action IDs by itself.
+The same coefficients apply to every aircraft; do not apply them to missiles.
+
+Let q_n = [roll_deg, pitch_deg, yaw_deg] at step n, in degrees.
+Let v_n = [vn_mps, ve_mps, vu_mps], in meters per second, and s_n = tas_mps.
+Define wrap(a) = ((a + 180) mod 360) - 180, component by component,
+where mod returns a value in [0, 360).
+Define d_n = wrap(q_n - q_(n-1)) and d_(n-1) = wrap(q_(n-1) - q_(n-2)).
+
+Construct the 24-dimensional vector x_n by concatenating, in this exact order:
+  d_n                                      (3 values: roll, pitch, yaw)
+  d_(n-1)                                  (3 values: roll, pitch, yaw)
+  sin(pi*q_n/180)                           (3 values: roll, pitch, yaw)
+  cos(pi*q_n/180)                           (3 values: roll, pitch, yaw)
+  v_n                                      (3 values: north, east, up)
+  v_n - v_(n-1)                            (3 values: north, east, up)
+  v_(n-1) - v_(n-2)                        (3 values: north, east, up)
+  s_n                                      (1 value)
+  s_n - s_(n-1)                            (1 value)
+  s_(n-1) - s_(n-2)                        (1 value)
+
+Differences are NOT divided by 0.2. Trigonometric arguments are in radians.
+The following coefficients already use the original units. Do not standardize
+the features or multiply the predicted increment by 0.2 again.
+
+Predicted angle increment in degrees:
+  delta_q = b + transpose(B) * x_n
+Predicted next attitude:
+  q_(n+1) = q_n + delta_q
+
+b, ordered [roll, pitch, yaw]:
+[
+  -14.761806809245765,
+  4.29431760650264,
+  -2.5205253811451325
+]
+
+B has 24 rows and 3 columns. Row i multiplies feature i in x_n;
+columns predict [roll increment, pitch increment, yaw increment].
+Row feature names, in order:
+[
+  "previous_increment_Roll_deg",
+  "previous_increment_Pitch_deg",
+  "previous_increment_Yaw_deg",
+  "earlier_increment_Roll_deg",
+  "earlier_increment_Pitch_deg",
+  "earlier_increment_Yaw_deg",
+  "sin_Roll",
+  "sin_Pitch",
+  "sin_Yaw",
+  "cos_Roll",
+  "cos_Pitch",
+  "cos_Yaw",
+  "velocity_N_mps",
+  "velocity_E_mps",
+  "velocity_U_mps",
+  "velocity_last_difference_N_mps",
+  "velocity_last_difference_E_mps",
+  "velocity_last_difference_U_mps",
+  "velocity_earlier_difference_N_mps",
+  "velocity_earlier_difference_E_mps",
+  "velocity_earlier_difference_U_mps",
+  "tas_mps",
+  "tas_last_difference_mps",
+  "tas_earlier_difference_mps"
+]
+Coefficient matrix B:
+[
+  [
+    0.8739996006588663,
+    -0.016530914060107052,
+    0.03362385011036918
+  ],
+  [
+    0.043116143629110266,
+    0.7263278474408114,
+    -0.008168422443989139
+  ],
+  [
+    1.0510248670537248,
+    -0.04783275174198584,
+    0.4686347507428331
+  ],
+  [
+    -0.4456160196985098,
+    0.027235644887463353,
+    -0.015428508217535893
+  ],
+  [
+    -0.10776331755294202,
+    -0.1342498867594023,
+    -0.04605107816289018
+  ],
+  [
+    -0.06893509116246915,
+    -0.08384646053083165,
+    -0.08923186335047659
+  ],
+  [
+    -3.414637313136043,
+    0.4269037412059658,
+    1.178682684149772
+  ],
+  [
+    -5.032223121507728,
+    -1.6731278813661064,
+    -0.4425107531587
+  ],
+  [
+    0.41843874992473135,
+    -0.044880838727102745,
+    0.28402217596820445
+  ],
+  [
+    -1.0022469317533527,
+    0.3517048943309683,
+    -0.3383312001277949
+  ],
+  [
+    17.39283545929011,
+    -4.875497791520991,
+    3.0526333613210492
+  ],
+  [
+    -0.23245271622435676,
+    0.024324855225646664,
+    0.05332922339308777
+  ],
+  [
+    0.0002495911678830398,
+    0.00028945694796531226,
+    -0.00029942465650721395
+  ],
+  [
+    -0.0037899412259667906,
+    0.0005559259242717158,
+    -3.648700731246471e-05
+  ],
+  [
+    0.009065134935347309,
+    -3.74163473804807e-05,
+    -0.0006555618184135886
+  ],
+  [
+    0.1008199863527453,
+    -0.020205877689452967,
+    -0.005702172514247395
+  ],
+  [
+    -0.04749467936589786,
+    -0.019564252715797984,
+    0.005509768712740285
+  ],
+  [
+    -0.42244393750145826,
+    -0.11130838771909933,
+    0.0574068408425748
+  ],
+  [
+    0.012317716021851631,
+    0.028032987835887344,
+    0.041951795313027215
+  ],
+  [
+    0.06415402440557362,
+    0.01803767046880078,
+    -0.013406923821691383
+  ],
+  [
+    0.4324376240947113,
+    0.0034392543827370687,
+    -0.017019648712276614
+  ],
+  [
+    -0.0067687853686365825,
+    0.0008533389581706219,
+    -0.001026035345177161
+  ],
+  [
+    0.7822913529375238,
+    -0.19633665125148694,
+    0.11073259273919649
+  ],
+  [
+    -0.6337575870663174,
+    0.025502174703213497,
+    -0.0559573922512723
+  ]
+]
+
+For the first forecast step, use the last three historical states. For later
+forecast steps, use your own predicted states whenever actual history is no
+longer available. Never assume any future recorded state or action is given.
+Keep inferring the remaining state components and the three action IDs using
+the original task instructions. This empirical prior does not replace those
+predictions. Do not invent zero values for missing inputs.
+
+Return yaw in [0, 360) and represent roll using its equivalent angle in
+[-180, 180). Handle angle differences using wrap, not raw subtraction across
+the 0/360 or -180/180 boundary. Pitch remains in degrees.
+
+Under the stated heading convention and positive nose-up pitch, the aircraft's
+forward axis in north/east/up coordinates is
+  [cos(pitch)*cos(yaw), cos(pitch)*sin(yaw), sin(pitch)],
+using radians in these trigonometric functions. This forward axis need not be
+parallel to [vn_mps, ve_mps, vu_mps]. Roll does not directly change the forward
+axis. Do not force velocity direction to equal nose direction or identify TAS
+with a particular velocity component.
+
+The coefficients were fitted jointly to all three source recordings, including
+the evaluated recording. They provide an in-dataset empirical prior, not
+independent evidence about unseen recordings. They were fitted for one-step
+prediction; recursive ten-step accuracy is not guaranteed. They do not include
+explicit action or control-surface effects.
+
+Initial state:
+In the supplied recordings, aircraft start near longitude
+120 degrees and latitude 60 degrees, at approximately 6096 meters
+altitude and 243.84 meters per second true airspeed.
+Initial positions and headings vary between scenarios.
+
+Termination:
+The upstream task checks termination for each aircraft upon
+destruction or a flight-safety violation, at the time limit,
+or when all opponents are destroyed and no incoming missiles
+remain.
+
+[USER]
+Given the following snippet of an episode generated by a trained reinforcement-learning agent:
+
+Target aircraft: A0200
+Forecast steps (in order): [269,270,271,272,273,274,275,276,277,278]
+State field order: [lon_deg, lat_deg, alt_m, roll_deg, pitch_deg, yaw_deg, tas_mps, vn_mps, ve_mps, vu_mps]
+Historical action ID order: [altitude_action, heading_action, speed_action, shoot_action]
+
+History: 20 consecutive steps, separated by 0.2 seconds.
+Each history step contains states of all aircraft and missiles recorded at that step,
+plus available aircraft actions. Unrecorded or inactive actions are null.
+Missile control actions are not recorded. Missing values are not filled in.
+Metadata gives entity type, team, alive flag, launcher, and recorded event.
+An alive flag of null is unavailable; 0 means inactive. Invalid states are null.
+A remove event records disappearance and does not by itself establish a missile hit.
+Each pair contains state s_t before action a_t, which acts from t to t+1.
+
+Step 249 (time_s=49.8):
+  state A0100: [120.20610315609105,60.0523477324286,5286.616250237337,-89.28853373067707,2.4061006283369735,69.03137329614651,332.25015738196043,84.89479556130743,321.17919555283,5.192794139795573]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.15468616761984,60.058070599434565,3912.361343025506,-52.79054747045582,2.7587793208584426,73.09188359222654,345.83117186273347,92.64947831421352,332.76172251495717,-16.87926624395245]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.0853499594798,60.0642579936224,3976.2046421298087,-76.5743397786476,-4.920293419241426,107.25451764593014,332.0795532739296,-107.77341782898668,312.1612631659495,-34.88647145685761]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.12272810490128,60.06811757524907,3955.016795613384,0.0,-4.681001998627756,87.72481689010658,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [1,0,1,1]; status=recorded
+  action A0200: [1,1,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 250 (time_s=50.0):
+  state A0100: [120.207247702479,60.05251069555328,5287.567794955212,-81.28233671368426,2.321557167118649,66.78439796955826,331.3728653264067,96.8137979664622,316.88184983339914,4.577951955295071]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.1558727294894,60.05824676355311,3909.651603570548,-78.87116600493626,3.113735186762513,70.43869198069926,344.5695863566829,103.81055051777508,328.36569395519956,-11.293381979383636]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.0864764690811,60.06407320390297,3969.3419370583983,-61.59060379562609,-3.3319403625145574,102.36641987668833,332.19431144815593,-98.17025504364364,315.6121136083018,-33.23635549937382]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.12403165542312,60.06814565805387,3949.246382884221,0.0,-4.501148007376196,87.06965527518896,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [1,0,1,1]; status=recorded
+  action A0200: [1,4,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 251 (time_s=50.2):
+  state A0100: [120.20837517034376,60.0526954023105,5288.543392483637,-83.48638238827834,2.3510410200597884,64.64758878110982,330.19475440781787,109.40936138839422,311.49950093456937,5.121366666927194]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.15704251926572,60.05844383504856,3907.5124207785934,-90.79678648841238,2.7353872903383887,65.87403667811493,343.993525503984,115.49802701229852,323.85083101136337,-10.601443211933468]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.08761396819258,60.06390353079162,3962.995876724509,-40.12159136691557,-3.803098670573164,103.35674233021246,332.36964770734176,-91.87192079344766,317.97727118140256,-30.32470772907377]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.12532727166897,60.06818133048768,3943.7535588065766,0.0,-4.305059663626425,86.34508342972104,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [1,0,1,1]; status=recorded
+  action A0200: [1,4,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 252 (time_s=50.4):
+  state A0100: [120.2094807443048,60.052903884945735,5289.437392804482,-104.03606011498962,1.809576625686816,62.29992609030228,328.7659368839092,122.950786434672,304.89495703567474,3.0348878833191435]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.15820203727846,60.058655307428424,3905.3672976447433,-79.26444933456202,1.7538986639095586,70.84589483008136,344.4216811096877,118.16699462265773,323.3316530960361,-10.931509797679434]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.08875769657524,60.0637417987921,3957.195941884536,-31.98600327071127,-4.133449351774113,103.7601758255808,332.48692524579934,-88.4584367762952,319.31705884742206,-27.55496963402351]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.126614279398,60.068225187990535,3938.5334124329497,0.0,-4.125150971285306,85.58160471526764,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [1,0,1,1]; status=recorded
+  action A0200: [1,4,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 253 (time_s=50.6):
+  state A0100: [120.21056403912851,60.0531346807545,5289.483885531208,-116.06469787812098,0.2504413110865388,59.63326687648872,327.9375702490743,133.9584321397042,299.3164272607117,-2.804427111174411]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.15936503960614,60.05886515989678,3903.049800239549,-62.086953586026965,0.6728734736019761,72.57225704250655,345.1272067200988,115.64327497924292,324.9357737705383,-12.496587319527675]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.089905708152,60.063586732026785,3952.0249557170578,-46.86075916384421,-4.109639917538413,103.71202793866156,332.18777689682133,-84.14512701659164,320.4372658934835,-24.25438817457483]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.12789245876924,60.06827716841042,3933.5592506279786,0.0,-3.968947119223743,84.84823330128717,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,1,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 254 (time_s=50.8):
+  state A0100: [120.21162847284468,60.05338369189088,5288.326575959972,-110.33257073186904,-1.406774215028794,57.33273198197035,327.43698934162603,143.68756513920474,294.0990533806048,-8.637847770543832]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.16053456131463,60.059069329611134,3900.232237142551,-44.96531778489014,-1.3245862483390574,74.80271592536172,345.8600849392151,111.79577066579525,326.9016285425335,-16.007163135341344]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.09105772813994,60.06344028465329,3947.368340055004,-64.46519588816355,-3.831712410562403,103.45748575781228,331.89584974533426,-79.08501725537324,321.5424692582822,-22.60211466171776]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.12916200951716,60.06833673912681,3928.787786378001,0.0,-3.8549960977668594,84.16172064774314,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,1,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 255 (time_s=51.0):
+  state A0100: [120.21267273252325,60.05365044090995,5286.0841105210575,-102.90092520096728,-2.4642511786901777,55.357294483414094,326.7773859439479,153.80653425502032,287.9966407919082,-13.599444010537354]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.16171088158622,60.05926665243502,3896.5740783614783,-26.516397866709955,-2.1167986045610636,75.10019274442145,346.6722768065644,108.71072717006484,328.5643112922569,-20.227176012678218]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.09221356339542,60.06330233311468,3942.846130102721,-67.05117822421553,-3.371652663707027,102.98864340253486,331.98691910599103,-75.14847841948908,322.5637096614004,-22.818279036754404]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.1304232584201,60.06840326469645,3924.151553847744,0.0,-3.800506282408851,83.52659649010613,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,1,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 256 (time_s=51.2):
+  state A0100: [120.21369384623392,60.053935517101046,5282.975114164719,-94.78192457752672,-3.0439968912507247,53.3682606033413,326.06187109471233,164.06838700797255,281.24815296819924,-17.24484323974397]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.16289163369572,60.05946077568156,3892.392707704219,-28.413760280654888,-1.8207013779189412,74.0902436360762,347.1149145616305,108.2092861508438,329.180817807691,-20.481784329314426]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.0933730206226,60.06316929625544,3938.2075269824177,-47.81007592094296,-3.014203367815784,102.55829986662869,332.65035169895083,-73.42994699680717,323.58581308359817,-23.59069605815892]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.13167650003444,60.06847620273822,3919.583580773814,0.0,-3.779730684074904,82.9231651633874,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,1,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 257 (time_s=51.4):
+  state A0100: [120.21468999741668,60.05423893627189,5279.2911764055225,-86.10187815535615,-3.1813494770542627,51.2848464578887,325.36268160033416,174.22649917790284,274.1037075582805,-19.31732551823034]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.16406975603071,60.05965917775753,3889.012407208264,-53.58168424157221,3.290212789193144,69.24597311427904,346.4896069296015,114.60279764135016,326.74960943806263,-12.487562415421564]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.0945360655122,60.063038279302056,3933.411218454892,-26.70354945043541,-3.5219487188423715,102.97591767107288,333.4633527868987,-72.82251459980239,324.49359499682305,-24.46621804200647]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.13292186781264,60.0685552852206,3915.0834809829344,0.0,-3.708064429094627,82.31628025650066,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,1,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 258 (time_s=51.6):
+  state A0100: [120.2156591316812,60.05456077111597,5275.351105078716,-87.10767366305309,-3.1719362090498335,49.133241408393374,324.45149405585795,184.8205555423384,265.90598059013314,-20.10332635410296]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.16523302586482,60.05987467906379,3887.1690396495046,-79.60996891031239,3.755480362434833,66.28536922701242,345.1657180698007,125.80488564848412,321.3467344681717,-6.984262613569021]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.09570183585734,60.06290778502469,3928.4501081100943,-16.85011627006885,-4.32502099649831,103.06994491621366,334.0748959522955,-72.60338195995395,325.12754614806204,-25.037247637347544]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.1341590744655,60.068640770540355,3910.747712483653,0.0,-3.551467349915929,81.65056459886343,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,1,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 259 (time_s=51.8):
+  state A0100: [120.21659737305818,60.0549015802419,5271.14136130094,-90.11483427342756,-3.2220879065908243,46.84152856773528,323.63970114887616,194.86766705750813,257.4573107911663,-22.022298142537903]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.16637565755916,60.06011124162025,3885.8756015562326,-91.3189288562704,3.3441609713159317,61.60232127050295,344.3337227058862,137.84405809845694,315.4728781312995,-6.449139709883137]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.09686948309664,60.06277764712578,3923.372419124177,-11.81797619489737,-4.85162445038889,103.06794588118456,334.5428392092687,-72.52177913034595,325.5633995864905,-25.84522523900798]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.13538739574513,60.06873325993486,3906.643047826952,0.0,-3.3771674973453214,80.91368028129695,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,4,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 260 (time_s=52.0):
+  state A0100: [120.21750697642076,60.05525920355483,5266.603486191559,-81.70388589519145,-3.220011723653281,44.57220373421132,323.10513983728475,203.89160589489325,249.58297056532052,-23.097299380300228]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.16749870017092,60.06036810133467,3884.562750080118,-80.29330786749871,2.7505519669850047,61.03189792661696,344.29427677217546,147.32985876515406,311.1119309535447,-6.467468799459605]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.09803834428436,60.062647747912166,3918.2247342994456,-19.056398346591383,-4.557191157448706,102.70017960089912,334.64611261508713,-72.06531244191122,325.83255550065195,-25.055083455336373]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.13660601405816,60.06883338245497,3902.7656947858018,0.0,-3.218070645371311,80.11006818678149,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,3,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 261 (time_s=52.2):
+  state A0100: [120.2183866549881,60.05563319701447,5262.007658116338,-82.8516629652267,-3.0767659963735916,42.43144314774878,322.26784488075253,213.27958106397452,240.5117644294584,-22.857718965133422]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.16861294805943,60.060635495019405,3883.299633918733,-61.66018683931473,1.0665617192166106,65.06581518544994,344.73971540912305,149.65211714402355,310.4941675682659,-6.564078058967137]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.09920842218428,60.06251955253213,3913.366244177243,-23.17225779848908,-4.052886095300576,102.52106810845105,334.78121941106536,-70.98400144243531,326.293563529112,-23.92168073220527]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.13781427912056,60.06894152709907,3899.099310079132,0.0,-3.0678152011951387,79.28346250794634,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,1,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 262 (time_s=52.4):
+  state A0100: [120.21923219622562,60.05602398261615,5257.348770551035,-86.11971332948929,-2.995956485141037,40.166963415604144,321.5149170886266,222.17449343948027,231.17915860410417,-23.80195375416115]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.1697304278517,60.06090221428334,3881.710089085713,-41.95131300106604,-0.9865090941754266,67.58666801155951,345.5262451307413,147.32406660378538,312.3918263842781,-9.764849295692454]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.10038042786744,60.06239324112709,3908.70484130626,-30.035182325040225,-3.777599903775646,102.10023549499424,334.88115456943245,-69.53162469167553,326.8251808503885,-22.27200070947745]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.13901203343656,60.06905756041846,3895.621618624854,0.0,-2.9499812367093505,78.48220823098902,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,1,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 263 (time_s=52.6):
+  state A0100: [120.22004617707653,60.056429629550664,5252.538565359709,-77.8833326644018,-2.872544895275549,37.93692157004711,321.02324651149263,230.1156220388368,222.54092426091063,-24.047085552253456]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.17085464703725,60.06116362662451,3879.229764743838,-21.884688771358412,-3.2703660994544825,68.68153949585934,345.911475775275,144.1925515099773,314.0473120817663,-15.412427981628708]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.10155413213867,60.06227200682685,3904.616689709196,-51.8908701861097,-1.9550189685772632,100.13288589384688,334.2088298898391,-64.61825353797235,327.40019663184927,-18.14206524804076]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.14019951491098,60.06918099713319,3892.272953327651,0.0,-2.896673222409975,77.72767135161067,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,1,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 264 (time_s=52.8):
+  state A0100: [120.2208275856778,60.05684955951405,5247.836734512636,-79.12753713289817,-2.617824463756559,35.8530851658082,320.22090751648295,238.23445185677824,212.74188732396783,-22.94918161975524]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.1719833793979,60.06142055779569,3875.651968562973,-23.044454598405252,-3.2514640552477303,67.9388926801701,346.02810910953855,142.71562849869025,314.65919156668116,-18.902244278106405]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.1027315634921,60.06216592923472,3901.507896340558,-75.19915674516876,0.4554009190513475,95.68051194170296,333.2057004666845,-52.68866980631756,328.73964273277704,-13.423494085402632]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.14137708032524,60.06931127315437,3888.9661250141935,0.0,-2.91361246078963,77.01637357430705,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,1,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 265 (time_s=53.0):
+  state A0100: [120.22157006692504,60.05728449307731,5243.2248765757895,-98.09489643787175,-2.863994230183891,33.58386042483096,319.10262144818284,246.65610989725704,201.04216499549855,-23.859890179489113]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.17310953710378,60.0616797348878,3872.537267251897,-47.70813060156848,2.951294417647368,63.43100755711888,345.4692882835544,147.77158790019146,312.0757669189098,-11.013748615976729]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.10391323994033,60.06208403222464,3898.947315546611,-84.42628761760771,0.8523032829293566,91.98756716485134,332.2578932788141,-38.7560414169508,329.7509251676432,-12.55405316409077]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.14254498067746,60.06944799069389,3885.663289572136,0.0,-2.8952738091541375,76.3147690028141,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,1,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 266 (time_s=53.2):
+  state A0100: [120.22227230809496,60.05773326656061,5238.01809282614,-109.90362255572671,-4.056218549756883,30.880253380378637,318.5298508851864,253.47033993866785,190.79561993003753,-28.47953812525632]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.1742194977561,60.06195305095898,3871.038816439587,-73.31604363551115,3.3996628043387296,61.361723187491634,344.19820916474873,157.01122719494882,306.2597802831487,-4.982841345433989]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.10509793896546,60.06202629091934,3896.525094256801,-70.72347321370799,1.187763062547911,89.12150528751587,331.610665290148,-25.892976113660303,330.4061314196231,-11.268338052736713]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.1437030449495,60.069591228834206,3882.456285517772,0.0,-2.7815166207383606,75.57081922875241,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,1,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 267 (time_s=53.4):
+  state A0100: [120.22294026734198,60.058193210541496,5231.837648945708,-104.27290923926088,-5.421634843634604,28.43568664516355,318.31800733864475,259.3237124809853,181.59549953321425,-33.1759022546055]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.17530527241136,60.06224515135961,3870.232618141535,-99.51429148827752,3.212246911355245,56.04565646183391,343.0755606996315,168.94487418632644,298.5662684383713,-4.080831572032869]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.1062847108512,60.061989474942074,3894.5973848996314,-51.61100188176523,1.0055907652681355,89.19648707435722,331.5131332117276,-16.33158842615948,331.0129187950451,-8.042655166054066]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.14485065720017,60.06974135752011,3879.422661448376,0.0,-2.637351921186934,74.76803519265606,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,3,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Step 268 (time_s=53.6):
+  state A0100: [120.22357419316997,60.058663528532946,5224.810062485665,-96.78198542282722,-6.24230742346283,26.36319790529258,317.97222823166646,265.0927954586414,171.6685611656306,-36.90599991676216]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state A0200: [120.17636294462572,60.06255822289904,3869.033772748268,-111.75235335016858,1.4225144758591344,52.386210612624936,342.2108269512103,179.82579047676498,291.0371205707082,-8.266172750969222]; valid=1; entity_type="aircraft"; team="A"; alive=1; launcher_id=null; event="update"
+  state B0100: [120.10747345962984,60.06196327663999,3893.127763574195,-29.521139864019965,-0.5089375498615626,91.23681643742304,331.856632957938,-13.401435561695532,331.51289264487895,-6.9590497404653995]; valid=1; entity_type="aircraft"; team="B"; alive=1; launcher_id=null; event="update"
+  state B0200: [null,null,null,null,null,null,null,null,null,null]; valid=0; entity_type="aircraft"; team="B"; alive=0; launcher_id=null; event="none"
+  state B01001: [120.14598697934514,60.069898863250394,3876.559997723402,0.0,-2.531247051093606,73.89952600330267,null,null,null,null]; valid=1; entity_type="missile"; team="B"; alive=null; launcher_id="B0100"; event="update"
+  action A0100: [2,0,1,1]; status=recorded
+  action A0200: [1,3,1,0]; status=recorded
+  action B0100: [null,null,null,null]; status=not_recorded
+  action B0200: [null,null,null,null]; status=inactive
+
+Analyze the sequence to answer this question:
+Predict the complete future trajectory of aircraft A0200 for the next 10 consecutive steps (269 through 278 inclusive).
+Predict BOTH the ten-dimensional state s_t and the three movement action IDs a_t at EVERY requested step in ONE response. State and action in an entry refer to the SAME step: a_t is selected at s_t and affects s_(t+1).
+No future state or action is supplied, for the target or other entities. Continue from the final historical state/action pair and predict the whole sequence using the supplied history and your own predicted trajectory.
+
+For each state, return exactly ten finite numerical values in the stated field order.
+For each action, return exactly three integer IDs in this order: [altitude_action, heading_action, speed_action]. Allowed IDs are altitude 0..2, heading 0..4, speed 0..2. Do not predict a shoot_action ID.
+Choose one value per component, even if multiple values seem possible.
+
+Please first provide compact reasoning before your prediction.
+Use the following template in your answer:
+
+1. [Reasoning]:
+2. [Prediction]:
+3. [Formatting]:
+>>Final trajectory: [{"step":269,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":270,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":271,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":272,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":273,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":274,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":275,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":276,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":277,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":278,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]}]
+
+Replace every placeholder string with a numerical value. Use the final-answer marker exactly once. Its final JSON array must occupy a single line, with exactly ten objects in the requested step order. Each object must have exactly the keys step, state, action.

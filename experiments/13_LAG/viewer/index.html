@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>LAG · Match Inspector</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<header><div class="brand"><span class="brand-mark">L</span><div><strong>LAG <span>Match Inspector</span></strong><small>試合を観察する · 0.2 s / step</small></div></div><label>試合<select id="episode" aria-label="試合"></select></label><div class="clock"><span>SIMULATION TIME</span><strong id="time">0.0 <small>s</small></strong><span id="stepLabel">STEP 0</span></div></header>
+<main>
+<div id="error" role="alert" hidden></div>
+<div class="top-grid">
+<section class="panel scene"><div class="panel-title"><h1>試合全体</h1><span id="videoTime">映像を読み込み中</span></div><div class="video-wrap"><img id="video" alt="試合全体の録画フレーム"><span id="videoStatus" class="video-status">読み込み中</span></div><div class="scene-foot"><span><i class="dot red"></i>A · 学習モデル　<i class="dot blue"></i>B · 固定ルール</span><span>風景 0.4秒刻み / データ 0.2秒刻み</span></div></section>
+<section class="panel analysis"><div class="panel-title"><h2>機体の分析</h2><select id="aircraft" aria-label="機体"></select></div><div class="analysis-head"><div role="tablist" aria-label="分析表示"><button id="tabSeries" role="tab" aria-selected="true" aria-controls="seriesPanel">状態・行動の時系列</button><button id="tabProbability" role="tab" aria-selected="false" aria-controls="probabilityPanel">確率分布</button></div><span id="analysisContext"></span></div>
+<div id="seriesPanel" role="tabpanel" aria-labelledby="tabSeries"><div class="chart-toolbar"><label>表示範囲<select id="window"><option value="5" selected>前後5秒</option><option value="10">前後10秒</option><option value="all">全試合</option></select></label><details id="fieldPicker"><summary>表示項目を選ぶ</summary><div class="field-buttons"><button id="allFields">全項目</button><button id="defaultFields">旋回・発射</button><button id="clearFields">クリア</button></div><div id="fields"></div></details><span class="legend"><b class="launch-key">┆</b> 発射結果の行動step　<b class="appearance-key">┆</b> ACMI初出</span></div><div id="charts"></div><p class="hint chart-hint">グラフをクリックすると移動。線は記録点を結んだものです。行動は [t, t+0.2秒) に適用。欠損は空白で表示します。</p></div>
+<div id="probabilityPanel" role="tabpanel" aria-labelledby="tabProbability" hidden><div class="probability-intro"><h2>現在stepの行動確率</h2><span>4種類の分布 · 選択行動を強調</span></div><div id="probabilities"></div></div>
+</section>
+</div>
+<section class="panel transport" aria-label="再生操作">
+<div class="transport-row"><button id="backSecond" title="Shift + ←">−1 s</button><button id="back" title="←">◀ 1 step</button><button id="play" class="primary" title="Space">▶ 再生</button><button id="forward" title="→">1 step ▶</button><button id="forwardSecond" title="Shift + →">+1 s</button><label>速度<select id="speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label><span class="spacer"></span><label>step<input id="stepInput" type="number" min="0" step="1" value="0"></label><label>秒<input id="timeInput" type="number" min="0" step="0.2" value="0"></label></div>
+<input id="scrubber" type="range" min="0" max="1" value="0" step="1" aria-label="試合の時刻"><div class="timeline-labels"><span>0.0 s</span><span id="duration"></span></div>
+<div class="event-nav"><span>選択機体の発射</span><button id="prevLaunch">← 前</button><button id="nextLaunch">次 →</button><select id="launches" aria-label="発射イベント"><option value="">発射を選択</option></select><span class="hint">Space 再生 / ← → コマ送り / Shift＋← → 1秒</span></div>
+</section>
+
+<footer>ローカル閲覧専用 · 元データは変更しません <span>発射結果の行動stepと、ミサイルのACMI初出を区別して表示</span></footer>
+</main><script type="module" src="app.js"></script></body></html>

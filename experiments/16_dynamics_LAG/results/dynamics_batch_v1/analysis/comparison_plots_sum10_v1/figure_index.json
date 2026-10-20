@@ -1,0 +1,1031 @@
+[
+  {
+    "cohort": "pooled",
+    "category": "action_overall",
+    "name": "action_wrong_steps",
+    "title": "Action: incorrect steps summed over 10 points",
+    "png": "action_overall/pooled/action_wrong_steps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "action_overall",
+    "name": "action_sum_bin_error",
+    "title": "Action: sum of mean absolute ID errors over 10 points",
+    "png": "action_overall/pooled/action_sum_bin_error.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_overall",
+    "name": "state_sum_nmae",
+    "title": "State: sum of 10 per-step MAEs | range-normalized 10D",
+    "png": "state_overall/pooled/state_sum_nmae.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_overall",
+    "name": "state_sum_zmae",
+    "title": "State: sum of 10 per-step MAEs | SD-normalized 10D",
+    "png": "state_overall/pooled/state_sum_zmae.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_overall",
+    "name": "state_sum_nrmse",
+    "title": "State: sum of 10 per-step RMSEs | range-normalized 10D",
+    "png": "state_overall/pooled/state_sum_nrmse.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_overall",
+    "name": "state_sum_zrmse",
+    "title": "State: sum of 10 per-step RMSEs | SD-normalized 10D",
+    "png": "state_overall/pooled/state_sum_zrmse.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_sae.lon_deg",
+    "title": "lon_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/pooled/state_sae_lon_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_nsae.lon_deg",
+    "title": "lon_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/pooled/state_nsae_lon_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_zsae.lon_deg",
+    "title": "lon_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/pooled/state_zsae_lon_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_sae.lat_deg",
+    "title": "lat_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/pooled/state_sae_lat_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_nsae.lat_deg",
+    "title": "lat_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/pooled/state_nsae_lat_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_zsae.lat_deg",
+    "title": "lat_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/pooled/state_zsae_lat_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_sae.alt_m",
+    "title": "alt_m: sum of 10 absolute errors | raw units",
+    "png": "state_components/pooled/state_sae_alt_m.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_nsae.alt_m",
+    "title": "alt_m: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/pooled/state_nsae_alt_m.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_zsae.alt_m",
+    "title": "alt_m: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/pooled/state_zsae_alt_m.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_sae.roll_deg",
+    "title": "roll_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/pooled/state_sae_roll_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_nsae.roll_deg",
+    "title": "roll_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/pooled/state_nsae_roll_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_zsae.roll_deg",
+    "title": "roll_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/pooled/state_zsae_roll_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_sae.pitch_deg",
+    "title": "pitch_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/pooled/state_sae_pitch_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_nsae.pitch_deg",
+    "title": "pitch_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/pooled/state_nsae_pitch_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_zsae.pitch_deg",
+    "title": "pitch_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/pooled/state_zsae_pitch_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_sae.yaw_deg",
+    "title": "yaw_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/pooled/state_sae_yaw_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_nsae.yaw_deg",
+    "title": "yaw_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/pooled/state_nsae_yaw_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_zsae.yaw_deg",
+    "title": "yaw_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/pooled/state_zsae_yaw_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_sae.tas_mps",
+    "title": "tas_mps: sum of 10 absolute errors | raw units",
+    "png": "state_components/pooled/state_sae_tas_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_nsae.tas_mps",
+    "title": "tas_mps: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/pooled/state_nsae_tas_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_zsae.tas_mps",
+    "title": "tas_mps: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/pooled/state_zsae_tas_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_sae.vn_mps",
+    "title": "vn_mps: sum of 10 absolute errors | raw units",
+    "png": "state_components/pooled/state_sae_vn_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_nsae.vn_mps",
+    "title": "vn_mps: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/pooled/state_nsae_vn_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_zsae.vn_mps",
+    "title": "vn_mps: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/pooled/state_zsae_vn_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_sae.ve_mps",
+    "title": "ve_mps: sum of 10 absolute errors | raw units",
+    "png": "state_components/pooled/state_sae_ve_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_nsae.ve_mps",
+    "title": "ve_mps: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/pooled/state_nsae_ve_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_zsae.ve_mps",
+    "title": "ve_mps: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/pooled/state_zsae_ve_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_sae.vu_mps",
+    "title": "vu_mps: sum of 10 absolute errors | raw units",
+    "png": "state_components/pooled/state_sae_vu_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_nsae.vu_mps",
+    "title": "vu_mps: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/pooled/state_nsae_vu_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "state_components",
+    "name": "state_zsae.vu_mps",
+    "title": "vu_mps: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/pooled/state_zsae_vu_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "action_components",
+    "name": "action_wrong_steps.altitude_action",
+    "title": "altitude_action: incorrect steps summed over 10 points",
+    "png": "action_components/pooled/action_wrong_steps_altitude_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "action_components",
+    "name": "action_sum_bin_error.altitude_action",
+    "title": "altitude_action: sum of 10 absolute ID errors",
+    "png": "action_components/pooled/action_sum_bin_error_altitude_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "action_components",
+    "name": "action_wrong_steps.heading_action",
+    "title": "heading_action: incorrect steps summed over 10 points",
+    "png": "action_components/pooled/action_wrong_steps_heading_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "action_components",
+    "name": "action_sum_bin_error.heading_action",
+    "title": "heading_action: sum of 10 absolute ID errors",
+    "png": "action_components/pooled/action_sum_bin_error_heading_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "action_components",
+    "name": "action_wrong_steps.speed_action",
+    "title": "speed_action: incorrect steps summed over 10 points",
+    "png": "action_components/pooled/action_wrong_steps_speed_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "action_components",
+    "name": "action_sum_bin_error.speed_action",
+    "title": "speed_action: sum of 10 absolute ID errors",
+    "png": "action_components/pooled/action_sum_bin_error_speed_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "tokens",
+    "name": "token_prompt_tokens",
+    "title": "Prompt Tokens per request",
+    "png": "tokens/pooled/token_prompt_tokens.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "tokens",
+    "name": "token_completion_tokens",
+    "title": "Completion Tokens per request",
+    "png": "tokens/pooled/token_completion_tokens.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "tokens",
+    "name": "token_reasoning",
+    "title": "Reasoning per request",
+    "png": "tokens/pooled/token_reasoning.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "tokens",
+    "name": "token_total_tokens",
+    "title": "Total Tokens per request",
+    "png": "tokens/pooled/token_total_tokens.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "confusion",
+    "name": "confusion.altitude_action",
+    "title": "altitude_action: confusion matrices | all 10 forecast points",
+    "png": "confusion/pooled/confusion_altitude_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "confusion",
+    "name": "confusion.heading_action",
+    "title": "heading_action: confusion matrices | all 10 forecast points",
+    "png": "confusion/pooled/confusion_heading_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "confusion",
+    "name": "confusion.speed_action",
+    "title": "speed_action: confusion matrices | all 10 forecast points",
+    "png": "confusion/pooled/confusion_speed_action.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "action_overall",
+    "name": "action_wrong_steps",
+    "title": "Action: incorrect steps summed over 10 points",
+    "png": "action_overall/A0100/action_wrong_steps.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "action_overall",
+    "name": "action_sum_bin_error",
+    "title": "Action: sum of mean absolute ID errors over 10 points",
+    "png": "action_overall/A0100/action_sum_bin_error.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_overall",
+    "name": "state_sum_nmae",
+    "title": "State: sum of 10 per-step MAEs | range-normalized 10D",
+    "png": "state_overall/A0100/state_sum_nmae.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_overall",
+    "name": "state_sum_zmae",
+    "title": "State: sum of 10 per-step MAEs | SD-normalized 10D",
+    "png": "state_overall/A0100/state_sum_zmae.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_overall",
+    "name": "state_sum_nrmse",
+    "title": "State: sum of 10 per-step RMSEs | range-normalized 10D",
+    "png": "state_overall/A0100/state_sum_nrmse.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_overall",
+    "name": "state_sum_zrmse",
+    "title": "State: sum of 10 per-step RMSEs | SD-normalized 10D",
+    "png": "state_overall/A0100/state_sum_zrmse.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_sae.lon_deg",
+    "title": "lon_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0100/state_sae_lon_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_nsae.lon_deg",
+    "title": "lon_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0100/state_nsae_lon_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_zsae.lon_deg",
+    "title": "lon_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0100/state_zsae_lon_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_sae.lat_deg",
+    "title": "lat_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0100/state_sae_lat_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_nsae.lat_deg",
+    "title": "lat_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0100/state_nsae_lat_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_zsae.lat_deg",
+    "title": "lat_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0100/state_zsae_lat_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_sae.alt_m",
+    "title": "alt_m: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0100/state_sae_alt_m.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_nsae.alt_m",
+    "title": "alt_m: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0100/state_nsae_alt_m.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_zsae.alt_m",
+    "title": "alt_m: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0100/state_zsae_alt_m.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_sae.roll_deg",
+    "title": "roll_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0100/state_sae_roll_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_nsae.roll_deg",
+    "title": "roll_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0100/state_nsae_roll_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_zsae.roll_deg",
+    "title": "roll_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0100/state_zsae_roll_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_sae.pitch_deg",
+    "title": "pitch_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0100/state_sae_pitch_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_nsae.pitch_deg",
+    "title": "pitch_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0100/state_nsae_pitch_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_zsae.pitch_deg",
+    "title": "pitch_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0100/state_zsae_pitch_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_sae.yaw_deg",
+    "title": "yaw_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0100/state_sae_yaw_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_nsae.yaw_deg",
+    "title": "yaw_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0100/state_nsae_yaw_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_zsae.yaw_deg",
+    "title": "yaw_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0100/state_zsae_yaw_deg.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_sae.tas_mps",
+    "title": "tas_mps: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0100/state_sae_tas_mps.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_nsae.tas_mps",
+    "title": "tas_mps: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0100/state_nsae_tas_mps.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_zsae.tas_mps",
+    "title": "tas_mps: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0100/state_zsae_tas_mps.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_sae.vn_mps",
+    "title": "vn_mps: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0100/state_sae_vn_mps.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_nsae.vn_mps",
+    "title": "vn_mps: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0100/state_nsae_vn_mps.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_zsae.vn_mps",
+    "title": "vn_mps: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0100/state_zsae_vn_mps.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_sae.ve_mps",
+    "title": "ve_mps: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0100/state_sae_ve_mps.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_nsae.ve_mps",
+    "title": "ve_mps: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0100/state_nsae_ve_mps.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_zsae.ve_mps",
+    "title": "ve_mps: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0100/state_zsae_ve_mps.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_sae.vu_mps",
+    "title": "vu_mps: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0100/state_sae_vu_mps.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_nsae.vu_mps",
+    "title": "vu_mps: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0100/state_nsae_vu_mps.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "state_components",
+    "name": "state_zsae.vu_mps",
+    "title": "vu_mps: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0100/state_zsae_vu_mps.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "action_components",
+    "name": "action_wrong_steps.altitude_action",
+    "title": "altitude_action: incorrect steps summed over 10 points",
+    "png": "action_components/A0100/action_wrong_steps_altitude_action.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "action_components",
+    "name": "action_sum_bin_error.altitude_action",
+    "title": "altitude_action: sum of 10 absolute ID errors",
+    "png": "action_components/A0100/action_sum_bin_error_altitude_action.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "action_components",
+    "name": "action_wrong_steps.heading_action",
+    "title": "heading_action: incorrect steps summed over 10 points",
+    "png": "action_components/A0100/action_wrong_steps_heading_action.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "action_components",
+    "name": "action_sum_bin_error.heading_action",
+    "title": "heading_action: sum of 10 absolute ID errors",
+    "png": "action_components/A0100/action_sum_bin_error_heading_action.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "action_components",
+    "name": "action_wrong_steps.speed_action",
+    "title": "speed_action: incorrect steps summed over 10 points",
+    "png": "action_components/A0100/action_wrong_steps_speed_action.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "action_components",
+    "name": "action_sum_bin_error.speed_action",
+    "title": "speed_action: sum of 10 absolute ID errors",
+    "png": "action_components/A0100/action_sum_bin_error_speed_action.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "tokens",
+    "name": "token_prompt_tokens",
+    "title": "Prompt Tokens per request",
+    "png": "tokens/A0100/token_prompt_tokens.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "tokens",
+    "name": "token_completion_tokens",
+    "title": "Completion Tokens per request",
+    "png": "tokens/A0100/token_completion_tokens.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "tokens",
+    "name": "token_reasoning",
+    "title": "Reasoning per request",
+    "png": "tokens/A0100/token_reasoning.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "tokens",
+    "name": "token_total_tokens",
+    "title": "Total Tokens per request",
+    "png": "tokens/A0100/token_total_tokens.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "confusion",
+    "name": "confusion.altitude_action",
+    "title": "altitude_action: confusion matrices | all 10 forecast points",
+    "png": "confusion/A0100/confusion_altitude_action.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "confusion",
+    "name": "confusion.heading_action",
+    "title": "heading_action: confusion matrices | all 10 forecast points",
+    "png": "confusion/A0100/confusion_heading_action.png"
+  },
+  {
+    "cohort": "A0100",
+    "category": "confusion",
+    "name": "confusion.speed_action",
+    "title": "speed_action: confusion matrices | all 10 forecast points",
+    "png": "confusion/A0100/confusion_speed_action.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "action_overall",
+    "name": "action_wrong_steps",
+    "title": "Action: incorrect steps summed over 10 points",
+    "png": "action_overall/A0200/action_wrong_steps.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "action_overall",
+    "name": "action_sum_bin_error",
+    "title": "Action: sum of mean absolute ID errors over 10 points",
+    "png": "action_overall/A0200/action_sum_bin_error.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_overall",
+    "name": "state_sum_nmae",
+    "title": "State: sum of 10 per-step MAEs | range-normalized 10D",
+    "png": "state_overall/A0200/state_sum_nmae.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_overall",
+    "name": "state_sum_zmae",
+    "title": "State: sum of 10 per-step MAEs | SD-normalized 10D",
+    "png": "state_overall/A0200/state_sum_zmae.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_overall",
+    "name": "state_sum_nrmse",
+    "title": "State: sum of 10 per-step RMSEs | range-normalized 10D",
+    "png": "state_overall/A0200/state_sum_nrmse.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_overall",
+    "name": "state_sum_zrmse",
+    "title": "State: sum of 10 per-step RMSEs | SD-normalized 10D",
+    "png": "state_overall/A0200/state_sum_zrmse.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_sae.lon_deg",
+    "title": "lon_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0200/state_sae_lon_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_nsae.lon_deg",
+    "title": "lon_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0200/state_nsae_lon_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_zsae.lon_deg",
+    "title": "lon_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0200/state_zsae_lon_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_sae.lat_deg",
+    "title": "lat_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0200/state_sae_lat_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_nsae.lat_deg",
+    "title": "lat_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0200/state_nsae_lat_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_zsae.lat_deg",
+    "title": "lat_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0200/state_zsae_lat_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_sae.alt_m",
+    "title": "alt_m: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0200/state_sae_alt_m.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_nsae.alt_m",
+    "title": "alt_m: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0200/state_nsae_alt_m.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_zsae.alt_m",
+    "title": "alt_m: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0200/state_zsae_alt_m.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_sae.roll_deg",
+    "title": "roll_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0200/state_sae_roll_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_nsae.roll_deg",
+    "title": "roll_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0200/state_nsae_roll_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_zsae.roll_deg",
+    "title": "roll_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0200/state_zsae_roll_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_sae.pitch_deg",
+    "title": "pitch_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0200/state_sae_pitch_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_nsae.pitch_deg",
+    "title": "pitch_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0200/state_nsae_pitch_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_zsae.pitch_deg",
+    "title": "pitch_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0200/state_zsae_pitch_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_sae.yaw_deg",
+    "title": "yaw_deg: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0200/state_sae_yaw_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_nsae.yaw_deg",
+    "title": "yaw_deg: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0200/state_nsae_yaw_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_zsae.yaw_deg",
+    "title": "yaw_deg: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0200/state_zsae_yaw_deg.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_sae.tas_mps",
+    "title": "tas_mps: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0200/state_sae_tas_mps.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_nsae.tas_mps",
+    "title": "tas_mps: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0200/state_nsae_tas_mps.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_zsae.tas_mps",
+    "title": "tas_mps: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0200/state_zsae_tas_mps.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_sae.vn_mps",
+    "title": "vn_mps: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0200/state_sae_vn_mps.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_nsae.vn_mps",
+    "title": "vn_mps: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0200/state_nsae_vn_mps.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_zsae.vn_mps",
+    "title": "vn_mps: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0200/state_zsae_vn_mps.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_sae.ve_mps",
+    "title": "ve_mps: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0200/state_sae_ve_mps.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_nsae.ve_mps",
+    "title": "ve_mps: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0200/state_nsae_ve_mps.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_zsae.ve_mps",
+    "title": "ve_mps: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0200/state_zsae_ve_mps.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_sae.vu_mps",
+    "title": "vu_mps: sum of 10 absolute errors | raw units",
+    "png": "state_components/A0200/state_sae_vu_mps.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_nsae.vu_mps",
+    "title": "vu_mps: sum of 10 absolute errors | range-normalized",
+    "png": "state_components/A0200/state_nsae_vu_mps.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "state_components",
+    "name": "state_zsae.vu_mps",
+    "title": "vu_mps: sum of 10 absolute errors | SD-normalized",
+    "png": "state_components/A0200/state_zsae_vu_mps.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "action_components",
+    "name": "action_wrong_steps.altitude_action",
+    "title": "altitude_action: incorrect steps summed over 10 points",
+    "png": "action_components/A0200/action_wrong_steps_altitude_action.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "action_components",
+    "name": "action_sum_bin_error.altitude_action",
+    "title": "altitude_action: sum of 10 absolute ID errors",
+    "png": "action_components/A0200/action_sum_bin_error_altitude_action.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "action_components",
+    "name": "action_wrong_steps.heading_action",
+    "title": "heading_action: incorrect steps summed over 10 points",
+    "png": "action_components/A0200/action_wrong_steps_heading_action.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "action_components",
+    "name": "action_sum_bin_error.heading_action",
+    "title": "heading_action: sum of 10 absolute ID errors",
+    "png": "action_components/A0200/action_sum_bin_error_heading_action.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "action_components",
+    "name": "action_wrong_steps.speed_action",
+    "title": "speed_action: incorrect steps summed over 10 points",
+    "png": "action_components/A0200/action_wrong_steps_speed_action.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "action_components",
+    "name": "action_sum_bin_error.speed_action",
+    "title": "speed_action: sum of 10 absolute ID errors",
+    "png": "action_components/A0200/action_sum_bin_error_speed_action.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "tokens",
+    "name": "token_prompt_tokens",
+    "title": "Prompt Tokens per request",
+    "png": "tokens/A0200/token_prompt_tokens.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "tokens",
+    "name": "token_completion_tokens",
+    "title": "Completion Tokens per request",
+    "png": "tokens/A0200/token_completion_tokens.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "tokens",
+    "name": "token_reasoning",
+    "title": "Reasoning per request",
+    "png": "tokens/A0200/token_reasoning.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "tokens",
+    "name": "token_total_tokens",
+    "title": "Total Tokens per request",
+    "png": "tokens/A0200/token_total_tokens.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "confusion",
+    "name": "confusion.altitude_action",
+    "title": "altitude_action: confusion matrices | all 10 forecast points",
+    "png": "confusion/A0200/confusion_altitude_action.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "confusion",
+    "name": "confusion.heading_action",
+    "title": "heading_action: confusion matrices | all 10 forecast points",
+    "png": "confusion/A0200/confusion_heading_action.png"
+  },
+  {
+    "cohort": "A0200",
+    "category": "confusion",
+    "name": "confusion.speed_action",
+    "title": "speed_action: confusion matrices | all 10 forecast points",
+    "png": "confusion/A0200/confusion_speed_action.png"
+  }
+]

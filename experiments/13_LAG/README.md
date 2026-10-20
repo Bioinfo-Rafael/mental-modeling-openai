@@ -2,6 +2,22 @@
 
 LAG 2v2 のACMIとaction CSVをDataFrameとして読み、型・shape・欠損・統計量・機体と行動の時系列を確認する。
 
+## 試合ビューアー
+
+左に録画、右に状態・行動のグラフを並べて同期閲覧する。確率分布／時系列を切り替え、0.2秒刻みでコマ送りできる。
+
+リポジトリルートから、次のコマンドで起動する（pandas、ffmpeg、ffprobeが必要）。
+
+```sh
+.venv/bin/python experiments/13_LAG/viewer/serve.py
+```
+
+起動するとブラウザで <http://127.0.0.1:8130/viewer/> が開く。自動で開かない場合は、このURLにアクセスする。終了はターミナルで `Ctrl+C`。初回起動時は録画から表示用フレームを生成する。
+
+![LAG試合ビューアー：左に録画、右にA0100の状態・行動の時系列（MHI v1.3、145 step）](viewer/screenshots/match_inspector.png)
+
+表示例：MHI v1.3 / IC 100601、A0100、145 step。試合・機体を選び、下部のstep入力やスライダーで場面を移動できる。操作と時刻の意味は [viewer/README.md](viewer/README.md) を参照。
+
 ## 実験用の統合CSV
 
 3試合それぞれについて、A・Bチームの4機体、全ミサイル、撃墜・爆発の表示、元データの状態・行動・確率・発射・消滅を、1時刻×1オブジェクトのCSVに統合した。

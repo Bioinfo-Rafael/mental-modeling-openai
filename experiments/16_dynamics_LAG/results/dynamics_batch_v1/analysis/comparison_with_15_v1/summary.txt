@@ -1,0 +1,38 @@
+Experiment 15 → 16 比較
+
+同じ問題・入力範囲・モデルを対応付け、精度は両実験で全10stepが有効な回答だけで比較。
+全計画の形式成功率とtoken量は形式エラーを含めて別集計。
+形式成功率: {'exp15_count': 53, 'exp16_count': 48, 'exp15_pct': 88.33333333333333, 'exp16_pct': 80.0, 'delta_pp': -8.333333333333334}
+共通有効回答: 42/60
+15のみ有効: 11, 16のみ有効: 6, 両方無効: 1
+
+主要指標（誤差は小さい方が良い。reduction_pctは正なら改善）:
+state_sum_nmae: {"exp15": 0.4951630412256331, "exp16": 0.500390510333916, "delta_16_minus_15": 0.005227469108282923, "reduction_pct": -1.0557066406539213, "n_pairs": 42, "n_improved": 14, "n_worsened": 28, "n_tied": 0}
+state_sum_nrmse: {"exp15": 0.8480570208380965, "exp16": 0.8855479604373241, "delta_16_minus_15": 0.03749093959922756, "reduction_pct": -4.4208041060938275, "n_pairs": 42, "n_improved": 18, "n_worsened": 24, "n_tied": 0}
+state_sum_zmae: {"exp15": 1.7931325912108, "exp16": 1.830527200867494, "delta_16_minus_15": 0.037394609656693945, "reduction_pct": -2.0854347213355537, "n_pairs": 42, "n_improved": 15, "n_worsened": 27, "n_tied": 0}
+action_wrong_steps: {"exp15": 3.8095238095238093, "exp16": 3.9047619047619047, "delta_16_minus_15": 0.09523809523809534, "reduction_pct": -2.500000000000003, "n_pairs": 42, "n_improved": 5, "n_worsened": 5, "n_tied": 32}
+action_sum_bin_error: {"exp15": 2.6666666666666665, "exp16": 2.634920634920635, "delta_16_minus_15": -0.03174603174603163, "reduction_pct": 1.1904761904761862, "n_pairs": 42, "n_improved": 4, "n_worsened": 4, "n_tied": 34}
+state_sae.roll_deg: {"exp15": 204.14779291970228, "exp16": 236.91305628598067, "delta_16_minus_15": 32.76526336627839, "reduction_pct": -16.049775947940812, "n_pairs": 42, "n_improved": 15, "n_worsened": 27, "n_tied": 0}
+state_sae.pitch_deg: {"exp15": 22.616829401666564, "exp16": 22.64698962903993, "delta_16_minus_15": 0.03016022737336499, "reduction_pct": -0.1333530303374114, "n_pairs": 42, "n_improved": 17, "n_worsened": 25, "n_tied": 0}
+state_sae.yaw_deg: {"exp15": 40.08160291885214, "exp16": 40.85729193146933, "delta_16_minus_15": 0.7756890126171854, "reduction_pct": -1.9352744304852756, "n_pairs": 42, "n_improved": 16, "n_worsened": 26, "n_tied": 0}
+token_prompt_tokens: {"exp15": 10439.55, "exp16": 12403.55, "delta_16_minus_15": 1964.0, "reduction_pct": -18.813071444650394, "n_pairs": 60, "n_improved": 0, "n_worsened": 60, "n_tied": 0}
+token_total_tokens: {"exp15": 13126.833333333334, "exp16": 16820.566666666666, "delta_16_minus_15": 3693.7333333333318, "reduction_pct": -28.138799659730058, "n_pairs": 60, "n_improved": 0, "n_worsened": 60, "n_tied": 0}
+
+形式有効かつ移動行動3成分が正解のstep数 / 全計画step数:
+{"exp15_pct": 56.166666666666664, "exp16_pct": 49.666666666666664, "delta_pp": -6.5}
+
+モデル別・入力範囲別の共通有効比較:
+{"group": {"target": "all", "model": "sol", "scope": "self"}, "n": 9, "format_success": {"exp15_count": 10, "exp16_count": 9, "exp15_pct": 100.0, "exp16_pct": 90.0, "delta_pp": -10.0}, "state_sum_nmae": {"exp15": 0.4410157295808725, "exp16": 0.4242194518443182, "delta_16_minus_15": -0.016796277736554288, "reduction_pct": 3.808543915773014, "n_pairs": 9, "n_improved": 3, "n_worsened": 6, "n_tied": 0}, "action_wrong_steps": {"exp15": 4.444444444444445, "exp16": 4.0, "delta_16_minus_15": -0.44444444444444464, "reduction_pct": 10.000000000000004, "n_pairs": 9, "n_improved": 1, "n_worsened": 0, "n_tied": 8}}
+{"group": {"target": "all", "model": "sol", "scope": "all_aircraft_missiles"}, "n": 7, "format_success": {"exp15_count": 9, "exp16_count": 8, "exp15_pct": 90.0, "exp16_pct": 80.0, "delta_pp": -10.0}, "state_sum_nmae": {"exp15": 0.3302467248148312, "exp16": 0.33335537591714054, "delta_16_minus_15": 0.0031086511023093455, "reduction_pct": -0.9413117129480576, "n_pairs": 7, "n_improved": 2, "n_worsened": 5, "n_tied": 0}, "action_wrong_steps": {"exp15": 3.2857142857142856, "exp16": 3.2857142857142856, "delta_16_minus_15": 0.0, "reduction_pct": 0.0, "n_pairs": 7, "n_improved": 0, "n_worsened": 0, "n_tied": 7}}
+{"group": {"target": "all", "model": "terra", "scope": "self"}, "n": 6, "format_success": {"exp15_count": 8, "exp16_count": 8, "exp15_pct": 80.0, "exp16_pct": 80.0, "delta_pp": 0.0}, "state_sum_nmae": {"exp15": 0.6195394275714865, "exp16": 0.48163777378036093, "delta_16_minus_15": -0.13790165379112557, "reduction_pct": 22.25873732228504, "n_pairs": 6, "n_improved": 3, "n_worsened": 3, "n_tied": 0}, "action_wrong_steps": {"exp15": 4.166666666666667, "exp16": 4.5, "delta_16_minus_15": 0.33333333333333304, "reduction_pct": -7.999999999999991, "n_pairs": 6, "n_improved": 0, "n_worsened": 1, "n_tied": 5}}
+{"group": {"target": "all", "model": "terra", "scope": "all_aircraft_missiles"}, "n": 4, "format_success": {"exp15_count": 9, "exp16_count": 5, "exp15_pct": 90.0, "exp16_pct": 50.0, "delta_pp": -40.0}, "state_sum_nmae": {"exp15": 0.6073788071768635, "exp16": 0.5712185477293138, "delta_16_minus_15": -0.03616025944754975, "reduction_pct": 5.953493770325145, "n_pairs": 4, "n_improved": 2, "n_worsened": 2, "n_tied": 0}, "action_wrong_steps": {"exp15": 2.5, "exp16": 3.25, "delta_16_minus_15": 0.75, "reduction_pct": -30.0, "n_pairs": 4, "n_improved": 1, "n_worsened": 1, "n_tied": 2}}
+{"group": {"target": "all", "model": "luna", "scope": "self"}, "n": 8, "format_success": {"exp15_count": 9, "exp16_count": 9, "exp15_pct": 90.0, "exp16_pct": 90.0, "delta_pp": 0.0}, "state_sum_nmae": {"exp15": 0.49665215002711754, "exp16": 0.6370282837904713, "delta_16_minus_15": 0.14037613376335373, "reduction_pct": -28.264477211200855, "n_pairs": 8, "n_improved": 0, "n_worsened": 8, "n_tied": 0}, "action_wrong_steps": {"exp15": 4.125, "exp16": 4.375, "delta_16_minus_15": 0.25, "reduction_pct": -6.0606060606060606, "n_pairs": 8, "n_improved": 1, "n_worsened": 2, "n_tied": 5}}
+{"group": {"target": "all", "model": "luna", "scope": "all_aircraft_missiles"}, "n": 8, "format_success": {"exp15_count": 8, "exp16_count": 9, "exp15_pct": 80.0, "exp16_pct": 90.0, "delta_pp": 10.0}, "state_sum_nmae": {"exp15": 0.5495012621489508, "exp16": 0.5742514540103045, "delta_16_minus_15": 0.024750191861353743, "reduction_pct": -4.504119201576069, "n_pairs": 8, "n_improved": 4, "n_worsened": 4, "n_tied": 0}, "action_wrong_steps": {"exp15": 3.625, "exp16": 3.75, "delta_16_minus_15": 0.125, "reduction_pct": -3.4482758620689653, "n_pairs": 8, "n_improved": 2, "n_worsened": 1, "n_tied": 5}}
+
+state_saeは10stepの絶対誤差合計。通常の1step平均MAEに直す場合は10で割る。
+roll/yawは最短角度差。異なる状態単位の生誤差は混ぜず、共通正解の範囲または標準偏差で正規化する。
+改善率は対応する平均値の比であり、問題ごとの改善率の平均ではない。ベースライン0の場合は算出しない。
+予測誤差の改善は、両実験で有効な回答に条件付けた結果。形式失敗の増減を含む総合的な改善とは区別する。
+同じ10窓をモデル・scope間で共有するため、60回答や各時刻を独立標本として有意性を主張しない。
+16の係数は対象試合を含めて推定されており、未知の試合への汎化評価ではない。
+詳細: metrics.json / metrics.csv / horizons.csv / paired_windows.json / paired_comparison.png

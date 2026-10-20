@@ -1,0 +1,126 @@
+{
+  "created_at_jst": "2026-10-13T12:58:13.560138+09:00",
+  "plan_id": "59c0adb28253fb7acb220f4cd1bd25ac137418bef0646b83b24fc46afa6d298b",
+  "response_counts": {
+    "trajectory_scored": 48,
+    "parse_error": 12
+  },
+  "sources": {
+    "manifest_sha256": "10c622e1bc54756d5ffb6fd6aac41449850cbff9d7aa3d93dc47b01657ab3f57",
+    "responses": {
+      "sha256": "f280d8838453e71c76f06c05e4bc36e14db18337fa4f1633e10ab1d69e9cc661",
+      "bytes": 170201,
+      "rows": 60,
+      "trailing_bytes_excluded": 0
+    },
+    "requests": {
+      "sha256": "90ed3f6c59177228a6e0fb1af6dbe21e6a22ce939502638a1280814fb3bdbee3",
+      "bytes": 2232480,
+      "rows": 60,
+      "trailing_bytes_excluded": 0
+    }
+  },
+  "normalization": {
+    "n_unique_target_states": 100,
+    "fields": [
+      "lon_deg",
+      "lat_deg",
+      "alt_m",
+      "roll_deg",
+      "pitch_deg",
+      "yaw_deg",
+      "tas_mps",
+      "vn_mps",
+      "ve_mps",
+      "vu_mps"
+    ],
+    "minimum": [
+      119.99233883809896,
+      60.01268702916498,
+      3831.9712114726785,
+      259.0861421610059,
+      -14.767617866586246,
+      355.44315811559966,
+      243.73558994910988,
+      -119.49104176617024,
+      -10.280810677553497,
+      -56.307367363508206
+    ],
+    "maximum": [
+      120.22769643676168,
+      60.06584167373701,
+      6000.030967312825,
+      445.0192271425923,
+      3.5360119094262132,
+      476.26077304490843,
+      346.07822015340975,
+      305.42934765634135,
+      338.33194413375816,
+      1.230533563544925
+    ],
+    "mean": [
+      120.08193571757035,
+      60.04608834277562,
+      5115.515291806752,
+      344.4645563100905,
+      -4.672833155872397,
+      414.40103179137003,
+      304.912814738929,
+      126.10970480066823,
+      198.54348038424655,
+      -29.93380585351165
+    ],
+    "range": [
+      0.23535759866271633,
+      0.05315464457203234,
+      2168.0597558401464,
+      185.93308498158638,
+      18.30362977601246,
+      120.81761492930877,
+      102.34263020429987,
+      424.92038942251156,
+      348.6127548113117,
+      57.53790092705313
+    ],
+    "sd": [
+      0.08075393276273989,
+      0.01662592416980789,
+      637.7446292888735,
+      43.56167946498736,
+      4.183618930150072,
+      41.60358130833692,
+      31.29623336251472,
+      138.82022488279142,
+      134.53632571376977,
+      18.99992265115859
+    ],
+    "circular_origins_deg": {
+      "roll_deg": 259.0861421610059,
+      "yaw_deg": 355.44315811559966
+    }
+  },
+  "generator_sha256": "617ca1a257fcadc5b89c2dfe87b3b763f7f4e771f50bc1250a9279157801389b",
+  "formulas": {
+    "state_sae": "mean_q(sum_t(abs(residual[q,t,d])))",
+    "state_nsae": "mean_q(sum_t(abs(residual[q,t,d]) / reference_range[d]))",
+    "state_zsae": "mean_q(sum_t(abs(residual[q,t,d]) / reference_sd[d]))",
+    "state_sum_nmae": "mean_q(sum_t(mean_d(abs(residual[q,t,d] / reference_range[d]))))",
+    "state_sum_zmae": "mean_q(sum_t(mean_d(abs(residual[q,t,d] / reference_sd[d]))))",
+    "state_sum_nrmse": "mean_q(sum_t(sqrt(mean_d((residual[q,t,d] / reference_range[d])**2))))",
+    "state_sum_zrmse": "mean_q(sum_t(sqrt(mean_d((residual[q,t,d] / reference_sd[d])**2))))",
+    "action_wrong_steps": "mean_q(sum_t(any_d(predicted_action[q,t,d] != true_action[q,t,d])))",
+    "action_sum_bin_error": "mean_q(sum_t(mean_d(abs(predicted_action[q,t,d] - true_action[q,t,d]))))",
+    "action_components": "Same time sum, with a single action component; no dimension mean.",
+    "difference": "mean over common valid windows of metric(all) - metric(self)",
+    "tokens": "mean available reported usage per request, regardless of prediction parse status"
+  },
+  "notes": [
+    "All errors sum 10 future points BEFORE the equal-weight mean across query windows; n counts windows.",
+    "RMSE is over 10 state dimensions AT EACH POINT, then summed over time, then averaged over windows. This is not sqrt(sum of squared trajectory errors).",
+    "The same fixed reference uses all unique planned (episode,target,step) truth states, including questions with invalid model responses.",
+    "Roll/yaw residuals use shortest angles in [-180,180); reference uses a largest-gap cut, as in Experiment 14 plots. Raw evaluator results remain unchanged.",
+    "Zero reference scales yield undefined values, never zero. Different raw state units are not summed together.",
+    "Malformed trajectories are excluded entirely. No partial predictions or imputed results. Invalid rows still retain available token usage.",
+    "Scope differences use only common valid pairs. Unpaired panel means may have different n. No confidence intervals or independent-point claims."
+  ]
+}

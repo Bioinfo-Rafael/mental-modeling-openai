@@ -1,0 +1,45 @@
+Action/state association analysis, 2026-10-13 JST
+Current action rows: 2178; predictive windows: 2160
+Held-out one-step RMSE: state history -> state history + current movement action
+lon_deg: 3.8311916e-06 -> 4.2847869e-06; reduction -11.84%
+lat_deg: 1.1046208e-06 -> 1.2341996e-06; reduction -11.73%
+alt_m: 0.1294837 -> 0.12644989; reduction +2.34%
+roll_deg: 6.2848505 -> 5.0688232; reduction +19.35%
+pitch_deg: 1.2115078 -> 1.1479126; reduction +5.25%
+yaw_deg: 1.3170321 -> 1.1812562; reduction +10.31%
+tas_mps: 0.60605367 -> 0.59009845; reduction +2.63%
+vn_mps: 1.4481828 -> 1.6529403; reduction -14.14%
+ve_mps: 3.304073 -> 2.7971125; reduction +15.34%
+vu_mps: 1.7997453 -> 1.549274; reduction +13.92%
+
+Action-conditioned mean changes (descriptive, not causal):
+altitude_action down: {"1 steps": {"n": 883, "mean": -8.166700611420648, "median": -8.911448849004955}, "5 steps": {"n": 879, "mean": -41.86628191116182, "median": -44.40553947080116}, "10 steps": {"n": 872, "mean": -85.28445882357695, "median": -88.18549817195526}}
+altitude_action hold: {"1 steps": {"n": 1128, "mean": -1.2242164763105412, "median": -0.5044188701754138}, "5 steps": {"n": 1112, "mean": -5.692692224623627, "median": -2.450840139900265}, "10 steps": {"n": 1099, "mean": -10.799168431598755, "median": -4.7812313001122675}}
+altitude_action up: {"1 steps": {"n": 161, "mean": -0.7974126602094764, "median": -1.7942718091426286}, "5 steps": {"n": 157, "mean": -2.2955270232963825, "median": -8.736709208321372}, "10 steps": {"n": 147, "mean": -3.724224081769745, "median": -16.118925983199006}}
+heading_action left30: {"1 steps": {"n": 392, "mean": -2.127403324423103, "median": -2.534570373067581}, "5 steps": {"n": 389, "mean": -11.02459775239543, "median": -12.873354896619503}, "10 steps": {"n": 387, "mean": -20.071969138406065, "median": -25.299141337082233}}
+heading_action left15: {"1 steps": {"n": 345, "mean": -0.504437841090776, "median": -0.3489847077708532}, "5 steps": {"n": 342, "mean": -2.666504767972073, "median": -0.956745557603881}, "10 steps": {"n": 341, "mean": -2.601350883602022, "median": -0.949740368734723}}
+heading_action hold: {"1 steps": {"n": 605, "mean": 0.021409188703779967, "median": -0.005538687201834591}, "5 steps": {"n": 604, "mean": 0.08162958399395787, "median": -0.058517134145631644}, "10 steps": {"n": 599, "mean": -0.20380792493974836, "median": -0.12770910424274007}}
+heading_action right15: {"1 steps": {"n": 299, "mean": 0.6146154661058922, "median": 0.36528736330984657}, "5 steps": {"n": 290, "mean": 3.198676940289955, "median": 2.2817169933393586}, "10 steps": {"n": 282, "mean": 4.905506217374086, "median": 2.46744852933665}}
+heading_action right30: {"1 steps": {"n": 531, "mean": 1.7980810910249678, "median": 2.283883398163397}, "5 steps": {"n": 523, "mean": 9.428422772958262, "median": 11.253556383335706}, "10 steps": {"n": 509, "mean": 17.326085123300302, "median": 22.059644025746934}}
+speed_action down: {"1 steps": {"n": 109, "mean": -1.354309799141574, "median": -1.3904661123676476}, "5 steps": {"n": 105, "mean": -6.632426312481147, "median": -7.303727478005413}, "10 steps": {"n": 100, "mean": -12.365707393228599, "median": -12.999116396044371}}
+speed_action hold: {"1 steps": {"n": 748, "mean": -0.3214193147045012, "median": -0.335242407960223}, "5 steps": {"n": 736, "mean": -1.545082377982517, "median": -1.7666490651396032}, "10 steps": {"n": 724, "mean": -2.8911971370700527, "median": -3.0044843761130977}}
+speed_action up: {"1 steps": {"n": 1315, "mean": 0.4568965256978236, "median": 0.47912809815693436}, "5 steps": {"n": 1307, "mean": 2.28124057352839, "median": 2.6207136299005356}, "10 steps": {"n": 1294, "mean": 4.507533848244304, "median": 5.29444519216338}}
+
+{
+  "state_features": "45 features: for n,n-1,n-2, lon/lat/alt/TAS/vN/vE/vU and sin/cos of roll/pitch/yaw (39); two wrapped backward angle increments (6).",
+  "action_features": [
+    "altitude_action=down",
+    "altitude_action=up",
+    "heading_action=left30",
+    "heading_action=left15",
+    "heading_action=right15",
+    "heading_action=right30",
+    "speed_action=down",
+    "speed_action=up"
+  ],
+  "prediction_target": "One-step increments of all ten state fields in their original units; roll/yaw wrapped.",
+  "validation": "Outer leave-one-match-out; independent inner leave-one-training-match-out ridge tuning per output and per model. Only training data used for scaling.",
+  "scope": "Only alive A0100/A0200 rows with recorded movement actions. Blue aircraft have no recorded movement actions. Shoot is excluded from this aircraft-motion analysis.",
+  "causality": "Observational, temporally dependent samples. Action is selected from state; subsequent actions may change. No randomized intervention or significance claim.",
+  "limitation": "Three matches, two share the same initial configuration; pooled associations can reflect policy/match mixture. Ridge is only one predictive specification."
+}
