@@ -1,0 +1,20 @@
+{
+  "action_bins": 10,
+  "action_max": null,
+  "action_min": null,
+  "backend": "openai",
+  "data_sha256": "c91b3e277decddff587601790c381096c5bab98fc726af94dba76d924e0ffa5b",
+  "fetch_drop_last_feature": true,
+  "history_size": 4,
+  "include_prompts": true,
+  "indexed_history": true,
+  "max_queries": 1,
+  "max_steps": null,
+  "metric": "next-action",
+  "model": "gpt-5.6-sol",
+  "question_name": "next_action_prediction",
+  "seed": 0,
+  "semantics_version": "public-v1",
+  "state_threshold": 0.0001,
+  "task_name": "MountainCar-v0"
+}

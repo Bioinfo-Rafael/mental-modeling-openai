@@ -1,0 +1,1063 @@
+query_id,condition_id,model_alias,task,metric,H,shots,score_pattern,ordinal,status,prediction,ground_truth,assistant_text,input_tokens,output_tokens,total_tokens,request_elapsed_seconds,action_value_prediction,action_value_ground_truth,absolute_error,scoring_version,history_start,query_index,repeat_id,reward_present,reward_scope
+d7053462b431b3069cb65ecc0362daa3fed653595003f31556b90903f7c3e533,terra__H5__t0__shots0__reward1,terra,Pendulum-v1,next-action,5,0,none,0,match,[0],[0],"1. [Reasoning]:  
+   The agent has consistently applied near-maximum negative torque while the pendulum gains negative angular velocity and approaches the downward position (`theta ≈ -pi`). At `s5`, it is still rotating strongly in the negative direction, so continuing negative torque is likely intended to maintain momentum for the swing-up.
+
+2. [Prediction]:  
+   ```python
+   predictions = [-2.0]
+   ```
+
+3. [Formatting]:  
+   >>Final action bins: [0]",1266,310,1576,6.71072299988009,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,1,True,target_history_only
+94a7636fd0ecd7a4e115947447bfdbc895b0c0582334b7f5220fbb2c30ec7148,terra__H5__t0__shots0__reward0,terra,Pendulum-v1,next-action,5,0,none,0,match,[0],[0],"1. [Reasoning]:  
+The agent has consistently applied near-maximal negative torque as the pendulum gains negative angular velocity and approaches the downward position around \(\theta \approx -\pi\). At state \(s5\), it is still moving strongly in the negative direction (\(-3.80\) rad/s), so continuing with saturated negative torque is most likely to maintain swing-up momentum.
+
+2. [Prediction]:  
+```python
+predictions = [-2.0]
+```
+
+3. [Formatting]:  
+>>Final action bins: [0]",1222,334,1556,5.036096042022109,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,1,False,target_history_only
+482559eb49c705e19fe4a8f0b966bf1219cb3ae111a1e06262ad525bec82bc9c,terra__H5__t0__shots0__reward1,terra,Pendulum-v1,next-action,5,0,none,1,match,[0],[0],"1. [Reasoning]:  
+The pendulum is still moving clockwise rapidly (angular velocity \(-3.8025\)) toward the downward position near \(-\pi\). In the preceding states, the policy consistently applies near-maximal negative torque to accelerate the pendulum in its current swing direction and build energy. Therefore, it will most likely continue applying saturated negative torque at \(s_5\).
+
+2. [Prediction]:  
+```python
+predictions = [-2.0]
+```
+
+3. [Formatting]:  
+>>Final action bins: [0]",1266,507,1773,8.588778208009899,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,2,True,target_history_only
+187638c62b39f487560dac833f157a7a5fbec04ecd02d24658848c52d907e9d4,terra__H5__t0__shots0__reward0,terra,Pendulum-v1,next-action,5,0,none,1,match,[0],[0],"1. [Reasoning]:  
+The agent has consistently applied near-maximum negative torque while the pendulum moves clockwise (increasingly negative angular velocity) toward the downward region. At state \(s_5\), it is still building swing momentum, so the most likely action remains saturated negative torque.
+
+2. [Prediction]:  
+Action element [0]: predict approximately \(-2.00\), which falls in bin 0, \([-2.0, -1.6)\).
+
+3. [Formatting]:
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",1222,293,1515,5.040143041871488,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,2,False,target_history_only
+44fa0412d8c75ba10396084a953882ee09f99a2270d64670f20b0b59ddd4c8a3,terra__H5__t0__shots0__reward1,terra,Pendulum-v1,next-action,5,0,none,2,match,[0],[0],"1. [Reasoning]:  
+The agent has consistently applied near-maximal negative torque while the pendulum moves clockwise toward and through the downward position. At state \(s5\), it still has substantial negative angular velocity (\(-3.8025\)), and continued negative torque is likely used to maintain momentum for the swing-up. The most likely action remains saturated at the negative limit.
+
+2. [Prediction]:  
+Action element [0]: \(-2.00\)
+
+3. [Formatting]:
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",1266,553,1819,9.482443582965061,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,3,True,target_history_only
+79d6606c114c82e2112bb65649556c5b34f50890f5445bd74bce45ea0da19d78,terra__H5__t0__shots0__reward0,terra,Pendulum-v1,next-action,5,0,none,2,match,[0],[0],"1. **[Reasoning]:**  
+   The agent has consistently applied near-maximum negative torque throughout steps 0–4 while the pendulum moves toward the downward position and gains negative angular velocity. At \(s_5\), it is still moving rapidly in the same direction (\(-3.80\) rad/s), so the likely policy is to continue applying maximum negative torque to build swing-up momentum.
+
+2. **[Prediction]:**
+```python
+predictions = [-2.0]
+```
+
+>>Final action bins: [0]",1222,275,1497,5.009049667045474,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,3,False,target_history_only
+9b75a2efc0c0e77b2716515a2434d2adbf0e8429bc4d08f2c0168157e13e768f,terra__H5__t0__shots4__reward1,terra,Pendulum-v1,next-action,5,4,pattern1,0,match,[0],[0],"1. **[Reasoning]:** The agent has consistently applied near-maximal negative torque while the pendulum moves clockwise (increasingly negative angular velocity) toward and through the downward position. At \(s_5\), it is near \(\theta\approx-\pi\) with substantial clockwise velocity, so continuing strong negative torque is likely intended to maintain momentum for the swing-up.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(-2.00\), in bin 0, \([-2.0,-1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6153,435,6588,7.780500208027661,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,1,True,target_history_only
+c2adc25c1a949c821e5178167ab95cdaa2748bf5fa946577a26086c9b64980e8,terra__H5__t0__shots4__reward0,terra,Pendulum-v1,next-action,5,4,pattern1,0,match,[0],[0],"1. **[Reasoning]:** The pendulum is near the downward position and moving rapidly in the negative direction. The agent has consistently applied near-maximum negative torque to build angular momentum for swing-up, so it will likely continue with saturated negative torque.
+
+2. **[Prediction]:** Action element [0] is predicted as \(-2.00\), in bin 0, \([-2.0,-1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6109,281,6390,4.28823716705665,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,1,False,target_history_only
+2ba7cfbd793980b6e393806b66fda98a8eec3105208dee043687a78f154af721,terra__H5__t0__shots4__reward1,terra,Pendulum-v1,next-action,5,4,pattern1,1,match,[0],[0],"1. **[Reasoning]:** The pendulum is near the downward position and rotating strongly clockwise (negative angular velocity). The preceding policy actions consistently apply near-maximal negative torque, reinforcing this rotation to build swing-up momentum. Thus, it will likely continue with saturated negative torque.
+
+2. **[Prediction]:** Action element [0] is predicted as approximately **-2.00**, in bin 0, \([-2.0,-1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6153,546,6699,9.231981416931376,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,2,True,target_history_only
+2ef3718fdc6f2cee0f5018b396f8252d9c697bf80150959d7875bbae84a81d61,terra__H5__t0__shots4__reward0,terra,Pendulum-v1,next-action,5,4,pattern1,1,match,[0],[0],"1. **[Reasoning]:** The agent has consistently applied near-maximal negative torque while the pendulum gains negative angular velocity and approaches the downward position. At \(s_5\), it is still rotating strongly in the negative direction, so continuing negative torque is the most likely behavior to sustain the swing-up trajectory.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(-2.00\), in bin 0, \([-2.0,-1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6109,543,6652,8.353693458950147,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,2,False,target_history_only
+81193900c49ad6faa9778a71ad358a6e90389d9c93b1d8b0bdb9519d4482e7fc,terra__H5__t0__shots4__reward1,terra,Pendulum-v1,next-action,5,4,pattern1,2,match,[0],[0],"1. **[Reasoning]:** The pendulum is near the downward position (\(\cos\theta\approx-0.992\)) and moving rapidly clockwise with angular velocity \(-3.80\). The agent has consistently applied near-maximal negative torque to build clockwise momentum for swing-up, so it will most likely continue with saturated negative torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(-2.00\), in bin 0, \([-2.0,-1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6153,482,6635,7.988322667079046,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,3,True,target_history_only
+5885962ec0be75ff4f6d0a475c1c095d02609b26853cb9ae3d43425ddbf6c55e,terra__H5__t0__shots4__reward0,terra,Pendulum-v1,next-action,5,4,pattern1,2,match,[0],[0],"1. **[Reasoning]:** The pendulum is near the downward position (\(\theta \approx -\pi\)) and is rotating rapidly clockwise (negative angular velocity). The policy has consistently applied near-maximal negative torque to build and maintain clockwise swing-up momentum. It will most likely continue applying saturated negative torque at \(s_5\).
+
+2. **[Prediction]:** Action element [0] is predicted to be \(-2.00\), in bin 0, \([-2.0,-1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6109,417,6526,7.254678207915276,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,3,False,target_history_only
+6a58e2a56042bcc0d9ceeb8ef5aac36a7809f5261b0bd4aba5ccb2933e17eb24,terra__H5__t100__shots0__reward1,terra,Pendulum-v1,next-action,5,0,none,0,mismatch,[2],[1],"1. **[Reasoning]:**  
+   The pendulum is close to upright, with a small negative angle (`sin(theta) ≈ -0.0414`) but a positive angular velocity (`0.1157`), meaning it is moving counterclockwise/leftward. In the preceding states, positive angular velocity near the upright position is generally countered with negative torque to reduce the motion and stabilize the pendulum. A moderately strong negative action is therefore likely.
+
+2. **[Prediction]:**  
+   Action element `[0]` is predicted to be approximately `-1.20`, which falls in the interval `[-1.2, -0.8)` only if strictly above -1.2; choosing `-1.15` safely places it in bin 2.
+
+3. **[Formatting]:**
+```python
+predictions = [-1.15]
+```
+
+>>Final action bins: [2]",1274,711,1985,9.617992958985269,[-1.15],[-1.2360159158706665],0.08601591587066659,08_joint_final_action_v1,100,105,1,True,target_history_only
+46d633ded9c30d695810963bc28f9918a6285ee6819f68c4bd9295b911ed7ef9,terra__H5__t100__shots0__reward0,terra,Pendulum-v1,next-action,5,0,none,0,mismatch,[2],[1],"1. **[Reasoning]:**  
+   The pendulum is very close to upright (`cos ≈ 0.999`, `sin < 0`) but has a positive angular velocity, meaning it is moving toward/through the upright position. Earlier near-upright states with smaller positive velocities were followed by negative torques, likely to brake the positive rotation and prevent overshooting. A moderately negative corrective torque is therefore most likely.
+
+2. **[Prediction]:**
+   ```python
+   predictions = [-1.00]
+   ```
+
+3. **[Formatting]:**  
+   The predicted action `-1.00` lies in the interval `[-1.2, -0.8)`, which is bin index `2`.
+
+   >>Final action bins: [2]",1229,1200,2429,17.53154116612859,[-1.0],[-1.2360159158706665],0.2360159158706665,08_joint_final_action_v1,100,105,1,False,target_history_only
+101057983dbe9668cd9af861fa920b4548dbcef9c83eee628c5ab60934fbebe6,terra__H5__t100__shots0__reward1,terra,Pendulum-v1,next-action,5,0,none,1,mismatch,[5],[1],"1. [Reasoning]:  
+   The pendulum is very close to upright (`cos≈1`, `sin≈-0.041`), but has a modest positive angular velocity (`0.1157`). The recent behavior suggests the agent applies small corrective torque near equilibrium to avoid excessive oscillation. A small positive torque can counter the pendulum’s gravitational tendency to fall further negative while allowing its current motion toward upright to settle.
+
+2. [Prediction]:  
+   - Action element [0]: predict a small positive torque, approximately `0.10`.  
+   - `0.10` lies in bin 5: `[0.0, 0.4)`.
+
+3. [Formatting]:
+```python
+predictions = [0.10]
+```
+
+>>Final action bins: [5]",1274,1791,3065,24.776550541166216,[0.1],[-1.2360159158706665],1.3360159158706666,08_joint_final_action_v1,100,105,2,True,target_history_only
+ede5626e5d1f3575f0d0960f93c04ce40c1ebe8dad0b9d9be492a4a14bf311c1,terra__H5__t100__shots0__reward0,terra,Pendulum-v1,next-action,5,0,none,1,mismatch,[5],[1],"1. [Reasoning]:  
+   The pendulum is very close to upright (`cos≈1`, `sin≈-0.041`), but it has a modest positive angular velocity (`0.1157`). The preceding action at step 104 was a small positive torque, which reduced the velocity slightly while maintaining the pendulum near upright. A likely stabilizing policy will now use a small corrective torque near zero—slightly positive to compensate for the negative angle while avoiding excessive acceleration.
+
+2. [Prediction]:  
+   ```python
+   predictions = [0.08]
+   ```
+
+3. [Formatting]:  
+   The predicted torque `0.08` is in the interval `[0.0, 0.4)`, corresponding to bin index `5`.
+
+>>Final action bins: [5]",1229,1607,2836,23.213158125057817,[0.08],[-1.2360159158706665],1.3160159158706666,08_joint_final_action_v1,100,105,2,False,target_history_only
+ddaa856a60106064240f2ecf69d7cf2a284593c0621091e959a9b211ffdc5d74,terra__H5__t100__shots0__reward1,terra,Pendulum-v1,next-action,5,0,none,2,match,[1],[1],"1. [Reasoning]:  
+   The pendulum is very close to upright: \(\theta \approx -0.041\) rad, but it has a positive angular velocity (\(+0.116\)), meaning it is moving counterclockwise/leftward away from the target direction. The preceding actions indicate that when angular velocity is positive near the upright position, the policy generally applies a negative torque to brake and reverse that motion. A moderately strong negative action is therefore most likely.
+
+2. [Prediction]:  
+   - Action element [0]: predict approximately **-1.45**.  
+   - This lies in bin 1, \([-1.6, -1.2)\).
+
+3. [Formatting]:
+```python
+predictions = [-1.45]
+```
+
+>>Final action bins: [1]",1274,1208,2482,16.481651916867122,[-1.45],[-1.2360159158706665],0.21398408412933345,08_joint_final_action_v1,100,105,3,True,target_history_only
+1c81c681ff23f7f3b2acd2ed826e7de2501e9bb95eaa927d773af16d6a6c0d1e,terra__H5__t100__shots0__reward0,terra,Pendulum-v1,next-action,5,0,none,2,mismatch,[5],[1],"1. [Reasoning]:  
+   The pendulum is close to upright but is slightly left of vertical (`sin(theta) < 0`) and moving counterclockwise toward upright (`angular velocity > 0`). The previous action of about `+0.14` produced a controlled reduction in angular velocity while continuing to move toward the upright position. A similarly small positive torque is likely to maintain this smooth correction rather than applying a large corrective torque.
+
+2. [Prediction]:  
+   For action element 0, predict a small positive torque of approximately `0.15`.
+
+3. [Formatting]:
+```python
+predictions = [0.15]
+```
+
+>>Final action bins: [5]",1229,1136,2365,18.018598000053316,[0.15],[-1.2360159158706665],1.3860159158706664,08_joint_final_action_v1,100,105,3,False,target_history_only
+aa33cc57fea6f194474bebb555e1b5ea067ee87c783cf8e23be06c439783a8c8,terra__H5__t100__shots4__reward1,terra,Pendulum-v1,next-action,5,4,pattern1,0,match,[1],[1],"1. **[Reasoning]:** At \(s_{105}\), the pendulum is slightly left of upright and has positive angular velocity, so a negative torque is likely needed to brake its counterclockwise motion. The closest preceding state, \(s_{100}\), had a similar angle and lower positive velocity and used a negative action of \(-1.3059\); the higher velocity at \(s_{105}\) suggests a somewhat stronger negative correction.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(-1.57\), in bin 1, \([-1.6,-1.2)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-1.57]
+```
+
+>>Final action bins: [1]",6161,1920,8081,26.818379583070055,[-1.57],[-1.2360159158706665],0.33398408412933356,08_joint_final_action_v1,100,105,1,True,target_history_only
+b08fc583c95ea25309496a70615e4a4bc4a5b2253fe719537fe8e853018c17bb,terra__H5__t100__shots4__reward0,terra,Pendulum-v1,next-action,5,4,pattern1,0,mismatch,[0],[1],"1. **[Reasoning]:** The pendulum is slightly left of upright (\(\sin\theta=-0.0414\)) but moving counterclockwise toward and potentially past the upright position (\(\dot{\theta}=0.1157\)). A strong negative torque is likely used to brake this positive angular velocity and stabilize near the upright position.
+
+2. **[Prediction]:** Action element [0] is predicted as approximately \(-2.00\), in bin 0, \([-2.0,-1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6116,1463,7579,20.164851167006418,[-2.0],[-1.2360159158706665],0.7639840841293335,08_joint_final_action_v1,100,105,1,False,target_history_only
+a8be842f70d7c451a231206f4ff38b0da8e713a05ee0e69388080b2fc3375d53,terra__H5__t100__shots4__reward1,terra,Pendulum-v1,next-action,5,4,pattern1,1,match,[1],[1],"1. **[Reasoning]:** The pendulum is still slightly on the negative-angle side and is moving counterclockwise (\(\dot\theta=0.1157\)), away from the upright equilibrium. The recent controller behavior uses negative torque to counter positive angular velocity, so a moderately strong negative corrective torque is likely.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(-1.45\), in bin 1, \([-1.6,-1.2)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-1.45]
+```
+
+>>Final action bins: [1]",6161,1691,7852,22.733823749935254,[-1.45],[-1.2360159158706665],0.21398408412933345,08_joint_final_action_v1,100,105,2,True,target_history_only
+c4fb73c8ef2c5afa318ebaa9511a1e028d3effec3568297c73620e3b57c5f90f,terra__H5__t100__shots4__reward0,terra,Pendulum-v1,next-action,5,4,pattern1,1,match,[1],[1],"1. **[Reasoning]:** At \(s_{105}\), the pendulum is close to upright but has positive angular velocity. Earlier states with similarly positive angular velocity received negative corrective torques to reduce that motion. A moderately strong negative torque is therefore most likely.
+
+2. **[Prediction]:** Action element [0] is predicted as approximately \(-1.30\), which lies in \([-1.6,-1.2)\), bin 1.
+
+3. **[Formatting]:**
+```python
+predictions = [-1.30]
+```
+
+>>Final action bins: [1]",6116,1681,7797,22.27489212504588,[-1.3],[-1.2360159158706665],0.06398408412933354,08_joint_final_action_v1,100,105,2,False,target_history_only
+f3561ce7c8d42a8c2e83f4c89b1a30608bebd7cbfa3f100f016a3dd8bde613ae,terra__H5__t100__shots4__reward1,terra,Pendulum-v1,next-action,5,4,pattern1,2,mismatch,[2],[1],"1. **[Reasoning]:** The pendulum is close to upright but remains on the negative-angle side and has a positive angular velocity. The preceding actions show an oscillatory, high-gain corrective policy: after allowing a small positive torque at step 104, the agent will likely apply a substantial negative torque to reverse the positive angular motion.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately **-1.20**, which falls in bin **2**, \([-1.2,-0.8)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-1.20]
+```
+
+>>Final action bins: [2]",6161,2214,8375,30.43041616701521,[-1.2],[-1.2360159158706665],0.03601591587066655,08_joint_final_action_v1,100,105,3,True,target_history_only
+fd9d9491c2f3c22e66859bfdd856169c6c92cfe06fd45f5324038a6e3058aae9,terra__H5__t100__shots4__reward0,terra,Pendulum-v1,next-action,5,4,pattern1,2,match,[1],[1],"1. **[Reasoning]:** The pendulum is close to upright but has a positive angular velocity (\(+0.1157\)), moving away from the balance point. The preceding control pattern applies negative torque when angular velocity becomes positive, so a fairly strong negative corrective torque is likely.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(-1.45\), which lies in \([-1.6,-1.2)\), bin 1.
+
+3. **[Formatting]:**
+```python
+predictions = [-1.45]
+```
+
+>>Final action bins: [1]",6116,1168,7284,16.311319041997194,[-1.45],[-1.2360159158706665],0.21398408412933345,08_joint_final_action_v1,100,105,3,False,target_history_only
+51cb9c5c0a6bd7f116961ff3ba34aa8a1f842019000d1f9d0d16a0231a0c9df4,terra__H20__t0__shots0__reward1,terra,Pendulum-v1,next-action,20,0,none,0,match,[9],[9],"1. **[Reasoning]:**  
+   At \(s_{20}\), the pendulum is near the downward/opposite side (\(\cos\theta \approx -0.99\)) and is rotating strongly counterclockwise (\(\dot\theta \approx +5.10\)). In the preceding steps, the agent applies strongly positive torque while angular velocity is positive, continuing the swing-up momentum. The behavior is approximately symmetric to the earlier negative-torque phase, so a high positive torque is most likely.
+
+2. **[Prediction]:**  
+   ```python
+   predictions = [1.75]
+   ```
+
+3. **[Formatting]:**  
+   >>Final action bins: [9]",1940,666,2606,8.816240125102922,[1.75],[1.9112794399261475],0.16127943992614746,08_joint_final_action_v1,0,20,1,True,target_history_only
+8d6e4431e3f7161ff7071b0186abab47cd62960855fa093d0dd6b09fd6680091,terra__H20__t0__shots0__reward0,terra,Pendulum-v1,next-action,20,0,none,0,match,[9],[9],"1. [Reasoning]:  
+   The pendulum is near the downward configuration (`cos≈-0.99`, `sin≈0.12`) and has a large positive angular velocity (`5.10`). In the preceding states, the agent has generally applied strong positive torque while the pendulum is rotating with positive velocity, likely continuing the swing-up energy-building motion. A saturated positive action is therefore most likely.
+
+2. [Prediction]:  
+   - Action element `[0]`: predict a strong positive torque near the upper action limit, `2.00`.
+
+3. [Formatting]:
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",1761,1036,2797,15.65701966593042,[2.0],[1.9112794399261475],0.08872056007385254,08_joint_final_action_v1,0,20,1,False,target_history_only
+3e565675f33c921f4442a88120e1ffdafc5ce208f8971fdbe03632b2c0d3dd78,terra__H20__t0__shots0__reward1,terra,Pendulum-v1,next-action,20,0,none,1,mismatch,[0],[9],"1. **[Reasoning]:**  
+   At state \(s_{20}\), the pendulum is near the downward position (\(\cos\theta\approx-0.99\)) and moving rapidly with positive angular velocity (\(5.10\)). The recent positive torques have accelerated the pendulum in this direction. The policy will likely switch to a strong negative torque to counter the current rotation and begin the next swing-control phase.
+
+2. **[Prediction]:**  
+   The most likely action is near the negative saturation limit.
+
+3. **[Formatting]:**
+```python
+predictions = [-2.0]
+```
+
+>>Final action bins: [0]",1940,963,2903,14.394814749946818,[-2.0],[1.9112794399261475],3.9112794399261475,08_joint_final_action_v1,0,20,2,True,target_history_only
+2a4804b72bd371b9354b671992a6c5336701fe94b7ae52e639244e55b973195b,terra__H20__t0__shots0__reward0,terra,Pendulum-v1,next-action,20,0,none,1,mismatch,[8],[9],"1. [Reasoning]:  
+   The pendulum is near the downward position (`x ≈ -0.99`, `y ≈ 0.12`) and rotating counterclockwise quickly (`angular velocity ≈ +5.10`). In the preceding states, the policy has consistently applied positive torque while the pendulum rotates in this direction, though the torque magnitude has begun decreasing from saturation. A moderately strong positive torque is therefore most likely.
+
+2. [Prediction]:  
+   ```python
+   predictions = [1.50]
+   ```
+
+3. [Formatting]:  
+   Action element `[0]` is predicted as `1.50`, which falls in bin 8: `[1.2, 1.6)`.
+
+>>Final action bins: [8]",1761,1660,3421,22.961444499902427,[1.5],[1.9112794399261475],0.41127943992614746,08_joint_final_action_v1,0,20,2,False,target_history_only
+5ff6187761d997fb733ff4b92be6c0f5922d46c6d5abc20d04be394562bc71fb,terra__H20__t0__shots0__reward1,terra,Pendulum-v1,next-action,20,0,none,2,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is near the downward position (\(\theta \approx 3.02\)) and moving rapidly counterclockwise (\(\dot{\theta}=5.10\)). The agent has been applying strong positive torque over the recent steps to sustain/increase this swing direction. Although the torque magnitude slightly decreased from steps 17–19, it remains strongly positive, so the most likely next action is still a positive high-magnitude torque.
+
+2. **[Prediction]:**
+```python
+predictions = [1.55]
+```
+
+3. **[Formatting]:**  
+Action element [0] = `1.55`, which falls in bin 9: \([1.6, 2.]\) would exclude 1.55—so it is actually in bin 8: \([1.2, 1.6)\).
+
+>>Final action bins: [8]",1940,1229,3169,15.622086833929643,[1.55],[1.9112794399261475],0.3612794399261474,08_joint_final_action_v1,0,20,3,True,target_history_only
+40aac3dd8643f69cc56952dca731544f1a11682452370ed5b46924e846bcf0ee,terra__H20__t0__shots0__reward0,terra,Pendulum-v1,next-action,20,0,none,2,mismatch,[0],[9],"1. [Reasoning]:  
+   At s20 the pendulum is close to the downward position (`cos≈-0.99`, `sin≈0.12`) and moving rapidly in the positive angular direction (`ω≈+5.10`). Earlier in the trajectory, when the pendulum had high negative angular velocity, the policy switched to strong positive torque to oppose/brake that motion. By symmetry, with high positive angular velocity here, the agent will likely apply near-maximal negative torque to brake and shape the swing-up trajectory.
+
+2. [Prediction]:  
+   Action element [0] is predicted to be near the negative torque limit.
+
+3. [Formatting]:
+```python
+predictions = [-2.0]
+```
+
+>>Final action bins: [0]",1761,432,2193,5.879427999956533,[-2.0],[1.9112794399261475],3.9112794399261475,08_joint_final_action_v1,0,20,3,False,target_history_only
+f250985fecbf903dc5b4bdc05f05b465d12a2f63ee7bc286ad74438bc5b96dc3,terra__H20__t0__shots4__reward1,terra,Pendulum-v1,next-action,20,4,pattern1,0,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is close to the downward position and rotating strongly counterclockwise (\(\dot\theta=5.10\)). The policy has applied sustained positive torque during this counterclockwise swing to build energy for the upcoming ascent. Its positive torque has recently reduced somewhat as speed increases, so a still-positive but moderately reduced torque is likely.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(1.43\), which lies in \([1.2, 1.6)\), bin 8.
+
+3. **[Formatting]:**
+```python
+predictions = [1.43]
+```
+
+>>Final action bins: [8]",6827,1704,8531,22.946062457980588,[1.43],[1.9112794399261475],0.4812794399261475,08_joint_final_action_v1,0,20,1,True,target_history_only
+09b1aaa288cd8dfd24aff507fd00408c9b4c7fdf14e527ff83607201506d5d32,terra__H20__t0__shots4__reward0,terra,Pendulum-v1,next-action,20,4,pattern1,0,match,[9],[9],"1. **[Reasoning]:** At \(s_{20}\), the pendulum is near the downward position on the positive-angle side and rotating rapidly counterclockwise (\(\dot{\theta}=5.10\)). The agent has used strong positive torques throughout the preceding positive-rotation swing to continue building/maintaining momentum. A positive torque near the upper range is therefore most likely.
+
+2. **[Prediction]:** Action element [0] is predicted as approximately \(1.65\), which falls in bin 9, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [1.65]
+```
+
+>>Final action bins: [9]",6648,1188,7836,14.258634582860395,[1.65],[1.9112794399261475],0.26127943992614755,08_joint_final_action_v1,0,20,1,False,target_history_only
+133308ca1c199ec486768ca91878a83a56eacd6f8c936a3b0b5ecbbd625c76ce,terra__H20__t0__shots4__reward1,terra,Pendulum-v1,next-action,20,4,pattern1,1,match,[9],[9],"1. **[Reasoning]:** At \(s_{20}\), the pendulum is near the downward position and rotating rapidly counterclockwise (\(\dot{\theta}=5.1022\)). The preceding actions remain strongly positive while the pendulum moves through this portion of the swing, so the agent will likely continue applying a strong positive torque. A value close to the recent \(1.69\) action is expected.
+
+2. **[Prediction]:** Action element [0] is predicted as approximately \(1.70\), in bin 9, \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+```python
+predictions = [1.70]
+```
+
+>>Final action bins: [9]",6827,1711,8538,23.95434216596186,[1.7],[1.9112794399261475],0.2112794399261475,08_joint_final_action_v1,0,20,2,True,target_history_only
+b5608c35df2fc1aa7f54e77d5288a17871f95527cb8fed8cd0d4792b66b7a8a3,terra__H20__t0__shots4__reward0,terra,Pendulum-v1,next-action,20,4,pattern1,1,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is near the downward position (\(\theta \approx 3.02\)) and rotating strongly counterclockwise (\(\dot{\theta}=5.10\)). The preceding actions have remained strongly positive while the pendulum accelerates through this part of the swing, though their magnitude has declined slightly at higher velocity. A still-positive corrective/driving torque, somewhat below saturation, is most likely.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(1.48\), which is in \([1.2, 1.6)\), bin 8.
+
+3. **[Formatting]:**
+```python
+predictions = [1.48]
+```
+
+>>Final action bins: [8]",6648,1817,8465,22.716240458888933,[1.48],[1.9112794399261475],0.4312794399261475,08_joint_final_action_v1,0,20,2,False,target_history_only
+eaafe8a8abd4a91301195c1ecc0fecd8e1638c33d4b9edc5716383ac9ffb55e3,terra__H20__t0__shots4__reward1,terra,Pendulum-v1,next-action,20,4,pattern1,2,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is near the downward position (\(\theta \approx 3.02\)) and rotating strongly counterclockwise (\(\dot{\theta}=5.10\)). The preceding actions remain positive but decrease as angular velocity grows (from \(2.00\) to \(1.77\) to \(1.69\)), indicating continued positive torque with some moderation rather than a reversal. A positive torque around \(1.4\) is likely.
+
+2. **[Prediction]:** Action element [0] is approximately \(1.40\), which falls in bin 8, \([1.2, 1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [1.40]
+```
+
+>>Final action bins: [8]",6827,1831,8658,28.13615379179828,[1.4],[1.9112794399261475],0.5112794399261475,08_joint_final_action_v1,0,20,3,True,target_history_only
+fada5c2fdea0a10e9f5fd63576cc1b3e119be9a87e587b40b5ecc829650f05d5,terra__H20__t0__shots4__reward0,terra,Pendulum-v1,next-action,20,4,pattern1,2,mismatch,[8],[9],"1. **[Reasoning]:** At \(s_{20}\), the pendulum is near the downward position but rotating strongly counterclockwise (\(\dot{\theta}=5.1022\)). The recent policy actions remain strongly positive to sustain the swing through this region, though their magnitude has begun decreasing from saturation. A positive torque around \(1.4\) is most consistent with this trajectory.
+
+2. **[Prediction]:** Action element [0] is predicted as approximately \(1.42\), in bin 8, \([1.2, 1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [1.42]
+```
+
+>>Final action bins: [8]",6648,2009,8657,29.368600125191733,[1.42],[1.9112794399261475],0.49127943992614753,08_joint_final_action_v1,0,20,3,False,target_history_only
+314313b0e0782a5c53ef197b045e2b594ad8eee99509b767636014290c1ce601,terra__H20__t100__shots0__reward1,terra,Pendulum-v1,next-action,20,0,none,0,mismatch,[4],[5],"1. [Reasoning]:  
+The pendulum is very close to upright but slightly to the negative-angle side (`sin(theta) ≈ -0.048`) and has a small positive angular velocity (`0.0335`). In the nearby samples, positive velocity is generally countered with a slightly negative torque to damp motion. The closest observed state is step 110 (`angular velocity = 0.0317`), where the action was `-0.1655`. Therefore, a small negative action is most likely.
+
+2. [Prediction]:  
+- Action element [0]: predicted torque approximately `-0.20`, providing damping against the positive angular velocity.
+
+3. [Formatting]:
+```python
+predictions = [-0.20]
+```
+
+>>Final action bins: [4]",1933,1165,3098,16.10840787505731,[-0.2],[0.08741538971662521],0.2874153897166252,08_joint_final_action_v1,100,120,1,True,target_history_only
+9cb519131c1d0e106726bbfa00a0072c6379cda0cf8b46c15eafd9784d4fdeaf,terra__H20__t100__shots0__reward0,terra,Pendulum-v1,next-action,20,0,none,0,mismatch,[4],[5],"1. [Reasoning]:  
+   The pendulum is close to upright with a small negative angle (`sin(theta) ≈ -0.048`) and a small positive angular velocity (`0.0335`). Nearby states with positive angular velocity generally receive a small negative torque to damp the motion and stabilize upright balance. The closest comparable state is step 110 (`omega = 0.0317`), where the action was `-0.1655`.
+
+2. [Prediction]:  
+   ```python
+   predictions = [-0.18]
+   ```
+
+3. [Formatting]:  
+   >>Final action bins: [4]",1756,547,2303,7.71153112500906,[-0.18],[0.08741538971662521],0.2674153897166252,08_joint_final_action_v1,100,120,1,False,target_history_only
+803fefb3dbc75928b5ce92d6001fafcf2d056822f54e552f3b09dd5ea44226cf,terra__H20__t100__shots0__reward1,terra,Pendulum-v1,next-action,20,0,none,1,mismatch,[4],[5],"1. **[Reasoning]:**  
+   The pendulum is very close to upright (`cos ≈ 0.999`, `sin ≈ -0.048`) with a small positive angular velocity (`0.0335`). In nearby states, the agent generally applies a small negative torque to damp positive angular motion and keep the pendulum stabilized near the upright position. The closest pattern is step 110, where a similar state and velocity led to an action of about `-0.17`.
+
+2. **[Prediction]:**  
+   Action element `[0]` is predicted to be approximately `-0.16`.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.16]
+```
+
+>>Final action bins: [4]",1933,1438,3371,17.768026459030807,[-0.16],[0.08741538971662521],0.24741538971662522,08_joint_final_action_v1,100,120,2,True,target_history_only
+8b7ca6f5721d05c5f26c781f892a76cb10b4e5e5c48cbd5fcf63940a818e326c,terra__H20__t100__shots0__reward0,terra,Pendulum-v1,next-action,20,0,none,1,mismatch,[3],[5],"1. [Reasoning]:  
+   The pendulum is close to upright but slightly left of the target angle (negative sine value) and has a small positive angular velocity. The agent’s recent control pattern uses a negative torque to damp positive angular velocity before applying compensatory positive torque. States with similar small positive angular velocities, such as steps 110 and 113, received negative actions. A moderately negative torque is therefore most likely.
+
+2. [Prediction]:  
+   Action element [0] is predicted as approximately `-0.58`, which lies in bin 3: `[-0.8, -0.4)`.
+
+3. [Formatting]:
+```python
+predictions = [-0.58]
+```
+
+>>Final action bins: [3]",1756,1800,3556,22.968501582974568,[-0.58],[0.08741538971662521],0.6674153897166252,08_joint_final_action_v1,100,120,2,False,target_history_only
+e8b188421436a4a1b927d460ea33a453438cf9954612f69aec6dde134ac69582,terra__H20__t100__shots0__reward1,terra,Pendulum-v1,next-action,20,0,none,2,mismatch,[4],[5],"1. **[Reasoning]:**  
+   The pendulum is very close to upright with a small negative angle (`sin(theta) ≈ -0.0478`) and a small positive angular velocity (`0.0335`). In nearby states with similarly positive angular velocity, the agent generally applies a small-to-moderate negative torque to damp the motion and prevent overshooting. The closest observed behavior is around step 110, where a similar state led to a slightly negative action.
+
+2. **[Prediction]:**  
+   - Action element `[0]`: predict approximately `-0.20`.  
+   - This lies in bin 4, corresponding to `[-0.4, 0.0)`.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.20]
+```
+
+>>Final action bins: [4]",1933,1089,3022,15.199625958222896,[-0.2],[0.08741538971662521],0.2874153897166252,08_joint_final_action_v1,100,120,3,True,target_history_only
+dfcb32524b964114a4e6dd8b245a1cf5982bd2a689f6b910cfe4e625471f21b3,terra__H20__t100__shots0__reward0,terra,Pendulum-v1,next-action,20,0,none,2,mismatch,[4],[5],"1. **[Reasoning]:**  
+   The pendulum is close to upright with a small negative angle (\(\theta \approx -0.048\)) and a small positive angular velocity (\(0.0335\)). The agent’s recent behavior generally applies slightly negative torque when angular velocity is positive, damping the clockwise/positive motion while maintaining balance. Similar nearby states (e.g., steps 110 and 113) used modest negative actions. A small negative corrective torque is therefore most likely.
+
+2. **[Prediction]:**  
+   - Action element [0]: predict approximately **-0.25**.  
+   - This lies in bin 4, corresponding to \([-0.4, 0.0)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-0.25]
+```
+
+>>Final action bins: [4]",1756,1288,3044,18.731565791880712,[-0.25],[0.08741538971662521],0.3374153897166252,08_joint_final_action_v1,100,120,3,False,target_history_only
+a4714dc012ab820bd92b5d2789f385a5c1f58228b2761ee02c6146d4968dbbb1,terra__H20__t100__shots4__reward1,terra,Pendulum-v1,next-action,20,4,pattern1,0,mismatch,[3],[5],"1. **[Reasoning]:** The pendulum is slightly on the negative-angle side and moving back toward upright with positive angular velocity. Nearby states with positive angular velocity generally receive a negative torque to brake that motion and prevent overshoot. A moderate negative corrective torque is therefore likely.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(-0.58\), which falls in bin 3, \([-0.8,-0.4)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-0.58]
+```
+
+>>Final action bins: [3]",6820,1431,8251,20.75362691702321,[-0.58],[0.08741538971662521],0.6674153897166252,08_joint_final_action_v1,100,120,1,True,target_history_only
+57bc375f23c16759603c074bd164edb81ef8e642ce68917c656c91487488bfb6,terra__H20__t100__shots4__reward0,terra,Pendulum-v1,next-action,20,4,pattern1,0,mismatch,[4],[5],"1. **[Reasoning]:** The pendulum is near upright but remains slightly on the negative-angle side and has a small positive angular velocity. Recent near-equilibrium actions generally apply a modest negative torque when angular velocity is positive, to damp the counterclockwise motion. The closest comparable state (step 110) used an action of \(-0.1655\), so a similarly small negative action is likely.
+
+2. **[Prediction]:** Action element [0] is predicted as approximately \(-0.20\), in bin 4, \([-0.4, 0.0)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-0.20]
+```
+
+>>Final action bins: [4]",6643,2127,8770,32.372413208009675,[-0.2],[0.08741538971662521],0.2874153897166252,08_joint_final_action_v1,100,120,1,False,target_history_only
+758d6db1579d9dfc53a355b2e3737b93a4bc8206b4df50bd4b1e80f6b4cee54e,terra__H20__t100__shots4__reward1,terra,Pendulum-v1,next-action,20,4,pattern1,1,mismatch,[4],[5],"1. **[Reasoning]:** At \(s_{120}\), the pendulum remains slightly on the negative-angle side and has a small positive angular velocity. The recent near-upright control pattern applies mild negative torque when the positive velocity needs damping. A small negative corrective action is therefore likely.
+
+2. **[Prediction]:** Action element [0] is predicted as approximately \(-0.15\), which falls in \([-0.4, 0.0)\), bin 4.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.15]
+```
+
+>>Final action bins: [4]",6820,1170,7990,16.480299417162314,[-0.15],[0.08741538971662521],0.2374153897166252,08_joint_final_action_v1,100,120,2,True,target_history_only
+1a3d078e4a1d087f5ec4c50b2ad780386440b65bb97a02fa091953e62fd4456d,terra__H20__t100__shots4__reward0,terra,Pendulum-v1,next-action,20,4,pattern1,1,mismatch,[4],[5],"1. **[Reasoning]:** The pendulum remains slightly to the negative-angle side and has a small positive angular velocity. Nearby states with positive angular velocity generally receive a mildly negative torque to counteract that motion and maintain balance. A small negative action is therefore most likely.
+
+2. **[Prediction]:** Action element [0] is predicted as approximately \(-0.18\), which lies in \([-0.4, 0.0)\), bin 4.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.18]
+```
+
+>>Final action bins: [4]",6643,2201,8844,33.66491700010374,[-0.18],[0.08741538971662521],0.2674153897166252,08_joint_final_action_v1,100,120,2,False,target_history_only
+52a75b4953b12bfb53ef2f7688bf97c8134a3040d25822966034480bece2bdc9,terra__H20__t100__shots4__reward1,terra,Pendulum-v1,next-action,20,4,pattern1,2,mismatch,[4],[5],"1. **[Reasoning]:** At \(s_{120}\), the pendulum remains slightly on the negative-angle side and has a small positive angular velocity. In nearby states with positive velocity, the policy generally uses a negative torque to reduce that motion and hold the pendulum close to upright. The closest comparable actions suggest a moderately negative corrective torque.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(-0.35\), which lies in bin 4, \([-0.4, 0.0)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-0.35]
+```
+
+>>Final action bins: [4]",6820,1181,8001,19.37476620799862,[-0.35],[0.08741538971662521],0.4374153897166252,08_joint_final_action_v1,100,120,3,True,target_history_only
+ff83381f27fff455f0dce487d1441915a5373dff5a981a19ff735f19ca067fa6,terra__H20__t100__shots4__reward0,terra,Pendulum-v1,next-action,20,4,pattern1,2,mismatch,[4],[5],"1. **[Reasoning]:** The pendulum is close to upright but has a small positive angular velocity. Nearby states with similar angle and positive velocity receive a slight negative torque to damp that motion. In particular, step 110 is very similar and used \(-0.1655\), so a comparable action is likely.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(-0.16\), in bin 4, \([-0.4, 0.0)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-0.16]
+```
+
+>>Final action bins: [4]",6643,2273,8916,36.5211532919202,[-0.16],[0.08741538971662521],0.24741538971662522,08_joint_final_action_v1,100,120,3,False,target_history_only
+8fc4f2ba17253bb8e99e884ca6c3d7f3f664bacfb17890d16c8993d539a15e70,luna__H5__t0__shots0__reward1,luna,Pendulum-v1,next-action,5,0,none,0,mismatch,[9],[0],"1. **[Reasoning]:** The pendulum is near the downward position, with a large negative angular velocity of \(-3.80\). The previous actions pushed it strongly in the negative direction; at this point, the agent will most likely apply a strong positive torque to brake the motion and prepare the pendulum for the next swing phase.
+
+2. **[Prediction]:**
+   - Action element 0 is predicted to be near the maximum positive torque.
+   - A likely value is \(+2.00\), which lies in the interval \([1.6, 2.0]\).
+
+3. **[Formatting]:**
+
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",1266,997,2263,10.472827916964889,[2.0],[-1.697725772857666],3.697725772857666,08_joint_final_action_v1,0,5,1,True,target_history_only
+cf9a4bd5d743072a2da6c6d3631b02759d6f200ffdd5836c97d247a26ed93f3d,luna__H5__t0__shots0__reward0,luna,Pendulum-v1,next-action,5,0,none,0,mismatch,[9],[0],"1. **[Reasoning]:**  
+   The agent has repeatedly applied a strong negative torque while the pendulum moves toward the downward position, with angular velocity becoming increasingly negative. At state \(s_5\), the pendulum is near \(\theta \approx -\pi\) and has substantial negative angular velocity (\(-3.80\)). The agent will most likely switch to a strong positive torque to brake and reverse the rotation.
+
+2. **[Prediction]:**  
+   The predicted action is approximately \(+2.00\), at the upper end of the action range.
+
+3. **[Formatting]:**
+   ```python
+   predictions = [2.00]
+   ```
+   >>Final action bins: [9]",1222,671,1893,8.206442750059068,[2.0],[-1.697725772857666],3.697725772857666,08_joint_final_action_v1,0,5,1,False,target_history_only
+51307f718f296df035d92cda7d57de4b72e79372f04cea1859b90b1891537d47,luna__H5__t0__shots0__reward1,luna,Pendulum-v1,next-action,5,0,none,1,mismatch,[9],[0],"1. **[Reasoning]:**  
+   The agent has applied strong negative torque for several steps, driving the pendulum toward \(\theta \approx -\pi\) while angular velocity becomes increasingly negative. At state \(s_5\), the pendulum is near the downward position and still moving rapidly, so the agent will most likely switch to strong positive torque to brake and reverse the motion.
+
+2. **[Prediction]:**  
+   - **Action element [0]:** Predict \(a_5[0] \approx 2.00\).  
+   - This lies in the interval \([1.6, 2.0]\), corresponding to bin **9**.
+
+3. **[Formatting]:**
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",1266,630,1896,6.921177375130355,[2.0],[-1.697725772857666],3.697725772857666,08_joint_final_action_v1,0,5,2,True,target_history_only
+d2320b61899b7806bbfcf4f43eaec14745c4072710234181da1b8008a061d3ab,luna__H5__t0__shots0__reward0,luna,Pendulum-v1,next-action,5,0,none,1,mismatch,[9],[0],"1. **[Reasoning]:** The agent has repeatedly applied strong negative torque, driving the pendulum toward the downward position while increasing its negative angular velocity. At \(s_5\), the pendulum is near \(\theta \approx -\pi\) with high negative velocity, so the agent will most likely switch to a strong positive torque to brake and reverse the motion for the swing-up.
+
+2. **[Prediction]:** The most likely action is approximately \(+2.00\).
+
+3. **[Formatting]:**
+
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",1222,423,1645,5.123192874947563,[2.0],[-1.697725772857666],3.697725772857666,08_joint_final_action_v1,0,5,2,False,target_history_only
+967a8dacc56a70b8bb0ee418f961c220fd219afe2469f1eaa6bbd64acbd78d9f,luna__H5__t0__shots0__reward1,luna,Pendulum-v1,next-action,5,0,none,2,match,[0],[0],"1. **[Reasoning]:**  
+   The pendulum is near the downward position, with a large negative angular velocity. The agent has consistently applied strong negative torque over the previous steps, accelerating the pendulum in the same direction to build swing-up energy. Since the action is likely saturated at the lower bound, the most probable next action is approximately \(-2.00\).
+
+2. **[Prediction]:**  
+   - Action element [0]: predict \(-2.00\), continuing the observed saturated negative-torque behavior.
+
+3. **[Formatting]:**
+   ```python
+   predictions = [-2.00]
+   ```
+   >>Final action bins: [0]",1266,1690,2956,18.060417625121772,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,3,True,target_history_only
+9efe9e6fe28838a0e4fff7602d9b2b258331dc007675ab23ebb157f16872bb9d,luna__H5__t0__shots0__reward0,luna,Pendulum-v1,next-action,5,0,none,2,mismatch,[9],[0],"1. **[Reasoning]:** The pendulum is approaching the downward position, with \(\theta \approx -3.01\) radians and a large negative angular velocity of \(-3.80\). After applying strong negative torques to build momentum, the agent will most likely switch to the maximum positive torque to brake the rotation and begin swinging back toward the upright position.
+
+2. **[Prediction]:** The most likely action is a strong positive torque, approximately \(+2.00\).
+
+3. **[Formatting]:**
+
+   Action element [0] is predicted as \(2.00\), which lies in bin 9, \([1.6, 2.0]\).
+
+```python
+predictions = [2.00]
+```
+
+>>Final action bins: [9]",1222,499,1721,5.3483889158815145,[2.0],[-1.697725772857666],3.697725772857666,08_joint_final_action_v1,0,5,3,False,target_history_only
+02d4f3ff0f98b02dca9123c0f89559006694a25dbe07cb0e504fb19399313da4,luna__H5__t0__shots4__reward1,luna,Pendulum-v1,next-action,5,4,pattern1,0,match,[0],[0],"1. **[Reasoning]:**  
+   The pendulum is near the downward position with a large negative angular velocity, and the agent has consistently applied strong negative torque over the preceding steps. It will most likely continue using the maximum negative torque to keep driving the swing.
+
+2. **[Prediction]:**  
+   Action element [0] is approximately `-2.00`, which lies in the interval `[-2.0, -1.6)`, corresponding to bin **0**.
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6153,650,6803,7.518930417019874,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,1,True,target_history_only
+21f59c2c3a99ba69acbfc5fa93ebe7d6db759bd75f36060ce268309ca821a623,luna__H5__t0__shots4__reward0,luna,Pendulum-v1,next-action,5,4,pattern1,0,match,[0],[0],"1. **[Reasoning]:** The pendulum is near the downward-side angle with a large negative angular velocity, and the agent has consistently applied nearly maximal negative torque. Given the repeated saturation at \(-2\), it will most likely continue with the minimum action.
+
+2. **[Prediction]:** Action element [0] is approximately \(-2.00\), which lies in the interval \([-2.0,-1.6)\), corresponding to bin **0**.
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6109,263,6372,3.188789459178224,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,1,False,target_history_only
+258ee5f4714bd4d3caa75e3270e9bc7cb0536bd27cb9a014cb0a345bad62df51,luna__H5__t0__shots4__reward1,luna,Pendulum-v1,next-action,5,4,pattern1,1,match,[0],[0],"1. **[Reasoning]:** The pendulum is near the downward position and has increasingly negative angular velocity. The agent has applied nearly maximum negative torque throughout the sequence, indicating that it is continuing to build rotational momentum in the same direction. Thus, the most likely next action is the minimum torque, \(-2.00\).
+
+2. **[Prediction]:** Action element [0] is approximately `-2.00`, which lies in the interval `[-2.0, -1.6)`, corresponding to bin **0**.
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6153,992,7145,10.422969124978408,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,2,True,target_history_only
+1fd6beecf9f59b88962b67d0c9a12fbd4941eab5e1cfaaebb26ff31244ea67d5,luna__H5__t0__shots4__reward0,luna,Pendulum-v1,next-action,5,4,pattern1,1,match,[0],[0],"1. **[Reasoning]:**  
+   The agent has consistently applied a strong negative torque as the pendulum moves toward the inverted-side angle and its angular velocity becomes increasingly negative. At \(s_5\), the velocity is \(-3.8025\), so the policy will most likely maintain saturated negative torque.
+
+2. **[Prediction]:**  
+   Action element [0] is approximately \(-2.00\), which lies in the interval \([-2.0,-1.6)\), corresponding to bin **0**.
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6109,266,6375,3.1620626670774072,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,2,False,target_history_only
+05856cf833ffc65c2d03a5523605ed59337bf19016b7570d814b0ab91bed4a71,luna__H5__t0__shots4__reward1,luna,Pendulum-v1,next-action,5,4,pattern1,2,match,[0],[0],"1. **[Reasoning]:**  
+   The pendulum is moving rapidly with angular velocity \(-3.8025\), while the previous actions have consistently been near the minimum torque. Since the agent continues applying strong negative torque as the pendulum moves toward this region, it will most likely keep the torque saturated at \(-2.0\).
+
+2. **[Prediction]:**  
+   Action element [0] is approximately \(-2.00\), which lies in the interval \([-2.0,-1.6)\), corresponding to bin **0**.
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6153,259,6412,4.29125608317554,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,3,True,target_history_only
+c95422175288305da88b3c81fea9379d3377ae70cfaa8e2e45fc3ed99e4799f6,luna__H5__t0__shots4__reward0,luna,Pendulum-v1,next-action,5,4,pattern1,2,match,[0],[0],"1. **[Reasoning]:**  
+   The pendulum is near the inverted-angle boundary with a rapidly decreasing angular position and strongly negative angular velocity (\(-3.8025\)). The agent has consistently applied near-maximum negative torque in the preceding steps, so it will most likely continue with the minimum action, \(-2.0\).
+
+2. **[Prediction]:**  
+   Action element [0] is approximately \(-2.00\), which lies in the interval \([-2.0,-1.6)\), corresponding to bin **0**.
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6109,263,6372,3.353811000008136,[-2.0],[-1.697725772857666],0.302274227142334,08_joint_final_action_v1,0,5,3,False,target_history_only
+68063f7abee0419d45b0c02de77dc1b3331f1c33779a0d17069daa686f15c7b0,luna__H5__t100__shots0__reward1,luna,Pendulum-v1,next-action,5,0,none,0,mismatch,[2],[1],"1. **[Reasoning]:**  
+   The pendulum is very close to upright, with a small negative angle (`sin(theta) ≈ -0.0414`) and positive angular velocity (`0.1157`). The recent behavior suggests the agent applies a negative torque when the pendulum is moving positively near the upright position, as seen at steps 100 and 102. Therefore, a moderate negative action is most likely.
+
+2. **[Prediction]:**  
+   Predict the action to be approximately `-0.90`, which lies in the interval `[-1.2, -0.8)`.
+
+3. **[Formatting]:**  
+   ```python
+   predictions = [-0.90]
+   ```
+   >>Final action bins: [2]",1274,678,1952,7.566024292027578,[-0.9],[-1.2360159158706665],0.3360159158706665,08_joint_final_action_v1,100,105,1,True,target_history_only
+39564ab2db798f8b1481cb0e0bdb95bf6fe7351674443082782894b5caa7dedb,luna__H5__t100__shots0__reward0,luna,Pendulum-v1,next-action,5,0,none,0,mismatch,[2],[1],"1. **[Reasoning]:** The pendulum is very close to upright, but its angular velocity is positive (`0.1157`), indicating motion in the positive angular direction. The agent has generally applied a negative torque when the pendulum moves positively, so a moderate negative corrective action is most likely.
+
+2. **[Prediction]:** Predict a torque of approximately `-0.90`, which lies in the interval `[-1.2, -0.8)`.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.90]
+```
+
+>>Final action bins: [2]",1229,1406,2635,14.262844541110098,[-0.9],[-1.2360159158706665],0.3360159158706665,08_joint_final_action_v1,100,105,1,False,target_history_only
+9aab8a3a0faee11b6e20d1e929c4c76a7a23838c592863c1a740813d0871135a,luna__H5__t100__shots0__reward1,luna,Pendulum-v1,next-action,5,0,none,1,mismatch,[2],[1],"1. **[Reasoning]:** The pendulum remains close to upright, but its angular velocity is positive. In the preceding steps, positive angular velocity was generally followed by a negative torque to damp the motion. Since the velocity at \(s_{105}\) is still positive and somewhat larger than at step 102, a moderately strong negative action is likely.
+
+2. **[Prediction]:**
+   - Action element [0]: predict approximately \(-1.00\), which applies a negative corrective torque.
+   - This lies in the interval \([-1.2,-0.8)\), corresponding to bin index 2.
+
+3. **[Formatting]:**
+```python
+predictions = [-1.00]
+```
+
+>>Final action bins: [2]",1274,1195,2469,13.081093291984871,[-1.0],[-1.2360159158706665],0.2360159158706665,08_joint_final_action_v1,100,105,2,True,target_history_only
+d8a04cb466b3f0d00c9b0c5af6f2000226a699fe9eaa1e8f2439fc3de7cd2375,luna__H5__t100__shots0__reward0,luna,Pendulum-v1,next-action,5,0,none,1,mismatch,[5],[1],"1. **[Reasoning]:** The pendulum is very close to upright, with a small negative angle and positive angular velocity. The previous action at a nearly identical state was a small positive torque (`0.139`), suggesting the agent is making a fine corrective adjustment rather than applying a large swing-up torque. A slightly larger small positive action is therefore plausible.
+
+2. **[Prediction]:** Since the action dimension is one, predict a small positive torque of approximately `0.15`, which lies in the interval `[0.0, 0.4)`.
+
+3. **[Formatting]:**
+
+```python
+predictions = [0.15]
+```
+
+>>Final action bins: [5]",1229,1701,2930,17.321781707927585,[0.15],[-1.2360159158706665],1.3860159158706664,08_joint_final_action_v1,100,105,2,False,target_history_only
+b896abcd58bad5246a6f7878aafc02647035db697496a64e1075008797394f57,luna__H5__t100__shots0__reward1,luna,Pendulum-v1,next-action,5,0,none,2,mismatch,[2],[1],"1. **[Reasoning]:**  
+   The pendulum is still very close to upright, with a small negative angle (`sin(theta) ≈ -0.0414`) but a positive angular velocity (`0.1157`). The agent has generally applied negative torque when the angular velocity is positive, as seen at steps 100 and 102. Therefore, a moderate negative corrective torque is most likely.
+
+2. **[Prediction]:**  
+   - Action element `[0]` should be negative, approximately `-1.10`, to counteract the positive angular velocity.
+   - `-1.10` lies in the interval `[-1.2, -0.8)`, which is bin `2`.
+
+3. **[Formatting]:**  
+   ```python
+   predictions = [-1.10]
+   ```
+   >>Final action bins: [2]",1274,700,1974,6.5098355419468135,[-1.1],[-1.2360159158706665],0.13601591587066642,08_joint_final_action_v1,100,105,3,True,target_history_only
+5ba54e67e74ac858f98877aa922957b1da815aab1be138a4febfef2d5e87ae03,luna__H5__t100__shots0__reward0,luna,Pendulum-v1,next-action,5,0,none,2,mismatch,[5],[1],"1. **[Reasoning]:**  
+   The pendulum is very close to upright: \(x \approx 1\) and \(y<0\), indicating a small negative angle. Its angular velocity is positive but modest. The recent actions show the agent reducing torque magnitude as it approaches the upright state. A small positive torque is therefore the most likely choice to correct the remaining negative angle without causing a large oscillation.
+
+2. **[Prediction]:**  
+   - Action element [0]: predict a small positive torque, approximately **0.10**.  
+   - Since \(0.10 \in [0.0, 0.4)\), it belongs to bin **5**.
+
+3. **[Formatting]:**
+```python
+predictions = [0.10]
+```
+
+>>Final action bins: [5]",1229,1673,2902,16.859772166004404,[0.1],[-1.2360159158706665],1.3360159158706666,08_joint_final_action_v1,100,105,3,False,target_history_only
+627ab96b1b6f30e0f5cdefe9d6233024d1d085dad9dc9b62c095232a6ed01926,luna__H5__t100__shots4__reward1,luna,Pendulum-v1,next-action,5,4,pattern1,0,mismatch,[3],[1],"1. **[Reasoning]:**  
+   At \(s_{105}\), the pendulum is slightly below the upright position with positive angular velocity, so it is moving toward the upright position but should be braked with a negative torque. The recent positive-velocity actions have decreased from \(-1.31\) to \(-0.88\) and then near zero; accounting for the current state, a moderate negative torque around \(-0.45\) is most likely.
+
+2. **[Prediction]:**  
+   Action element [0] is approximately \(-0.45\), which lies in the interval \([-0.8,-0.4)\), corresponding to bin **3**.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.45]
+```
+
+>>Final action bins: [3]",6161,1731,7892,18.286585333989933,[-0.45],[-1.2360159158706665],0.7860159158706665,08_joint_final_action_v1,100,105,1,True,target_history_only
+e0e04fbb2b7cb88bbb32e7e7380dc7345e48761b4c6f3a40b1b73b10da73f9ae,luna__H5__t100__shots4__reward0,luna,Pendulum-v1,next-action,5,4,pattern1,0,match,[1],[1],"1. **[Reasoning]:**  
+   At \(s_{105}\), the pendulum is slightly below the upright position with positive angular velocity \(0.1157\), so it is moving toward and potentially past the upright position. The preceding similar states with positive velocity received negative torque, suggesting the agent will apply a moderate negative correction.
+
+2. **[Prediction]:**  
+   Action element [0] is predicted to be approximately \(-1.30\), which lies in \([-1.6,-1.2)\), corresponding to bin 1.
+
+3. **[Formatting]:**
+```python
+predictions = [-1.30]
+```
+
+>>Final action bins: [1]",6116,1701,7817,16.788676833035424,[-1.3],[-1.2360159158706665],0.06398408412933354,08_joint_final_action_v1,100,105,1,False,target_history_only
+fae3d7e6bed209c5e80bb7051bb20a66bdeb4f2c35550fa0330198f9841da2c4,luna__H5__t100__shots4__reward1,luna,Pendulum-v1,next-action,5,4,pattern1,1,mismatch,[2],[1],"1. **[Reasoning]:**  
+   At \(s_{105}\), the pendulum is slightly displaced to the negative-angle side and has a small positive angular velocity. The recent actions alternate to correct the angular motion; since the velocity is positive, the next corrective action is likely to be a moderate negative torque.
+
+2. **[Prediction]:**  
+   Action element [0] is predicted to be approximately \(-0.90\), which lies in the interval \([-1.2,-0.8)\), corresponding to bin **2**.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.90]
+```
+
+>>Final action bins: [2]",6161,2217,8378,22.968297249870375,[-0.9],[-1.2360159158706665],0.3360159158706665,08_joint_final_action_v1,100,105,2,True,target_history_only
+ff5ab4e146d67df5865cb0c810021ab6414c8a0cc412e4bf60024da7608eda5f,luna__H5__t100__shots4__reward0,luna,Pendulum-v1,next-action,5,4,pattern1,1,mismatch,[2],[1],"1. **[Reasoning]:** The pendulum is slightly displaced to the negative-angle side and has positive angular velocity. In the preceding similar states with positive angular velocity, the agent generally applied a negative torque to counter the motion. A moderate negative action around \(-0.9\) is therefore most likely.
+
+2. **[Prediction]:** Action element [0] is approximately \(-0.88\), which lies in \([-1.2,-0.8)\), corresponding to bin **2**.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.88]
+```
+
+>>Final action bins: [2]",6116,1173,7289,12.365642291028053,[-0.88],[-1.2360159158706665],0.3560159158706665,08_joint_final_action_v1,100,105,2,False,target_history_only
+5d69cbefcfc11ac8eef64a95ebf12efcc83f2caf5b23e07d21aab3470d6ca467,luna__H5__t100__shots4__reward1,luna,Pendulum-v1,next-action,5,4,pattern1,2,mismatch,[3],[1],"1. **[Reasoning]:** The pendulum is slightly left of upright (\(\theta\approx -0.0414\)) while moving with positive angular velocity (\(0.1157\)). The agent should apply a modest negative torque to brake this motion and keep the pendulum near upright. Interpolating the nearby actions suggests a torque of roughly \(-0.43\).
+
+2. **[Prediction]:** Action element [0] is approximately \(-0.43\), which lies in \([-0.8,-0.4)\), corresponding to bin **3**.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.43]
+```
+
+>>Final action bins: [3]",6161,2081,8242,21.732866582926363,[-0.43],[-1.2360159158706665],0.8060159158706666,08_joint_final_action_v1,100,105,3,True,target_history_only
+a9821d8053a2b6671b75ad3c27b59ba33b4004cf4669e4c6f6fd5ed4ddb2425b,luna__H5__t100__shots4__reward0,luna,Pendulum-v1,next-action,5,4,pattern1,2,mismatch,[5],[1],"1. **[Reasoning]:**  
+   The state at \(s_{105}\) is very close to the preceding state \(s_{104}\): the angle remains slightly negative and the angular velocity is still small and positive. Since the agent used a small positive torque at \(s_{104}\), it will likely apply a similarly small corrective torque near zero at \(s_{105}\).
+
+2. **[Prediction]:**  
+   Action element [0] is predicted to be approximately \(0.14\), which lies in the interval \([0.0, 0.4)\), corresponding to bin **5**.
+
+3. **[Formatting]:**
+```python
+predictions = [0.14]
+```
+
+>>Final action bins: [5]",6116,1455,7571,15.384630624903366,[0.14],[-1.2360159158706665],1.3760159158706666,08_joint_final_action_v1,100,105,3,False,target_history_only
+ee2af3ccad6593992282fddc70645203ca0097d156ddf8c6abd1e2d49f0470dd,luna__H20__t0__shots0__reward1,luna,Pendulum-v1,next-action,20,0,none,0,mismatch,[0],[9],"1. **[Reasoning]:**  
+   The agent has been applying strong positive torque since Step 9, causing the angular velocity to rise to \(5.10\). At \(s_{20}\), the pendulum is near the downward position (\(\cos\theta \approx -1\)) and moving rapidly in the positive direction. Mirroring the earlier reversal from strong negative to positive torque, the agent will most likely apply strong negative torque to brake and reverse the motion.
+
+2. **[Prediction]:**  
+   The predicted action is approximately \(-2.00\).
+
+3. **[Formatting]:**
+   ```python
+   predictions = [-2.00]
+   ```
+   >>Final action bins: [0]",1940,1057,2997,11.851929500000551,[-2.0],[1.9112794399261475],3.9112794399261475,08_joint_final_action_v1,0,20,1,True,target_history_only
+e1920d1ba285855e5d0629e486b51f6ec0423aa28c22a6d0cb795458e06a911e,luna__H20__t0__shots0__reward0,luna,Pendulum-v1,next-action,20,0,none,0,mismatch,[0],[9],"1. **Reasoning:** The pendulum is near the downward position, with a large positive angular velocity (`5.1022`). The agent has been applying strong positive torque, which increased the angular velocity. It will likely switch to strong negative torque to brake and reverse the motion.
+
+2. **Prediction:**  
+   - Action element 0: approximately `-2.00`  
+   - This lies in bin 0, corresponding to `[-2.0, -1.6)`.
+
+3. **Formatting:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",1761,494,2255,5.961095750099048,[-2.0],[1.9112794399261475],3.9112794399261475,08_joint_final_action_v1,0,20,1,False,target_history_only
+29e419e62175838e24a7c9f012af9ae7f4992927c8eb7791c8f9afa7278100c1,luna__H20__t0__shots0__reward1,luna,Pendulum-v1,next-action,20,0,none,1,mismatch,[0],[9],"1. **[Reasoning]:** The pendulum is near the downward position, with a large positive angular velocity of \(5.10\). In the preceding steps, the agent applied strong positive torque while the angular velocity was positive, but it is now likely to reverse the torque to brake the motion and begin the next swing. Thus, the most likely action is near the minimum torque.
+
+2. **[Prediction]:**
+   - Action element [0]: predict \(-2.00\), corresponding to a strong counterclockwise braking torque.
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",1940,1429,3369,15.598986874800175,[-2.0],[1.9112794399261475],3.9112794399261475,08_joint_final_action_v1,0,20,2,True,target_history_only
+90e409987d12d632f2b05ca846f20fbb600e94d56be87ed46b82224181f84ee3,luna__H20__t0__shots0__reward0,luna,Pendulum-v1,next-action,20,0,none,1,mismatch,[0],[9],"1. **[Reasoning]:**  
+   The pendulum is near the downward position, with a large positive angular velocity of \(5.10\). The agent has been applying strong positive torque, but at this point it will likely begin braking the rotation to avoid overshooting as the pendulum swings toward the upright position. A strong negative torque is therefore most likely.
+
+2. **[Prediction]:**  
+   The predicted action is approximately \(-2.00\), at the lower action limit.
+
+3. **[Formatting]:**  
+   ```python
+   predictions = [-2.00]
+   ```
+   >>Final action bins: [0]",1761,1690,3451,18.060104083037004,[-2.0],[1.9112794399261475],3.9112794399261475,08_joint_final_action_v1,0,20,2,False,target_history_only
+cc317124a62d9470bfaaa0c272cfca0843338cc635391a4b24da34a472ca287d,luna__H20__t0__shots0__reward1,luna,Pendulum-v1,next-action,20,0,none,2,mismatch,[8],[9],"1. **[Reasoning]:** The pendulum is moving with a large positive angular velocity while approaching the downward position from the positive-angle side. The agent has recently used strong positive torques, but the decreasing actions at Steps 17–19 suggest it is beginning to reduce the torque rather than continue applying the maximum. A moderately strong positive action is therefore most likely.
+
+2. **[Prediction]:** Predict a torque of approximately \(+1.50\), which lies in the interval \([1.2, 1.6)\), corresponding to bin 8.
+
+3. **[Formatting]:**
+```python
+predictions = [1.50]
+```
+
+>>Final action bins: [8]",1940,2219,4159,24.045856582932174,[1.5],[1.9112794399261475],0.41127943992614746,08_joint_final_action_v1,0,20,3,True,target_history_only
+9deb19548196a982654bc08542476145b1d49f8791b216d49a738455e89cbff1,luna__H20__t0__shots0__reward0,luna,Pendulum-v1,next-action,20,0,none,2,mismatch,[0],[9],"1. **[Reasoning]:**  
+   The pendulum is near the downward position, with \(x\approx -1\), and its angular velocity is strongly positive (\(5.10\)). The agent has applied positive torque while building momentum, but at this high velocity it will most likely switch to maximum negative torque to brake and reverse the motion, as seen previously when the angular velocity became large in magnitude.
+
+2. **[Prediction]:**  
+   The predicted action is approximately \(-2.00\), which lies in the first action bin, \([-2.0,-1.6)\).
+
+3. **[Formatting]:**  
+   ```python
+   predictions = [-2.00]
+   ```
+   >>Final action bins: [0]",1761,677,2438,7.9572786670178175,[-2.0],[1.9112794399261475],3.9112794399261475,08_joint_final_action_v1,0,20,3,False,target_history_only
+da14a8f901c093dcee2a8091d73fdf9f82183bb95a1111364b94dfc244546b05,luna__H20__t0__shots4__reward1,luna,Pendulum-v1,next-action,20,4,pattern1,0,mismatch,[0],[9],"1. **[Reasoning]:**  
+   At \(s_{20}\), the pendulum is near the leftmost/downward position, with a very large positive angular velocity of \(5.1022\). The preceding positive torques have continued increasing this velocity, so the agent will likely switch to a strong negative torque to brake the motion and begin reversing its direction.
+
+2. **[Prediction]:**  
+   Action element [0] is predicted to be approximately \(-2.00\), which lies in the interval \([-2.0,-1.6)\), corresponding to bin **0**.
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6827,2182,9009,23.369598707882687,[-2.0],[1.9112794399261475],3.9112794399261475,08_joint_final_action_v1,0,20,1,True,target_history_only
+1dc5b584826fa5c16f8110ec9074902bbc8373a77f4e4b70111adad62af3bbcc,luna__H20__t0__shots4__reward0,luna,Pendulum-v1,next-action,20,4,pattern1,0,mismatch,[0],[9],"1. **[Reasoning]:**  
+   At \(s_{20}\), the pendulum is near the leftmost angular position, with a large positive angular velocity of \(5.10\). The preceding positive torques have accelerated this motion, so the agent will likely switch to a strong negative torque to brake and reverse the rotation. The action is therefore expected to be near the lower bound.
+
+2. **[Prediction]:**  
+   Action element [0] is approximately \(-2.00\), which lies in bin 0, \([-2.0,-1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6648,771,7419,9.085904208943248,[-2.0],[1.9112794399261475],3.9112794399261475,08_joint_final_action_v1,0,20,1,False,target_history_only
+cde84ff4f76bbdbc0261f7c21cb4d290c8363676e4fa77eb28c77fe7a9618799,luna__H20__t0__shots4__reward1,luna,Pendulum-v1,next-action,20,4,pattern1,1,mismatch,[0],[9],"1. **[Reasoning]:** The pendulum is approaching the inverted-side angle \(\theta \approx \pi\) with a large positive angular velocity (\(5.10\)). The agent has applied strong positive torque during the preceding steps, increasing this motion. It will likely switch to a strong negative torque to brake and reverse the rotation.
+
+2. **[Prediction]:** Action element [0] is approximately **-2.00**, which lies in the interval \([-2.0,-1.6)\), corresponding to bin **0**.
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6827,1074,7901,13.27865849994123,[-2.0],[1.9112794399261475],3.9112794399261475,08_joint_final_action_v1,0,20,2,True,target_history_only
+76d944a1955adefe0ecb94d440eef238ced0f0976ead1dd991454242d2f1852f,luna__H20__t0__shots4__reward0,luna,Pendulum-v1,next-action,20,4,pattern1,1,mismatch,[0],[9],"1. **[Reasoning]:**  
+   At \(s_{20}\), the pendulum is near the downward position (\(\cos\theta\approx -1\)) and has a large positive angular velocity of \(5.10\). The agent has been applying positive torque to build momentum, but it should now reverse the torque strongly to brake the rotation and begin steering back toward the upright position. A saturated negative torque is therefore most likely.
+
+2. **[Prediction]:**  
+   Action element [0] is predicted to be approximately \(-2.00\), which lies in the interval \([-2.0,-1.6)\), corresponding to bin **0**.
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6648,689,7337,8.136490584118292,[-2.0],[1.9112794399261475],3.9112794399261475,08_joint_final_action_v1,0,20,2,False,target_history_only
+683ca2348ff67e376a43e878cb4599a624469f7db9125e271662d94b35365319,luna__H20__t0__shots4__reward1,luna,Pendulum-v1,next-action,20,4,pattern1,2,mismatch,[0],[9],"1. **[Reasoning]:**  
+   At \(s_{20}\), the pendulum is near the downward extreme with a large positive angular velocity (\(5.10\)). The preceding positive torques have accelerated this motion, so the agent will likely apply a strong negative torque to brake and reverse the swing. The action is therefore expected to saturate near \(-2\).
+
+2. **[Prediction]:**  
+   Action element [0] is approximately \(-2.00\), which lies in the interval \([-2.0,-1.6)\), corresponding to bin **0**.
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6827,1853,8680,19.65505495807156,[-2.0],[1.9112794399261475],3.9112794399261475,08_joint_final_action_v1,0,20,3,True,target_history_only
+53f7b335fd53b06735200c45f6be03464d9ef86a96548436c43db443becd1f5c,luna__H20__t0__shots4__reward0,luna,Pendulum-v1,next-action,20,4,pattern1,2,mismatch,[0],[9],"1. **[Reasoning]:**  
+   At \(s_{20}\), the pendulum is near the downward-side angle (\(x\approx -1\)) and has a very large positive angular velocity of \(5.10\). After several consecutive strong positive torques, the agent will likely apply a strong negative torque to brake and reverse this motion.
+
+2. **[Prediction]:**  
+   Action element [0] is predicted to be approximately \(-2.00\), which lies in bin 0, \([-2.0,-1.6)\).
+
+3. **[Formatting]:**
+```python
+predictions = [-2.00]
+```
+
+>>Final action bins: [0]",6648,2193,8841,22.803342333994806,[-2.0],[1.9112794399261475],3.9112794399261475,08_joint_final_action_v1,0,20,3,False,target_history_only
+8ede6621b60176f551e9d15200b770ab7010898f4dd39e1a80d9b65a0dbeba7c,luna__H20__t100__shots0__reward1,luna,Pendulum-v1,next-action,20,0,none,0,mismatch,[4],[5],"1. **[Reasoning]:**  
+   The pendulum is close to upright, with a small negative angle (`y ≈ -0.0478`) and a small positive angular velocity (`0.0335`). The agent has generally used a negative torque when the angular velocity is positive, to damp the motion. Since the state is near those at steps 110–113, a modest negative action is most likely.
+
+2. **[Prediction]:**  
+   - **Action element [0]:** Predict approximately `-0.30`.  
+   - This lies in the interval `[-0.4, 0.0)`, corresponding to **bin 4**.
+
+3. **[Formatting]:**
+   ```python
+   predictions = [-0.30]
+   ```
+   >>Final action bins: [4]",1933,1594,3527,15.96873633400537,[-0.3],[0.08741538971662521],0.3874153897166252,08_joint_final_action_v1,100,120,1,True,target_history_only
+1f6c2118e9963c3a952402fb5116667949f0e7ee5941fd72665874b4310d1025,luna__H20__t100__shots0__reward0,luna,Pendulum-v1,next-action,20,0,none,0,mismatch,[4],[5],"1. **[Reasoning]:** The pendulum is close to upright, but its angular velocity is slightly positive. The agent generally applies a small negative torque to damp this motion, as seen for similar states (e.g., actions \(-0.1655\) and \(-0.5454\)). Thus, a modest negative action is most likely.
+
+2. **[Prediction]:**
+   - There is one action element.
+   - Predicted action: approximately \(-0.35\).
+   - Since \(-0.35 \in [-0.4, 0)\), it belongs to bin **4**.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.35]
+```
+
+>>Final action bins: [4]",1756,1653,3409,17.7019172499422,[-0.35],[0.08741538971662521],0.4374153897166252,08_joint_final_action_v1,100,120,1,False,target_history_only
+de63681ccb4dac7ac3bbca32f6e684261abe0bf1f71bb22e2862808513637a0a,luna__H20__t100__shots0__reward1,luna,Pendulum-v1,next-action,20,0,none,1,mismatch,[4],[5],"1. **[Reasoning]:**  
+   The pendulum is very close to upright: \(x\approx 0.999\), \(y\approx -0.048\), and angular velocity is small and positive (\(0.0335\)). In nearby states, the agent generally applies a small corrective torque, often slightly negative, to damp the motion. A value near \(-0.2\) is therefore most likely.
+
+2. **[Prediction]:**  
+   There is one action element:
+   - Action element [0]: predict approximately \(-0.18\), a small negative corrective torque.
+   - Since \(-0.18\in[-0.4,0)\), its bin index is 4.
+
+3. **[Formatting]:**
+   ```python
+   predictions = [-0.18]
+   ```
+   >>Final action bins: [4]",1933,704,2637,10.33561662491411,[-0.18],[0.08741538971662521],0.2674153897166252,08_joint_final_action_v1,100,120,2,True,target_history_only
+a2b42f4b2727bba7a5a92ae08afebe0f6ab167dc3049eec4d91d6409779f527d,luna__H20__t100__shots0__reward0,luna,Pendulum-v1,next-action,20,0,none,1,mismatch,[4],[5],"1. **[Reasoning]:** The pendulum remains close to upright, with a small negative angle and positive angular velocity. The agent has recently used small negative torques to damp this positive motion. The most similar prior state is Step 110, where the action was approximately \(-0.17\). Therefore, a small negative action is most likely.
+
+2. **[Prediction]:** Predict \(a_{120} \approx -0.17\). This lies in the interval \([-0.4, 0)\), corresponding to bin 4.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.17]
+```
+
+>>Final action bins: [4]",1756,1144,2900,13.001053083920851,[-0.17],[0.08741538971662521],0.25741538971662525,08_joint_final_action_v1,100,120,2,False,target_history_only
+59a5d69eea0fcf0009abf5a05e29189c0bf1f2f5cabedbc3484bbe05b45eac3d,luna__H20__t100__shots0__reward1,luna,Pendulum-v1,next-action,20,0,none,2,mismatch,[3],[5],"1. **[Reasoning]:**  
+   The pendulum is close to upright, with a small negative angle and a small positive angular velocity. In nearby states with similar values, the agent generally applies a modest negative torque to damp the positive angular motion and maintain stability. A reasonable prediction is therefore a small-to-moderate negative action, around \(-0.5\).
+
+2. **[Prediction]:**  
+   - Action element [0]: predict approximately \(-0.50\).  
+   - Since \(-0.50 \in [-0.8,-0.4)\), its bin index is **3**.
+
+3. **[Formatting]:**
+   ```python
+   predictions = [-0.50]
+   ```
+   >>Final action bins: [3]",1933,1199,3132,13.496136459056288,[-0.5],[0.08741538971662521],0.5874153897166252,08_joint_final_action_v1,100,120,3,True,target_history_only
+7c14162db2f1d860ac7cc1703d26bd654fcfcc6db827703a8c94cd085bffbbb0,luna__H20__t100__shots0__reward0,luna,Pendulum-v1,next-action,20,0,none,2,mismatch,[4],[5],"1. **[Reasoning]:**  
+   The pendulum is close to upright, with a small negative angle and a small positive angular velocity. In nearby states with similar observations, the agent generally applies a small corrective torque, often slightly negative—for example, state 110 has nearly the same velocity and receives action \(-0.1655\). Thus, a small negative action is most likely.
+
+2. **[Prediction]:**  
+   Predict \(a_{120}\) to be approximately \(-0.20\), which lies in the interval \([-0.4, 0)\).
+
+3. **[Formatting]:**
+   ```python
+   predictions = [-0.20]
+   ```
+   >>Final action bins: [4]",1756,1191,2947,13.770666167140007,[-0.2],[0.08741538971662521],0.2874153897166252,08_joint_final_action_v1,100,120,3,False,target_history_only
+3e2ab7126a20c44df965558bc8fd770f1d527740341fe9ed6c4dadec9aee3f11,luna__H20__t100__shots4__reward1,luna,Pendulum-v1,next-action,20,4,pattern1,0,mismatch,[3],[5],"1. **[Reasoning]:** The pendulum is slightly displaced to the negative-angle side with a small positive angular velocity. The recent behavior shows the agent applying a moderate negative torque to counter this motion, with stronger negative corrections when the positive velocity increases. A torque around \(-0.6\) is therefore likely.
+
+2. **[Prediction]:** Action element [0] is approximately \(-0.60\), which lies in \([-0.8,-0.4)\), corresponding to bin **3**.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.60]
+```
+
+>>Final action bins: [3]",6820,1693,8513,16.230772665934637,[-0.6],[0.08741538971662521],0.6874153897166252,08_joint_final_action_v1,100,120,1,True,target_history_only
+1e48585c028d12fd1723dec4a7eba7a31dfc80e6e0b6d208b0aee35985de549c,luna__H20__t100__shots4__reward0,luna,Pendulum-v1,next-action,20,4,pattern1,0,mismatch,[4],[5],"1. **[Reasoning]:** The pendulum is close to upright with a small positive angular velocity. In the nearby sequence, the agent generally applies a modest negative torque to damp this motion, so a small negative action is most likely.
+
+2. **[Prediction]:** Action element [0] is predicted to be approximately \(-0.30\), which lies in \([-0.4, 0.0)\), corresponding to bin **4**.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.30]
+```
+
+>>Final action bins: [4]",6643,1984,8627,19.55086783412844,[-0.3],[0.08741538971662521],0.3874153897166252,08_joint_final_action_v1,100,120,1,False,target_history_only
+a8d8d5ab04e231cc57be3350d3888585e1be2201b6e75d97d3bb6bdb972d7489,luna__H20__t100__shots4__reward1,luna,Pendulum-v1,next-action,20,4,pattern1,1,mismatch,[3],[5],"1. **[Reasoning]:** The pendulum is slightly displaced to the negative-angle side and has a small positive angular velocity. The agent will likely apply a modest negative torque to oppose this motion and stabilize near upright. States with similar small positive velocities used negative actions, such as \(-0.5454\) at Step 113.
+
+2. **[Prediction]:** Action element [0] is approximately \(-0.55\), which lies in the interval \([-0.8,-0.4)\), corresponding to bin **3**.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.55]
+```
+
+>>Final action bins: [3]",6820,2048,8868,22.82805879204534,[-0.55],[0.08741538971662521],0.6374153897166253,08_joint_final_action_v1,100,120,2,True,target_history_only
+98812b91d2b21a7254f723c972461ef0441fff5c5cf07e86245488eaba92d60e,luna__H20__t100__shots4__reward0,luna,Pendulum-v1,next-action,20,4,pattern1,1,mismatch,[4],[5],"1. **[Reasoning]:** The pendulum remains slightly displaced to the negative-angle side, while its angular velocity is small and positive. The recent controller generally applies a modest negative torque when the velocity becomes positive, although actions vary due to the learned policy’s corrections. A small negative action is therefore most likely at \(s_{120}\).
+
+2. **[Prediction]:** Action element [0] is predicted as approximately \(-0.20\), which lies in the interval \([-0.4,0.0)\), corresponding to bin **4**.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.20]
+```
+
+>>Final action bins: [4]",6643,1701,8344,19.344319416908547,[-0.2],[0.08741538971662521],0.2874153897166252,08_joint_final_action_v1,100,120,2,False,target_history_only
+632a311620fe609033fa28362847c09726271bd6384905f56d99c2365913e611,luna__H20__t100__shots4__reward1,luna,Pendulum-v1,next-action,20,4,pattern1,2,mismatch,[3],[5],"1. **[Reasoning]:** The pendulum is slightly displaced to the negative-angle side with a small positive angular velocity. In the nearby stable portion of the trajectory, the agent generally applies a modest negative torque to damp this motion. A value around \(-0.55\) is therefore plausible.
+
+2. **[Prediction]:** Action element [0] is approximately \(-0.55\), which lies in the interval \([-0.8,-0.4)\), corresponding to bin **3**.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.55]
+```
+
+>>Final action bins: [3]",6820,1949,8769,20.063661666819826,[-0.55],[0.08741538971662521],0.6374153897166253,08_joint_final_action_v1,100,120,3,True,target_history_only
+43260a14a0cf75ff2e13476096c591ec44aadb04b8b817cb0ddd01e246b81d06,luna__H20__t100__shots4__reward0,luna,Pendulum-v1,next-action,20,4,pattern1,2,mismatch,[4],[5],"1. **[Reasoning]:** The state at \(s_{120}\) is very close to the earlier state \(s_{110}\), with a small positive angular velocity and a slightly negative angle. At \(s_{110}\), the agent applied a small negative torque (\(-0.1655\)) to counter the positive motion. A similar corrective action is therefore likely at \(s_{120}\).
+
+2. **[Prediction]:** Action element [0] is approximately \(-0.17\), which lies in \([-0.4, 0.0)\), corresponding to bin **4**.
+
+3. **[Formatting]:**
+```python
+predictions = [-0.17]
+```
+
+>>Final action bins: [4]",6643,1194,7837,14.02149370801635,[-0.17],[0.08741538971662521],0.25741538971662525,08_joint_final_action_v1,100,120,3,False,target_history_only

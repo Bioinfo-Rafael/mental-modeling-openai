@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mtd-rl-xavier"
+version = "0.1.0"
+description = "Language-model mental modelling of RL agents: shared library and experiments built on LLM-Xavier"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "llm-x-evaluator",  # mentalmodeling/ (vendored LLM-Xavier, installed editable)
+  "numpy>=1.24,<3",
+  "openai>=1,<3",
+  "PyYAML>=6",
+  "tiktoken>=0.7",
+]
+
+[project.optional-dependencies]
+data = ["huggingface_hub>=0.26", "pandas>=2", "pyulog>=1.2", "scipy>=1.11"]
+notebook = [
+  "jupyterlab>=4,<5",
+  "nbclient>=0.10,<1",
+  "nbformat>=5,<6",
+  "ipykernel>=6,<8",
+  "matplotlib>=3.9,<4",
+  "pandas>=2",
+]
+estimation = ["openpyxl>=3.1,<4", "pandas>=2", "scipy>=1.11", "tiktoken==0.14.0"]
+
+[dependency-groups]
+dev = ["pytest>=7,<9", "ruff>=0.8", "poethepoet>=0.29"]
+
+[tool.uv.sources]
+llm-x-evaluator = { path = "mentalmodeling", editable = true }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-ra -p no:cacheprovider"
+# Library and prior-work tests. Workspace experiments are collected per directory
+# (`poe test-workspace`) because several experiments reuse the same test file names.
+testpaths = ["tests", "mentalmodeling/tests"]
+# The repository root makes `workspace.<experiment>` importable for tests and analysis code.
+pythonpath = ["."]
+python_files = ["test_*.py"]
+norecursedirs = [".*", "results", "node_modules", "__pycache__", "*.egg-info"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+# Prior-work code and exploratory experiments are not linted or formatted,
+# even when a file path is passed explicitly (e.g. by editor hooks).
+force-exclude = true
+extend-exclude = ["mentalmodeling", "workspace"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# Modules ported from rafael/mental-modeling-openai keep their original style; the
+# listed codes are what they violate today. New modules follow the full rule set.
+# F401 stays ignored here because several "unused" imports are star re-exports.
+"src/mtd_rl_xavier/datasets/{base,calculated_moves,f16capstone,llmx,registry,tables,trajair}.py" = ["B019", "B905", "E701", "F401", "I001"]
+"src/mtd_rl_xavier/experiment/{analysis,common,split_execution}.py" = ["B905", "F401", "I001"]
+"src/mtd_rl_xavier/experiment/common_analysis/{comparison,comparison_plots,joint_aggregate,joint_data,joint_metrics,joint_plots,runner}.py" = ["B007", "B905", "E402", "F401", "I001"]
+"src/mtd_rl_xavier/preprocessing/{llmx_original,prompting}.py" = ["E402", "E701", "F401", "I001", "UP035"]
+"src/mtd_rl_xavier/tools/{audit_dataset_relationships,check_inspection_notebook,count_input_tokens,describe_dataset,inventory_candidates,inventory_llmx_data,list_datasets,live_inspection,notebook_inspection,pilot_output_tokens,probe_exp06_query,raw_integrity,render_schema_docs,show_data,summarize_token_costs,token_inventory,verify_token_inventory}.py" = ["B023", "E402", "E701", "E702", "F401", "I001", "UP035"]
+"tests/{test_candidate_inventory,test_comparison_plots,test_exp06_cost_estimate,test_exp06_single_probe,test_joint_modern_experiments,test_live_inventory,test_notebook_inspection,test_raw_preprocessing,test_token_tools}.py" = ["B905", "E701", "E702", "F401", "I001"]
+
+[tool.poe.tasks]
+test = { cmd = "pytest", help = "Library tests and mentalmodeling/ (LLM-Xavier) tests" }
+test-workspace = { shell = "status=0; for d in workspace/[0-9]*/; do echo \"== $d\"; pytest -q \"$d\" || [ $? -eq 5 ] || status=1; done; exit $status", help = "Each workspace experiment's tests, one pytest run per experiment" }
+lint = { cmd = "ruff check src tests", help = "Lint the library and its tests" }

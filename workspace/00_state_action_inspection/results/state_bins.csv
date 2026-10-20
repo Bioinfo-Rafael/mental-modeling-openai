@@ -1,0 +1,151 @@
+task,state_index,state_name,method,bin_index,lower_bound,upper_bound,left_inclusive,right_inclusive,observed_count,observed_fraction
+MountainCar-v0,state[0],position,observation_space_equal_width,0,-1.2,-1.02,true,false,0,0.0
+MountainCar-v0,state[0],position,observation_space_equal_width,1,-1.02,-0.84,true,false,152,0.14601344860710855
+MountainCar-v0,state[0],position,observation_space_equal_width,2,-0.84,-0.6599999999999999,true,false,159,0.15273775216138327
+MountainCar-v0,state[0],position,observation_space_equal_width,3,-0.6599999999999999,-0.48,true,false,232,0.2228626320845341
+MountainCar-v0,state[0],position,observation_space_equal_width,4,-0.48,-0.30000000000000004,true,false,197,0.18924111431316043
+MountainCar-v0,state[0],position,observation_space_equal_width,5,-0.30000000000000004,-0.11999999999999988,true,false,44,0.04226705091258405
+MountainCar-v0,state[0],position,observation_space_equal_width,6,-0.11999999999999988,0.06000000000000005,true,false,51,0.04899135446685879
+MountainCar-v0,state[0],position,observation_space_equal_width,7,0.06000000000000005,0.24,true,false,67,0.0643611911623439
+MountainCar-v0,state[0],position,observation_space_equal_width,8,0.24,0.41999999999999993,true,false,89,0.08549471661863593
+MountainCar-v0,state[0],position,observation_space_equal_width,9,0.41999999999999993,0.6,true,true,50,0.04803073967339097
+MountainCar-v0,state[0],position,observed_range_equal_width,0,-0.9283018708229065,-0.7855323642492295,true,false,207,0.1988472622478386
+MountainCar-v0,state[0],position,observed_range_equal_width,1,-0.7855323642492295,-0.6427628576755524,true,false,118,0.11335254562920269
+MountainCar-v0,state[0],position,observed_range_equal_width,2,-0.6427628576755524,-0.49999335110187526,true,false,178,0.17098943323727187
+MountainCar-v0,state[0],position,observed_range_equal_width,3,-0.49999335110187526,-0.3572238445281982,true,false,225,0.21613832853025935
+MountainCar-v0,state[0],position,observed_range_equal_width,4,-0.3572238445281982,-0.21445433795452118,true,false,31,0.029779058597502402
+MountainCar-v0,state[0],position,observed_range_equal_width,5,-0.21445433795452118,-0.07168483138084403,true,false,39,0.037463976945244955
+MountainCar-v0,state[0],position,observed_range_equal_width,6,-0.07168483138084403,0.07108467519283301,true,false,40,0.03842459173871278
+MountainCar-v0,state[0],position,observed_range_equal_width,7,0.07108467519283301,0.21385418176651005,true,false,54,0.05187319884726225
+MountainCar-v0,state[0],position,observed_range_equal_width,8,0.21385418176651005,0.3566236883401872,true,false,67,0.0643611911623439
+MountainCar-v0,state[0],position,observed_range_equal_width,9,0.3566236883401872,0.49939319491386414,true,true,82,0.0787704130643612
+MountainCar-v0,state[0],position,quantile,0,-0.9283018708229065,-0.8721503019332886,true,false,104,0.09990393852065321
+MountainCar-v0,state[0],position,quantile,1,-0.8721503019332886,-0.784771740436554,true,false,104,0.09990393852065321
+MountainCar-v0,state[0],position,quantile,2,-0.784771740436554,-0.6575632095336913,true,false,105,0.10086455331412104
+MountainCar-v0,state[0],position,quantile,3,-0.6575632095336913,-0.5533679127693176,true,false,103,0.0989433237271854
+MountainCar-v0,state[0],position,quantile,4,-0.5533679127693176,-0.4921366274356842,true,false,104,0.09990393852065321
+MountainCar-v0,state[0],position,quantile,5,-0.4921366274356842,-0.44679132103919983,true,false,104,0.09990393852065321
+MountainCar-v0,state[0],position,quantile,6,-0.44679132103919983,-0.3528675436973563,true,false,105,0.10086455331412104
+MountainCar-v0,state[0],position,quantile,7,-0.3528675436973563,0.05266473442316055,true,false,103,0.0989433237271854
+MountainCar-v0,state[0],position,quantile,8,0.05266473442316055,0.3122321367263794,true,false,104,0.09990393852065321
+MountainCar-v0,state[0],position,quantile,9,0.3122321367263794,0.49939319491386414,true,true,105,0.10086455331412104
+MountainCar-v0,state[1],velocity,observation_space_equal_width,0,-0.07,-0.05600000000000001,true,false,0,0.0
+MountainCar-v0,state[1],velocity,observation_space_equal_width,1,-0.05600000000000001,-0.042,true,false,0,0.0
+MountainCar-v0,state[1],velocity,observation_space_equal_width,2,-0.042,-0.027999999999999997,true,false,0,0.0
+MountainCar-v0,state[1],velocity,observation_space_equal_width,3,-0.027999999999999997,-0.013999999999999999,true,false,194,0.18635926993275698
+MountainCar-v0,state[1],velocity,observation_space_equal_width,4,-0.013999999999999999,0.0,true,false,172,0.16522574447646493
+MountainCar-v0,state[1],velocity,observation_space_equal_width,5,0.0,0.014000000000000012,true,false,212,0.20365033621517772
+MountainCar-v0,state[1],velocity,observation_space_equal_width,6,0.014000000000000012,0.02800000000000001,true,false,220,0.21133525456292027
+MountainCar-v0,state[1],velocity,observation_space_equal_width,7,0.02800000000000001,0.04200000000000001,true,false,177,0.17002881844380405
+MountainCar-v0,state[1],velocity,observation_space_equal_width,8,0.04200000000000001,0.05600000000000002,true,false,66,0.06340057636887608
+MountainCar-v0,state[1],velocity,observation_space_equal_width,9,0.05600000000000002,0.07,true,true,0,0.0
+MountainCar-v0,state[1],velocity,observed_range_equal_width,0,-0.021554164588451385,-0.014895260334014893,true,false,178,0.17098943323727187
+MountainCar-v0,state[1],velocity,observed_range_equal_width,1,-0.014895260334014893,-0.0082363560795784,true,false,102,0.09798270893371758
+MountainCar-v0,state[1],velocity,observed_range_equal_width,2,-0.0082363560795784,-0.0015774518251419067,true,false,73,0.07012487992315082
+MountainCar-v0,state[1],velocity,observed_range_equal_width,3,-0.0015774518251419067,0.005081452429294586,true,false,94,0.09029779058597502
+MountainCar-v0,state[1],velocity,observed_range_equal_width,4,0.005081452429294586,0.011740356683731079,true,false,122,0.11719500480307397
+MountainCar-v0,state[1],velocity,observed_range_equal_width,5,0.011740356683731079,0.018399260938167572,true,false,83,0.07973102785782901
+MountainCar-v0,state[1],velocity,observed_range_equal_width,6,0.018399260938167572,0.025058165192604065,true,false,110,0.10566762728146013
+MountainCar-v0,state[1],velocity,observed_range_equal_width,7,0.025058165192604065,0.03171706944704056,true,false,79,0.07588856868395773
+MountainCar-v0,state[1],velocity,observed_range_equal_width,8,0.03171706944704056,0.03837597370147705,true,false,74,0.07108549471661864
+MountainCar-v0,state[1],velocity,observed_range_equal_width,9,0.03837597370147705,0.045034877955913544,true,true,126,0.12103746397694524
+MountainCar-v0,state[1],velocity,quantile,0,-0.021554164588451385,-0.017835069447755814,true,false,104,0.09990393852065321
+MountainCar-v0,state[1],velocity,quantile,1,-0.017835069447755814,-0.013084799982607365,true,false,104,0.09990393852065321
+MountainCar-v0,state[1],velocity,quantile,2,-0.013084799982607365,-0.005586849991232154,true,false,105,0.10086455331412104
+MountainCar-v0,state[1],velocity,quantile,3,-0.005586849991232154,0.002767897443845868,true,false,103,0.0989433237271854
+MountainCar-v0,state[1],velocity,quantile,4,0.002767897443845868,0.008386850357055664,true,false,104,0.09990393852065321
+MountainCar-v0,state[1],velocity,quantile,5,0.008386850357055664,0.017164289951324473,true,false,105,0.10086455331412104
+MountainCar-v0,state[1],velocity,quantile,6,0.017164289951324473,0.022598221898078922,true,false,104,0.09990393852065321
+MountainCar-v0,state[1],velocity,quantile,7,0.022598221898078922,0.031154882162809372,true,false,103,0.0989433237271854
+MountainCar-v0,state[1],velocity,quantile,8,0.031154882162809372,0.039990030229091644,true,false,104,0.09990393852065321
+MountainCar-v0,state[1],velocity,quantile,9,0.039990030229091644,0.045034877955913544,true,true,105,0.10086455331412104
+Pendulum-v1,state[0],x = cos(theta),observation_space_equal_width,0,-1.0,-0.8,true,false,48,0.024
+Pendulum-v1,state[0],x = cos(theta),observation_space_equal_width,1,-0.8,-0.6,true,false,23,0.0115
+Pendulum-v1,state[0],x = cos(theta),observation_space_equal_width,2,-0.6,-0.3999999999999999,true,false,28,0.014
+Pendulum-v1,state[0],x = cos(theta),observation_space_equal_width,3,-0.3999999999999999,-0.19999999999999996,true,false,13,0.0065
+Pendulum-v1,state[0],x = cos(theta),observation_space_equal_width,4,-0.19999999999999996,0.0,true,false,17,0.0085
+Pendulum-v1,state[0],x = cos(theta),observation_space_equal_width,5,0.0,0.20000000000000018,true,false,15,0.0075
+Pendulum-v1,state[0],x = cos(theta),observation_space_equal_width,6,0.20000000000000018,0.40000000000000013,true,false,16,0.008
+Pendulum-v1,state[0],x = cos(theta),observation_space_equal_width,7,0.40000000000000013,0.6000000000000001,true,false,24,0.012
+Pendulum-v1,state[0],x = cos(theta),observation_space_equal_width,8,0.6000000000000001,0.8,true,false,35,0.0175
+Pendulum-v1,state[0],x = cos(theta),observation_space_equal_width,9,0.8,1.0,true,true,1781,0.8905
+Pendulum-v1,state[0],x = cos(theta),observed_range_equal_width,0,-0.999982476234436,-0.7999842584133148,true,false,48,0.024
+Pendulum-v1,state[0],x = cos(theta),observed_range_equal_width,1,-0.7999842584133148,-0.5999860405921936,true,false,23,0.0115
+Pendulum-v1,state[0],x = cos(theta),observed_range_equal_width,2,-0.5999860405921936,-0.3999878227710725,true,false,28,0.014
+Pendulum-v1,state[0],x = cos(theta),observed_range_equal_width,3,-0.3999878227710725,-0.19998960494995122,true,false,13,0.0065
+Pendulum-v1,state[0],x = cos(theta),observed_range_equal_width,4,-0.19998960494995122,8.612871170043945e-06,true,false,17,0.0085
+Pendulum-v1,state[0],x = cos(theta),observed_range_equal_width,5,8.612871170043945e-06,0.20000683069229108,true,false,15,0.0075
+Pendulum-v1,state[0],x = cos(theta),observed_range_equal_width,6,0.20000683069229108,0.40000504851341234,true,false,16,0.008
+Pendulum-v1,state[0],x = cos(theta),observed_range_equal_width,7,0.40000504851341234,0.6000032663345336,true,false,24,0.012
+Pendulum-v1,state[0],x = cos(theta),observed_range_equal_width,8,0.6000032663345336,0.8000014841556549,true,false,35,0.0175
+Pendulum-v1,state[0],x = cos(theta),observed_range_equal_width,9,0.8000014841556549,0.9999997019767761,true,true,1781,0.8905
+Pendulum-v1,state[0],x = cos(theta),quantile,0,-0.999982476234436,0.7059663951396943,true,false,200,0.1
+Pendulum-v1,state[0],x = cos(theta),quantile,1,0.7059663951396943,0.9971453905105591,true,false,200,0.1
+Pendulum-v1,state[0],x = cos(theta),quantile,2,0.9971453905105591,0.9986163973808289,true,false,200,0.1
+Pendulum-v1,state[0],x = cos(theta),quantile,3,0.9986163973808289,0.9987480759620666,true,false,200,0.1
+Pendulum-v1,state[0],x = cos(theta),quantile,4,0.9987480759620666,0.9988249242305756,true,false,200,0.1
+Pendulum-v1,state[0],x = cos(theta),quantile,5,0.9988249242305756,0.998882246017456,true,false,200,0.1
+Pendulum-v1,state[0],x = cos(theta),quantile,6,0.998882246017456,0.9989361107349396,true,false,200,0.1
+Pendulum-v1,state[0],x = cos(theta),quantile,7,0.9989361107349396,0.9989934086799621,true,false,200,0.1
+Pendulum-v1,state[0],x = cos(theta),quantile,8,0.9989934086799621,0.9991615891456604,true,false,200,0.1
+Pendulum-v1,state[0],x = cos(theta),quantile,9,0.9991615891456604,0.9999997019767761,true,true,200,0.1
+Pendulum-v1,state[1],y = sin(theta),observation_space_equal_width,0,-1.0,-0.8,true,false,55,0.0275
+Pendulum-v1,state[1],y = sin(theta),observation_space_equal_width,1,-0.8,-0.6,true,false,31,0.0155
+Pendulum-v1,state[1],y = sin(theta),observation_space_equal_width,2,-0.6,-0.3999999999999999,true,false,31,0.0155
+Pendulum-v1,state[1],y = sin(theta),observation_space_equal_width,3,-0.3999999999999999,-0.19999999999999996,true,false,29,0.0145
+Pendulum-v1,state[1],y = sin(theta),observation_space_equal_width,4,-0.19999999999999996,0.0,true,false,1577,0.7885
+Pendulum-v1,state[1],y = sin(theta),observation_space_equal_width,5,0.0,0.20000000000000018,true,false,106,0.053
+Pendulum-v1,state[1],y = sin(theta),observation_space_equal_width,6,0.20000000000000018,0.40000000000000013,true,false,56,0.028
+Pendulum-v1,state[1],y = sin(theta),observation_space_equal_width,7,0.40000000000000013,0.6000000000000001,true,false,30,0.015
+Pendulum-v1,state[1],y = sin(theta),observation_space_equal_width,8,0.6000000000000001,0.8,true,false,27,0.0135
+Pendulum-v1,state[1],y = sin(theta),observation_space_equal_width,9,0.8,1.0,true,true,58,0.029
+Pendulum-v1,state[1],y = sin(theta),observed_range_equal_width,0,-0.9999985694885254,-0.80000119805336,true,false,55,0.0275
+Pendulum-v1,state[1],y = sin(theta),observed_range_equal_width,1,-0.80000119805336,-0.6000038266181946,true,false,31,0.0155
+Pendulum-v1,state[1],y = sin(theta),observed_range_equal_width,2,-0.6000038266181946,-0.40000645518302913,true,false,31,0.0155
+Pendulum-v1,state[1],y = sin(theta),observed_range_equal_width,3,-0.40000645518302913,-0.20000908374786375,true,false,29,0.0145
+Pendulum-v1,state[1],y = sin(theta),observed_range_equal_width,4,-0.20000908374786375,-1.1712312698364258e-05,true,false,1577,0.7885
+Pendulum-v1,state[1],y = sin(theta),observed_range_equal_width,5,-1.1712312698364258e-05,0.19998565912246713,true,false,106,0.053
+Pendulum-v1,state[1],y = sin(theta),observed_range_equal_width,6,0.19998565912246713,0.3999830305576324,true,false,56,0.028
+Pendulum-v1,state[1],y = sin(theta),observed_range_equal_width,7,0.3999830305576324,0.5999804019927979,true,false,30,0.015
+Pendulum-v1,state[1],y = sin(theta),observed_range_equal_width,8,0.5999804019927979,0.7999777734279634,true,false,27,0.0135
+Pendulum-v1,state[1],y = sin(theta),observed_range_equal_width,9,0.7999777734279634,0.9999751448631287,true,true,58,0.029
+Pendulum-v1,state[1],y = sin(theta),quantile,0,-0.9999985694885254,-0.05571248158812523,true,false,200,0.1
+Pendulum-v1,state[1],y = sin(theta),quantile,1,-0.05571248158812523,-0.05208420753479004,true,false,200,0.1
+Pendulum-v1,state[1],y = sin(theta),quantile,2,-0.05208420753479004,-0.04963164180517197,true,false,200,0.1
+Pendulum-v1,state[1],y = sin(theta),quantile,3,-0.04963164180517197,-0.04814049750566483,true,false,200,0.1
+Pendulum-v1,state[1],y = sin(theta),quantile,4,-0.04814049750566483,-0.04702521860599518,true,false,200,0.1
+Pendulum-v1,state[1],y = sin(theta),quantile,5,-0.04702521860599518,-0.04582524448633194,true,false,200,0.1
+Pendulum-v1,state[1],y = sin(theta),quantile,6,-0.04582524448633194,-0.04445029348134995,true,false,200,0.1
+Pendulum-v1,state[1],y = sin(theta),quantile,7,-0.04445029348134995,-0.037671260535717004,true,false,200,0.1
+Pendulum-v1,state[1],y = sin(theta),quantile,8,-0.037671260535717004,0.11137007027864497,true,false,200,0.1
+Pendulum-v1,state[1],y = sin(theta),quantile,9,0.11137007027864497,0.9999751448631287,true,true,200,0.1
+Pendulum-v1,state[2],angular velocity,observation_space_equal_width,0,-8.0,-6.4,true,false,22,0.011
+Pendulum-v1,state[2],angular velocity,observation_space_equal_width,1,-6.4,-4.8,true,false,28,0.014
+Pendulum-v1,state[2],angular velocity,observation_space_equal_width,2,-4.8,-3.1999999999999993,true,false,32,0.016
+Pendulum-v1,state[2],angular velocity,observation_space_equal_width,3,-3.1999999999999993,-1.5999999999999996,true,false,43,0.0215
+Pendulum-v1,state[2],angular velocity,observation_space_equal_width,4,-1.5999999999999996,0.0,true,false,850,0.425
+Pendulum-v1,state[2],angular velocity,observation_space_equal_width,5,0.0,1.6000000000000014,true,false,956,0.478
+Pendulum-v1,state[2],angular velocity,observation_space_equal_width,6,1.6000000000000014,3.200000000000001,true,false,19,0.0095
+Pendulum-v1,state[2],angular velocity,observation_space_equal_width,7,3.200000000000001,4.800000000000001,true,false,22,0.011
+Pendulum-v1,state[2],angular velocity,observation_space_equal_width,8,4.800000000000001,6.4,true,false,19,0.0095
+Pendulum-v1,state[2],angular velocity,observation_space_equal_width,9,6.4,8.0,true,true,9,0.0045
+Pendulum-v1,state[2],angular velocity,observed_range_equal_width,0,-8.0,-6.4,true,false,22,0.011
+Pendulum-v1,state[2],angular velocity,observed_range_equal_width,1,-6.4,-4.8,true,false,28,0.014
+Pendulum-v1,state[2],angular velocity,observed_range_equal_width,2,-4.8,-3.1999999999999993,true,false,32,0.016
+Pendulum-v1,state[2],angular velocity,observed_range_equal_width,3,-3.1999999999999993,-1.5999999999999996,true,false,43,0.0215
+Pendulum-v1,state[2],angular velocity,observed_range_equal_width,4,-1.5999999999999996,0.0,true,false,850,0.425
+Pendulum-v1,state[2],angular velocity,observed_range_equal_width,5,0.0,1.6000000000000014,true,false,956,0.478
+Pendulum-v1,state[2],angular velocity,observed_range_equal_width,6,1.6000000000000014,3.200000000000001,true,false,19,0.0095
+Pendulum-v1,state[2],angular velocity,observed_range_equal_width,7,3.200000000000001,4.800000000000001,true,false,22,0.011
+Pendulum-v1,state[2],angular velocity,observed_range_equal_width,8,4.800000000000001,6.4,true,false,19,0.0095
+Pendulum-v1,state[2],angular velocity,observed_range_equal_width,9,6.4,8.0,true,true,9,0.0045
+Pendulum-v1,state[2],angular velocity,quantile,0,-8.0,-0.5092985570430756,true,false,200,0.1
+Pendulum-v1,state[2],angular velocity,quantile,1,-0.5092985570430756,-0.15746097266674042,true,false,200,0.1
+Pendulum-v1,state[2],angular velocity,quantile,2,-0.15746097266674042,-0.07989256009459494,true,false,200,0.1
+Pendulum-v1,state[2],angular velocity,quantile,3,-0.07989256009459494,-0.03203096762299537,true,false,200,0.1
+Pendulum-v1,state[2],angular velocity,quantile,4,-0.03203096762299537,0.0032037837663665414,true,false,200,0.1
+Pendulum-v1,state[2],angular velocity,quantile,5,0.0032037837663665414,0.027398691698908847,true,false,200,0.1
+Pendulum-v1,state[2],angular velocity,quantile,6,0.027398691698908847,0.05158580355346203,true,false,200,0.1
+Pendulum-v1,state[2],angular velocity,quantile,7,0.05158580355346203,0.08282771855592728,true,false,200,0.1
+Pendulum-v1,state[2],angular velocity,quantile,8,0.08282771855592728,0.14637243300676356,true,false,200,0.1
+Pendulum-v1,state[2],angular velocity,quantile,9,0.14637243300676356,8.0,true,true,200,0.1

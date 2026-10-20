@@ -1,0 +1,14 @@
+name: trajair_example_baseline
+dataset_id: trajair
+prompt_mode: external_generic
+source_globs: ['data/candidate_datasets/trajair/**/*.txt']
+selector_scope: processed_track
+state_columns: [x_km, y_km, z_km, wind_x_mps, wind_y_mps]
+action_columns: []
+reward_column: null
+timestamp_column: frame_number
+fields: [aircraft_id]
+gap_policy: preserve
+value_format: lexical
+system_prompt: 'Describe only the supplied aircraft observations. Frame gaps are preserved; do not assume regular sampling, control actions, or rewards.'
+question: 'Summarize the supplied trajectory observations without inventing missing information.'

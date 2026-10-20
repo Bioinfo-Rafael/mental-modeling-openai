@@ -1,0 +1,30 @@
+{
+  "baseline_manifest": "experiments/15_trajectory_LAG/results/trajectory_batch_v1/manifest.json",
+  "baseline_manifest_sha256": "f937063e2a97b5e1c9fab0efa966d5b814310b3735521bb4dd3dcbbe7870971d",
+  "dynamics_manifest": "experiments/16_dynamics_LAG/results/dynamics_batch_v1/manifest.json",
+  "dynamics_manifest_sha256": "10c622e1bc54756d5ffb6fd6aac41449850cbff9d7aa3d93dc47b01657ab3f57",
+  "samples_compared": 20,
+  "requests_prepared": 60,
+  "input_and_truth_identical": true,
+  "conditions_identical_except_experiment_name": true,
+  "request_options_identical": true,
+  "user_prompts_identical": true,
+  "system_difference_only_empirical_prior": true,
+  "baseline_source_files_unchanged": true,
+  "baseline_manifest_unchanged": true,
+  "api_submitted": false,
+  "offline_tests": {
+    "passed": 62
+  },
+  "prior": {
+    "evaluation_overlap": "Fitted on all three recordings, including the MHI evaluation recording and its future intervals. This is an in-dataset empirical-prior experiment, not held-out dynamics generalization.",
+    "model_sha256": "9b74a705148ef2d2bf36d4f219c7e22704942cbca439e7f21d72d9ea251eb080",
+    "rendered_sha256": "8a1d9e81b8b83c98d2e5596588896b0975ca067c381a2ec6510bb4bbdabee545",
+    "source_report": "experiments/13_LAG/analysis/attitude_prediction_20261013/report.md",
+    "source_report_sha256": "e5477029a46101aef0f68e3650a64290e07453a36239c563cf2758e7a860a7fc",
+    "source_results": "experiments/13_LAG/analysis/attitude_prediction_20261013/results.json",
+    "source_results_sha256": "fc3ca1519a64c09ce5294a86b159055e09b71329b5c4ab8158b13cc471af1e13",
+    "template_sha256": "5a3692b310af31da59e0152bd4e406ef7a01f80595ac7ef3aa5688169f181968",
+    "version": "lag-attitude-history-velocity-full3-v1"
+  }
+}

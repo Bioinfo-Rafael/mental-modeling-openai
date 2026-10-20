@@ -1,0 +1,39 @@
+{
+  "aircombat_wez": {
+    "commit": "5ae42f4e56362e4df2bf29c5c01cbfb50c5795ed",
+    "source": "https://github.com/andrekuros/AirCombat-WEZ"
+  },
+  "baidu_fighter_jet": {
+    "acquired": false,
+    "reason": "No stable dataset page or ID was provided or uniquely resolved.",
+    "source_search": "https://aistudio.baidu.com/global/search?keyword=%E9%A3%9E%E6%9C%BA%E8%BD%A8%E8%BF%B9&tab=DATASET"
+  },
+  "calculated_moves": {
+    "download_file_id": 24026237,
+    "downloaded_md5": "8c1c24e77633c4d6f5c7f0fa4cfb0b4e",
+    "doi": "10.4121/uuid:3521e3e6-a05a-4b9c-9151-c269c15b7f30",
+    "source": "https://data.4tu.nl/articles/_/12688547/1"
+  },
+  "f16capstone": {
+    "commit": "acedfe4b2401b600a89f14f771dbcdf88c803b14",
+    "source": "https://github.com/camdeno/F16Capstone"
+  },
+  "llm_xavier": {
+    "commit": "441c5644f8eb93d6aee9c53631feb5fa5bf75b3c",
+    "source": "https://github.com/LukasWill/LLM-Xavier"
+  },
+  "llmx_data": {
+    "repository_type": "dataset",
+    "revision": "dc2b798f72bc02f7285949ccfcdcb42e5ff326fd",
+    "source": "https://huggingface.co/datasets/lerrhoo/llmx_data"
+  },
+  "trajair": {
+    "article_id": 14866251,
+    "doi": "10.1184/R1/14866251.v1",
+    "downloaded_files": {
+      "111_days.zip": "50dc9f4d271da435b6f1be2d13e70202",
+      "weather_data.zip": "279aa9141d77ec9b86d952e9a1448570"
+    },
+    "source": "https://kilthub.cmu.edu/articles/dataset/TrajAir_A_General_Aviation_Trajectory_Dataset/14866251"
+  }
+}

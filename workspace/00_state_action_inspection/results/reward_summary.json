@@ -1,0 +1,214 @@
+{
+  "MountainCar-v0": {
+    "trajectory_episode": "episode_0.npz",
+    "trajectory_count": 105,
+    "distribution_count": 1041,
+    "min": -1.0,
+    "max": -1.0,
+    "mean": -1.0,
+    "histogram_counts": [
+      1041
+    ],
+    "histogram_edges": [
+      -1.5,
+      -0.5
+    ],
+    "sources": [
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_0.npz",
+        "sha256": "c91b3e277decddff587601790c381096c5bab98fc726af94dba76d924e0ffa5b"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_1.npz",
+        "sha256": "4f3fbf6997ec293ae7417fc721754d97f04ac20ab1731c30e3915ad8baaa2d29"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_2_seed42.npz",
+        "sha256": "449f2f4aed8de0be97ec24871cead786f98711447882c1ea9e17b704407a7f9c"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_3_seed142.npz",
+        "sha256": "b2675420a5fc0cac1b0a0d34ee4f19d7203113e9428ce7867351f2ca27c6a739"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_4_seed123.npz",
+        "sha256": "615abffc1504b7c485f0144e446e8721f54bafa338aa39ab6ba2babcb9005860"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_5_seed407.npz",
+        "sha256": "719b34e19d0f2c9137f3d1b6f4506b4f59190e86fcf6d0129a3bc3bd9dbf187e"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_6_seed512.npz",
+        "sha256": "fdfe0e15f65b05700579aec314661c442175a0120502dc6ef05e39c1d98d9415"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_7_seed1024.npz",
+        "sha256": "4413bc13059d975eee0b6e8032f44a3963d6ae60fa65a9717f13fe9217179bda"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_8_seed1123.npz",
+        "sha256": "9b58537ddddd1935da10ea7de690dd3e1db67bf0418ba509158fda4524247e1b"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_9_seed3407.npz",
+        "sha256": "7bf30520ffe137652bf925eb9b46dc4f80ae60def5479696e9a3d6f532fd7e0e"
+      }
+    ]
+  },
+  "Pendulum-v1": {
+    "trajectory_episode": "episode_0.npz",
+    "trajectory_count": 200,
+    "distribution_count": 2000,
+    "min": -16.03927624799662,
+    "max": -0.0013318775634022157,
+    "mean": -0.6548309260115144,
+    "histogram_counts": [
+      2,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      5,
+      0,
+      4,
+      0,
+      1,
+      4,
+      3,
+      3,
+      5,
+      3,
+      5,
+      4,
+      3,
+      3,
+      3,
+      3,
+      4,
+      3,
+      6,
+      7,
+      1,
+      4,
+      3,
+      8,
+      4,
+      5,
+      5,
+      6,
+      7,
+      7,
+      7,
+      6,
+      4,
+      6,
+      5,
+      10,
+      6,
+      10,
+      13,
+      13,
+      16,
+      30,
+      1748
+    ],
+    "histogram_edges": [
+      -16.03927624799662,
+      -15.718517360587958,
+      -15.397758473179293,
+      -15.07699958577063,
+      -14.756240698361964,
+      -14.4354818109533,
+      -14.114722923544635,
+      -13.793964036135971,
+      -13.473205148727306,
+      -13.152446261318643,
+      -12.831687373909977,
+      -12.510928486501314,
+      -12.190169599092648,
+      -11.869410711683985,
+      -11.548651824275321,
+      -11.227892936866656,
+      -10.90713404945799,
+      -10.586375162049327,
+      -10.265616274640664,
+      -9.944857387231998,
+      -9.624098499823333,
+      -9.30333961241467,
+      -8.982580725006006,
+      -8.66182183759734,
+      -8.341062950188677,
+      -8.020304062780012,
+      -7.699545175371348,
+      -7.378786287962683,
+      -7.058027400554019,
+      -6.737268513145354,
+      -6.4165096257366905,
+      -6.095750738328025,
+      -5.774991850919362,
+      -5.454232963510698,
+      -5.133474076102033,
+      -4.812715188693369,
+      -4.491956301284704,
+      -4.17119741387604,
+      -3.850438526467375,
+      -3.5296796390587115,
+      -3.208920751650046,
+      -2.8881618642413827,
+      -2.5674029768327173,
+      -2.246644089424054,
+      -1.9258852020153885,
+      -1.605126314606725,
+      -1.2843674271980596,
+      -0.9636085397893961,
+      -0.6428496523807326,
+      -0.32209076497206723,
+      -0.0013318775634022157
+    ],
+    "sources": [
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz",
+        "sha256": "09c3c01c27f0a19af5d18bd6f5c70cbc8dd1b88eb8f3c70d2bbaac03ecf32fce"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_1.npz",
+        "sha256": "e3320a406e3fe8474ca64b240b2a60341b57135c9ac05ce51915888b2ba61c6e"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_2_seed42.npz",
+        "sha256": "5642d9060b68a0b88870fcfdefa76f885114f482afec21f48f02dff17b8d3f01"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_3_seed157.npz",
+        "sha256": "90b6f844cc8a107f3e2519d63defb5957615dfe0b3ab04950c8a46770007dd32"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_4_seed123.npz",
+        "sha256": "a91d6597434b7842081d107679008905c781b259b317846e28b7c14131c9b71c"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_5_seed407.npz",
+        "sha256": "72a42ac11066ae50040894ccb946cf5f67e2c9e1ab6a3016fffa6de5ee4cd614"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_6_seed512.npz",
+        "sha256": "5b162a9c05c722b46946d720cb929a551e35fdfc0b1b3019a906adceaf5d15ae"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_7_seed1024.npz",
+        "sha256": "2d175c03b47f05c670c00be9e8ffe1a9719e878c2b150d9d990df0a345fdfd9d"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_8_seed1123.npz",
+        "sha256": "3f5983dfd1918912945f7c39158fb12b8501d295356900cfc689cc69c0a47e83"
+      },
+      {
+        "path": "/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_9_seed3407.npz",
+        "sha256": "dd76fec93de6153061967c5c7267ed2d48fd6ccd0ef1db4ddd995d070dc88be2"
+      }
+    ]
+  }
+}

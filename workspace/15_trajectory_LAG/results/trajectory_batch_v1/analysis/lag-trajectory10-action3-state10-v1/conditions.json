@@ -1,0 +1,3806 @@
+[
+  {
+    "condition_id": "luna/mhi_v1.3_ic100601_win/A0100/H20/trajectory/all_aircraft_missiles",
+    "planned": 5,
+    "responses": 5,
+    "parsed": 5,
+    "parse_failures": 0,
+    "api_errors": 0,
+    "unscored": 0,
+    "complete": true,
+    "planned_steps": 50,
+    "scored_steps": 50,
+    "action_trajectory_exact_matches": 3,
+    "action_trajectory_accuracy_parsed": 0.6,
+    "action_trajectory_match_rate_all_planned": 0.6,
+    "action_step_accuracy": 0.76,
+    "action_component_accuracy": {
+      "altitude_action": 1,
+      "heading_action": 0.76,
+      "speed_action": 1
+    },
+    "state_mae_by_field": {
+      "lon_deg": 4.7724008388740914e-05,
+      "lat_deg": 2.358270939112117e-05,
+      "alt_m": 2.683790204530287,
+      "roll_deg": 21.383459327386348,
+      "pitch_deg": 1.8224550331925748,
+      "yaw_deg": 16.133185918692057,
+      "tas_mps": 1.1304832984613462,
+      "vn_mps": 2.5363999421767014,
+      "ve_mps": 4.829821416600459,
+      "vu_mps": 4.842935237337682
+    },
+    "circular_angle_mae_deg": {
+      "roll_deg": 21.383459327386348,
+      "yaw_deg": 2.747697296996784
+    },
+    "by_horizon": [
+      {
+        "offset": 1,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 1,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 1,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 5.130393819285928e-06,
+          "lat_deg": 3.818928487930862e-06,
+          "alt_m": 0.1410916840441132,
+          "roll_deg": 7.5099553414977285,
+          "pitch_deg": 0.41966621054925296,
+          "yaw_deg": 0.24891417479317823,
+          "tas_mps": 0.21347725382608473,
+          "vn_mps": 0.17935263055498965,
+          "ve_mps": 0.6878191874976629,
+          "vu_mps": 0.5562396268676135
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 7.509955341497732,
+          "yaw_deg": 0.24891417479318534
+        }
+      },
+      {
+        "offset": 2,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 9.529458733936735e-06,
+          "lat_deg": 7.395030380052958e-06,
+          "alt_m": 0.24911510990314129,
+          "roll_deg": 14.496725931386493,
+          "pitch_deg": 1.0432899779148108,
+          "yaw_deg": 0.6855285125955689,
+          "tas_mps": 0.4165566782845417,
+          "vn_mps": 0.35533367923628134,
+          "ve_mps": 1.3723170184441957,
+          "vu_mps": 1.3420543634228028
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 14.496725931386493,
+          "yaw_deg": 0.6855285125955731
+        }
+      },
+      {
+        "offset": 3,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 1.1509181555879877e-05,
+          "lat_deg": 1.1182490368355502e-05,
+          "alt_m": 0.24407054775347206,
+          "roll_deg": 17.910635561085698,
+          "pitch_deg": 1.3639537981943382,
+          "yaw_deg": 1.0467034687438868,
+          "tas_mps": 0.5811656982642261,
+          "vn_mps": 0.809640225457219,
+          "ve_mps": 1.911376248406859,
+          "vu_mps": 2.3333476400487707
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 17.9106355610857,
+          "yaw_deg": 1.0467034687438854
+        }
+      },
+      {
+        "offset": 4,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 1.2548959833225127e-05,
+          "lat_deg": 1.597916481301809e-05,
+          "alt_m": 0.1673649172698788,
+          "roll_deg": 12.909677798589488,
+          "pitch_deg": 1.922248848581088,
+          "yaw_deg": 1.6513765172578836,
+          "tas_mps": 0.9198875624239065,
+          "vn_mps": 1.7214081248032393,
+          "ve_mps": 2.5619484506140067,
+          "vu_mps": 4.187346957019986
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 12.90967779858949,
+          "yaw_deg": 1.6513765172578814
+        }
+      },
+      {
+        "offset": 5,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 1.814372242279205e-05,
+          "lat_deg": 2.1938411454414108e-05,
+          "alt_m": 0.7001581847096532,
+          "roll_deg": 7.794804289408037,
+          "pitch_deg": 1.8913486761426899,
+          "yaw_deg": 2.1265643818010123,
+          "tas_mps": 1.1947126773842798,
+          "vn_mps": 2.487996644619378,
+          "ve_mps": 3.857777460344818,
+          "vu_mps": 5.448647905126228
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 7.7948042894080345,
+          "yaw_deg": 2.1265643818010176
+        }
+      },
+      {
+        "offset": 6,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 3.348106187104349e-05,
+          "lat_deg": 2.7747647320097712e-05,
+          "alt_m": 1.719827563490253,
+          "roll_deg": 18.027719169260607,
+          "pitch_deg": 1.8073935811107915,
+          "yaw_deg": 2.813352440627174,
+          "tas_mps": 1.4007424184141428,
+          "vn_mps": 2.2818615045996653,
+          "ve_mps": 4.948857693169646,
+          "vu_mps": 5.39766202064949
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 18.027719169260603,
+          "yaw_deg": 2.8133524406271704
+        }
+      },
+      {
+        "offset": 7,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 5.316742011132192e-05,
+          "lat_deg": 3.247585818257903e-05,
+          "alt_m": 3.1955753327107232,
+          "roll_deg": 30.105649740333607,
+          "pitch_deg": 2.1296756067623552,
+          "yaw_deg": 3.7171539972636873,
+          "tas_mps": 1.44999310110328,
+          "vn_mps": 1.2740707944375103,
+          "ve_mps": 6.088604184723845,
+          "vu_mps": 6.914506388561615
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 30.10564974033361,
+          "yaw_deg": 3.717153997263688
+        }
+      },
+      {
+        "offset": 8,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 7.869177464669974e-05,
+          "lat_deg": 3.689179501975559e-05,
+          "alt_m": 4.948029697344827,
+          "roll_deg": 37.064530141499034,
+          "pitch_deg": 2.402601129945417,
+          "yaw_deg": 71.39925129058106,
+          "tas_mps": 1.5738270249127368,
+          "vn_mps": 3.262794256420733,
+          "ve_mps": 7.796594907553507,
+          "vu_mps": 7.755990605506631
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 37.064530141499034,
+          "yaw_deg": 4.729281714685993
+        }
+      },
+      {
+        "offset": 9,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00010973211961413653,
+          "lat_deg": 3.9208416934854996e-05,
+          "alt_m": 6.803099254332301,
+          "roll_deg": 36.566468074926455,
+          "pitch_deg": 2.425080011691351,
+          "yaw_deg": 72.25390883712316,
+          "tas_mps": 1.628712774717883,
+          "vn_mps": 5.4340629099325195,
+          "ve_mps": 9.046277636744234,
+          "vu_mps": 7.334974792331085
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 36.566468074926455,
+          "yaw_deg": 5.068992196065477
+        }
+      },
+      {
+        "offset": 10,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.0001453059912790877,
+          "lat_deg": 3.918935095015286e-05,
+          "alt_m": 8.669569753744508,
+          "roll_deg": 31.448427225876337,
+          "pitch_deg": 2.819292491033653,
+          "yaw_deg": 5.389105566133965,
+          "tas_mps": 1.9257577952823794,
+          "vn_mps": 7.557478651705475,
+          "ve_mps": 10.026641378505811,
+          "vu_mps": 7.1585820738425925
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 31.448427225876337,
+          "yaw_deg": 5.389105566133969
+        }
+      }
+    ],
+    "episode_id": "mhi_v1.3_ic100601_win",
+    "target_id": "A0100",
+    "task": "trajectory",
+    "H": 20,
+    "horizon": 10,
+    "observation_scope": "all_aircraft_missiles",
+    "model_alias": "luna",
+    "model": "gpt-5.6-luna"
+  },
+  {
+    "condition_id": "luna/mhi_v1.3_ic100601_win/A0100/H20/trajectory/self",
+    "planned": 5,
+    "responses": 5,
+    "parsed": 5,
+    "parse_failures": 0,
+    "api_errors": 0,
+    "unscored": 0,
+    "complete": true,
+    "planned_steps": 50,
+    "scored_steps": 50,
+    "action_trajectory_exact_matches": 3,
+    "action_trajectory_accuracy_parsed": 0.6,
+    "action_trajectory_match_rate_all_planned": 0.6,
+    "action_step_accuracy": 0.78,
+    "action_component_accuracy": {
+      "altitude_action": 1,
+      "heading_action": 0.78,
+      "speed_action": 1
+    },
+    "state_mae_by_field": {
+      "lon_deg": 6.23475428801612e-05,
+      "lat_deg": 1.2484259923866148e-05,
+      "alt_m": 4.422389885260709,
+      "roll_deg": 14.846991208768225,
+      "pitch_deg": 1.3036932343544605,
+      "yaw_deg": 15.550652969117795,
+      "tas_mps": 0.9207260491191391,
+      "vn_mps": 3.5891273621491324,
+      "ve_mps": 2.467526138829743,
+      "vu_mps": 5.326827950609844
+    },
+    "circular_angle_mae_deg": {
+      "roll_deg": 14.846991208768227,
+      "yaw_deg": 1.49316434742252
+    },
+    "by_horizon": [
+      {
+        "offset": 1,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 1,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 1,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 7.173822012873643e-06,
+          "lat_deg": 8.221392135965289e-07,
+          "alt_m": 0.13694554428402625,
+          "roll_deg": 2.3628816882709796,
+          "pitch_deg": 0.3556678265070199,
+          "yaw_deg": 0.16878269560566322,
+          "tas_mps": 0.20003459162826404,
+          "vn_mps": 0.4637311769410751,
+          "ve_mps": 0.9518191874976456,
+          "vu_mps": 1.4798962520791523
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 2.3628816882709827,
+          "yaw_deg": 0.16878269560565967
+        }
+      },
+      {
+        "offset": 2,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 1.686213626044264e-05,
+          "lat_deg": 2.304969619615349e-06,
+          "alt_m": 0.595162309407533,
+          "roll_deg": 3.618725931386492,
+          "pitch_deg": 0.6632170290824543,
+          "yaw_deg": 0.39550339161492476,
+          "tas_mps": 0.3947684785918625,
+          "vn_mps": 0.8658004087502945,
+          "ve_mps": 1.3163170184441888,
+          "vu_mps": 3.009840938004833
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 3.6187259313864955,
+          "yaw_deg": 0.3955033916149205
+        }
+      },
+      {
+        "offset": 3,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 2.7560961413541918e-05,
+          "lat_deg": 3.877509631422527e-06,
+          "alt_m": 1.4220925834846638,
+          "roll_deg": 2.6626355610857004,
+          "pitch_deg": 0.5592317593863715,
+          "yaw_deg": 0.5086781318592948,
+          "tas_mps": 0.6127106112669025,
+          "vn_mps": 1.0161563024059865,
+          "ve_mps": 1.385376248406868,
+          "vu_mps": 4.480432328509497
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 2.662635561085699,
+          "yaw_deg": 0.5086781318592954
+        }
+      },
+      {
+        "offset": 4,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 3.7889049258410525e-05,
+          "lat_deg": 5.00083518630845e-06,
+          "alt_m": 2.4806468966817192,
+          "roll_deg": 3.8615438674604023,
+          "pitch_deg": 0.8573840165428607,
+          "yaw_deg": 0.7782813830393216,
+          "tas_mps": 0.9252133902969092,
+          "vn_mps": 0.8314186132257589,
+          "ve_mps": 1.4979484506140253,
+          "vu_mps": 6.824135891681953
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 3.8615438674604037,
+          "yaw_deg": 0.7782813830393195
+        }
+      },
+      {
+        "offset": 5,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 4.93541721738211e-05,
+          "lat_deg": 5.421588544152201e-06,
+          "alt_m": 3.6581721730064602,
+          "roll_deg": 13.160956932276989,
+          "pitch_deg": 1.0769841135585614,
+          "yaw_deg": 0.8263433795249895,
+          "tas_mps": 0.9367126773842755,
+          "vn_mps": 0.9813983111049375,
+          "ve_mps": 2.075777460344825,
+          "vu_mps": 8.260647905126229
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 13.160956932276992,
+          "yaw_deg": 0.8263433795249909
+        }
+      },
+      {
+        "offset": 6,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 6.264879692992053e-05,
+          "lat_deg": 6.292352676950941e-06,
+          "alt_m": 5.284308115646127,
+          "roll_deg": 21.63916947633313,
+          "pitch_deg": 1.7753298094993617,
+          "yaw_deg": 0.9761827655921895,
+          "tas_mps": 1.0170678989980388,
+          "vn_mps": 1.7846655002347938,
+          "ve_mps": 2.5419049154624878,
+          "vu_mps": 7.909317993522487
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 21.63916947633313,
+          "yaw_deg": 0.9761827655921878
+        }
+      },
+      {
+        "offset": 7,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 7.71953507097578e-05,
+          "lat_deg": 8.823009493141853e-06,
+          "alt_m": 6.678775340579887,
+          "roll_deg": 21.701179773647713,
+          "pitch_deg": 2.1810630270571223,
+          "yaw_deg": 1.466514450275989,
+          "tas_mps": 1.1111874602822582,
+          "vn_mps": 3.5877914842611873,
+          "ve_mps": 2.80260418472384,
+          "vu_mps": 5.866261328201194
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 21.701179773647702,
+          "yaw_deg": 1.4665144502759915
+        }
+      },
+      {
+        "offset": 8,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 9.462852594595006e-05,
+          "lat_deg": 1.524019716470093e-05,
+          "alt_m": 7.621242465894648,
+          "roll_deg": 21.992530141499035,
+          "pitch_deg": 2.011006257144664,
+          "yaw_deg": 72.87232570891021,
+          "tas_mps": 1.254970828712328,
+          "vn_mps": 6.1480698834931395,
+          "ve_mps": 3.7325949075535094,
+          "vu_mps": 4.677990605506631
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 21.99253014149904,
+          "yaw_deg": 2.506356133015123
+        }
+      },
+      {
+        "offset": 9,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00011478647791989261,
+          "lat_deg": 2.8707637075342517e-05,
+          "alt_m": 8.0827537736659,
+          "roll_deg": 25.59537274344681,
+          "pitch_deg": 1.857805732435546,
+          "yaw_deg": 73.41034860881737,
+          "tas_mps": 1.2771764300648782,
+          "vn_mps": 8.784287576741857,
+          "ve_mps": 4.144277636744235,
+          "vu_mps": 4.887894222786867
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 25.59537274344681,
+          "yaw_deg": 3.2014319677597087
+        }
+      },
+      {
+        "offset": 10,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00013537613617700117,
+          "lat_deg": 4.835236063343018e-05,
+          "alt_m": 8.263799649956127,
+          "roll_deg": 31.87491597227501,
+          "pitch_deg": 1.6992427723306438,
+          "yaw_deg": 4.103569175938008,
+          "tas_mps": 1.477418123965674,
+          "vn_mps": 11.427954364332294,
+          "ve_mps": 4.226641378505805,
+          "vu_mps": 5.871862040679597
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 31.874915972275012,
+          "yaw_deg": 4.103569175938003
+        }
+      }
+    ],
+    "episode_id": "mhi_v1.3_ic100601_win",
+    "target_id": "A0100",
+    "task": "trajectory",
+    "H": 20,
+    "horizon": 10,
+    "observation_scope": "self",
+    "model_alias": "luna",
+    "model": "gpt-5.6-luna"
+  },
+  {
+    "condition_id": "luna/mhi_v1.3_ic100601_win/A0200/H20/trajectory/all_aircraft_missiles",
+    "planned": 5,
+    "responses": 5,
+    "parsed": 3,
+    "parse_failures": 2,
+    "api_errors": 0,
+    "unscored": 0,
+    "complete": false,
+    "planned_steps": 50,
+    "scored_steps": 30,
+    "action_trajectory_exact_matches": 0,
+    "action_trajectory_accuracy_parsed": 0.0,
+    "action_trajectory_match_rate_all_planned": 0.0,
+    "action_step_accuracy": 0.43333333333333335,
+    "action_component_accuracy": {
+      "altitude_action": 0.8333333333333334,
+      "heading_action": 0.43333333333333335,
+      "speed_action": 0.9666666666666667
+    },
+    "state_mae_by_field": {
+      "lon_deg": 0.01748886609924559,
+      "lat_deg": 0.0019375970598067246,
+      "alt_m": 10.039229126808703,
+      "roll_deg": 29.829344321288207,
+      "pitch_deg": 3.741372966839327,
+      "yaw_deg": 5.330886452158511,
+      "tas_mps": 2.107789684418498,
+      "vn_mps": 16.680447429403788,
+      "ve_mps": 10.942248338754307,
+      "vu_mps": 14.922309836835634
+    },
+    "circular_angle_mae_deg": {
+      "roll_deg": 29.829344321288207,
+      "yaw_deg": 5.33088645215851
+    },
+    "by_horizon": [
+      {
+        "offset": 1,
+        "parsed": 3,
+        "planned": 5,
+        "action_step_accuracy": 0.6666666666666666,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6666666666666666,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.01739520370571294,
+          "lat_deg": 0.0019819553195479975,
+          "alt_m": 0.12643839883791466,
+          "roll_deg": 4.084419798502559,
+          "pitch_deg": 0.4950037429492591,
+          "yaw_deg": 0.2672212827146104,
+          "tas_mps": 0.3384764452777252,
+          "vn_mps": 1.2376234258659184,
+          "ve_mps": 0.6863933119170712,
+          "vu_mps": 1.8973280487158988
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 4.084419798502552,
+          "yaw_deg": 0.2672212827146154
+        }
+      },
+      {
+        "offset": 2,
+        "parsed": 3,
+        "planned": 5,
+        "action_step_accuracy": 0.6666666666666666,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6666666666666666,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.017397611473086272,
+          "lat_deg": 0.0019829495941934283,
+          "alt_m": 0.5551512771583779,
+          "roll_deg": 6.182234840591765,
+          "pitch_deg": 1.9510894764947535,
+          "yaw_deg": 2.486137962000086,
+          "tas_mps": 1.0186996824231944,
+          "vn_mps": 4.8353888177566295,
+          "ve_mps": 1.4648436198801018,
+          "vu_mps": 3.9768913969451702
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 6.182234840591765,
+          "yaw_deg": 2.486137962000081
+        }
+      },
+      {
+        "offset": 3,
+        "parsed": 3,
+        "planned": 5,
+        "action_step_accuracy": 0.6666666666666666,
+        "action_component_accuracy": {
+          "altitude_action": 0.6666666666666666,
+          "heading_action": 0.6666666666666666,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.01740338100887584,
+          "lat_deg": 0.001976727942569312,
+          "alt_m": 1.5932254343827783,
+          "roll_deg": 15.609630229540914,
+          "pitch_deg": 3.682639427333409,
+          "yaw_deg": 4.959446518443926,
+          "tas_mps": 1.5111721122217812,
+          "vn_mps": 8.232137669225912,
+          "ve_mps": 2.961913739952307,
+          "vu_mps": 7.133105393336405
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 15.609630229540906,
+          "yaw_deg": 4.95944651844393
+        }
+      },
+      {
+        "offset": 4,
+        "parsed": 3,
+        "planned": 5,
+        "action_step_accuracy": 0.3333333333333333,
+        "action_component_accuracy": {
+          "altitude_action": 0.6666666666666666,
+          "heading_action": 0.3333333333333333,
+          "speed_action": 0.6666666666666666
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.017418546544656504,
+          "lat_deg": 0.001965045261833609,
+          "alt_m": 3.1403656082669236,
+          "roll_deg": 23.319628978599464,
+          "pitch_deg": 4.505003407930231,
+          "yaw_deg": 6.4937885453733415,
+          "tas_mps": 1.5398810267321512,
+          "vn_mps": 11.075116357067774,
+          "ve_mps": 6.269005996166642,
+          "vu_mps": 12.035931886501567
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 23.319628978599468,
+          "yaw_deg": 6.493788545373339
+        }
+      },
+      {
+        "offset": 5,
+        "parsed": 3,
+        "planned": 5,
+        "action_step_accuracy": 0.3333333333333333,
+        "action_component_accuracy": {
+          "altitude_action": 0.6666666666666666,
+          "heading_action": 0.3333333333333333,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.01744533133827512,
+          "lat_deg": 0.0019503220444197684,
+          "alt_m": 5.904569227757747,
+          "roll_deg": 26.953447232296867,
+          "pitch_deg": 4.791826520003201,
+          "yaw_deg": 6.241482795039369,
+          "tas_mps": 2.016465032211935,
+          "vn_mps": 16.265937509916466,
+          "ve_mps": 10.689703429841321,
+          "vu_mps": 16.245362164311626
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 26.953447232296867,
+          "yaw_deg": 6.24148279503936
+        }
+      },
+      {
+        "offset": 6,
+        "parsed": 3,
+        "planned": 5,
+        "action_step_accuracy": 0.3333333333333333,
+        "action_component_accuracy": {
+          "altitude_action": 0.6666666666666666,
+          "heading_action": 0.3333333333333333,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.017483317496314044,
+          "lat_deg": 0.0019334745784268155,
+          "alt_m": 9.459999954192122,
+          "roll_deg": 26.68289675169252,
+          "pitch_deg": 4.542370309971681,
+          "yaw_deg": 5.242422235129834,
+          "tas_mps": 2.477969415986877,
+          "vn_mps": 21.039332398783134,
+          "ve_mps": 13.794061833109899,
+          "vu_mps": 18.818875753909165
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 26.68289675169252,
+          "yaw_deg": 5.242422235129841
+        }
+      },
+      {
+        "offset": 7,
+        "parsed": 3,
+        "planned": 5,
+        "action_step_accuracy": 0.6666666666666666,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6666666666666666,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.017524388448189637,
+          "lat_deg": 0.0019154875035264733,
+          "alt_m": 13.38340848651084,
+          "roll_deg": 44.784865934400926,
+          "pitch_deg": 4.22781713290947,
+          "yaw_deg": 4.976864607709217,
+          "tas_mps": 2.682854297297979,
+          "vn_mps": 23.769974507933103,
+          "ve_mps": 16.005676434385386,
+          "vu_mps": 20.72084634733786
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 44.784865934400926,
+          "yaw_deg": 4.976864607709207
+        }
+      },
+      {
+        "offset": 8,
+        "parsed": 3,
+        "planned": 5,
+        "action_step_accuracy": 0.3333333333333333,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.3333333333333333,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.017565668042986243,
+          "lat_deg": 0.001901087726326504,
+          "alt_m": 17.58406755010795,
+          "roll_deg": 60.20462930065109,
+          "pitch_deg": 3.9313307367650494,
+          "yaw_deg": 7.813416099282195,
+          "tas_mps": 2.6429149263000604,
+          "vn_mps": 24.351609640024314,
+          "ve_mps": 17.6315158830087,
+          "vu_mps": 21.98634200307629
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 60.204629300651106,
+          "yaw_deg": 7.813416099282193
+        }
+      },
+      {
+        "offset": 9,
+        "parsed": 3,
+        "planned": 5,
+        "action_step_accuracy": 0,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.01760645703402967,
+          "lat_deg": 0.0018913350094654409,
+          "alt_m": 21.985903837905727,
+          "roll_deg": 53.74186326229974,
+          "pitch_deg": 4.855998986119668,
+          "yaw_deg": 7.26219797253753,
+          "tas_mps": 3.0418972962417947,
+          "vn_mps": 26.829515967529762,
+          "ve_mps": 19.222697636956738,
+          "vu_mps": 22.954966628974766
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 53.74186326229974,
+          "yaw_deg": 7.262197972537526
+        }
+      },
+      {
+        "offset": 10,
+        "parsed": 3,
+        "planned": 5,
+        "action_step_accuracy": 0.3333333333333333,
+        "action_component_accuracy": {
+          "altitude_action": 0.6666666666666666,
+          "heading_action": 0.3333333333333333,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.017648755900329622,
+          "lat_deg": 0.001877585617757897,
+          "alt_m": 26.659161492966632,
+          "roll_deg": 36.72982688430623,
+          "pitch_deg": 4.430649927916545,
+          "yaw_deg": 7.565886503355006,
+          "tas_mps": 3.8075666094914786,
+          "vn_mps": 29.167837999934868,
+          "ve_mps": 20.696671502324907,
+          "vu_mps": 23.453448745247588
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 36.72982688430622,
+          "yaw_deg": 7.565886503355007
+        }
+      }
+    ],
+    "episode_id": "mhi_v1.3_ic100601_win",
+    "target_id": "A0200",
+    "task": "trajectory",
+    "H": 20,
+    "horizon": 10,
+    "observation_scope": "all_aircraft_missiles",
+    "model_alias": "luna",
+    "model": "gpt-5.6-luna"
+  },
+  {
+    "condition_id": "luna/mhi_v1.3_ic100601_win/A0200/H20/trajectory/self",
+    "planned": 5,
+    "responses": 5,
+    "parsed": 4,
+    "parse_failures": 1,
+    "api_errors": 0,
+    "unscored": 0,
+    "complete": false,
+    "planned_steps": 50,
+    "scored_steps": 40,
+    "action_trajectory_exact_matches": 0,
+    "action_trajectory_accuracy_parsed": 0.0,
+    "action_trajectory_match_rate_all_planned": 0.0,
+    "action_step_accuracy": 0.45,
+    "action_component_accuracy": {
+      "altitude_action": 0.85,
+      "heading_action": 0.575,
+      "speed_action": 0.85
+    },
+    "state_mae_by_field": {
+      "lon_deg": 0.00019369902061221466,
+      "lat_deg": 2.6125461540793538e-05,
+      "alt_m": 6.912147094831471,
+      "roll_deg": 20.66303082630082,
+      "pitch_deg": 2.9019732524074424,
+      "yaw_deg": 79.3714274677154,
+      "tas_mps": 3.6073326296810477,
+      "vn_mps": 6.642515232478233,
+      "ve_mps": 13.529109649614494,
+      "vu_mps": 11.964245227265726
+    },
+    "circular_angle_mae_deg": {
+      "roll_deg": 20.663030826300815,
+      "yaw_deg": 9.977776382268928
+    },
+    "by_horizon": [
+      {
+        "offset": 1,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 0.75,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 6.579353431845902e-06,
+          "lat_deg": 2.7959052744108703e-06,
+          "alt_m": 0.2221245954887081,
+          "roll_deg": 2.623975194069807,
+          "pitch_deg": 0.3970985582953442,
+          "yaw_deg": 1.8784712780332553,
+          "tas_mps": 0.7482166742934808,
+          "vn_mps": 0.3383183053869674,
+          "ve_mps": 1.8494250249294197,
+          "vu_mps": 1.5396253023563649
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 2.623975194069807,
+          "yaw_deg": 1.8784712780332598
+        }
+      },
+      {
+        "offset": 2,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 0.75,
+          "heading_action": 0.75,
+          "speed_action": 0.75
+        },
+        "state_mae_by_field": {
+          "lon_deg": 1.5417859241750875e-05,
+          "lat_deg": 5.530229827854782e-06,
+          "alt_m": 0.7109079059234773,
+          "roll_deg": 6.410793163038937,
+          "pitch_deg": 1.984247971819383,
+          "yaw_deg": 92.26765022658455,
+          "tas_mps": 1.4959652895845537,
+          "vn_mps": 3.376009453567282,
+          "ve_mps": 5.838306081205086,
+          "vu_mps": 2.812939686492853
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 6.410793163038939,
+          "yaw_deg": 5.913525602660371
+        }
+      },
+      {
+        "offset": 3,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 0.75
+        },
+        "state_mae_by_field": {
+          "lon_deg": 3.5301895231043545e-05,
+          "lat_deg": 6.630312029187735e-06,
+          "alt_m": 1.141707510393644,
+          "roll_deg": 14.363502971301008,
+          "pitch_deg": 3.1393873486355,
+          "yaw_deg": 91.65837971392342,
+          "tas_mps": 2.0842647076849588,
+          "vn_mps": 6.941489736827926,
+          "ve_mps": 10.54851774066146,
+          "vu_mps": 5.730667048123302
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 14.363502971301003,
+          "yaw_deg": 8.003669130872723
+        }
+      },
+      {
+        "offset": 4,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 8.068838520713939e-05,
+          "lat_deg": 1.053990608568256e-05,
+          "alt_m": 2.0071998421407216,
+          "roll_deg": 21.876669617583886,
+          "pitch_deg": 3.00521326458206,
+          "yaw_deg": 90.27153165013435,
+          "tas_mps": 2.767057871515476,
+          "vn_mps": 9.06605829918248,
+          "ve_mps": 14.916306324088449,
+          "vu_mps": 8.906336679526735
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 21.876669617583886,
+          "yaw_deg": 8.954880979861798
+        }
+      },
+      {
+        "offset": 5,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.25,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 0.75
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00014152621367102824,
+          "lat_deg": 1.7788564145249097e-05,
+          "alt_m": 3.9601777059513097,
+          "roll_deg": 20.089153715907976,
+          "pitch_deg": 4.555417843804931,
+          "yaw_deg": 88.26351571851355,
+          "tas_mps": 3.513685961789598,
+          "vn_mps": 8.82113400587199,
+          "ve_mps": 18.04544623453673,
+          "vu_mps": 13.479403884332442
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 20.089153715907976,
+          "yaw_deg": 9.128955914207502
+        }
+      },
+      {
+        "offset": 6,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.25,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.25,
+          "speed_action": 0.75
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00020968824098588357,
+          "lat_deg": 2.386198671189277e-05,
+          "alt_m": 6.690533182613422,
+          "roll_deg": 28.232341914751643,
+          "pitch_deg": 5.224528749285504,
+          "yaw_deg": 87.6477149892405,
+          "tas_mps": 4.173509065802058,
+          "vn_mps": 5.696001532768106,
+          "ve_mps": 18.923263263716784,
+          "vu_mps": 17.555997534144666
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 28.232341914751643,
+          "yaw_deg": 11.20179848378325
+        }
+      },
+      {
+        "offset": 7,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 0.75,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00027901335284141737,
+          "lat_deg": 2.9373801213594675e-05,
+          "alt_m": 9.901936953765585,
+          "roll_deg": 26.996493248393083,
+          "pitch_deg": 3.680035579570786,
+          "yaw_deg": 87.35423268061587,
+          "tas_mps": 4.858427945297635,
+          "vn_mps": 5.921306106636696,
+          "ve_mps": 18.504428551436174,
+          "vu_mps": 19.60442189451082
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 26.996493248393076,
+          "yaw_deg": 13.542816280191865
+        }
+      },
+      {
+        "offset": 8,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 0.75,
+          "heading_action": 0.5,
+          "speed_action": 0.75
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.0003419493498277859,
+          "lat_deg": 3.955928046472934e-05,
+          "alt_m": 12.81345806259435,
+          "roll_deg": 32.59292458344405,
+          "pitch_deg": 1.6560821745557417,
+          "yaw_deg": 85.9864173772448,
+          "tas_mps": 5.102326093058011,
+          "vn_mps": 9.882586620853825,
+          "ve_mps": 16.001460156002743,
+          "vu_mps": 17.036086022747583
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 32.59292458344405,
+          "yaw_deg": 13.916381737924212
+        }
+      },
+      {
+        "offset": 9,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.25,
+        "action_component_accuracy": {
+          "altitude_action": 0.75,
+          "heading_action": 0.25,
+          "speed_action": 0.75
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.0003940792385215275,
+          "lat_deg": 5.5185257210155214e-05,
+          "alt_m": 14.922908413536334,
+          "roll_deg": 27.644097266190684,
+          "pitch_deg": 2.143205610269911,
+          "yaw_deg": 85.0113770142156,
+          "tas_mps": 5.399302548052724,
+          "vn_mps": 9.643387954532106,
+          "ve_mps": 15.438154272333659,
+          "vu_mps": 15.279921356521466
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 27.644097266190677,
+          "yaw_deg": 14.547398968101128
+        }
+      },
+      {
+        "offset": 10,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 0.75,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.0004327463171627244,
+          "lat_deg": 6.998937244517833e-05,
+          "alt_m": 16.75051677590716,
+          "roll_deg": 25.800356588327105,
+          "pitch_deg": 3.2345154232552638,
+          "yaw_deg": 83.37498402864817,
+          "tas_mps": 5.930570139731984,
+          "vn_mps": 6.738860309154953,
+          "ve_mps": 15.225788847234444,
+          "vu_mps": 17.697052863901032
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 25.800356588327098,
+          "yaw_deg": 12.68986544705318
+        }
+      }
+    ],
+    "episode_id": "mhi_v1.3_ic100601_win",
+    "target_id": "A0200",
+    "task": "trajectory",
+    "H": 20,
+    "horizon": 10,
+    "observation_scope": "self",
+    "model_alias": "luna",
+    "model": "gpt-5.6-luna"
+  },
+  {
+    "condition_id": "sol/mhi_v1.3_ic100601_win/A0100/H20/trajectory/all_aircraft_missiles",
+    "planned": 5,
+    "responses": 5,
+    "parsed": 4,
+    "parse_failures": 1,
+    "api_errors": 0,
+    "unscored": 0,
+    "complete": false,
+    "planned_steps": 50,
+    "scored_steps": 40,
+    "action_trajectory_exact_matches": 3,
+    "action_trajectory_accuracy_parsed": 0.75,
+    "action_trajectory_match_rate_all_planned": 0.6,
+    "action_step_accuracy": 0.775,
+    "action_component_accuracy": {
+      "altitude_action": 1,
+      "heading_action": 0.775,
+      "speed_action": 1
+    },
+    "state_mae_by_field": {
+      "lon_deg": 3.105745198368481e-05,
+      "lat_deg": 9.523294923141633e-06,
+      "alt_m": 0.8614916728594381,
+      "roll_deg": 15.533209839330937,
+      "pitch_deg": 0.7809843479933936,
+      "yaw_deg": 1.198186013371207,
+      "tas_mps": 1.1453706611315355,
+      "vn_mps": 3.376320646473295,
+      "ve_mps": 1.510743793788814,
+      "vu_mps": 2.262806258365755
+    },
+    "circular_angle_mae_deg": {
+      "roll_deg": 15.533209839330935,
+      "yaw_deg": 1.1981860133712074
+    },
+    "by_horizon": [
+      {
+        "offset": 1,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 1,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 1,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 2.439642621254734e-06,
+          "lat_deg": 3.7424781673678353e-07,
+          "alt_m": 0.030828899413108957,
+          "roll_deg": 0.2992845196002509,
+          "pitch_deg": 0.17986425742282816,
+          "yaw_deg": 0.02273953143040508,
+          "tas_mps": 0.17574194805726506,
+          "vn_mps": 0.33844744725838893,
+          "ve_mps": 0.2637915721723445,
+          "vu_mps": 0.3632616064986403
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 0.29928451960025626,
+          "yaw_deg": 0.022739531430403304
+        }
+      },
+      {
+        "offset": 2,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 5.700423450605285e-06,
+          "lat_deg": 7.898377987203276e-07,
+          "alt_m": 0.12488258513735673,
+          "roll_deg": 2.451771017631567,
+          "pitch_deg": 0.2952653195225072,
+          "yaw_deg": 0.04470879842097908,
+          "tas_mps": 0.24018218644755507,
+          "vn_mps": 0.5155196456183342,
+          "ve_mps": 0.48587788184552494,
+          "vu_mps": 0.8729353161811535
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 2.4517710176315646,
+          "yaw_deg": 0.0447087984209702
+        }
+      },
+      {
+        "offset": 3,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 9.932362409870166e-06,
+          "lat_deg": 1.1369446610842715e-06,
+          "alt_m": 0.39459347090019037,
+          "roll_deg": 4.467800635164672,
+          "pitch_deg": 0.7012537570829747,
+          "yaw_deg": 0.13000835828221113,
+          "tas_mps": 0.37687609289110924,
+          "vn_mps": 0.31463655538208535,
+          "ve_mps": 0.7256326378563287,
+          "vu_mps": 2.0922052069572605
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 4.4678006351646715,
+          "yaw_deg": 0.13000835828221824
+        }
+      },
+      {
+        "offset": 4,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 1.4628672783345564e-05,
+          "lat_deg": 9.916635068663027e-07,
+          "alt_m": 0.9028446629197333,
+          "roll_deg": 7.786869246101536,
+          "pitch_deg": 0.7971541131147364,
+          "yaw_deg": 0.29222165821436086,
+          "tas_mps": 0.7585641362601336,
+          "vn_mps": 0.5617070800742043,
+          "ve_mps": 0.9186879772115049,
+          "vu_mps": 2.8868424042852565
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 7.7868692461015385,
+          "yaw_deg": 0.2922216582143662
+        }
+      },
+      {
+        "offset": 5,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 2.1596898548637e-05,
+          "lat_deg": 1.3216427756645999e-06,
+          "alt_m": 1.4876805540673104,
+          "roll_deg": 6.973403712704214,
+          "pitch_deg": 0.7313049068776144,
+          "yaw_deg": 0.4008530665600101,
+          "tas_mps": 1.2406821832053794,
+          "vn_mps": 0.6869644914664468,
+          "ve_mps": 1.897089171634196,
+          "vu_mps": 2.657740727009991
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 6.973403712704211,
+          "yaw_deg": 0.4008530665600034
+        }
+      },
+      {
+        "offset": 6,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 3.1318289494208784e-05,
+          "lat_deg": 2.338269339929866e-06,
+          "alt_m": 1.8215231446461075,
+          "roll_deg": 18.085390660843625,
+          "pitch_deg": 0.5514723876553203,
+          "yaw_deg": 0.8123062475394747,
+          "tas_mps": 1.5815705223036503,
+          "vn_mps": 0.5400783435823779,
+          "ve_mps": 2.3371800289395352,
+          "vu_mps": 0.6271830601304278
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 18.085390660843622,
+          "yaw_deg": 0.8123062475394818
+        }
+      },
+      {
+        "offset": 7,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 4.1783902997138966e-05,
+          "lat_deg": 3.6391331033058805e-06,
+          "alt_m": 1.6726045773068563,
+          "roll_deg": 22.468959069229516,
+          "pitch_deg": 1.102196010860045,
+          "yaw_deg": 1.4510553970508098,
+          "tas_mps": 1.7485375578176559,
+          "vn_mps": 2.881526402273429,
+          "ve_mps": 2.3584450933173855,
+          "vu_mps": 2.146366691044851
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 22.468959069229513,
+          "yaw_deg": 1.4510553970508084
+        }
+      },
+      {
+        "offset": 8,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 5.1870980787072085e-05,
+          "lat_deg": 1.2048887043647483e-05,
+          "alt_m": 1.1068763005391702,
+          "roll_deg": 30.33975319565537,
+          "pitch_deg": 1.6482149012608225,
+          "yaw_deg": 2.2328358729584576,
+          "tas_mps": 1.8115645403902505,
+          "vn_mps": 6.120822484354421,
+          "ve_mps": 2.2678634283090737,
+          "vu_mps": 3.8800170121759487
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 30.339753195655362,
+          "yaw_deg": 2.2328358729584608
+        }
+      },
+      {
+        "offset": 9,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 6.138908123887177e-05,
+          "lat_deg": 2.6302913214593104e-05,
+          "alt_m": 0.4314809570914804,
+          "roll_deg": 32.48177683753401,
+          "pitch_deg": 1.1636139080081938,
+          "yaw_deg": 2.9583846840596646,
+          "tas_mps": 1.7745432265590892,
+          "vn_mps": 9.299945293784987,
+          "ve_mps": 2.0406037904998016,
+          "vu_mps": 3.8384870936267075
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 32.481776837534014,
+          "yaw_deg": 2.9583846840596664
+        }
+      },
+      {
+        "offset": 10,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 6.991426550584379e-05,
+          "lat_deg": 4.628940997086772e-05,
+          "alt_m": 0.6416015765730663,
+          "roll_deg": 29.977089498844588,
+          "pitch_deg": 0.639503918128893,
+          "yaw_deg": 3.636746519195696,
+          "tas_mps": 1.745444217383266,
+          "vn_mps": 12.503558720938273,
+          "ve_mps": 1.8122663561024446,
+          "vu_mps": 3.2630234657473105
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 29.977089498844585,
+          "yaw_deg": 3.6367465191956967
+        }
+      }
+    ],
+    "episode_id": "mhi_v1.3_ic100601_win",
+    "target_id": "A0100",
+    "task": "trajectory",
+    "H": 20,
+    "horizon": 10,
+    "observation_scope": "all_aircraft_missiles",
+    "model_alias": "sol",
+    "model": "gpt-5.6-sol"
+  },
+  {
+    "condition_id": "sol/mhi_v1.3_ic100601_win/A0100/H20/trajectory/self",
+    "planned": 5,
+    "responses": 5,
+    "parsed": 5,
+    "parse_failures": 0,
+    "api_errors": 0,
+    "unscored": 0,
+    "complete": true,
+    "planned_steps": 50,
+    "scored_steps": 50,
+    "action_trajectory_exact_matches": 3,
+    "action_trajectory_accuracy_parsed": 0.6,
+    "action_trajectory_match_rate_all_planned": 0.6,
+    "action_step_accuracy": 0.68,
+    "action_component_accuracy": {
+      "altitude_action": 1,
+      "heading_action": 0.68,
+      "speed_action": 1
+    },
+    "state_mae_by_field": {
+      "lon_deg": 7.256752153608659e-05,
+      "lat_deg": 1.342637925617396e-05,
+      "alt_m": 3.218370017345933,
+      "roll_deg": 13.664654293302728,
+      "pitch_deg": 1.2514988962138063,
+      "yaw_deg": 15.682634697302754,
+      "tas_mps": 0.6281562823188369,
+      "vn_mps": 3.5112665017474507,
+      "ve_mps": 4.309579718935053,
+      "vu_mps": 4.726312885236053
+    },
+    "circular_angle_mae_deg": {
+      "roll_deg": 13.66465429330273,
+      "yaw_deg": 1.729146075607481
+    },
+    "by_horizon": [
+      {
+        "offset": 1,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 1,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 1,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 5.699822011706601e-06,
+          "lat_deg": 3.165471781585438e-07,
+          "alt_m": 0.08545607360993017,
+          "roll_deg": 0.7828365387231689,
+          "pitch_deg": 0.19766782650701997,
+          "yaw_deg": 0.2674754468865075,
+          "tas_mps": 0.14539460620981687,
+          "vn_mps": 0.2273526305549936,
+          "ve_mps": 2.2778955546964013,
+          "vu_mps": 0.8734375978046826
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 0.7828365387231713,
+          "yaw_deg": 0.2674754468865103
+        }
+      },
+      {
+        "offset": 2,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 1.8150136259009742e-05,
+          "lat_deg": 7.451018007031962e-07,
+          "alt_m": 0.2660738746071729,
+          "roll_deg": 1.9987259313864927,
+          "pitch_deg": 0.2671326737722867,
+          "yaw_deg": 0.5494528308759762,
+          "tas_mps": 0.3583160885341726,
+          "vn_mps": 0.31297544012868883,
+          "ve_mps": 3.867465546319461,
+          "vu_mps": 1.037057092209565
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 1.9987259313864911,
+          "yaw_deg": 0.5494528308759754
+        }
+      },
+      {
+        "offset": 3,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 3.425696141334811e-05,
+          "lat_deg": 1.6399989831938911e-06,
+          "alt_m": 0.47675400331427226,
+          "roll_deg": 3.748944704048786,
+          "pitch_deg": 1.4700522131384217,
+          "yaw_deg": 0.6727034687438966,
+          "tas_mps": 0.5607604528689307,
+          "vn_mps": 0.6121373773795795,
+          "ve_mps": 4.495636714821247,
+          "vu_mps": 3.3608016509345298
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 3.7489447040487844,
+          "yaw_deg": 0.6727034687438959
+        }
+      },
+      {
+        "offset": 4,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 5.0764068220132685e-05,
+          "lat_deg": 2.785806795202461e-06,
+          "alt_m": 1.3656470827301745,
+          "roll_deg": 7.395688509416189,
+          "pitch_deg": 2.0451977324024897,
+          "yaw_deg": 0.81937651725788,
+          "tas_mps": 0.7102018836584818,
+          "vn_mps": 0.8634434156626221,
+          "ve_mps": 4.286267151841658,
+          "vu_mps": 6.247346957019985
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 7.395688509416198,
+          "yaw_deg": 0.8193765172578822
+        }
+      },
+      {
+        "offset": 5,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 6.616361064573084e-05,
+          "lat_deg": 3.901543422557552e-06,
+          "alt_m": 2.623816575373894,
+          "roll_deg": 10.34882942079097,
+          "pitch_deg": 1.8523614586111146,
+          "yaw_deg": 0.8525643818010128,
+          "tas_mps": 0.6006962976773706,
+          "vn_mps": 1.089751586002621,
+          "ve_mps": 3.7529037725844736,
+          "vu_mps": 7.688647905126229
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 10.348829420790974,
+          "yaw_deg": 0.8525643818010167
+        }
+      },
+      {
+        "offset": 6,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 8.000612605201241e-05,
+          "lat_deg": 6.739460424398658e-06,
+          "alt_m": 4.029918579161313,
+          "roll_deg": 18.264918650621226,
+          "pitch_deg": 1.376962239137721,
+          "yaw_deg": 1.1113524406271638,
+          "tas_mps": 0.7335786817484291,
+          "vn_mps": 2.085424411596881,
+          "ve_mps": 3.0584805185839867,
+          "vu_mps": 6.453031955924194
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 18.264918650621222,
+          "yaw_deg": 1.1113524406271609
+        }
+      },
+      {
+        "offset": 7,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 9.211735071517069e-05,
+          "lat_deg": 1.191489686220848e-05,
+          "alt_m": 5.054359647922138,
+          "roll_deg": 20.497179773647712,
+          "pitch_deg": 1.11748337801197,
+          "yaw_deg": 1.8571539972636864,
+          "tas_mps": 0.9389728836218183,
+          "vn_mps": 3.7480993094932025,
+          "ve_mps": 2.921069479833669,
+          "vu_mps": 6.883933488402491
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 20.49717977364771,
+          "yaw_deg": 1.8571539972636857
+        }
+      },
+      {
+        "offset": 8,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00010587052594530632,
+          "lat_deg": 2.0804204980606754e-05,
+          "alt_m": 5.782771846441028,
+          "roll_deg": 20.339272893569294,
+          "pitch_deg": 1.5978475132088559,
+          "yaw_deg": 72.84725348631429,
+          "tas_mps": 0.8628649049191836,
+          "vn_mps": 6.109853481075319,
+          "ve_mps": 3.927841931312813,
+          "vu_mps": 6.573777740780176
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 20.3392728935693,
+          "yaw_deg": 2.897283910419236
+        }
+      },
+      {
+        "offset": 9,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00012442447792011536,
+          "lat_deg": 3.404158306494764e-05,
+          "alt_m": 6.167694394274804,
+          "roll_deg": 22.44288412146213,
+          "pitch_deg": 1.3835086502161345,
+          "yaw_deg": 73.27590883712315,
+          "tas_mps": 0.7730384017043661,
+          "vn_mps": 8.468694919463113,
+          "ve_mps": 6.076167371287005,
+          "vu_mps": 4.431291268703202
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 22.44288412146213,
+          "yaw_deg": 3.690992196065474
+        }
+      },
+      {
+        "offset": 10,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00014822213617833314,
+          "lat_deg": 5.137464904976241e-05,
+          "alt_m": 6.331208096024602,
+          "roll_deg": 30.827262389361316,
+          "pitch_deg": 1.2067752771320504,
+          "yaw_deg": 4.5731055661339735,
+          "tas_mps": 0.5977386222457994,
+          "vn_mps": 11.594932446117486,
+          "ve_mps": 8.432069148069818,
+          "vu_mps": 3.7138031954554833
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 30.827262389361323,
+          "yaw_deg": 4.573105566133973
+        }
+      }
+    ],
+    "episode_id": "mhi_v1.3_ic100601_win",
+    "target_id": "A0100",
+    "task": "trajectory",
+    "H": 20,
+    "horizon": 10,
+    "observation_scope": "self",
+    "model_alias": "sol",
+    "model": "gpt-5.6-sol"
+  },
+  {
+    "condition_id": "sol/mhi_v1.3_ic100601_win/A0200/H20/trajectory/all_aircraft_missiles",
+    "planned": 5,
+    "responses": 5,
+    "parsed": 5,
+    "parse_failures": 0,
+    "api_errors": 0,
+    "unscored": 0,
+    "complete": true,
+    "planned_steps": 50,
+    "scored_steps": 50,
+    "action_trajectory_exact_matches": 0,
+    "action_trajectory_accuracy_parsed": 0.0,
+    "action_trajectory_match_rate_all_planned": 0.0,
+    "action_step_accuracy": 0.6,
+    "action_component_accuracy": {
+      "altitude_action": 1,
+      "heading_action": 0.6799999999999999,
+      "speed_action": 0.92
+    },
+    "state_mae_by_field": {
+      "lon_deg": 0.00010824022448218784,
+      "lat_deg": 2.1165037475299185e-05,
+      "alt_m": 6.032116701133564,
+      "roll_deg": 14.758649461855985,
+      "pitch_deg": 2.6125935331247385,
+      "yaw_deg": 39.22233953174575,
+      "tas_mps": 1.6253272382753805,
+      "vn_mps": 3.623570976977629,
+      "ve_mps": 6.8499967071212495,
+      "vu_mps": 9.686707004397416
+    },
+    "circular_angle_mae_deg": {
+      "roll_deg": 14.758649461855985,
+      "yaw_deg": 4.335565668435484
+    },
+    "by_horizon": [
+      {
+        "offset": 1,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 1.851307180800177e-06,
+          "lat_deg": 9.055229554633116e-07,
+          "alt_m": 0.07781878635169051,
+          "roll_deg": 2.7760765994972525,
+          "pitch_deg": 1.0161476073973221,
+          "yaw_deg": 1.3524638599404988,
+          "tas_mps": 0.3363791917598576,
+          "vn_mps": 0.4181170652640766,
+          "ve_mps": 0.7471876686863164,
+          "vu_mps": 0.969168460578085
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 2.776076599497247,
+          "yaw_deg": 1.3524638599404966
+        }
+      },
+      {
+        "offset": 2,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.4,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.4,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 8.357476156106714e-06,
+          "lat_deg": 3.3179597821231254e-06,
+          "alt_m": 0.41867508485574945,
+          "roll_deg": 6.085131175059959,
+          "pitch_deg": 2.278024041483573,
+          "yaw_deg": 74.53646267009313,
+          "tas_mps": 0.7532025285965289,
+          "vn_mps": 2.436268006373561,
+          "ve_mps": 3.138799553091337,
+          "vu_mps": 3.0131249172396357
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 6.085131175059968,
+          "yaw_deg": 3.49316297095379
+        }
+      },
+      {
+        "offset": 3,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.4,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 0.8
+        },
+        "state_mae_by_field": {
+          "lon_deg": 2.6189777312879414e-05,
+          "lat_deg": 8.325588537161365e-06,
+          "alt_m": 1.2385959449395159,
+          "roll_deg": 8.830820903910904,
+          "pitch_deg": 2.845998763435075,
+          "yaw_deg": 4.050960695716491,
+          "tas_mps": 0.981647941895534,
+          "vn_mps": 3.2874948355235345,
+          "ve_mps": 6.300848604513917,
+          "vu_mps": 5.422744153823358
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 8.83082090391091,
+          "yaw_deg": 4.050960695716492
+        }
+      },
+      {
+        "offset": 4,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 5.466939593361531e-05,
+          "lat_deg": 1.3646711083481478e-05,
+          "alt_m": 2.492272346556001,
+          "roll_deg": 14.580260540461751,
+          "pitch_deg": 2.405943304512494,
+          "yaw_deg": 4.676169794379393,
+          "tas_mps": 1.2104006967426073,
+          "vn_mps": 3.4836601418971327,
+          "ve_mps": 8.964992574681116,
+          "vu_mps": 7.085200981636538
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 14.580260540461751,
+          "yaw_deg": 4.676169794379388
+        }
+      },
+      {
+        "offset": 5,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 0.8
+        },
+        "state_mae_by_field": {
+          "lon_deg": 8.971114363021115e-05,
+          "lat_deg": 1.772696006980823e-05,
+          "alt_m": 4.004298434995235,
+          "roll_deg": 17.936400776607385,
+          "pitch_deg": 2.232124945029843,
+          "yaw_deg": 4.447592954457604,
+          "tas_mps": 1.6093116985221854,
+          "vn_mps": 3.749098851463554,
+          "ve_mps": 9.912074383556389,
+          "vu_mps": 8.503568077601322
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 17.936400776607382,
+          "yaw_deg": 4.44759295445761
+        }
+      },
+      {
+        "offset": 6,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 0.8
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00012445231212154795,
+          "lat_deg": 2.201329791517992e-05,
+          "alt_m": 5.56454109297938,
+          "roll_deg": 13.31686468520414,
+          "pitch_deg": 2.539446197721517,
+          "yaw_deg": 4.016453646211744,
+          "tas_mps": 1.9979866589587174,
+          "vn_mps": 3.1986479037798317,
+          "ve_mps": 8.707560638414515,
+          "vu_mps": 12.320767704560597
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 13.316864685204138,
+          "yaw_deg": 4.016453646211744
+        }
+      },
+      {
+        "offset": 7,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.0001545690357033891,
+          "lat_deg": 2.7826540690512048e-05,
+          "alt_m": 7.361080786430011,
+          "roll_deg": 22.08599233277436,
+          "pitch_deg": 4.112563957381304,
+          "yaw_deg": 74.97246364884398,
+          "tas_mps": 2.3708780521893686,
+          "vn_mps": 2.728205572696436,
+          "ve_mps": 8.848753411048724,
+          "vu_mps": 14.93538447851491
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 22.08599233277435,
+          "yaw_deg": 4.883330528504774
+        }
+      },
+      {
+        "offset": 8,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00018139858991332857,
+          "lat_deg": 3.278678135387736e-05,
+          "alt_m": 10.378130819697072,
+          "roll_deg": 26.287711596335836,
+          "pitch_deg": 3.625883400974797,
+          "yaw_deg": 74.85029948269697,
+          "tas_mps": 2.3430180952232718,
+          "vn_mps": 3.342809403875875,
+          "ve_mps": 7.844061417688761,
+          "vu_mps": 16.10668401783978
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 26.28771159633584,
+          "yaw_deg": 5.87427097124048
+        }
+      },
+      {
+        "offset": 9,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00020757873875822951,
+          "lat_deg": 3.7360960325827365e-05,
+          "alt_m": 13.167118280889918,
+          "roll_deg": 22.34253068295117,
+          "pitch_deg": 2.812451166821729,
+          "yaw_deg": 74.7289268810302,
+          "tas_mps": 2.3536354289235932,
+          "vn_mps": 5.673306650259782,
+          "ve_mps": 6.892709045637918,
+          "vu_mps": 15.25187041626564
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 22.342530682951168,
+          "yaw_deg": 5.7177444441386
+        }
+      },
+      {
+        "offset": 10,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.4,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 0.8
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00023362446811177052,
+          "lat_deg": 4.774005203955767e-05,
+          "alt_m": 15.618635433641066,
+          "roll_deg": 13.344705325757097,
+          "pitch_deg": 2.2573519464897327,
+          "yaw_deg": 74.59160168408748,
+          "tas_mps": 2.2968120899421423,
+          "vn_mps": 7.918101338642508,
+          "ve_mps": 7.142979773893502,
+          "vu_mps": 13.258556835914293
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 13.344705325757094,
+          "yaw_deg": 4.843506818811465
+        }
+      }
+    ],
+    "episode_id": "mhi_v1.3_ic100601_win",
+    "target_id": "A0200",
+    "task": "trajectory",
+    "H": 20,
+    "horizon": 10,
+    "observation_scope": "all_aircraft_missiles",
+    "model_alias": "sol",
+    "model": "gpt-5.6-sol"
+  },
+  {
+    "condition_id": "sol/mhi_v1.3_ic100601_win/A0200/H20/trajectory/self",
+    "planned": 5,
+    "responses": 5,
+    "parsed": 5,
+    "parse_failures": 0,
+    "api_errors": 0,
+    "unscored": 0,
+    "complete": true,
+    "planned_steps": 50,
+    "scored_steps": 50,
+    "action_trajectory_exact_matches": 0,
+    "action_trajectory_accuracy_parsed": 0.0,
+    "action_trajectory_match_rate_all_planned": 0.0,
+    "action_step_accuracy": 0.52,
+    "action_component_accuracy": {
+      "altitude_action": 1,
+      "heading_action": 0.6,
+      "speed_action": 0.92
+    },
+    "state_mae_by_field": {
+      "lon_deg": 8.843228833484318e-05,
+      "lat_deg": 2.3283807254586006e-05,
+      "alt_m": 6.697274511201668,
+      "roll_deg": 24.09762527926953,
+      "pitch_deg": 2.7250039211904524,
+      "yaw_deg": 32.01934509985606,
+      "tas_mps": 1.6980830723571831,
+      "vn_mps": 5.3357259151225245,
+      "ve_mps": 8.925521415931382,
+      "vu_mps": 10.465800632158532
+    },
+    "circular_angle_mae_deg": {
+      "roll_deg": 24.09762527926953,
+      "yaw_deg": 4.2682212064597325
+    },
+    "by_horizon": [
+      {
+        "offset": 1,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.4,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.4,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 1.9710253553739676e-06,
+          "lat_deg": 6.534517609679824e-07,
+          "alt_m": 0.06672859446543952,
+          "roll_deg": 1.5324705794008415,
+          "pitch_deg": 0.6524280152995829,
+          "yaw_deg": 0.4770763410436203,
+          "tas_mps": 0.11945146516616205,
+          "vn_mps": 0.3815540170039412,
+          "ve_mps": 0.3831634761706987,
+          "vu_mps": 0.47965533937911997
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 1.532470579400848,
+          "yaw_deg": 0.47707634104361885
+        }
+      },
+      {
+        "offset": 2,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.4,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.4,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 4.682423320900853e-06,
+          "lat_deg": 2.541898903984929e-06,
+          "alt_m": 0.33499191802402495,
+          "roll_deg": 7.2737427361403775,
+          "pitch_deg": 1.7545746568442384,
+          "yaw_deg": 1.4563178700931296,
+          "tas_mps": 0.36383397473584295,
+          "vn_mps": 1.4872782063735641,
+          "ve_mps": 1.4207931530913434,
+          "vu_mps": 2.77710932097823
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 7.273742736140372,
+          "yaw_deg": 1.4563178700931245
+        }
+      },
+      {
+        "offset": 3,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.4,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 0.8
+        },
+        "state_mae_by_field": {
+          "lon_deg": 9.751777312771992e-06,
+          "lat_deg": 5.392357508071655e-06,
+          "alt_m": 1.0686260147532267,
+          "roll_deg": 15.171633768002165,
+          "pitch_deg": 2.2398464572923684,
+          "yaw_deg": 2.1322742957164915,
+          "tas_mps": 0.46072692566754087,
+          "vn_mps": 1.2519502355235326,
+          "ve_mps": 2.14099831010639,
+          "vu_mps": 4.569714057504182
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 15.171633768002163,
+          "yaw_deg": 2.1322742957164906
+        }
+      },
+      {
+        "offset": 4,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 1.9475395936296992e-05,
+          "lat_deg": 6.5955701671782664e-06,
+          "alt_m": 1.862396425351926,
+          "roll_deg": 24.70800394046175,
+          "pitch_deg": 1.8189000454791062,
+          "yaw_deg": 3.487893194379392,
+          "tas_mps": 0.7365026967426047,
+          "vn_mps": 1.2766115418971338,
+          "ve_mps": 4.484171814117779,
+          "vu_mps": 7.278100306028601
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 24.708003940461754,
+          "yaw_deg": 3.487893194379393
+        }
+      },
+      {
+        "offset": 5,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 0.8
+        },
+        "state_mae_by_field": {
+          "lon_deg": 3.6024904539999623e-05,
+          "lat_deg": 6.1315600731859375e-06,
+          "alt_m": 3.31253514921782,
+          "roll_deg": 30.084171860225283,
+          "pitch_deg": 3.190063198395345,
+          "yaw_deg": 4.096479354457605,
+          "tas_mps": 1.2934114985221867,
+          "vn_mps": 3.2113318514635454,
+          "ve_mps": 7.221224645214896,
+          "vu_mps": 12.611395677601323
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 30.084171860225286,
+          "yaw_deg": 4.096479354457609
+        }
+      },
+      {
+        "offset": 6,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 0.8
+        },
+        "state_mae_by_field": {
+          "lon_deg": 6.21729506548263e-05,
+          "lat_deg": 1.1446406240622764e-05,
+          "alt_m": 6.214332289546292,
+          "roll_deg": 32.62637288520414,
+          "pitch_deg": 3.5066439977215174,
+          "yaw_deg": 4.9126898462117445,
+          "tas_mps": 1.9919303934058405,
+          "vn_mps": 5.835456303779828,
+          "ve_mps": 9.972509899362123,
+          "vu_mps": 15.927070704560595
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 32.62637288520414,
+          "yaw_deg": 4.912689846211748
+        }
+      },
+      {
+        "offset": 7,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00010325917591273992,
+          "lat_deg": 2.380154068930551e-05,
+          "alt_m": 9.496845586430117,
+          "roll_deg": 41.99530866465457,
+          "pitch_deg": 4.091537957381303,
+          "yaw_deg": 76.14456384884397,
+          "tas_mps": 2.7693878073130405,
+          "vn_mps": 8.45763377269643,
+          "ve_mps": 13.379906514747573,
+          "vu_mps": 16.508598478514912
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 41.99530866465457,
+          "yaw_deg": 6.037430728504762
+        }
+      },
+      {
+        "offset": 8,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.0001560810159475068,
+          "lat_deg": 4.0510181354136424e-05,
+          "alt_m": 12.563638219696804,
+          "roll_deg": 42.52103539633583,
+          "pitch_deg": 3.038730000974797,
+          "yaw_deg": 76.42103868269696,
+          "tas_mps": 3.063790677242429,
+          "vn_mps": 10.253624989490252,
+          "ve_mps": 16.500897419333363,
+          "vu_mps": 14.962795617839777
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 42.52103539633584,
+          "yaw_deg": 7.5458101712404755
+        }
+      },
+      {
+        "offset": 9,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00021579238849085415,
+          "lat_deg": 5.861436197420744e-05,
+          "alt_m": 15.024310680890085,
+          "roll_deg": 29.121894682951172,
+          "pitch_deg": 3.3553729360265363,
+          "yaw_deg": 76.3076256810302,
+          "tas_mps": 3.096976882958984,
+          "vn_mps": 11.294846076991593,
+          "ve_mps": 17.359296785050454,
+          "vu_mps": 14.477727336443555
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 29.121894682951176,
+          "yaw_deg": 7.376043244138612
+        }
+      },
+      {
+        "offset": 10,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.2,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.4,
+          "speed_action": 0.8
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00027511182587716123,
+          "lat_deg": 7.715074387419918e-05,
+          "alt_m": 17.02834023364094,
+          "roll_deg": 15.941618279319146,
+          "pitch_deg": 3.601941946489732,
+          "yaw_deg": 74.75749188408747,
+          "tas_mps": 3.0848184018171994,
+          "vn_mps": 9.906972156005425,
+          "ve_mps": 16.392252142119197,
+          "vu_mps": 15.065839482735017
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 15.941618279319147,
+          "yaw_deg": 5.160197018811488
+        }
+      }
+    ],
+    "episode_id": "mhi_v1.3_ic100601_win",
+    "target_id": "A0200",
+    "task": "trajectory",
+    "H": 20,
+    "horizon": 10,
+    "observation_scope": "self",
+    "model_alias": "sol",
+    "model": "gpt-5.6-sol"
+  },
+  {
+    "condition_id": "terra/mhi_v1.3_ic100601_win/A0100/H20/trajectory/all_aircraft_missiles",
+    "planned": 5,
+    "responses": 5,
+    "parsed": 4,
+    "parse_failures": 1,
+    "api_errors": 0,
+    "unscored": 0,
+    "complete": false,
+    "planned_steps": 50,
+    "scored_steps": 40,
+    "action_trajectory_exact_matches": 2,
+    "action_trajectory_accuracy_parsed": 0.5,
+    "action_trajectory_match_rate_all_planned": 0.4,
+    "action_step_accuracy": 0.65,
+    "action_component_accuracy": {
+      "altitude_action": 1,
+      "heading_action": 0.65,
+      "speed_action": 1
+    },
+    "state_mae_by_field": {
+      "lon_deg": 0.000141364473253347,
+      "lat_deg": 2.925774690289984e-05,
+      "alt_m": 8.192937924583271,
+      "roll_deg": 18.931553409314223,
+      "pitch_deg": 2.2315235400026405,
+      "yaw_deg": 20.183266597132317,
+      "tas_mps": 2.117698801753517,
+      "vn_mps": 4.132105840508054,
+      "ve_mps": 7.079395582661543,
+      "vu_mps": 7.287638375994938
+    },
+    "circular_angle_mae_deg": {
+      "roll_deg": 18.93155340931422,
+      "yaw_deg": 2.433093312451079
+    },
+    "by_horizon": [
+      {
+        "offset": 1,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 1,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 1,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 3.5990962672372007e-06,
+          "lat_deg": 2.8392812954081137e-06,
+          "alt_m": 0.3233435111835661,
+          "roll_deg": 3.8660738918713435,
+          "pitch_deg": 0.4402780530592608,
+          "yaw_deg": 0.5740379144120444,
+          "tas_mps": 0.24045513912109584,
+          "vn_mps": 0.7982953760745835,
+          "ve_mps": 3.928121943559388,
+          "vu_mps": 3.2149108225827163
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 3.866073891871345,
+          "yaw_deg": 0.5740379144120382
+        }
+      },
+      {
+        "offset": 2,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 2.103072289472152e-05,
+          "lat_deg": 6.295557387403505e-06,
+          "alt_m": 1.3195924455544628,
+          "roll_deg": 5.346563578874264,
+          "pitch_deg": 1.1803180415913617,
+          "yaw_deg": 1.4155361984380415,
+          "tas_mps": 0.57808836202544,
+          "vn_mps": 2.5983932679031128,
+          "ve_mps": 7.890150123871601,
+          "vu_mps": 6.324934563392274
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 5.34656357887426,
+          "yaw_deg": 1.4155361984380406
+        }
+      },
+      {
+        "offset": 3,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 5.26670683740349e-05,
+          "lat_deg": 1.2641820926972969e-05,
+          "alt_m": 2.956636001168363,
+          "roll_deg": 5.666612365853543,
+          "pitch_deg": 1.4750747234738264,
+          "yaw_deg": 1.8737026123649523,
+          "tas_mps": 1.0538422083669303,
+          "vn_mps": 3.596069542055524,
+          "ve_mps": 10.21269279647483,
+          "vu_mps": 9.57645193652904
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 5.666612365853538,
+          "yaw_deg": 1.8737026123649514
+        }
+      },
+      {
+        "offset": 4,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 9.261001033067373e-05,
+          "lat_deg": 2.008729592617442e-05,
+          "alt_m": 5.257726083837497,
+          "roll_deg": 6.308364314151656,
+          "pitch_deg": 2.368616996574721,
+          "yaw_deg": 2.1865401404738956,
+          "tas_mps": 1.6798382515310024,
+          "vn_mps": 4.966218922049478,
+          "ve_mps": 10.696559315731164,
+          "vu_mps": 12.488021859804343
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 6.308364314151653,
+          "yaw_deg": 2.1865401404738947
+        }
+      },
+      {
+        "offset": 5,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.0001351277850787369,
+          "lat_deg": 2.729925998323779e-05,
+          "alt_m": 7.845190529052161,
+          "roll_deg": 14.385556535793938,
+          "pitch_deg": 2.6394499969280534,
+          "yaw_deg": 2.1495695659332195,
+          "tas_mps": 2.181155107185276,
+          "vn_mps": 3.669518417853104,
+          "ve_mps": 9.855744066099042,
+          "vu_mps": 12.59236588888542
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 14.385556535793938,
+          "yaw_deg": 2.14956956593322
+        }
+      },
+      {
+        "offset": 6,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00017343533105318443,
+          "lat_deg": 3.126813089338043e-05,
+          "alt_m": 10.2177201844313,
+          "roll_deg": 25.415488090182638,
+          "pitch_deg": 2.4553312639538794,
+          "yaw_deg": 2.1714607054246287,
+          "tas_mps": 2.5606498817593604,
+          "vn_mps": 1.9897266950000274,
+          "ve_mps": 7.8027739610067055,
+          "vu_mps": 9.609152514701192
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 25.41548809018264,
+          "yaw_deg": 2.1714607054246287
+        }
+      },
+      {
+        "offset": 7,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00020455062837498872,
+          "lat_deg": 3.5616364270296685e-05,
+          "alt_m": 11.781657670977893,
+          "roll_deg": 34.82140870202879,
+          "pitch_deg": 3.192468751043332,
+          "yaw_deg": 2.661471514142319,
+          "tas_mps": 2.795078488954317,
+          "vn_mps": 1.3009636897955907,
+          "ve_mps": 5.721199439853673,
+          "vu_mps": 5.941031522016751
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 34.82140870202879,
+          "yaw_deg": 2.6614715141423133
+        }
+      },
+      {
+        "offset": 8,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00022942644048740135,
+          "lat_deg": 4.211322957026198e-05,
+          "alt_m": 12.845754763777677,
+          "roll_deg": 34.6147829411737,
+          "pitch_deg": 3.7467926930270314,
+          "yaw_deg": 91.90693822094472,
+          "tas_mps": 3.153513438974187,
+          "vn_mps": 4.596299570620887,
+          "ve_mps": 3.8012050064166316,
+          "vu_mps": 3.8996906677677896
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 34.614782941173694,
+          "yaw_deg": 3.2194762510759034
+        }
+      },
+      {
+        "offset": 9,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00024637684770922874,
+          "lat_deg": 5.105830951990242e-05,
+          "alt_m": 14.07889930382089,
+          "roll_deg": 27.256822197189635,
+          "pitch_deg": 2.763576570287348,
+          "yaw_deg": 3.4009705521009215,
+          "tas_mps": 3.3619142657948515,
+          "vn_mps": 7.481584120710174,
+          "ve_mps": 4.206946994448021,
+          "vu_mps": 3.7118066774327385
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 27.256822197189628,
+          "yaw_deg": 3.4009705521009224
+        }
+      },
+      {
+        "offset": 10,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.0002548208019632625,
+          "lat_deg": 6.335821925596008e-05,
+          "alt_m": 15.302858752028897,
+          "roll_deg": 31.6338614760227,
+          "pitch_deg": 2.0533283100875943,
+          "yaw_deg": 93.49243854708841,
+          "tas_mps": 3.572452873822712,
+          "vn_mps": 10.323988803018063,
+          "ve_mps": 6.678562179154376,
+          "vu_mps": 5.5180173068371134
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 31.63386147602271,
+          "yaw_deg": 4.67816767014488
+        }
+      }
+    ],
+    "episode_id": "mhi_v1.3_ic100601_win",
+    "target_id": "A0100",
+    "task": "trajectory",
+    "H": 20,
+    "horizon": 10,
+    "observation_scope": "all_aircraft_missiles",
+    "model_alias": "terra",
+    "model": "gpt-5.6-terra"
+  },
+  {
+    "condition_id": "terra/mhi_v1.3_ic100601_win/A0100/H20/trajectory/self",
+    "planned": 5,
+    "responses": 5,
+    "parsed": 4,
+    "parse_failures": 1,
+    "api_errors": 0,
+    "unscored": 0,
+    "complete": false,
+    "planned_steps": 50,
+    "scored_steps": 40,
+    "action_trajectory_exact_matches": 2,
+    "action_trajectory_accuracy_parsed": 0.5,
+    "action_trajectory_match_rate_all_planned": 0.4,
+    "action_step_accuracy": 0.7,
+    "action_component_accuracy": {
+      "altitude_action": 1,
+      "heading_action": 0.7,
+      "speed_action": 1
+    },
+    "state_mae_by_field": {
+      "lon_deg": 8.041074653810654e-05,
+      "lat_deg": 9.768670785881283e-06,
+      "alt_m": 5.826948831353343,
+      "roll_deg": 19.156993292182324,
+      "pitch_deg": 1.5467184694941167,
+      "yaw_deg": 20.534680598318733,
+      "tas_mps": 1.4285517225242579,
+      "vn_mps": 3.9385791891376924,
+      "ve_mps": 9.802286245701113,
+      "vu_mps": 8.276552040037224
+    },
+    "circular_angle_mae_deg": {
+      "roll_deg": 19.156993292182324,
+      "yaw_deg": 4.80031982119964
+    },
+    "by_horizon": [
+      {
+        "offset": 1,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 1,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 1,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 2.2796043843698044e-06,
+          "lat_deg": 4.5536230963705293e-07,
+          "alt_m": 0.179965882673514,
+          "roll_deg": 3.9779667066706814,
+          "pitch_deg": 0.4801934104150778,
+          "yaw_deg": 0.4196017941526513,
+          "tas_mps": 0.24162779618588814,
+          "vn_mps": 0.2588506368469492,
+          "ve_mps": 0.8254574800490042,
+          "vu_mps": 1.7780573703388276
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 3.977966706670685,
+          "yaw_deg": 0.41960179415264776
+        }
+      },
+      {
+        "offset": 2,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 5.962737596121315e-06,
+          "lat_deg": 9.778340874788682e-07,
+          "alt_m": 0.7636005562137598,
+          "roll_deg": 7.4014966011152055,
+          "pitch_deg": 1.1065224485711387,
+          "yaw_deg": 1.1230976390568053,
+          "tas_mps": 0.5158282230477553,
+          "vn_mps": 0.30558299813501666,
+          "ve_mps": 2.078609773437282,
+          "vu_mps": 4.019813638856728
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 7.4014966011152055,
+          "yaw_deg": 1.1230976390568017
+        }
+      },
+      {
+        "offset": 3,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 1.4167393619146651e-05,
+          "lat_deg": 1.5189969531093084e-06,
+          "alt_m": 1.771643845585686,
+          "roll_deg": 9.55825405121406,
+          "pitch_deg": 1.1781794641478915,
+          "yaw_deg": 1.925863500376984,
+          "tas_mps": 0.8035810174696252,
+          "vn_mps": 0.30003576551529054,
+          "ve_mps": 3.847745726472857,
+          "vu_mps": 6.066920987615443
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 9.558254051214057,
+          "yaw_deg": 1.925863500376984
+        }
+      },
+      {
+        "offset": 4,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 2.7175670073376068e-05,
+          "lat_deg": 1.70714267433425e-06,
+          "alt_m": 3.1459569009196002,
+          "roll_deg": 10.097770405744306,
+          "pitch_deg": 1.6816774883140926,
+          "yaw_deg": 3.1835361876857498,
+          "tas_mps": 1.256938095450515,
+          "vn_mps": 0.9540378644128316,
+          "ve_mps": 6.061619630912104,
+          "vu_mps": 7.761745168080987
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 10.097770405744306,
+          "yaw_deg": 3.1835361876857533
+        }
+      },
+      {
+        "offset": 5,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 4.57914036005036e-05,
+          "lat_deg": 3.855067523872435e-06,
+          "alt_m": 4.653150714711046,
+          "roll_deg": 7.523388005589879,
+          "pitch_deg": 1.7650582882835353,
+          "yaw_deg": 4.334886336125884,
+          "tas_mps": 1.4632584328053468,
+          "vn_mps": 1.327577666778411,
+          "ve_mps": 8.495305082920478,
+          "vu_mps": 8.219240264690397
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 7.523388005589879,
+          "yaw_deg": 4.334886336125891
+        }
+      },
+      {
+        "offset": 6,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 6.965918861823184e-05,
+          "lat_deg": 5.132964520981886e-06,
+          "alt_m": 6.226415009376524,
+          "roll_deg": 20.704305403496086,
+          "pitch_deg": 1.2932717836653587,
+          "yaw_deg": 5.430959503887102,
+          "tas_mps": 1.6436314483826209,
+          "vn_mps": 1.2609412520483527,
+          "ve_mps": 11.089686753816963,
+          "vu_mps": 7.577846332097887
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 20.70430540349608,
+          "yaw_deg": 5.430959503887102
+        }
+      },
+      {
+        "offset": 7,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 9.942811940888419e-05,
+          "lat_deg": 5.091474294616205e-06,
+          "alt_m": 7.6946544102193,
+          "roll_deg": 32.241866188067874,
+          "pitch_deg": 2.239635582423632,
+          "yaw_deg": 6.672292779712301,
+          "tas_mps": 1.7807378508659468,
+          "vn_mps": 3.1429197641770656,
+          "ve_mps": 13.835908644828638,
+          "vu_mps": 8.308164851761756
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 32.24186618806788,
+          "yaw_deg": 6.672292779712301
+        }
+      },
+      {
+        "offset": 8,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00013630885506188406,
+          "lat_deg": 8.734287373357574e-06,
+          "alt_m": 9.205717881551436,
+          "roll_deg": 37.9958263984604,
+          "pitch_deg": 3.0867288318911807,
+          "yaw_deg": 86.28223562468204,
+          "tas_mps": 1.9642486585156576,
+          "vn_mps": 6.9662752174341565,
+          "ve_mps": 16.42148369394068,
+          "vu_mps": 11.541694888830714
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 37.995826398460395,
+          "yaw_deg": 7.969773654813217
+        }
+      },
+      {
+        "offset": 9,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00017917066007555604,
+          "lat_deg": 2.4139931737110487e-05,
+          "alt_m": 11.114920084981577,
+          "roll_deg": 34.59830665419019,
+          "pitch_deg": 1.8588254948412848,
+          "yaw_deg": 87.41391090371283,
+          "tas_mps": 2.081180752989198,
+          "vn_mps": 10.682016534657718,
+          "ve_mps": 17.646061978813385,
+          "vu_mps": 13.336315576216156
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 34.598306654190196,
+          "yaw_deg": 8.38276510239072
+        }
+      },
+      {
+        "offset": 10,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.0002241638329429918,
+          "lat_deg": 4.607364638431477e-05,
+          "alt_m": 13.513463027300986,
+          "roll_deg": 27.470752507274554,
+          "pitch_deg": 0.7770919023879764,
+          "yaw_deg": 8.56042171379498,
+          "tas_mps": 2.5344849495300252,
+          "vn_mps": 14.187554191371131,
+          "ve_mps": 17.720983691819743,
+          "vu_mps": 14.155721321883341
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 27.47075250727456,
+          "yaw_deg": 8.56042171379498
+        }
+      }
+    ],
+    "episode_id": "mhi_v1.3_ic100601_win",
+    "target_id": "A0100",
+    "task": "trajectory",
+    "H": 20,
+    "horizon": 10,
+    "observation_scope": "self",
+    "model_alias": "terra",
+    "model": "gpt-5.6-terra"
+  },
+  {
+    "condition_id": "terra/mhi_v1.3_ic100601_win/A0200/H20/trajectory/all_aircraft_missiles",
+    "planned": 5,
+    "responses": 5,
+    "parsed": 5,
+    "parse_failures": 0,
+    "api_errors": 0,
+    "unscored": 0,
+    "complete": true,
+    "planned_steps": 50,
+    "scored_steps": 50,
+    "action_trajectory_exact_matches": 0,
+    "action_trajectory_accuracy_parsed": 0.0,
+    "action_trajectory_match_rate_all_planned": 0.0,
+    "action_step_accuracy": 0.62,
+    "action_component_accuracy": {
+      "altitude_action": 1,
+      "heading_action": 0.7,
+      "speed_action": 0.92
+    },
+    "state_mae_by_field": {
+      "lon_deg": 0.0001522094026557852,
+      "lat_deg": 9.568846870436687e-05,
+      "alt_m": 9.606600977160596,
+      "roll_deg": 20.52224921956464,
+      "pitch_deg": 3.1479353221835633,
+      "yaw_deg": 12.9881971450432,
+      "tas_mps": 2.4337788206658706,
+      "vn_mps": 17.22325682875133,
+      "ve_mps": 11.815795964193331,
+      "vu_mps": 15.083535253903749
+    },
+    "circular_angle_mae_deg": {
+      "roll_deg": 20.522249219564642,
+      "yaw_deg": 5.913387658515598
+    },
+    "by_horizon": [
+      {
+        "offset": 1,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 4.384277815461246e-06,
+          "lat_deg": 4.007082246459959e-06,
+          "alt_m": 0.27354113962401244,
+          "roll_deg": 7.759182933102865,
+          "pitch_deg": 0.3581430883399331,
+          "yaw_deg": 0.8622575254359444,
+          "tas_mps": 0.3156672995293263,
+          "vn_mps": 2.4566187352500597,
+          "ve_mps": 0.6830774646334623,
+          "vu_mps": 1.4888656988824878
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 7.7591829331028634,
+          "yaw_deg": 0.8622575254359447
+        }
+      },
+      {
+        "offset": 2,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.8,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 6.514977323490712e-06,
+          "lat_deg": 7.0141977786875035e-06,
+          "alt_m": 0.8913705372095138,
+          "roll_deg": 15.36893117505996,
+          "pitch_deg": 1.3789450038447495,
+          "yaw_deg": 3.31361633580795,
+          "tas_mps": 0.6494435035464903,
+          "vn_mps": 4.7348071431736525,
+          "ve_mps": 3.0481995530913326,
+          "vu_mps": 4.875541640078926
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 15.36893117505997,
+          "yaw_deg": 3.313616335807956
+        }
+      },
+      {
+        "offset": 3,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 0.8
+        },
+        "state_mae_by_field": {
+          "lon_deg": 2.4769777314759268e-05,
+          "lat_deg": 2.0089477274609635e-05,
+          "alt_m": 2.0822614935317687,
+          "roll_deg": 21.667820903910908,
+          "pitch_deg": 2.5505587634350753,
+          "yaw_deg": 5.010549162157064,
+          "tas_mps": 0.9956221088385575,
+          "vn_mps": 9.000553968366699,
+          "ve_mps": 7.18383518527359,
+          "vu_mps": 8.910382318180327
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 21.66782090391091,
+          "yaw_deg": 5.010549162157053
+        }
+      },
+      {
+        "offset": 4,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 5.8555395932557984e-05,
+          "lat_deg": 4.058441501513244e-05,
+          "alt_m": 3.9748058934757866,
+          "roll_deg": 23.307878301601185,
+          "pitch_deg": 2.539903844037171,
+          "yaw_deg": 7.046490330597417,
+          "tas_mps": 1.602141826427055,
+          "vn_mps": 13.386033136794847,
+          "ve_mps": 12.689129904834855,
+          "vu_mps": 12.065517282165345
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 23.307878301601185,
+          "yaw_deg": 7.046490330597413
+        }
+      },
+      {
+        "offset": 5,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 0.8
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00010814090026940448,
+          "lat_deg": 6.768782757546888e-05,
+          "alt_m": 6.42276494921789,
+          "roll_deg": 18.49522577870285,
+          "pitch_deg": 2.4784177983953453,
+          "yaw_deg": 7.763540797902427,
+          "tas_mps": 2.2738386777504163,
+          "vn_mps": 17.31911555793165,
+          "ve_mps": 16.28847438355638,
+          "vu_mps": 15.088273379081498
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 18.495225778702853,
+          "yaw_deg": 7.763540797902425
+        }
+      },
+      {
+        "offset": 6,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.8,
+          "speed_action": 0.8
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00016635536871945078,
+          "lat_deg": 9.865116377483218e-05,
+          "alt_m": 9.246158852050758,
+          "roll_deg": 16.56672283588366,
+          "pitch_deg": 2.9122861977215173,
+          "yaw_deg": 7.443897132207263,
+          "tas_mps": 3.0819342752348744,
+          "vn_mps": 20.355754548649134,
+          "ve_mps": 17.48271646354964,
+          "vu_mps": 17.819812467984693
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 16.56672283588366,
+          "yaw_deg": 7.443897132207264
+        }
+      },
+      {
+        "offset": 7,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 1,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 1,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.0002210591260848105,
+          "lat_deg": 0.0001324926789550318,
+          "alt_m": 12.728788171829455,
+          "roll_deg": 14.074235356801644,
+          "pitch_deg": 4.571043039760884,
+          "yaw_deg": 6.613008640141419,
+          "tas_mps": 3.6585200843215433,
+          "vn_mps": 22.537589301911073,
+          "ve_mps": 16.96371578693416,
+          "vu_mps": 21.54259336196131
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 14.074235356801637,
+          "yaw_deg": 6.613008640141419
+        }
+      },
+      {
+        "offset": 8,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.6,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.6,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.0002706529799127111,
+          "lat_deg": 0.00016584165943385188,
+          "alt_m": 16.42116019890627,
+          "roll_deg": 21.962499705284287,
+          "pitch_deg": 5.303768220047924,
+          "yaw_deg": 4.6464324506227905,
+          "tas_mps": 3.828862934968811,
+          "vn_mps": 22.099297737839642,
+          "ve_mps": 15.141528682534934,
+          "vu_mps": 23.988470850216814
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 21.962499705284284,
+          "yaw_deg": 4.646432450622791
+        }
+      },
+      {
+        "offset": 9,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.4,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.4,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00031550913198827855,
+          "lat_deg": 0.0001959249603245894,
+          "alt_m": 20.12946476691268,
+          "roll_deg": 29.4675548694479,
+          "pitch_deg": 4.838255319763303,
+          "yaw_deg": 6.421987765145949,
+          "tas_mps": 3.907747782593816,
+          "vn_mps": 25.755104268900595,
+          "ve_mps": 13.663041810357523,
+          "vu_mps": 23.472228583267707
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 29.467554869447905,
+          "yaw_deg": 6.421987765145945
+        }
+      },
+      {
+        "offset": 10,
+        "parsed": 5,
+        "planned": 5,
+        "action_step_accuracy": 0.2,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.4,
+          "speed_action": 0.8
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00034615209119692736,
+          "lat_deg": 0.00022459122466500503,
+          "alt_m": 23.89569376884783,
+          "roll_deg": 36.552440335851145,
+          "pitch_deg": 4.548031946489733,
+          "yaw_deg": 80.76019131041377,
+          "tas_mps": 4.024009713447816,
+          "vn_mps": 34.58769388869597,
+          "ve_mps": 15.014240407167433,
+          "vu_mps": 21.583666957218387
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 36.55244033585115,
+          "yaw_deg": 10.012096445137763
+        }
+      }
+    ],
+    "episode_id": "mhi_v1.3_ic100601_win",
+    "target_id": "A0200",
+    "task": "trajectory",
+    "H": 20,
+    "horizon": 10,
+    "observation_scope": "all_aircraft_missiles",
+    "model_alias": "terra",
+    "model": "gpt-5.6-terra"
+  },
+  {
+    "condition_id": "terra/mhi_v1.3_ic100601_win/A0200/H20/trajectory/self",
+    "planned": 5,
+    "responses": 5,
+    "parsed": 4,
+    "parse_failures": 1,
+    "api_errors": 0,
+    "unscored": 0,
+    "complete": false,
+    "planned_steps": 50,
+    "scored_steps": 40,
+    "action_trajectory_exact_matches": 0,
+    "action_trajectory_accuracy_parsed": 0.0,
+    "action_trajectory_match_rate_all_planned": 0.0,
+    "action_step_accuracy": 0.575,
+    "action_component_accuracy": {
+      "altitude_action": 1,
+      "heading_action": 0.575,
+      "speed_action": 1
+    },
+    "state_mae_by_field": {
+      "lon_deg": 0.00014192432427222456,
+      "lat_deg": 5.757452291526022e-05,
+      "alt_m": 10.571712445791638,
+      "roll_deg": 17.750857180339672,
+      "pitch_deg": 2.6507068736123136,
+      "yaw_deg": 37.91607357023401,
+      "tas_mps": 2.7847524534084074,
+      "vn_mps": 9.463429735917822,
+      "ve_mps": 11.798796504591527,
+      "vu_mps": 13.801354120007328
+    },
+    "circular_angle_mae_deg": {
+      "roll_deg": 17.750857180339672,
+      "yaw_deg": 3.203018703488605
+    },
+    "by_horizon": [
+      {
+        "offset": 1,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 3.0277158309388597e-06,
+          "lat_deg": 4.984754404802061e-07,
+          "alt_m": 0.17848041287970773,
+          "roll_deg": 3.7933872078750737,
+          "pitch_deg": 0.6313551897746978,
+          "yaw_deg": 0.5830905403240974,
+          "tas_mps": 0.333586578532703,
+          "vn_mps": 0.5463146808207924,
+          "ve_mps": 0.3755795240105668,
+          "vu_mps": 0.8090734422130845
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 3.793387207875064,
+          "yaw_deg": 0.5830905403241005
+        }
+      },
+      {
+        "offset": 2,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 3.5562816762535476e-06,
+          "lat_deg": 1.4306350717419036e-06,
+          "alt_m": 0.500780335875902,
+          "roll_deg": 7.623494404665895,
+          "pitch_deg": 1.629207839259626,
+          "yaw_deg": 2.4023668735506982,
+          "tas_mps": 0.9484986005960607,
+          "vn_mps": 3.1695469684670137,
+          "ve_mps": 1.9887984377659724,
+          "vu_mps": 3.0805403865236363
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 7.623494404665905,
+          "yaw_deg": 2.4023668735506973
+        }
+      },
+      {
+        "offset": 3,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 1.2997057940111745e-05,
+          "lat_deg": 7.371033477809874e-06,
+          "alt_m": 1.499214680989894,
+          "roll_deg": 11.016945261642793,
+          "pitch_deg": 2.57131126267719,
+          "yaw_deg": 2.950685328737564,
+          "tas_mps": 1.422765125905734,
+          "vn_mps": 5.077369340301509,
+          "ve_mps": 6.299441233609416,
+          "vu_mps": 6.773455271957154
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 11.016945261642796,
+          "yaw_deg": 2.9506853287375634
+        }
+      },
+      {
+        "offset": 4,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 3.826372205750772e-05,
+          "lat_deg": 1.955573567968827e-05,
+          "alt_m": 3.2880996263152156,
+          "roll_deg": 20.22118872185031,
+          "pitch_deg": 3.0651765370479147,
+          "yaw_deg": 3.8117170894125723,
+          "tas_mps": 1.8883623325056433,
+          "vn_mps": 9.069084409550403,
+          "ve_mps": 11.96009396154089,
+          "vu_mps": 11.510088987135067
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 20.22118872185031,
+          "yaw_deg": 3.811717089412582
+        }
+      },
+      {
+        "offset": 5,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 8.78190690194458e-05,
+          "lat_deg": 3.8940168133549946e-05,
+          "alt_m": 6.26574934148266,
+          "roll_deg": 24.34309754306173,
+          "pitch_deg": 3.4151207299704813,
+          "yaw_deg": 3.5222204567410946,
+          "tas_mps": 2.5415655746429167,
+          "vn_mps": 12.988310515743379,
+          "ve_mps": 16.89937184525323,
+          "vu_mps": 16.825493034413142
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 24.34309754306173,
+          "yaw_deg": 3.5222204567410884
+        }
+      },
+      {
+        "offset": 6,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.0001458787948429574,
+          "lat_deg": 6.32595037526329e-05,
+          "alt_m": 10.20875995406277,
+          "roll_deg": 16.770077580609005,
+          "pitch_deg": 3.127148788818043,
+          "yaw_deg": 2.6886844693489516,
+          "tas_mps": 3.336203945794402,
+          "vn_mps": 14.17958644701142,
+          "ve_mps": 17.839006800943853,
+          "vu_mps": 20.658418676149296
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 16.770077580608998,
+          "yaw_deg": 2.6886844693489564
+        }
+      },
+      {
+        "offset": 7,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.75,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.75,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00020487993960927042,
+          "lat_deg": 8.690973262304169e-05,
+          "alt_m": 14.670100387622028,
+          "roll_deg": 23.172266563789027,
+          "pitch_deg": 3.939541873213867,
+          "yaw_deg": 90.74179071116116,
+          "tas_mps": 3.9757079631956174,
+          "vn_mps": 13.116911620874045,
+          "ve_mps": 17.60642680722649,
+          "vu_mps": 22.041420404598405
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 23.172266563789027,
+          "yaw_deg": 3.080374310737156
+        }
+      },
+      {
+        "offset": 8,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.000261069044480422,
+          "lat_deg": 0.0001068492291782519,
+          "alt_m": 19.105142701442674,
+          "roll_deg": 28.679844250798503,
+          "pitch_deg": 3.4992652713838437,
+          "yaw_deg": 90.10507548219844,
+          "tas_mps": 4.1757784016865145,
+          "vn_mps": 12.146191963572203,
+          "ve_mps": 16.249193022123478,
+          "vu_mps": 20.30316428210749
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 28.679844250798503,
+          "yaw_deg": 4.035039842877843
+        }
+      },
+      {
+        "offset": 9,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.25,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.25,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.00031121223517160956,
+          "lat_deg": 0.00011897991785581041,
+          "alt_m": 23.121946311784427,
+          "roll_deg": 23.234714339526107,
+          "pitch_deg": 2.5618333233626407,
+          "yaw_deg": 90.415930142559,
+          "tas_mps": 4.351136405261784,
+          "vn_mps": 12.31695596631604,
+          "ve_mps": 15.483092662634949,
+          "vu_mps": 18.735686874708342
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 23.234714339526114,
+          "yaw_deg": 4.2019520964445505
+        }
+      },
+      {
+        "offset": 10,
+        "parsed": 4,
+        "planned": 5,
+        "action_step_accuracy": 0.5,
+        "action_component_accuracy": {
+          "altitude_action": 1,
+          "heading_action": 0.5,
+          "speed_action": 1
+        },
+        "state_mae_by_field": {
+          "lon_deg": 0.0003505393820937286,
+          "lat_deg": 0.00013195079793959508,
+          "alt_m": 26.878850705461105,
+          "roll_deg": 18.65355592957826,
+          "pitch_deg": 2.067107920614834,
+          "yaw_deg": 91.93917460830652,
+          "tas_mps": 4.873919605962698,
+          "vn_mps": 12.024025446521424,
+          "ve_mps": 13.28696075080642,
+          "vu_mps": 17.276199840267672
+        },
+        "circular_angle_mae_deg": {
+          "roll_deg": 18.65355592957826,
+          "yaw_deg": 4.75405602671151
+        }
+      }
+    ],
+    "episode_id": "mhi_v1.3_ic100601_win",
+    "target_id": "A0200",
+    "task": "trajectory",
+    "H": 20,
+    "horizon": 10,
+    "observation_scope": "self",
+    "model_alias": "terra",
+    "model": "gpt-5.6-terra"
+  }
+]

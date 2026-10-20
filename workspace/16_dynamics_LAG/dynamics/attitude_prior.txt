@@ -1,0 +1,71 @@
+
+
+Empirical aircraft attitude dynamics (0.2-second step):
+
+Use the following fitted relationship as approximate guidance for aircraft
+attitude prediction alongside the supplied history and action context.
+It is not an exact JSBSim equation or a complete state-transition model.
+It does not determine position, velocity, TAS, or action IDs by itself.
+The same coefficients apply to every aircraft; do not apply them to missiles.
+
+Let q_n = [roll_deg, pitch_deg, yaw_deg] at step n, in degrees.
+Let v_n = [vn_mps, ve_mps, vu_mps], in meters per second, and s_n = tas_mps.
+Define wrap(a) = ((a + 180) mod 360) - 180, component by component,
+where mod returns a value in [0, 360).
+Define d_n = wrap(q_n - q_(n-1)) and d_(n-1) = wrap(q_(n-1) - q_(n-2)).
+
+Construct the 24-dimensional vector x_n by concatenating, in this exact order:
+  d_n                                      (3 values: roll, pitch, yaw)
+  d_(n-1)                                  (3 values: roll, pitch, yaw)
+  sin(pi*q_n/180)                           (3 values: roll, pitch, yaw)
+  cos(pi*q_n/180)                           (3 values: roll, pitch, yaw)
+  v_n                                      (3 values: north, east, up)
+  v_n - v_(n-1)                            (3 values: north, east, up)
+  v_(n-1) - v_(n-2)                        (3 values: north, east, up)
+  s_n                                      (1 value)
+  s_n - s_(n-1)                            (1 value)
+  s_(n-1) - s_(n-2)                        (1 value)
+
+Differences are NOT divided by 0.2. Trigonometric arguments are in radians.
+The following coefficients already use the original units. Do not standardize
+the features or multiply the predicted increment by 0.2 again.
+
+Predicted angle increment in degrees:
+  delta_q = b + transpose(B) * x_n
+Predicted next attitude:
+  q_(n+1) = q_n + delta_q
+
+b, ordered [roll, pitch, yaw]:
+{{INTERCEPT_JSON}}
+
+B has 24 rows and 3 columns. Row i multiplies feature i in x_n;
+columns predict [roll increment, pitch increment, yaw increment].
+Row feature names, in order:
+{{FEATURE_NAMES_JSON}}
+Coefficient matrix B:
+{{COEFFICIENTS_JSON}}
+
+For the first forecast step, use the last three historical states. For later
+forecast steps, use your own predicted states whenever actual history is no
+longer available. Never assume any future recorded state or action is given.
+Keep inferring the remaining state components and the three action IDs using
+the original task instructions. This empirical prior does not replace those
+predictions. Do not invent zero values for missing inputs.
+
+Return yaw in [0, 360) and represent roll using its equivalent angle in
+[-180, 180). Handle angle differences using wrap, not raw subtraction across
+the 0/360 or -180/180 boundary. Pitch remains in degrees.
+
+Under the stated heading convention and positive nose-up pitch, the aircraft's
+forward axis in north/east/up coordinates is
+  [cos(pitch)*cos(yaw), cos(pitch)*sin(yaw), sin(pitch)],
+using radians in these trigonometric functions. This forward axis need not be
+parallel to [vn_mps, ve_mps, vu_mps]. Roll does not directly change the forward
+axis. Do not force velocity direction to equal nose direction or identify TAS
+with a particular velocity component.
+
+The coefficients were fitted jointly to all three source recordings, including
+the evaluated recording. They provide an in-dataset empirical prior, not
+independent evidence about unseen recordings. They were fitted for one-step
+prediction; recursive ten-step accuracy is not guaranteed. They do not include
+explicit action or control-surface effects.

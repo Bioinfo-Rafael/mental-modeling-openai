@@ -1,0 +1,792 @@
+[
+  {
+    "field": "lon_deg",
+    "unit": "deg",
+    "image": "lon_deg.png",
+    "conditions": [
+      {
+        "model": "sol",
+        "scope": "self",
+        "exp15": 0.0008578170919848718,
+        "exp16": 0.001056180594935717,
+        "delta_16_minus_15": 0.00019836350295084526,
+        "reduction_pct": -23.124218997765496,
+        "n_pairs": 9,
+        "n_improved": 4,
+        "n_worsened": 5,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "self",
+        "exp15": 0.0013918171955443388,
+        "exp16": 0.001139100003626936,
+        "delta_16_minus_15": -0.0002527171919174027,
+        "reduction_pct": 18.15735519911903,
+        "n_pairs": 6,
+        "n_improved": 3,
+        "n_worsened": 3,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "self",
+        "exp15": 0.0013448125464314842,
+        "exp16": 0.0016165034220243513,
+        "delta_16_minus_15": 0.0002716908755928671,
+        "reduction_pct": -20.20288078913378,
+        "n_pairs": 8,
+        "n_improved": 6,
+        "n_worsened": 2,
+        "n_tied": 0
+      },
+      {
+        "model": "sol",
+        "scope": "all_aircraft_missiles",
+        "exp15": 0.0007660472717451025,
+        "exp16": 0.000707207904566433,
+        "delta_16_minus_15": -5.8839367178669505e-05,
+        "reduction_pct": 7.680905519659359,
+        "n_pairs": 7,
+        "n_improved": 3,
+        "n_worsened": 4,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "all_aircraft_missiles",
+        "exp15": 0.0018428064655893195,
+        "exp16": 0.0006907109057827654,
+        "delta_16_minus_15": -0.001152095559806554,
+        "reduction_pct": 62.518532538256544,
+        "n_pairs": 4,
+        "n_improved": 4,
+        "n_worsened": 0,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "all_aircraft_missiles",
+        "exp15": 0.06588152292460059,
+        "exp16": 0.014557291445713716,
+        "delta_16_minus_15": -0.05132423147888687,
+        "reduction_pct": 77.90383282066188,
+        "n_pairs": 8,
+        "n_improved": 5,
+        "n_worsened": 3,
+        "n_tied": 0
+      }
+    ]
+  },
+  {
+    "field": "lat_deg",
+    "unit": "deg",
+    "image": "lat_deg.png",
+    "conditions": [
+      {
+        "model": "sol",
+        "scope": "self",
+        "exp15": 0.0002008525033513959,
+        "exp16": 0.0003686117646661084,
+        "delta_16_minus_15": 0.0001677592613147125,
+        "reduction_pct": -83.52360987067907,
+        "n_pairs": 9,
+        "n_improved": 4,
+        "n_worsened": 5,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "self",
+        "exp15": 0.0004304412842136192,
+        "exp16": 0.0005386007450655464,
+        "delta_16_minus_15": 0.00010815946085192724,
+        "reduction_pct": -25.127576005987827,
+        "n_pairs": 6,
+        "n_improved": 2,
+        "n_worsened": 4,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "self",
+        "exp15": 0.00020724827364126952,
+        "exp16": 0.0006276552135702218,
+        "delta_16_minus_15": 0.0004204069399289523,
+        "reduction_pct": -202.85184167885697,
+        "n_pairs": 8,
+        "n_improved": 0,
+        "n_worsened": 8,
+        "n_tied": 0
+      },
+      {
+        "model": "sol",
+        "scope": "all_aircraft_missiles",
+        "exp15": 8.98036666388943e-05,
+        "exp16": 0.000394450629802431,
+        "delta_16_minus_15": 0.00030464696316353666,
+        "reduction_pct": -339.23666434304914,
+        "n_pairs": 7,
+        "n_improved": 2,
+        "n_worsened": 5,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "all_aircraft_missiles",
+        "exp15": 0.0005708520707479181,
+        "exp16": 0.00040993513536768944,
+        "delta_16_minus_15": -0.00016091693538022867,
+        "reduction_pct": 28.188902804433862,
+        "n_pairs": 4,
+        "n_improved": 2,
+        "n_worsened": 2,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "all_aircraft_missiles",
+        "exp15": 0.007413380907969724,
+        "exp16": 0.0004770055664362616,
+        "delta_16_minus_15": -0.006936375341533463,
+        "reduction_pct": 93.56561368749502,
+        "n_pairs": 8,
+        "n_improved": 4,
+        "n_worsened": 4,
+        "n_tied": 0
+      }
+    ]
+  },
+  {
+    "field": "alt_m",
+    "unit": "m",
+    "image": "alt_m.png",
+    "conditions": [
+      {
+        "model": "sol",
+        "scope": "self",
+        "exp15": 54.254936776628,
+        "exp16": 43.693532611375254,
+        "delta_16_minus_15": -10.561404165252746,
+        "reduction_pct": 19.466254672334994,
+        "n_pairs": 9,
+        "n_improved": 3,
+        "n_worsened": 6,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "self",
+        "exp15": 104.29735325846946,
+        "exp16": 65.50522934352664,
+        "delta_16_minus_15": -38.79212391494282,
+        "reduction_pct": 37.193775971292645,
+        "n_pairs": 6,
+        "n_improved": 5,
+        "n_worsened": 1,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "self",
+        "exp15": 60.782503529315136,
+        "exp16": 100.08978834964921,
+        "delta_16_minus_15": 39.307284820334075,
+        "reduction_pct": -64.66874929127647,
+        "n_pairs": 8,
+        "n_improved": 2,
+        "n_worsened": 6,
+        "n_tied": 0
+      },
+      {
+        "model": "sol",
+        "scope": "all_aircraft_missiles",
+        "exp15": 30.1188343540281,
+        "exp16": 27.853392023777555,
+        "delta_16_minus_15": -2.2654423302505435,
+        "reduction_pct": 7.521679968161061,
+        "n_pairs": 7,
+        "n_improved": 1,
+        "n_worsened": 6,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "all_aircraft_missiles",
+        "exp15": 126.51984509030058,
+        "exp16": 64.81461945953765,
+        "delta_16_minus_15": -61.705225630762925,
+        "reduction_pct": 48.77118335603578,
+        "n_pairs": 4,
+        "n_improved": 4,
+        "n_worsened": 0,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "all_aircraft_missiles",
+        "exp15": 54.420798003846926,
+        "exp16": 41.39567014080217,
+        "delta_16_minus_15": -13.025127863044759,
+        "reduction_pct": 23.934099353199546,
+        "n_pairs": 8,
+        "n_improved": 4,
+        "n_worsened": 4,
+        "n_tied": 0
+      }
+    ]
+  },
+  {
+    "field": "roll_deg",
+    "unit": "deg",
+    "image": "roll_deg.png",
+    "conditions": [
+      {
+        "model": "sol",
+        "scope": "self",
+        "exp15": 200.55473945676022,
+        "exp16": 236.3666817952661,
+        "delta_16_minus_15": 35.81194233850587,
+        "reduction_pct": -17.856442802353698,
+        "n_pairs": 9,
+        "n_improved": 4,
+        "n_worsened": 5,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "self",
+        "exp15": 202.3754179238878,
+        "exp16": 191.9905834725822,
+        "delta_16_minus_15": -10.384834451305608,
+        "reduction_pct": 5.131470293102141,
+        "n_pairs": 6,
+        "n_improved": 3,
+        "n_worsened": 3,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "self",
+        "exp15": 193.34648344779873,
+        "exp16": 184.4610485376736,
+        "delta_16_minus_15": -8.885434910125127,
+        "reduction_pct": 4.595602025792256,
+        "n_pairs": 8,
+        "n_improved": 4,
+        "n_worsened": 4,
+        "n_tied": 0
+      },
+      {
+        "model": "sol",
+        "scope": "all_aircraft_missiles",
+        "exp15": 168.12213459530784,
+        "exp16": 177.87913092278777,
+        "delta_16_minus_15": 9.756996327479925,
+        "reduction_pct": -5.803516801024625,
+        "n_pairs": 7,
+        "n_improved": 2,
+        "n_worsened": 5,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "all_aircraft_missiles",
+        "exp15": 216.82050855395457,
+        "exp16": 323.6434679971207,
+        "delta_16_minus_15": 106.82295944316613,
+        "reduction_pct": -49.26792218854327,
+        "n_pairs": 4,
+        "n_improved": 0,
+        "n_worsened": 4,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "all_aircraft_missiles",
+        "exp15": 245.50666200099545,
+        "exp16": 331.9610687836145,
+        "delta_16_minus_15": 86.45440678261906,
+        "reduction_pct": -35.214688708638185,
+        "n_pairs": 8,
+        "n_improved": 2,
+        "n_worsened": 6,
+        "n_tied": 0
+      }
+    ]
+  },
+  {
+    "field": "pitch_deg",
+    "unit": "deg",
+    "image": "pitch_deg.png",
+    "conditions": [
+      {
+        "model": "sol",
+        "scope": "self",
+        "exp15": 21.48279417055324,
+        "exp16": 17.46432325998303,
+        "delta_16_minus_15": -4.018470910570212,
+        "reduction_pct": 18.70553187200567,
+        "n_pairs": 9,
+        "n_improved": 5,
+        "n_worsened": 4,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "self",
+        "exp15": 25.684880476726928,
+        "exp16": 21.55146455281002,
+        "delta_16_minus_15": -4.133415923916907,
+        "reduction_pct": 16.09279796984921,
+        "n_pairs": 6,
+        "n_improved": 3,
+        "n_worsened": 3,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "self",
+        "exp15": 22.242710142194937,
+        "exp16": 25.328722227340695,
+        "delta_16_minus_15": 3.0860120851457573,
+        "reduction_pct": -13.874262917680705,
+        "n_pairs": 8,
+        "n_improved": 2,
+        "n_worsened": 6,
+        "n_tied": 0
+      },
+      {
+        "model": "sol",
+        "scope": "all_aircraft_missiles",
+        "exp15": 17.819521029367934,
+        "exp16": 18.465167114502343,
+        "delta_16_minus_15": 0.645646085134409,
+        "reduction_pct": -3.6232516242739345,
+        "n_pairs": 7,
+        "n_improved": 1,
+        "n_worsened": 6,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "all_aircraft_missiles",
+        "exp15": 24.102533866677874,
+        "exp16": 22.67678632154324,
+        "delta_16_minus_15": -1.4257475451346338,
+        "reduction_pct": 5.91534298020737,
+        "n_pairs": 4,
+        "n_improved": 2,
+        "n_worsened": 2,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "all_aircraft_missiles",
+        "exp15": 25.420492583101066,
+        "exp16": 30.26159685706932,
+        "delta_16_minus_15": 4.841104273968256,
+        "reduction_pct": -19.04410096752612,
+        "n_pairs": 8,
+        "n_improved": 4,
+        "n_worsened": 4,
+        "n_tied": 0
+      }
+    ]
+  },
+  {
+    "field": "yaw_deg",
+    "unit": "deg",
+    "image": "yaw_deg.png",
+    "conditions": [
+      {
+        "model": "sol",
+        "scope": "self",
+        "exp15": 32.56622939640996,
+        "exp16": 39.53256038304922,
+        "delta_16_minus_15": 6.966330986639264,
+        "reduction_pct": -21.39127284845331,
+        "n_pairs": 9,
+        "n_improved": 3,
+        "n_worsened": 6,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "self",
+        "exp15": 48.24310332964823,
+        "exp16": 31.54027112938401,
+        "delta_16_minus_15": -16.70283220026422,
+        "reduction_pct": 34.622217576122104,
+        "n_pairs": 6,
+        "n_improved": 3,
+        "n_worsened": 3,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "self",
+        "exp15": 58.94059375346761,
+        "exp16": 29.582675375201223,
+        "delta_16_minus_15": -29.357918378266387,
+        "reduction_pct": 49.80933599186756,
+        "n_pairs": 8,
+        "n_improved": 5,
+        "n_worsened": 3,
+        "n_tied": 0
+      },
+      {
+        "model": "sol",
+        "scope": "all_aircraft_missiles",
+        "exp15": 21.014745837794674,
+        "exp16": 31.477367043374954,
+        "delta_16_minus_15": 10.46262120558028,
+        "reduction_pct": -49.78704613578257,
+        "n_pairs": 7,
+        "n_improved": 3,
+        "n_worsened": 4,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "all_aircraft_missiles",
+        "exp15": 46.233302184828176,
+        "exp16": 70.9146442712584,
+        "delta_16_minus_15": 24.68134208643022,
+        "reduction_pct": -53.38433752311467,
+        "n_pairs": 4,
+        "n_improved": 1,
+        "n_worsened": 3,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "all_aircraft_missiles",
+        "exp15": 37.16393230182432,
+        "exp16": 53.78875518846208,
+        "delta_16_minus_15": 16.624822886637766,
+        "reduction_pct": -44.73375624414664,
+        "n_pairs": 8,
+        "n_improved": 1,
+        "n_worsened": 7,
+        "n_tied": 0
+      }
+    ]
+  },
+  {
+    "field": "tas_mps",
+    "unit": "m/s",
+    "image": "tas_mps.png",
+    "conditions": [
+      {
+        "model": "sol",
+        "scope": "self",
+        "exp15": 12.537340213234087,
+        "exp16": 13.80406180353345,
+        "delta_16_minus_15": 1.2667215902993636,
+        "reduction_pct": -10.103591102698525,
+        "n_pairs": 9,
+        "n_improved": 4,
+        "n_worsened": 5,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "self",
+        "exp15": 20.10763351259703,
+        "exp16": 19.424100539914487,
+        "delta_16_minus_15": -0.6835329726825421,
+        "reduction_pct": 3.3993705537467767,
+        "n_pairs": 6,
+        "n_improved": 3,
+        "n_worsened": 3,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "self",
+        "exp15": 23.495968589822283,
+        "exp16": 23.678110275610827,
+        "delta_16_minus_15": 0.18214168578854384,
+        "reduction_pct": -0.7752039891108891,
+        "n_pairs": 8,
+        "n_improved": 3,
+        "n_worsened": 5,
+        "n_tied": 0
+      },
+      {
+        "model": "sol",
+        "scope": "all_aircraft_missiles",
+        "exp15": 12.457910362611939,
+        "exp16": 14.436371116471593,
+        "delta_16_minus_15": 1.978460753859654,
+        "reduction_pct": -15.881160614201494,
+        "n_pairs": 7,
+        "n_improved": 1,
+        "n_worsened": 6,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "all_aircraft_missiles",
+        "exp15": 26.873918133036092,
+        "exp16": 33.706959969949494,
+        "delta_16_minus_15": 6.833041836913402,
+        "reduction_pct": -25.42629549992395,
+        "n_pairs": 4,
+        "n_improved": 3,
+        "n_worsened": 1,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "all_aircraft_missiles",
+        "exp15": 14.96973193195278,
+        "exp16": 13.936165234725937,
+        "delta_16_minus_15": -1.033566697226842,
+        "reduction_pct": 6.904376791281758,
+        "n_pairs": 8,
+        "n_improved": 5,
+        "n_worsened": 3,
+        "n_tied": 0
+      }
+    ]
+  },
+  {
+    "field": "vn_mps",
+    "unit": "m/s",
+    "image": "vn_mps.png",
+    "conditions": [
+      {
+        "model": "sol",
+        "scope": "self",
+        "exp15": 48.19773079744459,
+        "exp16": 64.8490631612953,
+        "delta_16_minus_15": 16.651332363850713,
+        "reduction_pct": -34.5479591846958,
+        "n_pairs": 9,
+        "n_improved": 3,
+        "n_worsened": 6,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "self",
+        "exp15": 84.5932663313916,
+        "exp16": 85.72865404573179,
+        "delta_16_minus_15": 1.1353877143401832,
+        "reduction_pct": -1.3421726853439322,
+        "n_pairs": 6,
+        "n_improved": 2,
+        "n_worsened": 4,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "self",
+        "exp15": 55.46087545961227,
+        "exp16": 87.83909040853422,
+        "delta_16_minus_15": 32.37821494892195,
+        "reduction_pct": -58.38028101900487,
+        "n_pairs": 8,
+        "n_improved": 4,
+        "n_worsened": 4,
+        "n_tied": 0
+      },
+      {
+        "model": "sol",
+        "scope": "all_aircraft_missiles",
+        "exp15": 27.24564290336125,
+        "exp16": 32.80932928651335,
+        "delta_16_minus_15": 5.563686383152103,
+        "reduction_pct": -20.420462834685836,
+        "n_pairs": 7,
+        "n_improved": 4,
+        "n_worsened": 3,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "all_aircraft_missiles",
+        "exp15": 91.58152291649479,
+        "exp16": 66.89328196352241,
+        "delta_16_minus_15": -24.68824095297238,
+        "reduction_pct": 26.95766587708247,
+        "n_pairs": 4,
+        "n_improved": 3,
+        "n_worsened": 1,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "all_aircraft_missiles",
+        "exp15": 78.40417749886859,
+        "exp16": 83.810217525451,
+        "delta_16_minus_15": 5.406040026582403,
+        "reduction_pct": -6.895091816581347,
+        "n_pairs": 8,
+        "n_improved": 3,
+        "n_worsened": 5,
+        "n_tied": 0
+      }
+    ]
+  },
+  {
+    "field": "ve_mps",
+    "unit": "m/s",
+    "image": "ve_mps.png",
+    "conditions": [
+      {
+        "model": "sol",
+        "scope": "self",
+        "exp15": 70.7128269124222,
+        "exp16": 83.16586763550276,
+        "delta_16_minus_15": 12.453040723080562,
+        "reduction_pct": -17.610723919302004,
+        "n_pairs": 9,
+        "n_improved": 3,
+        "n_worsened": 6,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "self",
+        "exp15": 137.27929339337626,
+        "exp16": 85.61234542678528,
+        "delta_16_minus_15": -51.66694796659098,
+        "reduction_pct": 37.63637376726468,
+        "n_pairs": 6,
+        "n_improved": 4,
+        "n_worsened": 2,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "self",
+        "exp15": 82.95489947466072,
+        "exp16": 163.57817012925867,
+        "delta_16_minus_15": 80.62327065459795,
+        "reduction_pct": -97.18928136273013,
+        "n_pairs": 8,
+        "n_improved": 3,
+        "n_worsened": 5,
+        "n_tied": 0
+      },
+      {
+        "model": "sol",
+        "scope": "all_aircraft_missiles",
+        "exp15": 48.04828677306318,
+        "exp16": 43.67980892369962,
+        "delta_16_minus_15": -4.368477849363565,
+        "reduction_pct": 9.09184935145829,
+        "n_pairs": 7,
+        "n_improved": 3,
+        "n_worsened": 4,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "all_aircraft_missiles",
+        "exp15": 113.8774480872013,
+        "exp16": 66.12055185508156,
+        "delta_16_minus_15": -47.75689623211974,
+        "reduction_pct": 41.93709732198253,
+        "n_pairs": 4,
+        "n_improved": 3,
+        "n_worsened": 1,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "all_aircraft_missiles",
+        "exp15": 71.21981512408152,
+        "exp16": 71.92942970549728,
+        "delta_16_minus_15": 0.7096145814157637,
+        "reduction_pct": -0.9963724002645187,
+        "n_pairs": 8,
+        "n_improved": 3,
+        "n_worsened": 5,
+        "n_tied": 0
+      }
+    ]
+  },
+  {
+    "field": "vu_mps",
+    "unit": "m/s",
+    "image": "vu_mps.png",
+    "conditions": [
+      {
+        "model": "sol",
+        "scope": "self",
+        "exp15": 81.53459876646492,
+        "exp16": 65.13067635219701,
+        "delta_16_minus_15": -16.40392241426791,
+        "reduction_pct": 20.118971163705318,
+        "n_pairs": 9,
+        "n_improved": 5,
+        "n_worsened": 4,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "self",
+        "exp15": 141.1365248387626,
+        "exp16": 95.68474191057366,
+        "delta_16_minus_15": -45.45178292818893,
+        "reduction_pct": 32.20412503433397,
+        "n_pairs": 6,
+        "n_improved": 3,
+        "n_worsened": 3,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "self",
+        "exp15": 91.36370456684291,
+        "exp16": 159.80513706655154,
+        "delta_16_minus_15": 68.44143249970863,
+        "reduction_pct": -74.91096472520546,
+        "n_pairs": 8,
+        "n_improved": 1,
+        "n_worsened": 7,
+        "n_tied": 0
+      },
+      {
+        "model": "sol",
+        "scope": "all_aircraft_missiles",
+        "exp15": 52.259383518026915,
+        "exp16": 42.61645586109172,
+        "delta_16_minus_15": -9.642927656935193,
+        "reduction_pct": 18.45205015403379,
+        "n_pairs": 7,
+        "n_improved": 3,
+        "n_worsened": 4,
+        "n_tied": 0
+      },
+      {
+        "model": "terra",
+        "scope": "all_aircraft_missiles",
+        "exp15": 133.86083845208915,
+        "exp16": 82.20280813847768,
+        "delta_16_minus_15": -51.65803031361148,
+        "reduction_pct": 38.590846218328956,
+        "n_pairs": 4,
+        "n_improved": 3,
+        "n_worsened": 1,
+        "n_tied": 0
+      },
+      {
+        "model": "luna",
+        "scope": "all_aircraft_missiles",
+        "exp15": 86.22700712149413,
+        "exp16": 70.71172820683127,
+        "delta_16_minus_15": -15.515278914662858,
+        "reduction_pct": 17.993525964320877,
+        "n_pairs": 8,
+        "n_improved": 4,
+        "n_worsened": 3,
+        "n_tied": 1
+      }
+    ]
+  }
+]

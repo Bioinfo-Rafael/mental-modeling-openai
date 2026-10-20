@@ -1,0 +1,9 @@
+{
+  "scope": "all upstream-supported official tasks",
+  "history_size": 1,
+  "model": "gpt-4o",
+  "sample_size_per_task": 5,
+  "seed": 0,
+  "max_output_tokens": 256,
+  "paid_execution_requires_cli_flag": "--execute-paid-api"
+}

@@ -1,0 +1,44 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>08 Few-shot — 入出力ビューア</title><style>
+*{box-sizing:border-box}body{margin:auto;max-width:1440px;padding:28px;color:#172333;background:#f4f7fb;font:14px/1.65 system-ui,sans-serif;overflow-wrap:anywhere}h1{font-size:25px;margin:0}h2{font-size:18px;margin:0 0 12px}p{margin:8px 0 14px}.muted{color:#5e6b7c}.panel,.controls{background:white;border:1px solid #d7e0ed;border-radius:12px;padding:20px;margin:16px 0}.controls{position:sticky;top:0;z-index:2;box-shadow:0 5px 18px #17233315}.filters,.nav{display:flex;flex-wrap:wrap;gap:12px;align-items:end}.nav{align-items:center;margin-top:14px}label{display:flex;flex-direction:column;font-weight:600;gap:4px}select,button{font:inherit;border:1px solid #b9c6d8;border-radius:7px;padding:7px 10px;background:white;color:inherit}button{cursor:pointer}button:disabled{opacity:.4;cursor:default}a{color:#2457cf}button.primary{background:#2457cf;color:white;border-color:#2457cf}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.7 ui-monospace,monospace;margin:0}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:8px 10px;border-bottom:1px solid #e1e7ef;text-align:left;vertical-align:top}.scroll{overflow:auto}.pill{padding:5px 10px;background:#edf3ff;border-radius:7px}.warning{border-left:4px solid #e19e25}.panel{scroll-margin-top:240px}.jump{display:flex;gap:14px;margin-left:auto}.example-list{font-size:12px}summary{cursor:pointer;font-weight:600}details pre{margin-top:12px}#selection-note{font-size:12px;color:#5e6b7c;margin-top:10px}@media(max-width:700px){body{padding:12px}.controls{position:relative;padding:12px}.panel{padding:12px;scroll-margin-top:10px}select{max-width:260px}.jump{margin-left:0}th,td{padding:6px}}
+
+.quick{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.good{background:#e0f5e8;color:#145b33}.bad{background:#fee7e7;color:#912424}input{font:inherit;padding:8px;border:1px solid #b9c6d8;border-radius:7px}details.panel>pre{margin-top:12px}.controls{position:relative}.panel{scroll-margin-top:16px}#answer-start{border-left:4px solid #2468a2}#truth-start{border-left:4px solid #65a9ca} .search{min-width:250px} .nav select{max-width:500px}
+@media(max-width:700px){.nav select{max-width:100%;width:100%}.filters label{max-width:100%}.search{min-width:0;width:100%}}
+</style></head><body>
+<h1>08 Few-shot · Raw input / output viewer</h1>
+<p class="muted" id="overview"></p>
+<div class="controls"><div class="filters" id="filters"></div>
+<div class="quick" id="quick"></div>
+<div class="nav"><button id="previous">← 前へ</button><span id="position" class="pill"></span><button id="next" class="primary">次へ →</button><select id="query" aria-label="回答を選択"></select><button id="reset">絞り込み解除</button><button id="download">この回答をJSON保存</button></div>
+<div class="quick"><a href="#input-start">入力</a><a href="#target-start">今回の質問のみ</a><a href="#answer-start">回答</a><a href="#truth-start">正解・比較</a><a href="#metadata-start">条件・時間・token</a></div></div>
+<main id="content"></main>
+<script id="dataset" type="application/json">__DATASET__</script><script>
+'use strict';
+const data=JSON.parse(document.getElementById('dataset').textContent),rows=data.rows,$=id=>document.getElementById(id);
+const names={match:'正解',mismatch:'不正解',ignored:'解析不可',empty_response:'空応答',api_error:'APIエラー',pending:'送信済み・採点待ち／結果不明',unstarted:'未送信'};
+const fields={model_alias:'モデル',task:'Task',metric:'予測対象',H:'履歴長 H',shots:'総例数 2k',score_pattern:'Scoreパターン',ordinal:'評価問題',status:'採点結果'};
+let filtered=rows,index=0;
+function el(tag,text){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e}
+function value(v){return v===undefined||v===null?'—':typeof v==='object'?JSON.stringify(v,null,2):String(v)}
+function panel(title,id,text,collapsed=false){const p=el(collapsed?'details':'section');p.className='panel';p.id=id;p.append(el(collapsed?'summary':'h2',title),el('pre',text));return p}
+function caption(key,v){return key==='ordinal'?`問題 ${Number(v)+1}`:key==='status'?(names[v]||v):String(v)}
+for(const [key,title] of Object.entries(fields)){const label=el('label',title),select=el('select');select.id=key;select.append(new Option('すべて',''));const vals=[...new Set(rows.map(q=>q[key]))];if(['H','shots','ordinal'].includes(key))vals.sort((a,b)=>a-b);for(const v of vals)select.append(new Option(caption(key,v),v));select.onchange=apply;label.append(select);$('filters').append(label)}
+const searchLabel=el('label','ID・入力・回答を検索'),search=el('input');search.id='search';search.className='search';search.type='search';search.placeholder='query ID / 回答中の語句';search.oninput=apply;searchLabel.append(search);$('filters').append(searchLabel);
+$('overview').textContent=`${rows.length}件 · 保存済み回答 ${rows.filter(r=>['match','mismatch','ignored','empty_response'].includes(r.status)).length}件 · ${data.created_at_jst} 時点のスナップショット。オフライン表示・API送信なし。`;
+function apply(){const term=search.value.toLowerCase();filtered=rows.filter(r=>Object.keys(fields).every(k=>!$(k).value||String(r[k])===$(k).value)&&(!term||[r.query_id,r.user_prompt,r.assistant_text].some(v=>String(v??'').toLowerCase().includes(term))));index=0;$('query').replaceChildren();filtered.forEach((r,i)=>$('query').append(new Option(`${i+1}. ${r.model_alias} / ${r.task} / H${r.H} / 2k=${r.shots} / ${r.score_pattern} / 問題${r.ordinal+1} / ${names[r.status]}`,i)));render()}
+function render(){
+ const r=filtered[index];$('content').replaceChildren();$('quick').replaceChildren();$('position').textContent=filtered.length?`${index+1} / ${filtered.length}件`:'0件';$('previous').disabled=!r||index===0;$('next').disabled=!r||index===filtered.length-1;$('download').disabled=!r;$('query').value=String(index);
+ if(!r){$('content').append(el('p','該当する回答はありません。'));return}
+ for(const text of [`${names[r.status]||r.status}`,`予測: ${value(r.prediction)} / 正解: ${value(r.ground_truth)}`,`今回の回答のReasoning score: 未評価`,`使用例の条件: 正解S${r.correct_scores.join('・')} / 不正解S${r.incorrect_scores.join('・')}`]){const pill=el('span',text);pill.className='pill';$('quick').append(pill)}
+ $('quick').firstChild.classList.add(r.status==='match'?'good':'bad');
+ $('content').append(panel('入力 1 — system','input-start',r.system_prompt,true),panel('入力 2 — user（few-shotを含む送信全文）','user-start',r.user_prompt),panel('今回の質問のみ — New Question','target-start',r.target_user_prompt,true),panel('出力 — assistant_text','answer-start',r.assistant_text??'応答なし'));
+ const truth={判定:names[r.status]||r.status,予測ID:r.prediction??null,正解ID:r.ground_truth??null,解析エラー:r.parse_error??null,採点方式:r.scoring_version??null,行動値予測:r.action_value_prediction??null,行動値正解:r.action_value_ground_truth??null,行動値絶対誤差:r.absolute_error??null};
+ if(r.prediction!==undefined&&r.ground_truth!==undefined){const p=Array.isArray(r.prediction)?r.prediction:[r.prediction],g=Array.isArray(r.ground_truth)?r.ground_truth:[r.ground_truth];if(p.length===g.length&&p.every((v,i)=>typeof v==='number'&&typeof g[i]==='number'))truth['ID差の絶対値（物理量の誤差ではありません）']=p.map((v,i)=>Math.abs(v-g[i]));}
+ $('content').append(panel('正解データ・予測との比較','truth-start',JSON.stringify(truth,null,2)));
+ const meta={query_id:r.query_id,condition_id:r.condition_id,task:r.task,model:r.model,metric:r.metric,H:r.H,shots:r.shots,score_pattern:r.score_pattern,ordinal:r.ordinal+1,episode_path:r.episode_path,query_index:r.query_index,request_started_at_utc:r.request_started_at_utc,response_received_at_utc:r.response_received_at_utc,request_elapsed_seconds:r.request_elapsed_seconds,input_tokens:r.input_tokens,output_tokens:r.output_tokens,total_tokens:r.total_tokens,usage:r.usage,example_ids:r.example_ids,exception:r.exception};
+ $('content').append(panel('条件・識別子・時間・token等（プロンプトとは別表示）','metadata-start',JSON.stringify(meta,null,2)),panel('APIレスポンス全文','raw-start',JSON.stringify(r.raw_response??null,null,2),true));
+}
+$('previous').onclick=()=>{if(index>0){index--;render()}};$('next').onclick=()=>{if(index<filtered.length-1){index++;render()}};$('query').onchange=()=>{index=Number($('query').value);render()};
+$('reset').onclick=()=>{for(const k of Object.keys(fields))$(k).value='';search.value='';apply()};
+$('download').onclick=()=>{const r=filtered[index];if(!r)return;const u=URL.createObjectURL(new Blob([JSON.stringify(r,null,2)+'\n'],{type:'application/json'}));const a=el('a');a.href=u;a.download=r.query_id+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+apply();
+</script></body></html>

@@ -1,0 +1,9 @@
+﻿task,score_pattern,example_type,allowed_scores,original_available,required,available,missing
+MountainCar-v0,pattern1,correct,[1],9,6,6,0
+MountainCar-v0,pattern1,incorrect,"[3, 4]",13,6,6,0
+MountainCar-v0,pattern2,correct,"[1, 2]",21,6,6,0
+MountainCar-v0,pattern2,incorrect,"[1, 2, 3]",8,6,6,0
+Pendulum-v1,pattern1,correct,[1],9,6,6,0
+Pendulum-v1,pattern1,incorrect,"[3, 4]",19,6,6,0
+Pendulum-v1,pattern2,correct,"[1, 2]",21,6,6,0
+Pendulum-v1,pattern2,incorrect,"[1, 2, 3]",12,6,6,0

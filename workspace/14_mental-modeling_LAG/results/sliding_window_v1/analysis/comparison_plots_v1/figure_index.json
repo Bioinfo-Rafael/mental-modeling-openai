@@ -1,0 +1,1626 @@
+[
+  {
+    "cohort": "pooled",
+    "category": "Action",
+    "name": "action_action_accuracy",
+    "title": "Action accuracy (all 3 IDs match)",
+    "png": "action/overall/pooled/action_action_accuracy.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Action",
+    "name": "action_action_bin_mae",
+    "title": "Action bin MAE (mean over 3 IDs)",
+    "png": "action/overall/pooled/action_action_bin_mae.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_mae_lon_deg",
+    "title": "MAE | lon_deg",
+    "png": "state/components/mae/pooled/state_state_mae_lon_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_mae_lat_deg",
+    "title": "MAE | lat_deg",
+    "png": "state/components/mae/pooled/state_state_mae_lat_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_mae_alt_m",
+    "title": "MAE | alt_m",
+    "png": "state/components/mae/pooled/state_state_mae_alt_m.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_mae_roll_deg",
+    "title": "MAE | roll_deg",
+    "png": "state/components/mae/pooled/state_state_mae_roll_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_mae_pitch_deg",
+    "title": "MAE | pitch_deg",
+    "png": "state/components/mae/pooled/state_state_mae_pitch_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_mae_yaw_deg",
+    "title": "MAE | yaw_deg",
+    "png": "state/components/mae/pooled/state_state_mae_yaw_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_mae_tas_mps",
+    "title": "MAE | tas_mps",
+    "png": "state/components/mae/pooled/state_state_mae_tas_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_mae_vn_mps",
+    "title": "MAE | vn_mps",
+    "png": "state/components/mae/pooled/state_state_mae_vn_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_mae_ve_mps",
+    "title": "MAE | ve_mps",
+    "png": "state/components/mae/pooled/state_state_mae_ve_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_mae_vu_mps",
+    "title": "MAE | vu_mps",
+    "png": "state/components/mae/pooled/state_state_mae_vu_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State overview",
+    "name": "state_state_nrmse",
+    "title": "NRMSE = RMSE / reference range | macro mean of 10 dimensions",
+    "png": "state/component_rmse_mean/pooled/state_state_nrmse.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_nrmse_lon_deg",
+    "title": "NRMSE = RMSE / reference range | lon_deg",
+    "png": "state/components/nrmse/pooled/state_state_nrmse_lon_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_nrmse_lat_deg",
+    "title": "NRMSE = RMSE / reference range | lat_deg",
+    "png": "state/components/nrmse/pooled/state_state_nrmse_lat_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_nrmse_alt_m",
+    "title": "NRMSE = RMSE / reference range | alt_m",
+    "png": "state/components/nrmse/pooled/state_state_nrmse_alt_m.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_nrmse_roll_deg",
+    "title": "NRMSE = RMSE / reference range | roll_deg",
+    "png": "state/components/nrmse/pooled/state_state_nrmse_roll_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_nrmse_pitch_deg",
+    "title": "NRMSE = RMSE / reference range | pitch_deg",
+    "png": "state/components/nrmse/pooled/state_state_nrmse_pitch_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_nrmse_yaw_deg",
+    "title": "NRMSE = RMSE / reference range | yaw_deg",
+    "png": "state/components/nrmse/pooled/state_state_nrmse_yaw_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_nrmse_tas_mps",
+    "title": "NRMSE = RMSE / reference range | tas_mps",
+    "png": "state/components/nrmse/pooled/state_state_nrmse_tas_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_nrmse_vn_mps",
+    "title": "NRMSE = RMSE / reference range | vn_mps",
+    "png": "state/components/nrmse/pooled/state_state_nrmse_vn_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_nrmse_ve_mps",
+    "title": "NRMSE = RMSE / reference range | ve_mps",
+    "png": "state/components/nrmse/pooled/state_state_nrmse_ve_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_nrmse_vu_mps",
+    "title": "NRMSE = RMSE / reference range | vu_mps",
+    "png": "state/components/nrmse/pooled/state_state_nrmse_vu_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State overview",
+    "name": "state_state_zrmse",
+    "title": "Z-scaled RMSE = RMSE / reference SD | macro mean of 10 dimensions",
+    "png": "state/component_rmse_mean/pooled/state_state_zrmse.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_zrmse_lon_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | lon_deg",
+    "png": "state/components/zrmse/pooled/state_state_zrmse_lon_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_zrmse_lat_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | lat_deg",
+    "png": "state/components/zrmse/pooled/state_state_zrmse_lat_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_zrmse_alt_m",
+    "title": "Z-scaled RMSE = RMSE / reference SD | alt_m",
+    "png": "state/components/zrmse/pooled/state_state_zrmse_alt_m.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_zrmse_roll_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | roll_deg",
+    "png": "state/components/zrmse/pooled/state_state_zrmse_roll_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_zrmse_pitch_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | pitch_deg",
+    "png": "state/components/zrmse/pooled/state_state_zrmse_pitch_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_zrmse_yaw_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | yaw_deg",
+    "png": "state/components/zrmse/pooled/state_state_zrmse_yaw_deg.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_zrmse_tas_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | tas_mps",
+    "png": "state/components/zrmse/pooled/state_state_zrmse_tas_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_zrmse_vn_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | vn_mps",
+    "png": "state/components/zrmse/pooled/state_state_zrmse_vn_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_zrmse_ve_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | ve_mps",
+    "png": "state/components/zrmse/pooled/state_state_zrmse_ve_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State components",
+    "name": "state_state_zrmse_vu_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | vu_mps",
+    "png": "state/components/zrmse/pooled/state_state_zrmse_vu_mps.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Action components",
+    "name": "action_action_accuracy_altitude_action",
+    "title": "Action accuracy | altitude_action",
+    "png": "action/components/pooled/action_action_accuracy_altitude_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Confusion matrices",
+    "name": "confusion_next-action_altitude_action",
+    "title": "next-action | altitude_action confusion matrices",
+    "png": "action/confusion/pooled/confusion_next-action_altitude_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Confusion matrices",
+    "name": "confusion_last-action_altitude_action",
+    "title": "last-action | altitude_action confusion matrices",
+    "png": "action/confusion/pooled/confusion_last-action_altitude_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Action components",
+    "name": "action_action_accuracy_heading_action",
+    "title": "Action accuracy | heading_action",
+    "png": "action/components/pooled/action_action_accuracy_heading_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Confusion matrices",
+    "name": "confusion_next-action_heading_action",
+    "title": "next-action | heading_action confusion matrices",
+    "png": "action/confusion/pooled/confusion_next-action_heading_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Confusion matrices",
+    "name": "confusion_last-action_heading_action",
+    "title": "last-action | heading_action confusion matrices",
+    "png": "action/confusion/pooled/confusion_last-action_heading_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Action components",
+    "name": "action_action_accuracy_speed_action",
+    "title": "Action accuracy | speed_action",
+    "png": "action/components/pooled/action_action_accuracy_speed_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Confusion matrices",
+    "name": "confusion_next-action_speed_action",
+    "title": "next-action | speed_action confusion matrices",
+    "png": "action/confusion/pooled/confusion_next-action_speed_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Confusion matrices",
+    "name": "confusion_last-action_speed_action",
+    "title": "last-action | speed_action confusion matrices",
+    "png": "action/confusion/pooled/confusion_last-action_speed_action.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Tokens",
+    "name": "action_token_prompt_tokens",
+    "title": "Action tasks | Mean prompt tokens",
+    "png": "tokens/pooled/action_token_prompt_tokens.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Tokens",
+    "name": "action_token_completion_tokens",
+    "title": "Action tasks | Mean completion tokens",
+    "png": "tokens/pooled/action_token_completion_tokens.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Tokens",
+    "name": "action_token_reasoning",
+    "title": "Action tasks | Mean reasoning",
+    "png": "tokens/pooled/action_token_reasoning.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Tokens",
+    "name": "action_token_total_tokens",
+    "title": "Action tasks | Mean total tokens",
+    "png": "tokens/pooled/action_token_total_tokens.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Tokens",
+    "name": "state_token_prompt_tokens",
+    "title": "State tasks | Mean prompt tokens",
+    "png": "tokens/pooled/state_token_prompt_tokens.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Tokens",
+    "name": "state_token_completion_tokens",
+    "title": "State tasks | Mean completion tokens",
+    "png": "tokens/pooled/state_token_completion_tokens.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Tokens",
+    "name": "state_token_reasoning",
+    "title": "State tasks | Mean reasoning",
+    "png": "tokens/pooled/state_token_reasoning.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Tokens",
+    "name": "state_token_total_tokens",
+    "title": "State tasks | Mean total tokens",
+    "png": "tokens/pooled/state_token_total_tokens.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Action",
+    "name": "action_action_accuracy",
+    "title": "Action accuracy (all 3 IDs match)",
+    "png": "action/overall/mhi_v1.3_ic100601_win/action_action_accuracy.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Action",
+    "name": "action_action_bin_mae",
+    "title": "Action bin MAE (mean over 3 IDs)",
+    "png": "action/overall/mhi_v1.3_ic100601_win/action_action_bin_mae.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_mae_lon_deg",
+    "title": "MAE | lon_deg",
+    "png": "state/components/mae/mhi_v1.3_ic100601_win/state_state_mae_lon_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_mae_lat_deg",
+    "title": "MAE | lat_deg",
+    "png": "state/components/mae/mhi_v1.3_ic100601_win/state_state_mae_lat_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_mae_alt_m",
+    "title": "MAE | alt_m",
+    "png": "state/components/mae/mhi_v1.3_ic100601_win/state_state_mae_alt_m.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_mae_roll_deg",
+    "title": "MAE | roll_deg",
+    "png": "state/components/mae/mhi_v1.3_ic100601_win/state_state_mae_roll_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_mae_pitch_deg",
+    "title": "MAE | pitch_deg",
+    "png": "state/components/mae/mhi_v1.3_ic100601_win/state_state_mae_pitch_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_mae_yaw_deg",
+    "title": "MAE | yaw_deg",
+    "png": "state/components/mae/mhi_v1.3_ic100601_win/state_state_mae_yaw_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_mae_tas_mps",
+    "title": "MAE | tas_mps",
+    "png": "state/components/mae/mhi_v1.3_ic100601_win/state_state_mae_tas_mps.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_mae_vn_mps",
+    "title": "MAE | vn_mps",
+    "png": "state/components/mae/mhi_v1.3_ic100601_win/state_state_mae_vn_mps.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_mae_ve_mps",
+    "title": "MAE | ve_mps",
+    "png": "state/components/mae/mhi_v1.3_ic100601_win/state_state_mae_ve_mps.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_mae_vu_mps",
+    "title": "MAE | vu_mps",
+    "png": "state/components/mae/mhi_v1.3_ic100601_win/state_state_mae_vu_mps.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State overview",
+    "name": "state_state_nrmse",
+    "title": "NRMSE = RMSE / reference range | macro mean of 10 dimensions",
+    "png": "state/component_rmse_mean/mhi_v1.3_ic100601_win/state_state_nrmse.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_nrmse_lon_deg",
+    "title": "NRMSE = RMSE / reference range | lon_deg",
+    "png": "state/components/nrmse/mhi_v1.3_ic100601_win/state_state_nrmse_lon_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_nrmse_lat_deg",
+    "title": "NRMSE = RMSE / reference range | lat_deg",
+    "png": "state/components/nrmse/mhi_v1.3_ic100601_win/state_state_nrmse_lat_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_nrmse_alt_m",
+    "title": "NRMSE = RMSE / reference range | alt_m",
+    "png": "state/components/nrmse/mhi_v1.3_ic100601_win/state_state_nrmse_alt_m.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_nrmse_roll_deg",
+    "title": "NRMSE = RMSE / reference range | roll_deg",
+    "png": "state/components/nrmse/mhi_v1.3_ic100601_win/state_state_nrmse_roll_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_nrmse_pitch_deg",
+    "title": "NRMSE = RMSE / reference range | pitch_deg",
+    "png": "state/components/nrmse/mhi_v1.3_ic100601_win/state_state_nrmse_pitch_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_nrmse_yaw_deg",
+    "title": "NRMSE = RMSE / reference range | yaw_deg",
+    "png": "state/components/nrmse/mhi_v1.3_ic100601_win/state_state_nrmse_yaw_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_nrmse_tas_mps",
+    "title": "NRMSE = RMSE / reference range | tas_mps",
+    "png": "state/components/nrmse/mhi_v1.3_ic100601_win/state_state_nrmse_tas_mps.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_nrmse_vn_mps",
+    "title": "NRMSE = RMSE / reference range | vn_mps",
+    "png": "state/components/nrmse/mhi_v1.3_ic100601_win/state_state_nrmse_vn_mps.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_nrmse_ve_mps",
+    "title": "NRMSE = RMSE / reference range | ve_mps",
+    "png": "state/components/nrmse/mhi_v1.3_ic100601_win/state_state_nrmse_ve_mps.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_nrmse_vu_mps",
+    "title": "NRMSE = RMSE / reference range | vu_mps",
+    "png": "state/components/nrmse/mhi_v1.3_ic100601_win/state_state_nrmse_vu_mps.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State overview",
+    "name": "state_state_zrmse",
+    "title": "Z-scaled RMSE = RMSE / reference SD | macro mean of 10 dimensions",
+    "png": "state/component_rmse_mean/mhi_v1.3_ic100601_win/state_state_zrmse.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_zrmse_lon_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | lon_deg",
+    "png": "state/components/zrmse/mhi_v1.3_ic100601_win/state_state_zrmse_lon_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_zrmse_lat_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | lat_deg",
+    "png": "state/components/zrmse/mhi_v1.3_ic100601_win/state_state_zrmse_lat_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_zrmse_alt_m",
+    "title": "Z-scaled RMSE = RMSE / reference SD | alt_m",
+    "png": "state/components/zrmse/mhi_v1.3_ic100601_win/state_state_zrmse_alt_m.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_zrmse_roll_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | roll_deg",
+    "png": "state/components/zrmse/mhi_v1.3_ic100601_win/state_state_zrmse_roll_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_zrmse_pitch_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | pitch_deg",
+    "png": "state/components/zrmse/mhi_v1.3_ic100601_win/state_state_zrmse_pitch_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_zrmse_yaw_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | yaw_deg",
+    "png": "state/components/zrmse/mhi_v1.3_ic100601_win/state_state_zrmse_yaw_deg.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_zrmse_tas_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | tas_mps",
+    "png": "state/components/zrmse/mhi_v1.3_ic100601_win/state_state_zrmse_tas_mps.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_zrmse_vn_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | vn_mps",
+    "png": "state/components/zrmse/mhi_v1.3_ic100601_win/state_state_zrmse_vn_mps.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_zrmse_ve_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | ve_mps",
+    "png": "state/components/zrmse/mhi_v1.3_ic100601_win/state_state_zrmse_ve_mps.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State components",
+    "name": "state_state_zrmse_vu_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | vu_mps",
+    "png": "state/components/zrmse/mhi_v1.3_ic100601_win/state_state_zrmse_vu_mps.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Action components",
+    "name": "action_action_accuracy_altitude_action",
+    "title": "Action accuracy | altitude_action",
+    "png": "action/components/mhi_v1.3_ic100601_win/action_action_accuracy_altitude_action.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Confusion matrices",
+    "name": "confusion_next-action_altitude_action",
+    "title": "next-action | altitude_action confusion matrices",
+    "png": "action/confusion/mhi_v1.3_ic100601_win/confusion_next-action_altitude_action.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Confusion matrices",
+    "name": "confusion_last-action_altitude_action",
+    "title": "last-action | altitude_action confusion matrices",
+    "png": "action/confusion/mhi_v1.3_ic100601_win/confusion_last-action_altitude_action.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Action components",
+    "name": "action_action_accuracy_heading_action",
+    "title": "Action accuracy | heading_action",
+    "png": "action/components/mhi_v1.3_ic100601_win/action_action_accuracy_heading_action.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Confusion matrices",
+    "name": "confusion_next-action_heading_action",
+    "title": "next-action | heading_action confusion matrices",
+    "png": "action/confusion/mhi_v1.3_ic100601_win/confusion_next-action_heading_action.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Confusion matrices",
+    "name": "confusion_last-action_heading_action",
+    "title": "last-action | heading_action confusion matrices",
+    "png": "action/confusion/mhi_v1.3_ic100601_win/confusion_last-action_heading_action.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Action components",
+    "name": "action_action_accuracy_speed_action",
+    "title": "Action accuracy | speed_action",
+    "png": "action/components/mhi_v1.3_ic100601_win/action_action_accuracy_speed_action.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Confusion matrices",
+    "name": "confusion_next-action_speed_action",
+    "title": "next-action | speed_action confusion matrices",
+    "png": "action/confusion/mhi_v1.3_ic100601_win/confusion_next-action_speed_action.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Confusion matrices",
+    "name": "confusion_last-action_speed_action",
+    "title": "last-action | speed_action confusion matrices",
+    "png": "action/confusion/mhi_v1.3_ic100601_win/confusion_last-action_speed_action.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Tokens",
+    "name": "action_token_prompt_tokens",
+    "title": "Action tasks | Mean prompt tokens",
+    "png": "tokens/mhi_v1.3_ic100601_win/action_token_prompt_tokens.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Tokens",
+    "name": "action_token_completion_tokens",
+    "title": "Action tasks | Mean completion tokens",
+    "png": "tokens/mhi_v1.3_ic100601_win/action_token_completion_tokens.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Tokens",
+    "name": "action_token_reasoning",
+    "title": "Action tasks | Mean reasoning",
+    "png": "tokens/mhi_v1.3_ic100601_win/action_token_reasoning.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Tokens",
+    "name": "action_token_total_tokens",
+    "title": "Action tasks | Mean total tokens",
+    "png": "tokens/mhi_v1.3_ic100601_win/action_token_total_tokens.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Tokens",
+    "name": "state_token_prompt_tokens",
+    "title": "State tasks | Mean prompt tokens",
+    "png": "tokens/mhi_v1.3_ic100601_win/state_token_prompt_tokens.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Tokens",
+    "name": "state_token_completion_tokens",
+    "title": "State tasks | Mean completion tokens",
+    "png": "tokens/mhi_v1.3_ic100601_win/state_token_completion_tokens.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Tokens",
+    "name": "state_token_reasoning",
+    "title": "State tasks | Mean reasoning",
+    "png": "tokens/mhi_v1.3_ic100601_win/state_token_reasoning.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Tokens",
+    "name": "state_token_total_tokens",
+    "title": "State tasks | Mean total tokens",
+    "png": "tokens/mhi_v1.3_ic100601_win/state_token_total_tokens.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Action",
+    "name": "action_action_accuracy",
+    "title": "Action accuracy (all 3 IDs match)",
+    "png": "action/overall/ours_seed100100_ic100601_loss/action_action_accuracy.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Action",
+    "name": "action_action_bin_mae",
+    "title": "Action bin MAE (mean over 3 IDs)",
+    "png": "action/overall/ours_seed100100_ic100601_loss/action_action_bin_mae.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_mae_lon_deg",
+    "title": "MAE | lon_deg",
+    "png": "state/components/mae/ours_seed100100_ic100601_loss/state_state_mae_lon_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_mae_lat_deg",
+    "title": "MAE | lat_deg",
+    "png": "state/components/mae/ours_seed100100_ic100601_loss/state_state_mae_lat_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_mae_alt_m",
+    "title": "MAE | alt_m",
+    "png": "state/components/mae/ours_seed100100_ic100601_loss/state_state_mae_alt_m.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_mae_roll_deg",
+    "title": "MAE | roll_deg",
+    "png": "state/components/mae/ours_seed100100_ic100601_loss/state_state_mae_roll_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_mae_pitch_deg",
+    "title": "MAE | pitch_deg",
+    "png": "state/components/mae/ours_seed100100_ic100601_loss/state_state_mae_pitch_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_mae_yaw_deg",
+    "title": "MAE | yaw_deg",
+    "png": "state/components/mae/ours_seed100100_ic100601_loss/state_state_mae_yaw_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_mae_tas_mps",
+    "title": "MAE | tas_mps",
+    "png": "state/components/mae/ours_seed100100_ic100601_loss/state_state_mae_tas_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_mae_vn_mps",
+    "title": "MAE | vn_mps",
+    "png": "state/components/mae/ours_seed100100_ic100601_loss/state_state_mae_vn_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_mae_ve_mps",
+    "title": "MAE | ve_mps",
+    "png": "state/components/mae/ours_seed100100_ic100601_loss/state_state_mae_ve_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_mae_vu_mps",
+    "title": "MAE | vu_mps",
+    "png": "state/components/mae/ours_seed100100_ic100601_loss/state_state_mae_vu_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State overview",
+    "name": "state_state_nrmse",
+    "title": "NRMSE = RMSE / reference range | macro mean of 10 dimensions",
+    "png": "state/component_rmse_mean/ours_seed100100_ic100601_loss/state_state_nrmse.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_nrmse_lon_deg",
+    "title": "NRMSE = RMSE / reference range | lon_deg",
+    "png": "state/components/nrmse/ours_seed100100_ic100601_loss/state_state_nrmse_lon_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_nrmse_lat_deg",
+    "title": "NRMSE = RMSE / reference range | lat_deg",
+    "png": "state/components/nrmse/ours_seed100100_ic100601_loss/state_state_nrmse_lat_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_nrmse_alt_m",
+    "title": "NRMSE = RMSE / reference range | alt_m",
+    "png": "state/components/nrmse/ours_seed100100_ic100601_loss/state_state_nrmse_alt_m.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_nrmse_roll_deg",
+    "title": "NRMSE = RMSE / reference range | roll_deg",
+    "png": "state/components/nrmse/ours_seed100100_ic100601_loss/state_state_nrmse_roll_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_nrmse_pitch_deg",
+    "title": "NRMSE = RMSE / reference range | pitch_deg",
+    "png": "state/components/nrmse/ours_seed100100_ic100601_loss/state_state_nrmse_pitch_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_nrmse_yaw_deg",
+    "title": "NRMSE = RMSE / reference range | yaw_deg",
+    "png": "state/components/nrmse/ours_seed100100_ic100601_loss/state_state_nrmse_yaw_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_nrmse_tas_mps",
+    "title": "NRMSE = RMSE / reference range | tas_mps",
+    "png": "state/components/nrmse/ours_seed100100_ic100601_loss/state_state_nrmse_tas_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_nrmse_vn_mps",
+    "title": "NRMSE = RMSE / reference range | vn_mps",
+    "png": "state/components/nrmse/ours_seed100100_ic100601_loss/state_state_nrmse_vn_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_nrmse_ve_mps",
+    "title": "NRMSE = RMSE / reference range | ve_mps",
+    "png": "state/components/nrmse/ours_seed100100_ic100601_loss/state_state_nrmse_ve_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_nrmse_vu_mps",
+    "title": "NRMSE = RMSE / reference range | vu_mps",
+    "png": "state/components/nrmse/ours_seed100100_ic100601_loss/state_state_nrmse_vu_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State overview",
+    "name": "state_state_zrmse",
+    "title": "Z-scaled RMSE = RMSE / reference SD | macro mean of 10 dimensions",
+    "png": "state/component_rmse_mean/ours_seed100100_ic100601_loss/state_state_zrmse.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_zrmse_lon_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | lon_deg",
+    "png": "state/components/zrmse/ours_seed100100_ic100601_loss/state_state_zrmse_lon_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_zrmse_lat_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | lat_deg",
+    "png": "state/components/zrmse/ours_seed100100_ic100601_loss/state_state_zrmse_lat_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_zrmse_alt_m",
+    "title": "Z-scaled RMSE = RMSE / reference SD | alt_m",
+    "png": "state/components/zrmse/ours_seed100100_ic100601_loss/state_state_zrmse_alt_m.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_zrmse_roll_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | roll_deg",
+    "png": "state/components/zrmse/ours_seed100100_ic100601_loss/state_state_zrmse_roll_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_zrmse_pitch_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | pitch_deg",
+    "png": "state/components/zrmse/ours_seed100100_ic100601_loss/state_state_zrmse_pitch_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_zrmse_yaw_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | yaw_deg",
+    "png": "state/components/zrmse/ours_seed100100_ic100601_loss/state_state_zrmse_yaw_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_zrmse_tas_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | tas_mps",
+    "png": "state/components/zrmse/ours_seed100100_ic100601_loss/state_state_zrmse_tas_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_zrmse_vn_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | vn_mps",
+    "png": "state/components/zrmse/ours_seed100100_ic100601_loss/state_state_zrmse_vn_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_zrmse_ve_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | ve_mps",
+    "png": "state/components/zrmse/ours_seed100100_ic100601_loss/state_state_zrmse_ve_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State components",
+    "name": "state_state_zrmse_vu_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | vu_mps",
+    "png": "state/components/zrmse/ours_seed100100_ic100601_loss/state_state_zrmse_vu_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Action components",
+    "name": "action_action_accuracy_altitude_action",
+    "title": "Action accuracy | altitude_action",
+    "png": "action/components/ours_seed100100_ic100601_loss/action_action_accuracy_altitude_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Confusion matrices",
+    "name": "confusion_next-action_altitude_action",
+    "title": "next-action | altitude_action confusion matrices",
+    "png": "action/confusion/ours_seed100100_ic100601_loss/confusion_next-action_altitude_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Confusion matrices",
+    "name": "confusion_last-action_altitude_action",
+    "title": "last-action | altitude_action confusion matrices",
+    "png": "action/confusion/ours_seed100100_ic100601_loss/confusion_last-action_altitude_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Action components",
+    "name": "action_action_accuracy_heading_action",
+    "title": "Action accuracy | heading_action",
+    "png": "action/components/ours_seed100100_ic100601_loss/action_action_accuracy_heading_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Confusion matrices",
+    "name": "confusion_next-action_heading_action",
+    "title": "next-action | heading_action confusion matrices",
+    "png": "action/confusion/ours_seed100100_ic100601_loss/confusion_next-action_heading_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Confusion matrices",
+    "name": "confusion_last-action_heading_action",
+    "title": "last-action | heading_action confusion matrices",
+    "png": "action/confusion/ours_seed100100_ic100601_loss/confusion_last-action_heading_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Action components",
+    "name": "action_action_accuracy_speed_action",
+    "title": "Action accuracy | speed_action",
+    "png": "action/components/ours_seed100100_ic100601_loss/action_action_accuracy_speed_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Confusion matrices",
+    "name": "confusion_next-action_speed_action",
+    "title": "next-action | speed_action confusion matrices",
+    "png": "action/confusion/ours_seed100100_ic100601_loss/confusion_next-action_speed_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Confusion matrices",
+    "name": "confusion_last-action_speed_action",
+    "title": "last-action | speed_action confusion matrices",
+    "png": "action/confusion/ours_seed100100_ic100601_loss/confusion_last-action_speed_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Tokens",
+    "name": "action_token_prompt_tokens",
+    "title": "Action tasks | Mean prompt tokens",
+    "png": "tokens/ours_seed100100_ic100601_loss/action_token_prompt_tokens.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Tokens",
+    "name": "action_token_completion_tokens",
+    "title": "Action tasks | Mean completion tokens",
+    "png": "tokens/ours_seed100100_ic100601_loss/action_token_completion_tokens.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Tokens",
+    "name": "action_token_reasoning",
+    "title": "Action tasks | Mean reasoning",
+    "png": "tokens/ours_seed100100_ic100601_loss/action_token_reasoning.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Tokens",
+    "name": "action_token_total_tokens",
+    "title": "Action tasks | Mean total tokens",
+    "png": "tokens/ours_seed100100_ic100601_loss/action_token_total_tokens.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Tokens",
+    "name": "state_token_prompt_tokens",
+    "title": "State tasks | Mean prompt tokens",
+    "png": "tokens/ours_seed100100_ic100601_loss/state_token_prompt_tokens.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Tokens",
+    "name": "state_token_completion_tokens",
+    "title": "State tasks | Mean completion tokens",
+    "png": "tokens/ours_seed100100_ic100601_loss/state_token_completion_tokens.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Tokens",
+    "name": "state_token_reasoning",
+    "title": "State tasks | Mean reasoning",
+    "png": "tokens/ours_seed100100_ic100601_loss/state_token_reasoning.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Tokens",
+    "name": "state_token_total_tokens",
+    "title": "State tasks | Mean total tokens",
+    "png": "tokens/ours_seed100100_ic100601_loss/state_token_total_tokens.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Action",
+    "name": "action_action_accuracy",
+    "title": "Action accuracy (all 3 IDs match)",
+    "png": "action/overall/ours_seed100100_ic100606_win/action_action_accuracy.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Action",
+    "name": "action_action_bin_mae",
+    "title": "Action bin MAE (mean over 3 IDs)",
+    "png": "action/overall/ours_seed100100_ic100606_win/action_action_bin_mae.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_mae_lon_deg",
+    "title": "MAE | lon_deg",
+    "png": "state/components/mae/ours_seed100100_ic100606_win/state_state_mae_lon_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_mae_lat_deg",
+    "title": "MAE | lat_deg",
+    "png": "state/components/mae/ours_seed100100_ic100606_win/state_state_mae_lat_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_mae_alt_m",
+    "title": "MAE | alt_m",
+    "png": "state/components/mae/ours_seed100100_ic100606_win/state_state_mae_alt_m.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_mae_roll_deg",
+    "title": "MAE | roll_deg",
+    "png": "state/components/mae/ours_seed100100_ic100606_win/state_state_mae_roll_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_mae_pitch_deg",
+    "title": "MAE | pitch_deg",
+    "png": "state/components/mae/ours_seed100100_ic100606_win/state_state_mae_pitch_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_mae_yaw_deg",
+    "title": "MAE | yaw_deg",
+    "png": "state/components/mae/ours_seed100100_ic100606_win/state_state_mae_yaw_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_mae_tas_mps",
+    "title": "MAE | tas_mps",
+    "png": "state/components/mae/ours_seed100100_ic100606_win/state_state_mae_tas_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_mae_vn_mps",
+    "title": "MAE | vn_mps",
+    "png": "state/components/mae/ours_seed100100_ic100606_win/state_state_mae_vn_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_mae_ve_mps",
+    "title": "MAE | ve_mps",
+    "png": "state/components/mae/ours_seed100100_ic100606_win/state_state_mae_ve_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_mae_vu_mps",
+    "title": "MAE | vu_mps",
+    "png": "state/components/mae/ours_seed100100_ic100606_win/state_state_mae_vu_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State overview",
+    "name": "state_state_nrmse",
+    "title": "NRMSE = RMSE / reference range | macro mean of 10 dimensions",
+    "png": "state/component_rmse_mean/ours_seed100100_ic100606_win/state_state_nrmse.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_nrmse_lon_deg",
+    "title": "NRMSE = RMSE / reference range | lon_deg",
+    "png": "state/components/nrmse/ours_seed100100_ic100606_win/state_state_nrmse_lon_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_nrmse_lat_deg",
+    "title": "NRMSE = RMSE / reference range | lat_deg",
+    "png": "state/components/nrmse/ours_seed100100_ic100606_win/state_state_nrmse_lat_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_nrmse_alt_m",
+    "title": "NRMSE = RMSE / reference range | alt_m",
+    "png": "state/components/nrmse/ours_seed100100_ic100606_win/state_state_nrmse_alt_m.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_nrmse_roll_deg",
+    "title": "NRMSE = RMSE / reference range | roll_deg",
+    "png": "state/components/nrmse/ours_seed100100_ic100606_win/state_state_nrmse_roll_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_nrmse_pitch_deg",
+    "title": "NRMSE = RMSE / reference range | pitch_deg",
+    "png": "state/components/nrmse/ours_seed100100_ic100606_win/state_state_nrmse_pitch_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_nrmse_yaw_deg",
+    "title": "NRMSE = RMSE / reference range | yaw_deg",
+    "png": "state/components/nrmse/ours_seed100100_ic100606_win/state_state_nrmse_yaw_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_nrmse_tas_mps",
+    "title": "NRMSE = RMSE / reference range | tas_mps",
+    "png": "state/components/nrmse/ours_seed100100_ic100606_win/state_state_nrmse_tas_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_nrmse_vn_mps",
+    "title": "NRMSE = RMSE / reference range | vn_mps",
+    "png": "state/components/nrmse/ours_seed100100_ic100606_win/state_state_nrmse_vn_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_nrmse_ve_mps",
+    "title": "NRMSE = RMSE / reference range | ve_mps",
+    "png": "state/components/nrmse/ours_seed100100_ic100606_win/state_state_nrmse_ve_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_nrmse_vu_mps",
+    "title": "NRMSE = RMSE / reference range | vu_mps",
+    "png": "state/components/nrmse/ours_seed100100_ic100606_win/state_state_nrmse_vu_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State overview",
+    "name": "state_state_zrmse",
+    "title": "Z-scaled RMSE = RMSE / reference SD | macro mean of 10 dimensions",
+    "png": "state/component_rmse_mean/ours_seed100100_ic100606_win/state_state_zrmse.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_zrmse_lon_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | lon_deg",
+    "png": "state/components/zrmse/ours_seed100100_ic100606_win/state_state_zrmse_lon_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_zrmse_lat_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | lat_deg",
+    "png": "state/components/zrmse/ours_seed100100_ic100606_win/state_state_zrmse_lat_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_zrmse_alt_m",
+    "title": "Z-scaled RMSE = RMSE / reference SD | alt_m",
+    "png": "state/components/zrmse/ours_seed100100_ic100606_win/state_state_zrmse_alt_m.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_zrmse_roll_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | roll_deg",
+    "png": "state/components/zrmse/ours_seed100100_ic100606_win/state_state_zrmse_roll_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_zrmse_pitch_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | pitch_deg",
+    "png": "state/components/zrmse/ours_seed100100_ic100606_win/state_state_zrmse_pitch_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_zrmse_yaw_deg",
+    "title": "Z-scaled RMSE = RMSE / reference SD | yaw_deg",
+    "png": "state/components/zrmse/ours_seed100100_ic100606_win/state_state_zrmse_yaw_deg.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_zrmse_tas_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | tas_mps",
+    "png": "state/components/zrmse/ours_seed100100_ic100606_win/state_state_zrmse_tas_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_zrmse_vn_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | vn_mps",
+    "png": "state/components/zrmse/ours_seed100100_ic100606_win/state_state_zrmse_vn_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_zrmse_ve_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | ve_mps",
+    "png": "state/components/zrmse/ours_seed100100_ic100606_win/state_state_zrmse_ve_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State components",
+    "name": "state_state_zrmse_vu_mps",
+    "title": "Z-scaled RMSE = RMSE / reference SD | vu_mps",
+    "png": "state/components/zrmse/ours_seed100100_ic100606_win/state_state_zrmse_vu_mps.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Action components",
+    "name": "action_action_accuracy_altitude_action",
+    "title": "Action accuracy | altitude_action",
+    "png": "action/components/ours_seed100100_ic100606_win/action_action_accuracy_altitude_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Confusion matrices",
+    "name": "confusion_next-action_altitude_action",
+    "title": "next-action | altitude_action confusion matrices",
+    "png": "action/confusion/ours_seed100100_ic100606_win/confusion_next-action_altitude_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Confusion matrices",
+    "name": "confusion_last-action_altitude_action",
+    "title": "last-action | altitude_action confusion matrices",
+    "png": "action/confusion/ours_seed100100_ic100606_win/confusion_last-action_altitude_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Action components",
+    "name": "action_action_accuracy_heading_action",
+    "title": "Action accuracy | heading_action",
+    "png": "action/components/ours_seed100100_ic100606_win/action_action_accuracy_heading_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Confusion matrices",
+    "name": "confusion_next-action_heading_action",
+    "title": "next-action | heading_action confusion matrices",
+    "png": "action/confusion/ours_seed100100_ic100606_win/confusion_next-action_heading_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Confusion matrices",
+    "name": "confusion_last-action_heading_action",
+    "title": "last-action | heading_action confusion matrices",
+    "png": "action/confusion/ours_seed100100_ic100606_win/confusion_last-action_heading_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Action components",
+    "name": "action_action_accuracy_speed_action",
+    "title": "Action accuracy | speed_action",
+    "png": "action/components/ours_seed100100_ic100606_win/action_action_accuracy_speed_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Confusion matrices",
+    "name": "confusion_next-action_speed_action",
+    "title": "next-action | speed_action confusion matrices",
+    "png": "action/confusion/ours_seed100100_ic100606_win/confusion_next-action_speed_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Confusion matrices",
+    "name": "confusion_last-action_speed_action",
+    "title": "last-action | speed_action confusion matrices",
+    "png": "action/confusion/ours_seed100100_ic100606_win/confusion_last-action_speed_action.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Tokens",
+    "name": "action_token_prompt_tokens",
+    "title": "Action tasks | Mean prompt tokens",
+    "png": "tokens/ours_seed100100_ic100606_win/action_token_prompt_tokens.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Tokens",
+    "name": "action_token_completion_tokens",
+    "title": "Action tasks | Mean completion tokens",
+    "png": "tokens/ours_seed100100_ic100606_win/action_token_completion_tokens.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Tokens",
+    "name": "action_token_reasoning",
+    "title": "Action tasks | Mean reasoning",
+    "png": "tokens/ours_seed100100_ic100606_win/action_token_reasoning.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Tokens",
+    "name": "action_token_total_tokens",
+    "title": "Action tasks | Mean total tokens",
+    "png": "tokens/ours_seed100100_ic100606_win/action_token_total_tokens.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Tokens",
+    "name": "state_token_prompt_tokens",
+    "title": "State tasks | Mean prompt tokens",
+    "png": "tokens/ours_seed100100_ic100606_win/state_token_prompt_tokens.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Tokens",
+    "name": "state_token_completion_tokens",
+    "title": "State tasks | Mean completion tokens",
+    "png": "tokens/ours_seed100100_ic100606_win/state_token_completion_tokens.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Tokens",
+    "name": "state_token_reasoning",
+    "title": "State tasks | Mean reasoning",
+    "png": "tokens/ours_seed100100_ic100606_win/state_token_reasoning.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Tokens",
+    "name": "state_token_total_tokens",
+    "title": "State tasks | Mean total tokens",
+    "png": "tokens/ours_seed100100_ic100606_win/state_token_total_tokens.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_nrmse",
+    "title": "10D overall RMSE | range-normalized",
+    "png": "state/overall/pooled/state_state_joint_nrmse.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_zrmse",
+    "title": "10D overall RMSE | SD-normalized (z-score scale)",
+    "png": "state/overall/pooled/state_state_joint_zrmse.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_nmae",
+    "title": "10D overall MAE | range-normalized",
+    "png": "state/overall/pooled/state_state_joint_nmae.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_zmae",
+    "title": "10D overall MAE | SD-normalized (z-score scale)",
+    "png": "state/overall/pooled/state_state_joint_zmae.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_nrmse",
+    "title": "10D overall RMSE | range-normalized",
+    "png": "state/overall/mhi_v1.3_ic100601_win/state_state_joint_nrmse.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_zrmse",
+    "title": "10D overall RMSE | SD-normalized (z-score scale)",
+    "png": "state/overall/mhi_v1.3_ic100601_win/state_state_joint_zrmse.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_nmae",
+    "title": "10D overall MAE | range-normalized",
+    "png": "state/overall/mhi_v1.3_ic100601_win/state_state_joint_nmae.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_zmae",
+    "title": "10D overall MAE | SD-normalized (z-score scale)",
+    "png": "state/overall/mhi_v1.3_ic100601_win/state_state_joint_zmae.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_nrmse",
+    "title": "10D overall RMSE | range-normalized",
+    "png": "state/overall/ours_seed100100_ic100601_loss/state_state_joint_nrmse.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_zrmse",
+    "title": "10D overall RMSE | SD-normalized (z-score scale)",
+    "png": "state/overall/ours_seed100100_ic100601_loss/state_state_joint_zrmse.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_nmae",
+    "title": "10D overall MAE | range-normalized",
+    "png": "state/overall/ours_seed100100_ic100601_loss/state_state_joint_nmae.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_zmae",
+    "title": "10D overall MAE | SD-normalized (z-score scale)",
+    "png": "state/overall/ours_seed100100_ic100601_loss/state_state_joint_zmae.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_nrmse",
+    "title": "10D overall RMSE | range-normalized",
+    "png": "state/overall/ours_seed100100_ic100606_win/state_state_joint_nrmse.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_zrmse",
+    "title": "10D overall RMSE | SD-normalized (z-score scale)",
+    "png": "state/overall/ours_seed100100_ic100606_win/state_state_joint_zrmse.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_nmae",
+    "title": "10D overall MAE | range-normalized",
+    "png": "state/overall/ours_seed100100_ic100606_win/state_state_joint_nmae.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State overall (10D)",
+    "name": "state_state_joint_zmae",
+    "title": "10D overall MAE | SD-normalized (z-score scale)",
+    "png": "state/overall/ours_seed100100_ic100606_win/state_state_joint_zmae.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "Action adjacent MAE",
+    "name": "action_action_neighbor_mae",
+    "title": "Action MAE from adjacent recorded action",
+    "png": "action/adjacent_mae/pooled/action_action_neighbor_mae.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State change ratio (range)",
+    "name": "state_state_change_ratio_range",
+    "title": "State change magnitude ratio | range-normalized",
+    "png": "state/change_ratio/range/pooled/state_state_change_ratio_range.png"
+  },
+  {
+    "cohort": "pooled",
+    "category": "State change ratio (SD)",
+    "name": "state_state_change_ratio_sd",
+    "title": "State change magnitude ratio | SD-normalized",
+    "png": "state/change_ratio/sd/pooled/state_state_change_ratio_sd.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "Action adjacent MAE",
+    "name": "action_action_neighbor_mae",
+    "title": "Action MAE from adjacent recorded action",
+    "png": "action/adjacent_mae/mhi_v1.3_ic100601_win/action_action_neighbor_mae.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State change ratio (range)",
+    "name": "state_state_change_ratio_range",
+    "title": "State change magnitude ratio | range-normalized",
+    "png": "state/change_ratio/range/mhi_v1.3_ic100601_win/state_state_change_ratio_range.png"
+  },
+  {
+    "cohort": "mhi_v1.3_ic100601_win",
+    "category": "State change ratio (SD)",
+    "name": "state_state_change_ratio_sd",
+    "title": "State change magnitude ratio | SD-normalized",
+    "png": "state/change_ratio/sd/mhi_v1.3_ic100601_win/state_state_change_ratio_sd.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "Action adjacent MAE",
+    "name": "action_action_neighbor_mae",
+    "title": "Action MAE from adjacent recorded action",
+    "png": "action/adjacent_mae/ours_seed100100_ic100601_loss/action_action_neighbor_mae.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State change ratio (range)",
+    "name": "state_state_change_ratio_range",
+    "title": "State change magnitude ratio | range-normalized",
+    "png": "state/change_ratio/range/ours_seed100100_ic100601_loss/state_state_change_ratio_range.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100601_loss",
+    "category": "State change ratio (SD)",
+    "name": "state_state_change_ratio_sd",
+    "title": "State change magnitude ratio | SD-normalized",
+    "png": "state/change_ratio/sd/ours_seed100100_ic100601_loss/state_state_change_ratio_sd.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "Action adjacent MAE",
+    "name": "action_action_neighbor_mae",
+    "title": "Action MAE from adjacent recorded action",
+    "png": "action/adjacent_mae/ours_seed100100_ic100606_win/action_action_neighbor_mae.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State change ratio (range)",
+    "name": "state_state_change_ratio_range",
+    "title": "State change magnitude ratio | range-normalized",
+    "png": "state/change_ratio/range/ours_seed100100_ic100606_win/state_state_change_ratio_range.png"
+  },
+  {
+    "cohort": "ours_seed100100_ic100606_win",
+    "category": "State change ratio (SD)",
+    "name": "state_state_change_ratio_sd",
+    "title": "State change magnitude ratio | SD-normalized",
+    "png": "state/change_ratio/sd/ours_seed100100_ic100606_win/state_state_change_ratio_sd.png"
+  }
+]

@@ -1,0 +1,12 @@
+name: f16capstone_example_baseline
+dataset_id: f16capstone
+prompt_mode: external_generic
+source_globs: ['data/candidate_datasets/f16capstone/**/*.csv']
+state_columns: [m-airspeed-MPS, m-altitudeASL-MTR, m-azimuth-DEG, m-inclination-DEG, m-roll-DEG, m-aircraftPositionX-MTR, m-aircraftPositionY-MTR]
+action_columns: [rc_channel_0, rc_channel_1, rc_channel_2, rc_channel_3]
+reward_column: null
+timestamp_column: m-currentPhysicsTime-SEC
+gap_policy: preserve
+value_format: lexical
+system_prompt: 'Describe only the supplied flight observations and control channels. Do not infer missing measurements or rewards.'
+question: 'Summarize the supplied observations; distinguish measured values from interpretation.'
