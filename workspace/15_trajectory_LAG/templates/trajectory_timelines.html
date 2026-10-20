@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LAG · 実測と10 step予測</title>
+<style>
+:root{color-scheme:light;--ink:#233c52;--muted:#66788b;--line:#d9e2ea;--blue:#e3effa;--amber:#fff2d8}
+*{box-sizing:border-box}body{margin:0;background:#f4f7fa;color:var(--ink);font:15px/1.65 system-ui,-apple-system,sans-serif}
+main{max-width:1660px;padding:30px 28px 50px;margin:auto}.eyebrow{font-size:12px;letter-spacing:.12em;color:#62788c;font-weight:700}h1{font-size:30px;line-height:1.3;margin:8px 0 10px}h2{font-size:17px;margin:0 0 10px}p{margin:8px 0}.muted{color:var(--muted)}.badge{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:3px 12px;font-size:13px;background:white}
+nav,.panel{background:white;border:1px solid var(--line);border-radius:12px;padding:18px;margin:16px 0}nav{position:sticky;top:0;z-index:5;box-shadow:0 4px 12px #233c520a;display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted);font-weight:600}select,button{font:14px system-ui;color:var(--ink);padding:8px 10px;background:white;border:1px solid #bccbd8;border-radius:6px;min-height:36px}button{cursor:pointer}button:hover{background:#edf4fa}button:disabled{opacity:.35;cursor:default}a{color:#2462a3;text-underline-offset:3px}.spacer{flex:1}.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px}.swatch{display:inline-block;width:18px;height:10px;border-radius:2px;margin-right:5px}.legend b{font-weight:500}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{border:1px solid var(--line);border-top:3px solid;border-radius:8px;padding:12px 14px;min-width:0}.card h3{margin:0;font-size:16px}.card p{font-size:13px}.error{color:#a34928}.pill{font-size:11px;color:var(--muted);margin-left:10px}.plot-wrap{background:white;border:1px solid var(--line);border-radius:12px;overflow:hidden}#plot{width:100%;height:auto;display:block}.scroll{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}th,td{padding:7px 12px;border-bottom:1px solid #e4eaf0;text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}thead{background:#f6f9fb}details{border-top:1px solid #e4eaf0;padding-top:12px;margin-top:12px}summary{cursor:pointer;font-weight:600}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.6 ui-monospace,monospace;max-height:450px;overflow:auto;background:#f6f9fb;padding:14px;border-radius:6px}.toolbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.small{font-size:12px}#empty{padding:30px;background:#fff2d8;display:none}@media(max-width:760px){main{padding:18px 12px}h1{font-size:24px}.cards{grid-template-columns:1fr}nav{position:static}select{max-width:250px}}
+</style></head>
+<body><main>
+<div class="eyebrow">EXPERIMENT 15 / TRAJECTORY LAG</div>
+<h1>実測と、未来10 stepの予測</h1>
+<p class="muted">20 stepの履歴から続く状態・行動を、sol・terra・lunaの予測と重ねて比較します。</p>
+<p id="overview" class="badge"></p>
+<nav aria-label="表示条件">
+<label>試合<select id="episode"></select></label><label>機体<select id="target"></select></label><label>問題<select id="sample"></select></label><label>履歴H<select id="history"></select></label>
+<label>入力範囲<select id="scope"></select></label><label>表示区間<select id="view"><option value="context">履歴と周辺の実測値</option><option value="forecast">未来10 stepを拡大</option></select></label>
+<div class="spacer"></div><button id="previous">← 前の問題</button><button id="next">次の問題 →</button>
+</nav>
+<section class="panel"><h2 id="status"></h2><p id="timing" class="muted small"></p>
+<div class="legend"><b><span class="swatch" style="background:#263e55"></span>実測値</b><b style="color:#d35417">△ sol</b><b style="color:#157f70">□ terra</b><b style="color:#8055bf">× luna</b><b><span class="swatch" style="background:var(--blue)"></span>モデルに与えた履歴</b><b><span class="swatch" style="background:var(--amber)"></span>予測対象（非提示）</b></div>
+<p class="small muted">横軸0が最初の予測step、0〜9が予測区間です（1 step＝0.2秒）。青背景以外の実測値は比較用で、モデルへの入力ではありません。表示する系列は対象機体のみです。shootは実測のみ、欠損・無効値は空白、roll/yawは角度の折り返しで線を切っています。</p>
+<div id="cards" class="cards"></div></section>
+<div class="toolbar"><a id="download" target="_blank" rel="noopener">この図のPNGを開く</a><a href="timeline_index.json">描画データJSON</a><a href="metadata.json">出典・生成情報</a></div>
+<p id="empty">この組合せの問題はありません。</p><div class="plot-wrap"><img id="plot" alt="実測の時系列と3モデルの10 step予測を重ねた図" width="1760" height="1870"></div>
+<section class="panel"><h2>予測値と誤差</h2><p class="small muted">MAEは未来10 stepの成分別平均絶対誤差です。形式不正の回答は補正・部分採用せず、予測線と指標を表示しません。</p>
+<div class="scroll"><table id="metrics"></table></div>
+<details><summary>stepごとの実測・予測値</summary><label style="margin:12px 0">成分<select id="field"></select></label><div class="scroll"><table id="values"></table></div></details>
+<details><summary>モデルの回答原文・形式不正の理由</summary><div id="raw"></div></details>
+</section><p class="small muted">保存済み回答から作成したスナップショットです。新しい回答を回収した場合は、描画スクリプトで再生成してください。外部サービスへの接続は不要です。</p>
+</main><script id="data" type="application/json">__DATA__</script>
+<script>
+'use strict';
+const payload=JSON.parse(document.getElementById('data').textContent), rows=payload.views, meta=payload.metadata;
+const $=id=>document.getElementById(id), aliases=['sol','terra','luna'], colors={sol:'#d35417',terra:'#157f70',luna:'#8055bf'};
+const states=['lon_deg','lat_deg','alt_m','roll_deg','pitch_deg','yaw_deg','tas_mps','vn_mps','ve_mps','vu_mps'];
+const actions=['altitude_action','heading_action','speed_action'], units=['deg','deg','m','deg','deg','deg','m/s','m/s','m/s','m/s'];
+const labels={valid:'描画可能',parse_error:'形式不正・描画なし',api_error:'APIエラー',pending:'回答待ち',not_submitted:'未送信'};
+const scopeLabel=s=>s==='self'?'self（対象機体のみ）':'全機体＋ミサイル';
+function uniq(values){return [...new Set(values)]}
+function options(id,values,label=v=>v){const old=$(id).value;$(id).replaceChildren(...values.map(v=>new Option(label(v),v)));if(values.map(String).includes(old))$(id).value=old}
+function text(tag,value){const e=document.createElement(tag);e.textContent=value;return e}
+function number(v){return v===null||v===undefined?'—':Number(Number(v).toPrecision(7)).toString()}
+function percent(v){return v===null||v===undefined?'—':`${(v*100).toFixed(0)}%`}
+function table(id,heads,body){const el=$(id);el.replaceChildren();const h=document.createElement('thead'),r=document.createElement('tr');heads.forEach(v=>r.append(text('th',v)));h.append(r);el.append(h);const b=document.createElement('tbody');body.forEach(row=>{const tr=document.createElement('tr');row.forEach(v=>tr.append(text('td',v)));b.append(tr)});el.append(b)}
+let current=null;
+function update(){
+ const r=rows.find(r=>r.episode_id===$('episode').value&&r.target_id===$('target').value&&r.sample_number===Number($('sample').value)&&r.H===Number($('history').value)&&r.observation_scope===$('scope').value);current=r;
+ $('empty').style.display=r?'none':'block';$('plot').style.display=r?'block':'none';if(!r)return;
+ $('status').textContent=`${r.target_id} / 問${r.sample_number+1} / H=${r.H} / ${scopeLabel(r.observation_scope)}`;
+ $('timing').textContent=`履歴: step ${r.history_steps[0]}〜${r.history_steps.at(-1)} ｜ 予測: step ${r.target_steps[0]}〜${r.target_steps.at(-1)}（${(r.target_steps[0]*.2).toFixed(1)}〜${(r.target_steps.at(-1)*.2).toFixed(1)}秒）`;
+ $('plot').src=r.images[$('view').value];$('download').href=$('plot').getAttribute('src');
+ $('plot').alt=`${r.target_id} 問${r.sample_number+1} ${scopeLabel(r.observation_scope)}: 実測とsol・terra・lunaの予測`;
+ $('previous').disabled=$('sample').selectedIndex===0;$('next').disabled=$('sample').selectedIndex===$('sample').options.length-1;
+ $('cards').replaceChildren();$('raw').replaceChildren();
+ aliases.forEach(alias=>{const m=r.models[alias];if(!m)return;const card=document.createElement('div');card.className='card';card.style.borderTopColor=colors[alias];const title=text('h3',alias);title.append(text('span',labels[m.status]));title.lastChild.className='pill';card.append(title);
+ if(m.status==='valid'){card.append(text('p',`行動3成分のstep正解率: ${percent(m.action_step_accuracy)}`));card.append(text('p',`10 stepすべての行動一致: ${m.action_trajectory_exact_match?'一致':'不一致'}`))}else{const p=text('p',m.parse_error||m.api_error||labels[m.status]);p.className='error';card.append(p)}$('cards').append(card);
+ const detail=document.createElement('details');detail.append(text('summary',`${alias} / ${labels[m.status]}${m.parse_error?' / '+m.parse_error:''}`));detail.append(text('pre',m.response_text||m.api_error||'保存済みの回答はありません。'));$('raw').append(detail)});
+ const body=states.map((f,i)=>[`${f} MAE [${units[i]}]`,...aliases.map(a=>number(r.models[a]?.state_mae_by_field?.[f]))]);
+ ['roll_deg','yaw_deg'].forEach(f=>body.push([`${f} 循環角度MAE [deg]`,...aliases.map(a=>number(r.models[a]?.circular_angle_mae_deg?.[f]))]));
+ actions.forEach(f=>body.push([`${f} 正解率`,...aliases.map(a=>percent(r.models[a]?.action_component_accuracy?.[f]))]));
+ table('metrics',['指標',...aliases],body);updateValues();
+}
+function updateValues(){if(!current)return;const [kind,indexText]=$('field').value.split(':');const i=Number(indexText);table('values',['step','予測距離','実測',...aliases],current.ground_truth.map((r,j)=>[r.step,j+1,number(r[kind][i]),...aliases.map(a=>number(current.models[a]?.prediction?.[j]?.[kind]?.[i]))]))}
+function cascade(changed){
+ if(changed==='episode')options('target',uniq(rows.filter(r=>r.episode_id===$('episode').value).map(r=>r.target_id)));
+ let subset=rows.filter(r=>r.episode_id===$('episode').value&&r.target_id===$('target').value);
+ options('sample',uniq(subset.map(r=>r.sample_number)).sort((a,b)=>a-b),v=>`問 ${v+1}`);subset=subset.filter(r=>r.sample_number===Number($('sample').value));
+ options('history',uniq(subset.map(r=>r.H)).sort((a,b)=>a-b));subset=subset.filter(r=>r.H===Number($('history').value));options('scope',uniq(subset.map(r=>r.observation_scope)).sort((a,b)=>a==='self'?-1:b==='self'?1:a.localeCompare(b)),scopeLabel);update();
+}
+$('overview').textContent=`${rows.length}条件の図 · ${meta.responses.valid||0}件の予測を描画 · 形式不正 ${meta.responses.parse_error||0}件 · その他 ${Object.entries(meta.responses).filter(([k])=>!['valid','parse_error'].includes(k)).reduce((n,[,v])=>n+v,0)}件`;
+options('episode',uniq(rows.map(r=>r.episode_id)));options('field',[...states.map((_,i)=>`state:${i}`),...actions.map((_,i)=>`action:${i}`)],v=>{const[k,i]=v.split(':');return (k==='state'?states:actions)[Number(i)]});
+['episode','target','sample','history'].forEach(id=>$(id).onchange=()=>cascade(id));['scope','view'].forEach(id=>$(id).onchange=update);$('field').onchange=updateValues;
+$('previous').onclick=()=>{$('sample').selectedIndex--;cascade('sample')};$('next').onclick=()=>{$('sample').selectedIndex++;cascade('sample')};cascade('episode');
+const requested=rows.find(r=>r.sample_id===decodeURIComponent(location.hash.slice(1)));if(requested){$('episode').value=requested.episode_id;cascade('episode');$('target').value=requested.target_id;cascade('target');$('sample').value=String(requested.sample_number);cascade('sample');$('history').value=String(requested.H);cascade('history');$('scope').value=requested.observation_scope;update();}
+</script></body></html>

@@ -1,0 +1,40 @@
+{
+  "id": "batch_6accb0805b988190b146ddb10b7b4bf3",
+  "completion_window": "24h",
+  "created_at": 1791799424,
+  "endpoint": "/v1/chat/completions",
+  "input_file_id": "file-2BUosd7okexwhw1itCgtcG",
+  "object": "batch",
+  "status": "completed",
+  "cancelled_at": null,
+  "cancelling_at": null,
+  "completed_at": 1791799495,
+  "error_file_id": null,
+  "errors": null,
+  "expired_at": null,
+  "expires_at": 1791885824,
+  "failed_at": null,
+  "finalizing_at": 1791799494,
+  "in_progress_at": 1791799426,
+  "metadata": {
+    "lag_job_key": "406b6233f9c971cfadba2e3726d74cb3219e4de595ade17118f2ac4d11d09e41"
+  },
+  "model": "gpt-5.6-luna",
+  "output_file_id": "file-6TrcVcpUDP8jC6ueuEKfkz",
+  "request_counts": {
+    "completed": 10,
+    "failed": 0,
+    "total": 10
+  },
+  "usage": {
+    "input_tokens": 59568,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 3444,
+    "output_tokens_details": {
+      "reasoning_tokens": 2562
+    },
+    "total_tokens": 63012
+  }
+}

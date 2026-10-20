@@ -1,0 +1,180 @@
+# 入出力の生データビューア・few-shot選択
+
+[view_rawdata.html](view_rawdata.html) をブラウザで開いてください。サーバー、Python、APIキー、元JSONLは閲覧時には不要です。
+
+HTMLには03_1のGPT-3.5全960件と、05を含む06統合版のSol / Terra / Luna各320件、合計1,920件を埋め込んでいます。SolのAPI失敗6件も含みます。GPT-3.5は各条件30件、他モデルは各条件10件です。
+
+モデル・Task・予測対象・Hを選び、上部でReasoning scoreと一致／誤差を確認できます。回答の直後にも、Joint用の正解と予測の比較表を表示します。元の旧parserのstatusは新しい正誤表示には使いません。連続値に任意の正誤閾値は置かず、各次元の絶対誤差を表示します。
+
+**正解例 / 不正解例**は手動の選択区分です。押すと色が変わり、同じボタンで解除、反対のボタンで区分変更します。右上の**選択済み**から一覧・メモ・並べ替え・JSON再読み込みを利用できます。API失敗で回答がない例は選択できません。
+
+**出力**ではTask・予測対象・モデル・H・Reasoning score、正解例／不正解例の件数、seed・並び順を指定できます。全選択の候補集JSONと、指定件数のJSON／TXTを出力できます。Questionはuser入力だけ、Answerは回答全文、Labelは選択区分・Score・正解・比較結果です。systemは出力しません。
+
+保存先は **workspace/08_fewshot/data_prep/**。Chrome等では「保存先を選択（data_prep）」でフォルダを選べます。非対応ブラウザではダウンロード後に移動してください。選択はlocalStorageに保存しますが、JSONにも保存しておくとブラウザを変えて復元できます。
+
+コード・共通データ・08での件数指定CLI・JSON仕様・検証方法は [08 data_prepのREADME](../08_fewshot/data_prep/README.md) を参照してください。表示元は `viewer_template.html` / `viewer.css` / `viewer.js`、HTML再生成は08の `build_examples.py` で行います。
+
+取得済みの2026-09-16の回答を基にしたスナップショットです。正解と既存スコアを追加しましたが、新しいAPI送信・Reasoning再採点はありません。元データ更新はHTMLに自動反映されません。
+
+[view_rawdata.ipynb](view_rawdata.ipynb) は変更していません。従来の各条件先頭10件を元JSONLから読む別版です。Notebookの再実行には元データの配置が必要です。
+
+## 1. 回答取得・採点・records.jsonl保存の呼び出し経路
+
+```text
+各実験のrun.py（06はsplit_execution.py経由）
+  → src/mtd_rl_xavier/experiment/common.py の execute_plan()
+  → invoke_cli()
+  → mentalmodeling/llm_x/cli.py の _evaluate()
+  → evaluation.py の evaluate_episode()
+      → backend.complete()   ← モデルの回答全文を取得
+      → _score_response()    ← 旧parserでその回答を採点
+  → cli.py の _write_result()
+      → predictions.jsonl に採点結果を保存
+  → common.py の collect_scores()
+      → 入出力と採点結果を結合してrecords.jsonlに保存
+```
+
+直接の呼び出し元は [evaluation.py の evaluate_episode()](../../mentalmodeling/llm_x/evaluation.py#L68) です。
+
+```python
+response = backend.complete(system_prompt=scene, user_prompt=prompt)
+record = _score_response(
+    episode,
+    config,
+    index=index,
+    response=response,
+    drop_last_feature=drop_last,
+    presented_action=presented_action,
+    presented_is_correct=presented_is_correct,
+)
+```
+
+**この経路では保存済みのrecords.jsonlを読んで採点するのではなく、回答が返ってきた時点で採点してからrecordsに保存します。** 後述するanalysisでの再解析は別の経路です。
+
+06の `merged/<ID>/records.jsonl` は [split_execution.py の merge_results()](../../src/mtd_rl_xavier/experiment/split_execution.py#L198) が05と06のbatchのrecordをコピー・統合したものです。統合時に再採点せず、元のstatusを引き継ぎます。
+
+## 2. _score_response()への入力とassistant_textの関係
+
+[_score_response()](../../mentalmodeling/llm_x/evaluation.py#L155) の入力は以下です。
+
+| 引数 | 内容 |
+| --- | --- |
+| `episode` | 元の軌跡データ。正解となる状態や行動を取り出す |
+| `config` | タスク、予測対象、質問名、状態変化の閾値、bin数など |
+| `index` | 元episode上の採点対象の時刻 |
+| `response` | モデルの回答全文の文字列 |
+| `drop_last_feature` | Fetch系タスクの状態次元調整。今回の2タスクではfalse |
+| `presented_action` / `presented_is_correct` | argue-action用。今回の4種類の予測では使わない |
+
+同じ回答本文を [common.py の RecordingOpenAIBackend.complete()](../../src/mtd_rl_xavier/experiment/common.py#L544) が保存対象に含めます。
+
+```python
+finished = {
+    # 条件・入力・応答・時間などの他のフィールド
+    "assistant_text": text,
+}
+```
+
+HTMLの「出力 — assistant_text」は、採点関数に渡された回答全文です。モデルの応答の `choices[0].message.content` に由来し、Reasoningや最終回答ラベルも含みます。HTML表示のために採点用predictionへ置き換えているわけではありません。
+
+[collect_scores()](../../src/mtd_rl_xavier/experiment/common.py#L650) はupstreamのpredictions.jsonlを読み、`score["status"]` をrecord直下のstatusにコピーしてrecords.jsonlへ追記します。API等の実行失敗では [complete()の例外処理](../../src/mtd_rl_xavier/experiment/common.py#L530) がstatus=failedを設定します。
+
+## 3. analysisは回答全文をJoint用parserで読み直す
+
+06の4モデル比較は [comparison.py](../../src/mtd_rl_xavier/experiment/common_analysis/comparison.py#L106) → [joint_data.py の load_and_parse()](../../src/mtd_rl_xavier/experiment/common_analysis/joint_data.py#L97) → [parse_response()](../../src/mtd_rl_xavier/experiment/common_analysis/joint_data.py#L82) の経路を使います。
+
+`load_and_parse()` はassistant_textとraw_response内の回答本文の一致を検証し、次の各成分を独立に抽出します。next/lastによるparserの違いはありません。
+
+| 対象 | 読み取る出力ラベル | 解析上の名前 | 期待する内容 |
+| --- | --- | --- | --- |
+| MountainCar action | `Final action choice` | `action` | 0〜2の行動番号1個 |
+| Pendulum action | `predictions` | `action_value` | 連続action値1個 |
+| Pendulum action | `Final action bins` | `action_bin` | 0〜9のbin番号1個 |
+| 両タスク state | `predictions` | `direction` | INC / DEC / UNCHのリスト |
+| 両タスク state | `Final state values` | `state_value` | 状態値の数値リスト |
+| 両タスク state | `Final state deltas` | `state_delta` | 状態差分の数値リスト |
+
+stateの要素数はMountainCarが2、Pendulumが3です。例えば、
+
+```text
+predictions = [-1.45]       → action_valueとして取得
+>>Final action bins: [1]    → action_binとして取得
+```
+
+のように連続値とbinを分けて読みます。**analysisでは連続値をbin番号として誤って読もうとする問題はありません。元のstatus=ignoredだけを理由に除外せず、assistant_textから再解析します。**
+
+## 4. analysis側の正規表現と抽出後の検査
+
+実装は [joint_data.py の parse_component()](../../src/mtd_rl_xavier/experiment/common_analysis/joint_data.py#L43) です。全成分で同じ正規表現の骨格を使い、上表のラベルだけを差し替えます。
+
+```python
+prefix = r"^[ \t]*(?:(?:\d+[.)]|[-*])[ \t]*)?(?:>>[ \t]*)?(?:\*\*)?(?:\[)?"
+suffix = r"(?:\])?(?:\*\*)?[ \t]*[:=][ \t]*(?:\*\*)?\s*(\[[^\]]*\]|[^\n]+)"
+matches = re.findall(prefix + re.escape(label) + suffix, text, re.M | re.I)
+```
+
+| 部分 | 意味 |
+| --- | --- |
+| `^` と `re.M` | 回答内の各行の先頭からラベルを探す。説明文の途中の数値を自由に拾わない |
+| `[ \t]*` | 空白・タブを許可 |
+| `(?:(?:\d+[.)]\|[-*])[ \t]*)?` | `1.`、`1)`、`-`、`*` のような先頭の番号・箇条書きを許可（表の `\|` はMarkdown上のエスケープ。実コードは上のブロック参照） |
+| `(?:>>[ \t]*)?` | ラベル前の `>>` を許可 |
+| `(?:\*\*)?` と角括弧の任意部分 | `**predictions**` や `[predictions]` などのラベル装飾を許可 |
+| `re.escape(label)` | 指定ラベルを文字どおり探す |
+| `[:=]` | ラベルの後の `:` または `=` を許可 |
+| `(\[[^\]]*\]\|[^\n]+)` | 角括弧付きリスト、または行末までの値を取得。リスト内の改行も許可（表の `\|` はMarkdown用） |
+| `re.I` | ラベルの大文字・小文字を区別しない |
+| `re.findall()` | 最初の1個だけでなく、同じラベルの全出現を取得 |
+
+例えば以下のラベル付き出力が抽出対象です。
+
+```text
+3. >>Final action choice: [2]
+predictions = [-1.45]
+>>Final action bins: [1]
+**predictions** = ["INC", "DEC", "UNCH"]
+>>Final state values: [0.9, 0.1, -0.2]
+>>Final state deltas: [0.01, -0.01, -0.3]
+```
+
+取得した文字列は `ast.literal_eval(token.strip())` で値に変換します。Pythonコードを実行するevalではなく、リストや数値などのリテラルとして読みます。その後、以下を検査します。
+
+1. **次元数**：期待する要素数のlistか。MountainCarのactionだけは単一の数値も1要素listに変換して受け付けます。
+2. **増減方向**：各要素がINC/DEC/UNCHかを検査し、DEC=0、INC=1、UNCH=2へ変換します。
+3. **連続値**：全要素が有限のint/floatか。bool、NaN、無限大等は受け付けません。ここで物理的な上下限への適合までは判定しません。
+4. **行動・bin番号**：整数値かつ、actionは0〜2、binは0〜9かを検査します。
+5. **重複ラベル**：同じ成分を複数回書いた場合、解釈後の値が全て同じなら採用し、食い違えば `conflicting_markers` として失敗にします。
+
+結果は成分ごとの `{"value": ..., "ok": True/False, "error": ...}` です。マーカーなしは `missing_marker`、数値化できない説明・プレースホルダー等は `non_literal_or_placeholder`、次元違いは `wrong_dimension` として記録します。一つの成分が失敗しても、他の成分は独立して判定されます。
+
+**ok=trueは「読み取れた」という意味で、予測が正解という意味ではありません。** 抽出後の評価は [joint_aggregate.py](../../src/mtd_rl_xavier/experiment/common_analysis/joint_aggregate.py) / [joint_metrics.py](../../src/mtd_rl_xavier/experiment/common_analysis/joint_metrics.py) が担当します。成分別の読み取り成功・失敗件数は06の `analysis/comparison_4models/tables/parse_summary.csv` にあります。API失敗は、明示的に許可された4モデル比較で欠損として扱い、回答を捏造しません。
+
+## 5. records.jsonlのstatusは旧parserの判定：Jointの評価結果としては使わない
+
+**records.jsonlのstatusは旧parserで記入されており、Joint出力の評価としては誤った判定を含みます。analysis側で再解析・評価した結果ではありません。**
+
+- Pendulum action：旧parserは連続値用の `predictions` を整数binとして読み、別出力の `Final action bins` を読みません。指定どおり `predictions = [-1.45]` と回答していてもignoredになります。実データにも、正しいbinを別に出しているのにignoredとなった例があります。
+- state：旧parserのmatch/mismatchは増減方向だけの一致判定です。state値・delta値の正しさを示しません。
+- MountainCar actionの判定など、statusが正しく付いている場合もあります。「全件のstatusが誤り」という意味ではありません。
+- failedはAPI等の実行失敗を表す別の状態です。analysisもAPI失敗の確認にはこの値を使います。
+
+元データを保存記録として保持するため、statusは書き換えていません。06の評価を確認するときはanalysisの成分別解析結果を参照してください。
+
+HTML上部は「応答あり／回答なし」と、新しく結合したJointの項目別一致・誤差を表示します。詳細表・折りたたみJSONに残るstatusは旧parserの結果です。新しい比較結果はfewshot.comparisonに分けて保持しています。Notebookは元のままです。
+
+
+## Reasoning採点用CSV
+
+[reasoning_for_scoring.csv](reasoning_for_scoring.csv) は `model, Task, Metrics, H, Reasoning, score` の6列です。scoreは全行空欄です。UTF-8 BOM付きで、Reasoning内の改行・引用符をCSVの引用規則に従って保存しています。
+
+06の統合records（05の120件を含む）の全960件と03_1の全960件を対象にしています。05を追加連結せず重複を避けています。現在のHTMLと同じく、GPT-3.5は各条件30件すべてを含みます。モデル別の行数はsol/terra/lunaが各320件、3.5が960件、合計1,920件です。
+
+Reasoning見出し直後からPrediction見出し直前までの本文のみを抽出し、見出しと前後の空白を除いています。太字・角括弧の有無、`Prediction by element` の表記揺れに対応しています。本文内の改行、Markdown、数式表現は保持し、翻訳・要約はしていません。
+
+抽出成功は1,794件。残る126件のReasoningは空欄です（solのAPI失敗6件、3.5のReasoning見出しがない120件）。見出しのない回答から推測で文章を切り出してはいません。空欄のscoreは元のstatusや自動採点と無関係で、手動記入用です。
+
+行順はモデル（sol、terra、luna、3.5）、Task、Metrics、H、ordinalの順です。Task/Metricsは文字列の昇順、H/ordinalは数値の昇順です。H列は履歴ステップ数です。ordinalはCSVには含めていません。このCSV抽出時には元records・HTML・Notebookを変更していません。
+
+採点済みデータは [reasoning_for_scoring_scored_astra_high.csv](reasoning_for_scoring_scored_astra_high.csv)、採点依頼の原文は [reasoning_score_analysis/Prompt.md](reasoning_score_analysis/Prompt.md) に保存しています。全1,920行を採点し、Score 1〜4は順に437・546・293・644件です。
+
+Model × HとPendulum Last/Next Actionの可視化コード、PNG図10点、条件別集計、再実行方法は [reasoning_score_analysis/README.md](reasoning_score_analysis/README.md) を参照してください。PDFは生成しません。

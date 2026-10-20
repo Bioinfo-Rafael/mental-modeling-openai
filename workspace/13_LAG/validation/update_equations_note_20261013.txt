@@ -1,0 +1,63 @@
+action・速度・位置の更新式に関する調査ノート
+調査日: 2026-10-13 JST
+
+調査テーマ
+既存データのaction、速度、位置がどういう種類の数式でつながるか。
+本ノートは公開実装の読み取りによる説明。データの物理的整合性を検証した結果ではない。
+
+確認したこと
+1. actionは方策の出力
+CSVのactionは上位指令である。受領READMEによれば決定論実行で、各出力グループの最大確率の選択肢を記録する。
+一般的な表記では (logits_t, H_(t+1)) = Policy(o_t, H_t)、p_t=softmax(logits_t)、a_t^j=argmax_k p_t^j(k)。
+oは観測、Hは上位方策の再帰状態、jは出力グループ。確率的実行ではargmaxではなく分布からサンプリングする。
+actionは位置や速度のように微分方程式で積分する量ではない。
+
+2. 上位actionと物理モデルの入力の間に下位方策がある
+一般的な表記では (b_t, Z_(t+1)) = Controller(ego_t, command(a_t), Z_t)、u_t=normalize(b_t)。
+Zは下位方策の再帰状態。uは操縦入力。これが操縦系・推進系・空力モデルに作用して力を変える。
+参照したmultiplecombat_task.pyでは、下位方策へ入力と前回RNN状態を渡し、返されたRNN状態を次回用に保存している。
+上位actionのラベルは次状態の増減を保証しない。制御指令と状態変化量を同一視しない。
+
+3. 加速度から速度への更新
+空中で拘束のない剛体の並進運動は、慣性座標系で alpha_I = R_bI F_b/m + R_EI g_E。
+F_bは重力以外の合力、mは質量、Rは座標変換、g_Eは地球固定系で表した重力加速度。
+参照版FGAccelerations.cppのCalculateUVWdotがこの構造を持つ。接地時の摩擦・拘束は別途加わる。
+連続時間では dv_I/dt=alpha_I、dr_I/dt=v_I。
+
+4. 参照JSBSim版の数値積分
+FGPropagate.cppの標準設定は並進速度がAB2、並進位置がAB3。
+内部積分呼出しの番号をn、内部刻みをdt、当該呼出しに供給する加速度をalpha_nと書く。
+  v_(n+1) = v_n + dt*(3*alpha_n-alpha_(n-1))/2
+  r_(n+1) = r_n + dt*(23*v_n-16*v_(n-1)+5*v_(n-2))/12
+いずれもECI（地球中心慣性）系のベクトル。位置積分は当該呼出しで速度を更新する前に行われる。
+alpha_nの添字は積分器へ供給する値の番号であり、run後に読むすべてのプロパティが同じ評価時点という意味ではない。
+積分器は設定可能なため、標準設定の確認とデータ生成時の設定確認は別である。
+
+5. CSVとの対応
+受領READMEの記録間隔は0.2秒。同じ行の状態s_tを見てaction a_tを選び、次の区間に適用する。
+一方、上のdtはシミュレータ内部の積分刻み。CSVの行番号tと内部積分番号nを区別する。
+JSBSimは内部位置をECIから地球固定系へ変換し、位置に応じた局所座標系の速度も計算する。
+CSVは経度・緯度・高度、局所の北・東・上速度、真対気速度を保存しているという説明。
+経緯度はECI位置ではなく、北東上速度はECI速度ではない。真対気速度は空気に対する速度の大きさであり、風がある場合に地上速度の大きさとは一致しない。
+
+解釈
+全体は「観測→上位方策→下位方策→操縦系・力→加速度→速度積分→位置積分→出力座標変換」と整理できる。
+CSVの位置・速度・上位actionだけで閉じた単純な更新式が得られるわけではない。方策の再帰状態、物理モデルの内部状態、積分履歴なども関係する。
+
+未確認事項
+データを生成した実行コードと参照上流の差分、実際のJSBSimバージョンと積分器設定、記録処理の実装。
+そのため、ここで断定できるのは指定された参照実装の構造・標準設定であり、受領データがその設定で生成されたことではない。
+機体固有の制御・空力パラメータ、戦闘行動や射撃処理の詳細は本調査の対象に含めない。
+
+根拠・参照先
+ローカル（13_LAGを基準とする）:
+data/raw/20261005_LAG_2v2_ACMI/actions/README.md
+
+上流LAG commit ebd3a38e64d49c38c3e4ee04cdc1a1541be0da08:
+https://github.com/liuqh16/LAG/blob/ebd3a38e64d49c38c3e4ee04cdc1a1541be0da08/algorithms/mappo/ppo_actor.py
+https://github.com/liuqh16/LAG/blob/ebd3a38e64d49c38c3e4ee04cdc1a1541be0da08/algorithms/utils/distributions.py
+https://github.com/liuqh16/LAG/blob/ebd3a38e64d49c38c3e4ee04cdc1a1541be0da08/envs/JSBSim/tasks/multiplecombat_task.py
+
+参照JSBSim commit ddd025ae2ed76631b4a9b00cc2871a78c251d476:
+https://github.com/JSBSim-Team/jsbsim/blob/ddd025ae2ed76631b4a9b00cc2871a78c251d476/src/models/FGAccelerations.cpp
+https://github.com/JSBSim-Team/jsbsim/blob/ddd025ae2ed76631b4a9b00cc2871a78c251d476/src/models/FGPropagate.cpp

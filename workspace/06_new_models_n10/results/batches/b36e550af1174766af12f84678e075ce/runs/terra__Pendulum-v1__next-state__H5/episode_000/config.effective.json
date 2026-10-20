@@ -1,0 +1,20 @@
+{
+  "action_bins": 10,
+  "action_max": null,
+  "action_min": null,
+  "backend": "openai",
+  "data_sha256": "09c3c01c27f0a19af5d18bd6f5c70cbc8dd1b88eb8f3c70d2bbaac03ecf32fce",
+  "fetch_drop_last_feature": true,
+  "history_size": 4,
+  "include_prompts": true,
+  "indexed_history": true,
+  "max_queries": 10,
+  "max_steps": null,
+  "metric": "next-state",
+  "model": "gpt-5.6-terra",
+  "question_name": "next_state_prediction_more_options_joint",
+  "seed": 0,
+  "semantics_version": "public-v1",
+  "state_threshold": 0.0001,
+  "task_name": "Pendulum-v1"
+}

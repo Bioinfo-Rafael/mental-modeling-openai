@@ -1,0 +1,430 @@
+[SYSTEM]
+Below is a description of the "LAG-2v2" task.
+
+Task description:
+Light Aircraft Game (LAG) is an aircraft combat simulation. This
+experiment uses recorded episodes of a two-versus-two engagement
+between teams of F-16 aircraft equipped with missiles. The task
+objective is to defeat the opposing aircraft while surviving.
+
+Team A consists of A0100 and A0200, and Team B consists of B0100
+and B0200. In the supplied recordings, Team A uses learned policies
+and Team B uses rule-based pursuit controllers.
+
+Control is hierarchical: a high-level policy selects altitude,
+heading, speed, and firing commands. A fixed low-level policy
+translates the movement commands into aircraft control inputs.
+
+Observation space:
+The state is a 10-dimensional telemetry vector in the following
+fixed order:
+
+[lon_deg, lat_deg, alt_m, roll_deg, pitch_deg, yaw_deg, tas_mps, vn_mps, ve_mps, vu_mps]
+
+The fields and their reference ranges are:
+
+- lon_deg: longitude in degrees; [119, 121].
+- lat_deg: latitude in degrees; [59, 61].
+- alt_m: altitude above mean sea level in meters; [3500, 6500].
+- roll_deg: roll angle in degrees; [-180, 180].
+- pitch_deg: pitch angle in degrees; [-40, 40].
+- yaw_deg: heading angle in degrees; [0, 360).
+- tas_mps: true airspeed in meters per second; [170, 360].
+- vn_mps: northward velocity in meters per second; [-350, 370].
+- ve_mps: eastward velocity in meters per second; [-370, 380].
+- vu_mps: upward velocity in meters per second; [-150, 170].
+
+Heading is measured clockwise from north: 0 degrees is north,
+90 degrees is east, 180 degrees is south, and 270 degrees is west.
+Account for angular wraparound when interpreting changes in
+heading and roll.
+
+The telemetry vector is not the complete observation originally
+available to the policy. The upstream policy also uses information
+about other aircraft and missile threats.
+
+A null value means missing or unavailable information, not zero.
+A state marked invalid must not be interpreted as active flight.
+
+Action space:
+Each action contains four discrete components in this order:
+
+[altitude_action, heading_action, speed_action, shoot_action]
+
+Each component takes one of the following values:
+
+- altitude_action: 0 = up; 1 = hold; 2 = down.
+- heading_action: 0 = left30; 1 = left15; 2 = hold; 3 = right15; 4 = right30.
+- speed_action: 0 = up; 1 = hold; 2 = down.
+- shoot_action: 0 = no; 1 = yes.
+
+The movement commands correspond to altitude offsets of
++100 / 0 / -100 meters, heading offsets of
+-30 / -15 / 0 / +15 / +30 degrees, and forward-speed offsets
+of approximately +17 / 0 / -17 meters per second.
+
+These are inputs to the low-level controller. They do not specify
+the actual state change completed within one time step.
+The speed command concerns forward speed, whereas tas_mps
+records true airspeed.
+
+The firing component specifies a launch request. A request does
+not guarantee that a missile is launched.
+
+Historical actions contain all four component IDs, including the
+firing command. For action prediction, predict only the altitude,
+heading, and speed components, in that order.
+
+Transition dynamics:
+Aircraft motion is simulated using JSBSim. Movement commands pass
+through the low-level controller before affecting the aircraft's
+subsequent position, attitude, and velocity.
+
+Recorded steps are separated by 0.2 seconds. At step t, s_t denotes
+the state before action a_t is applied. The action acts over the
+interval from step t to step t+1, producing s_(t+1).
+
+s_t -- a_t --> s_(t+1)
+
+Empirical aircraft attitude dynamics (0.2-second step):
+
+Use the following fitted relationship as approximate guidance for aircraft
+attitude prediction alongside the supplied history and action context.
+It is not an exact JSBSim equation or a complete state-transition model.
+It does not determine position, velocity, TAS, or action IDs by itself.
+The same coefficients apply to every aircraft; do not apply them to missiles.
+
+Let q_n = [roll_deg, pitch_deg, yaw_deg] at step n, in degrees.
+Let v_n = [vn_mps, ve_mps, vu_mps], in meters per second, and s_n = tas_mps.
+Define wrap(a) = ((a + 180) mod 360) - 180, component by component,
+where mod returns a value in [0, 360).
+Define d_n = wrap(q_n - q_(n-1)) and d_(n-1) = wrap(q_(n-1) - q_(n-2)).
+
+Construct the 24-dimensional vector x_n by concatenating, in this exact order:
+  d_n                                      (3 values: roll, pitch, yaw)
+  d_(n-1)                                  (3 values: roll, pitch, yaw)
+  sin(pi*q_n/180)                           (3 values: roll, pitch, yaw)
+  cos(pi*q_n/180)                           (3 values: roll, pitch, yaw)
+  v_n                                      (3 values: north, east, up)
+  v_n - v_(n-1)                            (3 values: north, east, up)
+  v_(n-1) - v_(n-2)                        (3 values: north, east, up)
+  s_n                                      (1 value)
+  s_n - s_(n-1)                            (1 value)
+  s_(n-1) - s_(n-2)                        (1 value)
+
+Differences are NOT divided by 0.2. Trigonometric arguments are in radians.
+The following coefficients already use the original units. Do not standardize
+the features or multiply the predicted increment by 0.2 again.
+
+Predicted angle increment in degrees:
+  delta_q = b + transpose(B) * x_n
+Predicted next attitude:
+  q_(n+1) = q_n + delta_q
+
+b, ordered [roll, pitch, yaw]:
+[
+  -14.761806809245765,
+  4.29431760650264,
+  -2.5205253811451325
+]
+
+B has 24 rows and 3 columns. Row i multiplies feature i in x_n;
+columns predict [roll increment, pitch increment, yaw increment].
+Row feature names, in order:
+[
+  "previous_increment_Roll_deg",
+  "previous_increment_Pitch_deg",
+  "previous_increment_Yaw_deg",
+  "earlier_increment_Roll_deg",
+  "earlier_increment_Pitch_deg",
+  "earlier_increment_Yaw_deg",
+  "sin_Roll",
+  "sin_Pitch",
+  "sin_Yaw",
+  "cos_Roll",
+  "cos_Pitch",
+  "cos_Yaw",
+  "velocity_N_mps",
+  "velocity_E_mps",
+  "velocity_U_mps",
+  "velocity_last_difference_N_mps",
+  "velocity_last_difference_E_mps",
+  "velocity_last_difference_U_mps",
+  "velocity_earlier_difference_N_mps",
+  "velocity_earlier_difference_E_mps",
+  "velocity_earlier_difference_U_mps",
+  "tas_mps",
+  "tas_last_difference_mps",
+  "tas_earlier_difference_mps"
+]
+Coefficient matrix B:
+[
+  [
+    0.8739996006588663,
+    -0.016530914060107052,
+    0.03362385011036918
+  ],
+  [
+    0.043116143629110266,
+    0.7263278474408114,
+    -0.008168422443989139
+  ],
+  [
+    1.0510248670537248,
+    -0.04783275174198584,
+    0.4686347507428331
+  ],
+  [
+    -0.4456160196985098,
+    0.027235644887463353,
+    -0.015428508217535893
+  ],
+  [
+    -0.10776331755294202,
+    -0.1342498867594023,
+    -0.04605107816289018
+  ],
+  [
+    -0.06893509116246915,
+    -0.08384646053083165,
+    -0.08923186335047659
+  ],
+  [
+    -3.414637313136043,
+    0.4269037412059658,
+    1.178682684149772
+  ],
+  [
+    -5.032223121507728,
+    -1.6731278813661064,
+    -0.4425107531587
+  ],
+  [
+    0.41843874992473135,
+    -0.044880838727102745,
+    0.28402217596820445
+  ],
+  [
+    -1.0022469317533527,
+    0.3517048943309683,
+    -0.3383312001277949
+  ],
+  [
+    17.39283545929011,
+    -4.875497791520991,
+    3.0526333613210492
+  ],
+  [
+    -0.23245271622435676,
+    0.024324855225646664,
+    0.05332922339308777
+  ],
+  [
+    0.0002495911678830398,
+    0.00028945694796531226,
+    -0.00029942465650721395
+  ],
+  [
+    -0.0037899412259667906,
+    0.0005559259242717158,
+    -3.648700731246471e-05
+  ],
+  [
+    0.009065134935347309,
+    -3.74163473804807e-05,
+    -0.0006555618184135886
+  ],
+  [
+    0.1008199863527453,
+    -0.020205877689452967,
+    -0.005702172514247395
+  ],
+  [
+    -0.04749467936589786,
+    -0.019564252715797984,
+    0.005509768712740285
+  ],
+  [
+    -0.42244393750145826,
+    -0.11130838771909933,
+    0.0574068408425748
+  ],
+  [
+    0.012317716021851631,
+    0.028032987835887344,
+    0.041951795313027215
+  ],
+  [
+    0.06415402440557362,
+    0.01803767046880078,
+    -0.013406923821691383
+  ],
+  [
+    0.4324376240947113,
+    0.0034392543827370687,
+    -0.017019648712276614
+  ],
+  [
+    -0.0067687853686365825,
+    0.0008533389581706219,
+    -0.001026035345177161
+  ],
+  [
+    0.7822913529375238,
+    -0.19633665125148694,
+    0.11073259273919649
+  ],
+  [
+    -0.6337575870663174,
+    0.025502174703213497,
+    -0.0559573922512723
+  ]
+]
+
+For the first forecast step, use the last three historical states. For later
+forecast steps, use your own predicted states whenever actual history is no
+longer available. Never assume any future recorded state or action is given.
+Keep inferring the remaining state components and the three action IDs using
+the original task instructions. This empirical prior does not replace those
+predictions. Do not invent zero values for missing inputs.
+
+Return yaw in [0, 360) and represent roll using its equivalent angle in
+[-180, 180). Handle angle differences using wrap, not raw subtraction across
+the 0/360 or -180/180 boundary. Pitch remains in degrees.
+
+Under the stated heading convention and positive nose-up pitch, the aircraft's
+forward axis in north/east/up coordinates is
+  [cos(pitch)*cos(yaw), cos(pitch)*sin(yaw), sin(pitch)],
+using radians in these trigonometric functions. This forward axis need not be
+parallel to [vn_mps, ve_mps, vu_mps]. Roll does not directly change the forward
+axis. Do not force velocity direction to equal nose direction or identify TAS
+with a particular velocity component.
+
+The coefficients were fitted jointly to all three source recordings, including
+the evaluated recording. They provide an in-dataset empirical prior, not
+independent evidence about unseen recordings. They were fitted for one-step
+prediction; recursive ten-step accuracy is not guaranteed. They do not include
+explicit action or control-surface effects.
+
+Initial state:
+In the supplied recordings, aircraft start near longitude
+120 degrees and latitude 60 degrees, at approximately 6096 meters
+altitude and 243.84 meters per second true airspeed.
+Initial positions and headings vary between scenarios.
+
+Termination:
+The upstream task checks termination for each aircraft upon
+destruction or a flight-safety violation, at the time limit,
+or when all opponents are destroyed and no incoming missiles
+remain.
+
+[USER]
+Given the following snippet of an episode generated by a trained reinforcement-learning agent:
+
+Target aircraft: A0100
+Forecast steps (in order): [82,83,84,85,86,87,88,89,90,91]
+State field order: [lon_deg, lat_deg, alt_m, roll_deg, pitch_deg, yaw_deg, tas_mps, vn_mps, ve_mps, vu_mps]
+Historical action ID order: [altitude_action, heading_action, speed_action, shoot_action]
+
+History: 20 consecutive steps, separated by 0.2 seconds.
+Each history entry contains the target aircraft's state and recorded action.
+Each pair contains state s_t before action a_t, which acts from t to t+1.
+
+Step 62 (time_s=12.4):
+  state A0100: [120.00335279387,60.03592299298066,5551.692318759826,73.45942129793062,-8.418996814137591,31.139669105198372,284.80897167223054,256.97082835819714,109.43091089019516,-55.74064459294998]; valid=1
+  action A0100: [2,4,0,1]; status=recorded
+
+Step 63 (time_s=12.6):
+  state A0100: [120.00376314724195,60.03638012205205,5540.632271868709,78.59743658413416,-8.185439777487986,33.42355250336176,284.8480074145069,252.651597164162,119.5087617472174,-54.983758002339414]; valid=1
+  action A0100: [2,4,0,1]; status=recorded
+
+Step 64 (time_s=12.8):
+  state A0100: [120.00420966777236,60.036828872506206,5529.64227524736,84.25386227372846,-8.313430457751478,35.768649160653275,284.86068159180616,247.63661482361013,129.57168284557065,-55.0717161546487]; valid=1
+  action A0100: [2,4,0,1]; status=recorded
+
+Step 65 (time_s=13.0):
+  state A0100: [120.0046931051302,60.03726757965866,5518.559494589907,84.2113017624507,-8.483753719266488,38.14865392952603,284.58944205844733,241.2093098000979,140.39786369080764,-55.65661926452349]; valid=1
+  action A0100: [2,4,0,1]; status=recorded
+
+Step 66 (time_s=13.2):
+  state A0100: [120.00521630837346,60.03769378447555,5507.441173141024,76.8797229629667,-8.50518358974626,40.56572000611737,284.18684132022395,234.10378712662268,151.31730597679476,-55.32314655245267]; valid=1
+  action A0100: [2,4,0,1]; status=recorded
+
+Step 67 (time_s=13.4):
+  state A0100: [120.00577639472148,60.03810787077851,5496.481359164778,75.74493161046351,-8.362323114706243,43.069100376168784,284.13835810794404,227.86611961117308,160.78068774546776,-54.41698751051192]; valid=1
+  action A0100: [2,4,0,1]; status=recorded
+
+Step 68 (time_s=13.6):
+  state A0100: [120.00636873897416,60.0385110044565,5485.641214520359,80.9184971802351,-8.230131987004302,45.52857686445778,284.2194690748758,221.51335931147003,169.66538202830483,-54.09432862085663]; valid=1
+  action A0100: [2,4,0,1]; status=recorded
+
+Step 69 (time_s=13.8):
+  state A0100: [120.0069928501109,60.03890204144875,5474.786381699771,86.65457661290522,-8.465773303034352,47.96305730329133,284.24997035018026,214.41790730584435,178.4387269928141,-54.61343589122244]; valid=1
+  action A0100: [2,4,0,1]; status=recorded
+
+Step 70 (time_s=14.0):
+  state A0100: [120.00764879432924,60.039279211281695,5463.747054454878,86.67908466666222,-8.751281367361877,50.40029878394577,283.98719373261633,205.7393999209761,187.66318704368257,-55.7005722851302]; valid=1
+  action A0100: [2,4,0,1]; status=recorded
+
+Step 71 (time_s=14.2):
+  state A0100: [120.00833838309852,60.03963970739426,5452.565990125403,79.38988503779306,-8.888897885981251,52.8648842678446,283.59045516781003,196.3217551066707,196.86629215053847,-55.90150041833341]; valid=1
+  action A0100: [1,4,0,1]; status=recorded
+
+Step 72 (time_s=14.4):
+  state A0100: [120.00905981730352,60.039983603323144,5441.481604558191,71.17334137166421,-8.5211817444681,55.32223862836761,283.27856971961074,187.20094535135064,205.45387718717208,-54.692398655639536]; valid=1
+  action A0100: [1,4,0,1]; status=recorded
+
+Step 73 (time_s=14.6):
+  state A0100: [120.0098109269656,60.04031147396266,5430.790487976605,62.340392870415975,-7.625047579273359,57.643482783478326,283.010545048491,178.48492873683364,213.39645294181295,-51.96203127576868]; valid=1
+  action A0100: [1,4,0,1]; status=recorded
+
+Step 74 (time_s=14.8):
+  state A0100: [120.01058866248144,60.04062468371989,5420.741085090494,59.91140575168737,-6.521384780798612,59.90543675371194,283.0400814942701,171.04643376212576,220.1854498378418,-48.71522256183443]; valid=1
+  action A0100: [1,4,0,1]; status=recorded
+
+Step 75 (time_s=15.0):
+  state A0100: [120.01138963186926,60.04092483189952,5411.296928797782,64.16835646051321,-5.474571323372325,62.03848165206713,283.1205172484295,163.46106503584667,226.59450176468485,-45.7453743495361]; valid=1
+  action A0100: [1,4,0,1]; status=recorded
+
+Step 76 (time_s=15.2):
+  state A0100: [120.01221350578427,60.04121053896823,5402.4129711566,69.15094864376482,-4.8069439175698,64.18880647128945,283.08796899987425,154.99645183851646,232.91381326379235,-43.19784370617922]; valid=1
+  action A0100: [1,4,0,1]; status=recorded
+
+Step 77 (time_s=15.4):
+  state A0100: [120.01305963257133,60.04148042128202,5393.967809832028,74.68485549423986,-4.490859881074099,66.45190342662019,283.0097290486644,145.83602798101973,238.98259461245004,-41.39660796755017]; valid=1
+  action A0100: [1,4,0,1]; status=recorded
+
+Step 78 (time_s=15.6):
+  state A0100: [120.0139269190764,60.04173333776021,5385.790902139458,80.70482037600273,-4.526305418902949,68.83828459966318,282.917015550405,136.09664257267258,244.6955098088947,-40.5444083414645]; valid=1
+  action A0100: [1,4,0,1]; status=recorded
+
+Step 79 (time_s=15.8):
+  state A0100: [120.0148143431189,60.04196763740452,5377.705107555959,81.05402744178913,-4.601888637681392,71.27091432964676,282.53242101537546,124.70266412475196,250.31496051352823,-40.20242564957309]; valid=1
+  action A0100: [1,4,0,1]; status=recorded
+
+Step 80 (time_s=16.0):
+  state A0100: [120.015721529719,60.04218040216399,5369.767924325171,74.0574340528825,-4.5334810439612845,73.72752785573014,282.00512757910917,112.68132801883824,255.55833149216093,-38.98396467476597]; valid=1
+  action A0100: [1,4,0,1]; status=recorded
+
+Step 81 (time_s=16.2):
+  state A0100: [120.01664611607885,60.04237278519071,5362.152558563787,73.2837436192663,-4.31201604472741,76.26204325148741,281.8363619389492,102.2202584783855,259.9766447606213,-37.34833124256228]; valid=1
+  action A0100: [1,4,0,1]; status=recorded
+
+Analyze the sequence to answer this question:
+Predict the complete future trajectory of aircraft A0100 for the next 10 consecutive steps (82 through 91 inclusive).
+Predict BOTH the ten-dimensional state s_t and the three movement action IDs a_t at EVERY requested step in ONE response. State and action in an entry refer to the SAME step: a_t is selected at s_t and affects s_(t+1).
+No future state or action is supplied, for the target or other entities. Continue from the final historical state/action pair and predict the whole sequence using the supplied history and your own predicted trajectory.
+
+For each state, return exactly ten finite numerical values in the stated field order.
+For each action, return exactly three integer IDs in this order: [altitude_action, heading_action, speed_action]. Allowed IDs are altitude 0..2, heading 0..4, speed 0..2. Do not predict a shoot_action ID.
+Choose one value per component, even if multiple values seem possible.
+
+Please first provide compact reasoning before your prediction.
+Use the following template in your answer:
+
+1. [Reasoning]:
+2. [Prediction]:
+3. [Formatting]:
+>>Final trajectory: [{"step":82,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":83,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":84,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":85,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":86,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":87,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":88,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":89,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":90,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]},{"step":91,"state":["<lon_deg>","<lat_deg>","<alt_m>","<roll_deg>","<pitch_deg>","<yaw_deg>","<tas_mps>","<vn_mps>","<ve_mps>","<vu_mps>"],"action":["<altitude_id>","<heading_id>","<speed_id>"]}]
+
+Replace every placeholder string with a numerical value. Use the final-answer marker exactly once. Its final JSON array must occupy a single line, with exactly ten objects in the requested step order. Each object must have exactly the keys step, state, action.

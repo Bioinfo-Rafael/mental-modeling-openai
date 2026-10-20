@@ -1,0 +1,114 @@
+{
+  "sources": {
+    "3.5": "experiments/03_1_gpt35_history_n30_joint/results",
+    "modern_models": "experiments/06_new_models_n10/results/merged/c189af3036db4adfb9e4da5bb632ea48"
+  },
+  "source_records_sha256": {
+    "experiments/03_1_gpt35_history_n30_joint/results": "3517021c6343b20be8fffa3f0fefdbb76da247f769b8d9cad0081dcec86dedaa",
+    "experiments/06_new_models_n10/results/merged/c189af3036db4adfb9e4da5bb632ea48": "6be3d9ca736985c19d5a62f4e42cd34e27298f8719938cbce9687ced046b5fd1"
+  },
+  "model_colors": {
+    "3.5": "#0072B2",
+    "terra": "#009E73",
+    "luna": "#E69F00",
+    "sol": "#CC79A7"
+  },
+  "model_order": [
+    "3.5",
+    "terra",
+    "luna",
+    "sol"
+  ],
+  "seed": 42,
+  "bootstrap_repetitions": 1000,
+  "subset_n": 10,
+  "api_calls": 0,
+  "missing_policy": "component-wise valid-only; API errors retained as missing, no replacement",
+  "api_failures_explicitly_allowed": true,
+  "resource_policy": "successful responses only; failed latency retained separately; original Exp.05 latency preserved",
+  "gpt35_selection": "existing per-condition seed-42 N10 selection from 30; not necessarily paired with new models",
+  "normalization_bounds": {
+    "MountainCar-v0": [
+      [
+        -1.2,
+        0.6
+      ],
+      [
+        -0.07,
+        0.07
+      ]
+    ],
+    "Pendulum-v1": [
+      [
+        -1,
+        1
+      ],
+      [
+        -1,
+        1
+      ],
+      [
+        -8,
+        8
+      ]
+    ]
+  },
+  "normalization_widths": {
+    "MountainCar-v0": [
+      1.7999999999999998,
+      0.14
+    ],
+    "Pendulum-v1": [
+      2,
+      2,
+      16
+    ]
+  },
+  "raw_episode_sha256": {
+    "data/llmx_data/offline_data/physics_data/raw_transitions/MountainCar-v0/episodes/episode_0.npz": "c91b3e277decddff587601790c381096c5bab98fc726af94dba76d924e0ffa5b",
+    "data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1/episodes/episode_0.npz": "09c3c01c27f0a19af5d18bd6f5c70cbc8dd1b88eb8f3c70d2bbaac03ecf32fce"
+  },
+  "cm_groups": [
+    [
+      "01",
+      "MountainCar-v0",
+      "last-action"
+    ],
+    [
+      "02",
+      "MountainCar-v0",
+      "next-action"
+    ],
+    [
+      "03",
+      "MountainCar-v0",
+      "last-state"
+    ],
+    [
+      "04",
+      "MountainCar-v0",
+      "next-state"
+    ],
+    [
+      "05",
+      "Pendulum-v1",
+      "last-state"
+    ],
+    [
+      "06",
+      "Pendulum-v1",
+      "next-state"
+    ]
+  ],
+  "analysis_code_sha256": {
+    "runner.py": "113df77530316394e808c67bc3090261e2cf234433e3440464fee06fffd7bcbe",
+    "comparison_plots.py": "3abdf8f22df39c2f711bfc46a666b98ea9c77b39a201e8f1e2c7b4cf9ab591d4",
+    "__init__.py": "06ff51e135fe5237a3b49ab0a8d84cfa8a5310c2266726ba35609ff743551bb7",
+    "joint_plots.py": "7362985d6589fc04aa34506c591da0d3aaef9301e5361b09df49c23967fab42d",
+    "comparison.py": "2321b4ff597880566b1668e9032e10f3e8a1d3d1be3ed6622de560be4dd41008",
+    "joint_aggregate.py": "9ed23d46ece3a6ffb3f6c9ae994f42dab280610c3ab9578a9e799d0a9c769a8b",
+    "joint_data.py": "ec5a6db8e3253a4c7ae4254d188a3df21f2f8c8654dcb45fe2c2b9bd731a2840",
+    "joint_metrics.py": "814becced9ce998a5446bec75fc720582cd89ef29601beba86c475dfdd91eaed"
+  },
+  "elapsed_seconds": 23.424170874990523
+}

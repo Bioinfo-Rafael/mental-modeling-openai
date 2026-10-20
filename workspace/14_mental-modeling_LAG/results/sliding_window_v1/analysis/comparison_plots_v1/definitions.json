@@ -1,0 +1,128 @@
+{
+  "created_at": "2026-10-12T21:31:31.520291+09:00",
+  "plan_id": "30c260de9d69c74fd96e131d965c4a80f9a0cdf9d05cbfb0f85be7f92665220f",
+  "sources": {
+    "manifest_sha256": "671cfe5ab40b69356c1b503fe203760c4c56b0736526f64faf43e787598e4aed",
+    "responses": {
+      "sha256": "662b0aae2adf4f571018d2b1a85e387c9b43cfda1fcf83e52daff88b498998e7",
+      "bytes": 4533578,
+      "rows": 3600,
+      "trailing_bytes_excluded": 0
+    },
+    "requests": {
+      "sha256": "fef072ce6d25155ab59d8f33653b6d7748498951101b55ea0b1cab2933435331",
+      "bytes": 80655386,
+      "rows": 3600,
+      "trailing_bytes_excluded": 0
+    }
+  },
+  "normalization": {
+    "n_unique_target_states": 177,
+    "fields": [
+      "lon_deg",
+      "lat_deg",
+      "alt_m",
+      "roll_deg",
+      "pitch_deg",
+      "yaw_deg",
+      "tas_mps",
+      "vn_mps",
+      "ve_mps",
+      "vu_mps"
+    ],
+    "minimum": [
+      119.77061636972488,
+      59.93915734303548,
+      3804.9948539460183,
+      262.3413742323187,
+      -20.81000796093963,
+      47.96305730329133,
+      184.96572208746036,
+      -293.3466552070691,
+      -335.33408444636353,
+      -56.80943093259072
+    ],
+    "maximum": [
+      120.22769643676168,
+      60.09071512967128,
+      6136.459607066882,
+      453.79159791483414,
+      14.539417957269045,
+      385.0429657245541,
+      345.6414034721618,
+      315.1767632247667,
+      338.33194413375816,
+      27.204903081237656
+    ],
+    "mean": [
+      119.98846561554194,
+      60.026718017969635,
+      5475.564604539737,
+      358.70939676818307,
+      -2.618442057477881,
+      263.8836725698338,
+      275.24440071269964,
+      91.70062612535487,
+      1.3621295903476487,
+      -18.568645206549093
+    ],
+    "range": [
+      0.4570800670367987,
+      0.15155778663579866,
+      2331.464753120864,
+      191.45022368251546,
+      35.349425918208674,
+      337.07990842126276,
+      160.67568138470145,
+      608.5234184318358,
+      673.6660285801217,
+      84.01433401382837
+    ],
+    "sd": [
+      0.08570576328073615,
+      0.03382239515780904,
+      719.6108880634786,
+      47.34374620913409,
+      6.211401682079949,
+      106.15220135098572,
+      45.90116985991281,
+      196.05825660305086,
+      173.5413412998641,
+      23.564922707456475
+    ],
+    "circular_origins_deg": {
+      "roll_deg": 262.3413742323187,
+      "yaw_deg": 47.96305730329133
+    }
+  },
+  "formulas": {
+    "action_accuracy": "100 * mean(all three predicted IDs equal ground truth)",
+    "action_bin_mae": "mean over queries of mean over 3 components abs(predicted ID - true ID)",
+    "state_mae": "mean(abs(residual)) per component",
+    "state_nrmse": "sqrt(mean(residual**2)) / fixed reference range, per component",
+    "state_zrmse": "sqrt(mean(residual**2)) / fixed reference population SD (ddof=0), per component",
+    "macro": "arithmetic mean of the 10 component normalized RMSEs, not pooled raw units",
+    "difference": "metric(all) - metric(self), both recomputed on identical valid paired windows",
+    "state_joint_nrmse": "sqrt(mean over queries and 10 dimensions of (residual / reference range)**2)",
+    "state_joint_zrmse": "sqrt(mean over queries and 10 dimensions of (residual / reference SD)**2)",
+    "state_joint_nmae": "mean over queries and 10 dimensions of abs(residual / reference range)",
+    "state_joint_zmae": "mean over queries and 10 dimensions of abs(residual / reference SD)"
+  },
+  "notes": [
+    "Reference uses all unique planned (episode,target,target_step) state truths across both state tasks and all H; model/scope duplicates removed.",
+    "Reference scales are descriptive full-evaluation references, fixed also in per-episode plots; not theoretical physical bounds or training-fitted scales.",
+    "Z-scaled RMSE applies the SAME truth mean and SD to predictions and truth; mean cancels in the residual. Predictions are not standardized separately.",
+    "Roll and yaw errors are wrapped to [-180,180). Reference angles use the minimal covering arc via largest-gap cut before range/SD.",
+    "Zero range/SD is undefined, not zero error; any undefined component makes the macro undefined.",
+    "n is query-window count, not number of vector components or independent episodes. No uncertainty intervals or significance tests.",
+    "Self/all and model comparisons use matched problems; H and task comparisons can change target time.",
+    "Invalid predictions excluded from metrics; paired differences exclude a window if either scope is invalid. Individual panel and paired sample sizes can differ.",
+    "Tokens use available usage regardless of parse success; missing counts are excluded, never zero-filled. Reasoning is already included in completion.",
+    "Confusion matrices pool all H and report counts plus within-true-class percentages; no scope-difference confusion matrix.",
+    "10D overall metrics weight all 10 normalized dimensions equally. Overall RMSE is the square root AFTER averaging squared errors across queries AND dimensions; distinct from the mean of component RMSEs. n still counts windows."
+  ],
+  "formats": [
+    "png"
+  ],
+  "directory_layout": "action/{overall,components,confusion}/<cohort>; state/{overall,component_rmse_mean}/<cohort>; state/components/{mae,nrmse,zrmse}/<cohort>; tokens/<cohort>"
+}

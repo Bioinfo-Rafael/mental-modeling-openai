@@ -1,0 +1,18 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>15と16：state成分別の比較</title><style>body{max-width:1300px;margin:30px auto;padding:0 20px;font:16px/1.7 system-ui;color:#24364a;background:#f5f7fa}section{background:white;padding:20px;margin:24px 0;border-radius:10px}img{width:100%;height:auto}a{color:#2459a6}h2{font-size:21px}nav{line-height:2.2}</style>
+<h1>15と16：state全10成分の比較</h1>
+<p>各モデル・入力範囲で、15と16の両方が採点可能な同じ回答だけを比較。A0100とA0200を集計しています。</p>
+<p>成分別グラフの縦軸は<strong>10ステップの絶対誤差合計を回答間で平均</strong>した値です（小さいほど良い）。10で割ると1ステップ平均MAEになります。roll・yawは最短角度差です。</p>
+<p>概観図は誤差削減率。正・青が改善、0%・白が変化なし、負・赤が悪化です。形式失敗により列ごとの採用問題が異なるため、モデル間比較の母集団は必ずしも一致しません。</p>
+<p>全体の形式成功数は15が53/60、16が48/60、共通有効回答は42件です。16の回帰係数には評価対象試合が含まれ、未知試合への汎化評価ではありません。</p>
+<nav><a href="#lon_deg">lon_deg</a> / <a href="#lat_deg">lat_deg</a> / <a href="#alt_m">alt_m</a> / <a href="#roll_deg">roll_deg</a> / <a href="#pitch_deg">pitch_deg</a> / <a href="#yaw_deg">yaw_deg</a> / <a href="#tas_mps">tas_mps</a> / <a href="#vn_mps">vn_mps</a> / <a href="#ve_mps">ve_mps</a> / <a href="#vu_mps">vu_mps</a></nav><section><h2>誤差削減率の概観</h2><a href="state_reduction_overview.png"><img src="state_reduction_overview.png" alt="全10成分の誤差削減率"></a></section><section id="lon_deg"><h2>lon_deg</h2><a href="lon_deg.png"><img src="lon_deg.png" loading="lazy" alt="lon_degの15と16の誤差比較"></a></section>
+<section id="lat_deg"><h2>lat_deg</h2><a href="lat_deg.png"><img src="lat_deg.png" loading="lazy" alt="lat_degの15と16の誤差比較"></a></section>
+<section id="alt_m"><h2>alt_m</h2><a href="alt_m.png"><img src="alt_m.png" loading="lazy" alt="alt_mの15と16の誤差比較"></a></section>
+<section id="roll_deg"><h2>roll_deg</h2><a href="roll_deg.png"><img src="roll_deg.png" loading="lazy" alt="roll_degの15と16の誤差比較"></a></section>
+<section id="pitch_deg"><h2>pitch_deg</h2><a href="pitch_deg.png"><img src="pitch_deg.png" loading="lazy" alt="pitch_degの15と16の誤差比較"></a></section>
+<section id="yaw_deg"><h2>yaw_deg</h2><a href="yaw_deg.png"><img src="yaw_deg.png" loading="lazy" alt="yaw_degの15と16の誤差比較"></a></section>
+<section id="tas_mps"><h2>tas_mps</h2><a href="tas_mps.png"><img src="tas_mps.png" loading="lazy" alt="tas_mpsの15と16の誤差比較"></a></section>
+<section id="vn_mps"><h2>vn_mps</h2><a href="vn_mps.png"><img src="vn_mps.png" loading="lazy" alt="vn_mpsの15と16の誤差比較"></a></section>
+<section id="ve_mps"><h2>ve_mps</h2><a href="ve_mps.png"><img src="ve_mps.png" loading="lazy" alt="ve_mpsの15と16の誤差比較"></a></section>
+<section id="vu_mps"><h2>vu_mps</h2><a href="vu_mps.png"><img src="vu_mps.png" loading="lazy" alt="vu_mpsの15と16の誤差比較"></a></section>
+<p><a href="../metrics.csv">数値一覧CSV</a> / <a href="../summary.txt">比較の要約</a></p></html>

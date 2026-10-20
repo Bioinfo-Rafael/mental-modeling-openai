@@ -1,0 +1,35 @@
+{
+  "samples": 72,
+  "source_sha256": {
+    "results/api/manifest.json": "b50349c4c9f9d2197f6781bc706e1e84b4b2a8e0af84519d3c3b02fe159856fd",
+    "results/api/records.jsonl": "f34077e592be6c58151832506d327c86b6ce9213aef71388c584f79f2164edbd",
+    "results/api/responses.jsonl": "75f716762ad488cd9a869f6390bdf35125c817550f6996b162c3a4bd517d0021",
+    "results/api/requests.jsonl": "337995abc6638c4c8093f357d4dfd56e94b864ccd2ddef369789c81cf653db8d",
+    "reasoning_for_scoring_scored_astra_high.csv": "2a4ba4d75257929806ea5fa186859736e06fe19cb9839981ee6e9449ca81b9a9"
+  },
+  "figures": [
+    "figures/01_prompt_pooled.png",
+    "figures/02_prompt_by_model.png",
+    "figures/03_episodes_pooled.png",
+    "figures/04_episodes_by_model.png",
+    "figures/05_matrix_pooled.png",
+    "figures/06_matrix_terra.png",
+    "figures/07_matrix_luna.png"
+  ],
+  "matches": 61,
+  "reasoning_counts": {
+    "2": 56,
+    "3": 16
+  },
+  "n_per_group": {
+    "prompt_pooled": 18,
+    "prompt_by_model": 9,
+    "episodes_pooled": 24,
+    "episodes_by_model": 12,
+    "matrix_pooled": 6,
+    "matrix_by_model": 3
+  },
+  "heatmap_mae_max": 4.0,
+  "excluded_samples": 0,
+  "note": "Equal-weight sample pooling. Repeats share one target query, not independent episodes. Reasoning is the mean ordinal score (1\u20134, higher is stronger), not correctness or verified internal FQI execution. No confidence intervals or significance tests."
+}

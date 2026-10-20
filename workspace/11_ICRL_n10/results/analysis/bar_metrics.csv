@@ -1,0 +1,17 @@
+task,metric,H,condition_id,model,model_alias,subset_n,selected_n,component,dimension,valid_n,parse_success_rate,metric_name,value,std,na_reason,valid_units,correct_units,accuracy_all_selected,std_kind,reward_present,reward_mode,normalization_width
+Pendulum-v1,next-action,20,terra__icrfqi_k5__with_reward,gpt-5.6-terra,terra,10,10,action_bin,all,10,100.0,accuracy,20.0,42.16370213557839,,10,2,20.0,query_sample_sd_ddof1,True,with_reward,
+Pendulum-v1,next-action,20,terra__icrfqi_k5__with_reward,gpt-5.6-terra,terra,10,10,action_bin,all,10,100.0,bin_mae,1.2,0.7888106377466155,,,,,query_sample_sd_ddof1,True,with_reward,
+Pendulum-v1,next-action,20,terra__icrfqi_k5__with_reward,gpt-5.6-terra,terra,10,10,action_value,torque,10,100.0,nrmse,0.14425297972548082,,,,,,not_defined_per_query,True,with_reward,4.0
+Pendulum-v1,next-action,20,terra__icrfqi_k5__with_reward,gpt-5.6-terra,terra,10,10,action_value,torque,10,100.0,pearson,0.8649048977474317,,,,,,not_defined_per_query,True,with_reward,4.0
+Pendulum-v1,next-action,20,luna__icrfqi_k5__with_reward,gpt-5.6-luna,luna,10,10,action_bin,all,10,100.0,accuracy,20.0,42.16370213557839,,10,2,20.0,query_sample_sd_ddof1,True,with_reward,
+Pendulum-v1,next-action,20,luna__icrfqi_k5__with_reward,gpt-5.6-luna,luna,10,10,action_bin,all,10,100.0,bin_mae,1.5,1.2692955176439846,,,,,query_sample_sd_ddof1,True,with_reward,
+Pendulum-v1,next-action,20,luna__icrfqi_k5__with_reward,gpt-5.6-luna,luna,10,10,action_value,torque,10,100.0,nrmse,0.2056628256749026,,,,,,not_defined_per_query,True,with_reward,4.0
+Pendulum-v1,next-action,20,luna__icrfqi_k5__with_reward,gpt-5.6-luna,luna,10,10,action_value,torque,10,100.0,pearson,0.562377596664863,,,,,,not_defined_per_query,True,with_reward,4.0
+Pendulum-v1,next-action,20,terra__icrfqi_k5__without_reward,gpt-5.6-terra,terra,10,10,action_bin,all,10,100.0,accuracy,30.0,48.3045891539648,,10,3,30.0,query_sample_sd_ddof1,False,without_reward,
+Pendulum-v1,next-action,20,terra__icrfqi_k5__without_reward,gpt-5.6-terra,terra,10,10,action_bin,all,10,100.0,bin_mae,1.6,1.429840705968481,,,,,query_sample_sd_ddof1,False,without_reward,
+Pendulum-v1,next-action,20,terra__icrfqi_k5__without_reward,gpt-5.6-terra,terra,10,10,action_value,torque,10,100.0,nrmse,0.22523043150144043,,,,,,not_defined_per_query,False,without_reward,4.0
+Pendulum-v1,next-action,20,terra__icrfqi_k5__without_reward,gpt-5.6-terra,terra,10,10,action_value,torque,10,100.0,pearson,0.45358170421146515,,,,,,not_defined_per_query,False,without_reward,4.0
+Pendulum-v1,next-action,20,luna__icrfqi_k5__without_reward,gpt-5.6-luna,luna,10,10,action_bin,all,10,100.0,accuracy,20.0,42.16370213557839,,10,2,20.0,query_sample_sd_ddof1,False,without_reward,
+Pendulum-v1,next-action,20,luna__icrfqi_k5__without_reward,gpt-5.6-luna,luna,10,10,action_bin,all,10,100.0,bin_mae,1.5,1.6499158227686108,,,,,query_sample_sd_ddof1,False,without_reward,
+Pendulum-v1,next-action,20,luna__icrfqi_k5__without_reward,gpt-5.6-luna,luna,10,10,action_value,torque,10,100.0,nrmse,0.21991814765187218,,,,,,not_defined_per_query,False,without_reward,4.0
+Pendulum-v1,next-action,20,luna__icrfqi_k5__without_reward,gpt-5.6-luna,luna,10,10,action_value,torque,10,100.0,pearson,0.49229629490550336,,,,,,not_defined_per_query,False,without_reward,4.0

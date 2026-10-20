@@ -1,0 +1,20 @@
+{
+  "plan_id": "26244201eab2c3dea04491a941761d53c506c22c0b60c9fead19b4c386f2ce52",
+  "scoring_version": "lag-trajectory10-action3-state10-v1",
+  "views": 20,
+  "figures": 40,
+  "responses": {
+    "parse_error": 7,
+    "valid": 53
+  },
+  "before": 50,
+  "after": 10,
+  "dt_s": 0.2,
+  "hashes": {
+    "experiments/15_trajectory_LAG/results/trajectory_batch_v1/manifest.json": "f937063e2a97b5e1c9fab0efa966d5b814310b3735521bb4dd3dcbbe7870971d",
+    "experiments/15_trajectory_LAG/results/trajectory_batch_v1/api/responses.jsonl": "f50b7092c714b051e91e9c3d9e5272e11a79010af0f1e1254a1cb5421be1f859",
+    "experiments/15_trajectory_LAG/plot_trajectory_timelines.py": "d5c242fab81eea54046a148a6e2801d949b90c4f6678382e0e9decb5560c235e",
+    "experiments/15_trajectory_LAG/templates/trajectory_timelines.html": "08e0448b1d39b144b5d1674f9dc2e84353b1e43742e577a8a1cd808a2b13b4fb",
+    "experiments/15_trajectory_LAG/trajectory_experiment/evaluation.py": "277b476ba5c6c0a631071fd5e6844f32b12e551e96909e0ff3562eb4e5374a52"
+  }
+}

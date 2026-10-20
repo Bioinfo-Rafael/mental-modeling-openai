@@ -1,0 +1,23 @@
+{
+  "source_experiment": "experiments/15_trajectory_LAG",
+  "copied_source_sha256": {
+    "run.py": "98b6d4065860ce108422e27f13ffc2fdb5652c0cebb07c6326b711112fe57b7e",
+    "build_results_viewer.py": "d0c2e61c344b352a7e5dbe34c7261ee704893b3aecf4b75fc54756c4a1b5fbea",
+    "plot_results.py": "5998b9e37f0d7627f1a1a0426a1d828b8dc4deb8cb78c242a30721ddb993d4a1",
+    "plot_trajectory_timelines.py": "d5c242fab81eea54046a148a6e2801d949b90c4f6678382e0e9decb5560c235e",
+    "trajectory_experiment/__init__.py": "199e678c83b0a4d65c1a7853a3006983164968eb8757a7450a5e4a4eaccbe120",
+    "trajectory_experiment/batch.py": "856afb9fd0541e3ee6f71dda938bb4432967e84cd9d6de4bbd5ee4dbb5130453",
+    "trajectory_experiment/config.py": "2eaa8525eb8938730df0cd6d8486ca787934263edba45301d2627afc75991e92",
+    "trajectory_experiment/evaluation.py": "277b476ba5c6c0a631071fd5e6844f32b12e551e96909e0ff3562eb4e5374a52",
+    "trajectory_experiment/execution.py": "ffd95f63d198d97a7d627be657a830169b959df17b314759b3bd003b91cf5f05",
+    "trajectory_experiment/prompts.py": "6254db50f01079315a9478c223be61ddb7a1146515d529b5d6ccace16958f453",
+    "trajectory_experiment/runner.py": "3616f5251592b72a89087f2bead85184a7fd266f651c63feac02cd54bef39bfa",
+    "tests/test_batch.py": "3d6707649c6a0b1581af1a68f1ae05692feeabb8e4f49c8ea2a81658731a0dc2",
+    "tests/test_comparison_plots.py": "f82cdf5b727bf5d5875101595f40f3b89b48b7624b0bc03c0a6c812dc14fa5a1",
+    "tests/test_trajectory.py": "035b76f80e613773f46fd13e6d27908cce05e8b3aaeb1d19fd39f56f92bbe2d0",
+    "tests/test_viewers.py": "3e2cdcc6a5d5a814b179c5606c7e49c45a5ebe3ef0ef6fbbdd30d6efec145a4a",
+    "templates/results_viewer_template.html": "bc1cc3c9afed273481bfe11aa0fab85c3507db06c12efe3a5459e9083585e154",
+    "templates/trajectory_timelines.html": "08e0448b1d39b144b5d1674f9dc2e84353b1e43742e577a8a1cd808a2b13b4fb"
+  },
+  "baseline_manifest_sha256": "f937063e2a97b5e1c9fab0efa966d5b814310b3735521bb4dd3dcbbe7870971d"
+}

@@ -1,0 +1,17 @@
+task,metric,H,condition_id,model,model_alias,subset_n,selected_n,component,dimension,valid_n,parse_success_rate,metric_name,value,std,na_reason,valid_units,correct_units,accuracy_all_selected,std_kind,context_method,normalization_width
+Pendulum-v1,next-action,20,terra__fewshot4,gpt-5.6-terra,terra,10,10,action_bin,all,10,100.0,accuracy,40.0,51.63977794943222,,10,4,40.0,query_sample_sd_ddof1,fewshot4,
+Pendulum-v1,next-action,20,terra__fewshot4,gpt-5.6-terra,terra,10,10,action_bin,all,10,100.0,bin_mae,0.9,0.9944289260117533,,,,,query_sample_sd_ddof1,fewshot4,
+Pendulum-v1,next-action,20,terra__fewshot4,gpt-5.6-terra,terra,10,10,action_value,torque,10,100.0,nrmse,0.14831487490932113,,,,,,not_defined_per_query,fewshot4,4.0
+Pendulum-v1,next-action,20,terra__fewshot4,gpt-5.6-terra,terra,10,10,action_value,torque,10,100.0,pearson,0.8219580022200468,,,,,,not_defined_per_query,fewshot4,4.0
+Pendulum-v1,next-action,20,luna__fewshot4,gpt-5.6-luna,luna,10,10,action_bin,all,10,100.0,accuracy,10.0,31.622776601683793,,10,1,10.0,query_sample_sd_ddof1,fewshot4,
+Pendulum-v1,next-action,20,luna__fewshot4,gpt-5.6-luna,luna,10,10,action_bin,all,10,100.0,bin_mae,1.1,0.5676462121975467,,,,,query_sample_sd_ddof1,fewshot4,
+Pendulum-v1,next-action,20,luna__fewshot4,gpt-5.6-luna,luna,10,10,action_value,torque,10,100.0,nrmse,0.14874520383834508,,,,,,not_defined_per_query,fewshot4,4.0
+Pendulum-v1,next-action,20,luna__fewshot4,gpt-5.6-luna,luna,10,10,action_value,torque,10,100.0,pearson,0.8200481483749091,,,,,,not_defined_per_query,fewshot4,4.0
+Pendulum-v1,next-action,20,terra__episodes_E9,gpt-5.6-terra,terra,10,10,action_bin,all,10,100.0,accuracy,30.0,48.3045891539648,,10,3,30.0,query_sample_sd_ddof1,episodes_E9,
+Pendulum-v1,next-action,20,terra__episodes_E9,gpt-5.6-terra,terra,10,10,action_bin,all,10,100.0,bin_mae,1.0,0.9428090415820634,,,,,query_sample_sd_ddof1,episodes_E9,
+Pendulum-v1,next-action,20,terra__episodes_E9,gpt-5.6-terra,terra,10,10,action_value,torque,10,100.0,nrmse,0.14597212720869937,,,,,,not_defined_per_query,episodes_E9,4.0
+Pendulum-v1,next-action,20,terra__episodes_E9,gpt-5.6-terra,terra,10,10,action_value,torque,10,100.0,pearson,0.8476871133507115,,,,,,not_defined_per_query,episodes_E9,4.0
+Pendulum-v1,next-action,20,luna__episodes_E9,gpt-5.6-luna,luna,10,10,action_bin,all,10,100.0,accuracy,20.0,42.16370213557839,,10,2,20.0,query_sample_sd_ddof1,episodes_E9,
+Pendulum-v1,next-action,20,luna__episodes_E9,gpt-5.6-luna,luna,10,10,action_bin,all,10,100.0,bin_mae,1.4,1.07496769977314,,,,,query_sample_sd_ddof1,episodes_E9,
+Pendulum-v1,next-action,20,luna__episodes_E9,gpt-5.6-luna,luna,10,10,action_value,torque,10,100.0,nrmse,0.18397990964081382,,,,,,not_defined_per_query,episodes_E9,4.0
+Pendulum-v1,next-action,20,luna__episodes_E9,gpt-5.6-luna,luna,10,10,action_value,torque,10,100.0,pearson,0.6674168787711541,,,,,,not_defined_per_query,episodes_E9,4.0

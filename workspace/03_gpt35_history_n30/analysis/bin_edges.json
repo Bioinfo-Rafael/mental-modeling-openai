@@ -1,0 +1,146 @@
+{
+  "3.5__Pendulum-v1__next-action__H5": {
+    "edges": [
+      -2.0,
+      -1.6,
+      -1.2,
+      -0.7999999999999998,
+      -0.3999999999999999,
+      0.0,
+      0.40000000000000036,
+      0.8000000000000003,
+      1.2000000000000002,
+      1.6,
+      2.0
+    ],
+    "source": "llm_x.evaluation._action_range + manifest action_bins",
+    "assignment": "np.digitize(value, edges, right=True)-1; clip ground truth to 0..9",
+    "prediction": "direct bin ID; not rebinned or clipped"
+  },
+  "3.5__Pendulum-v1__next-action__H10": {
+    "edges": [
+      -2.0,
+      -1.6,
+      -1.2,
+      -0.7999999999999998,
+      -0.3999999999999999,
+      0.0,
+      0.40000000000000036,
+      0.8000000000000003,
+      1.2000000000000002,
+      1.6,
+      2.0
+    ],
+    "source": "llm_x.evaluation._action_range + manifest action_bins",
+    "assignment": "np.digitize(value, edges, right=True)-1; clip ground truth to 0..9",
+    "prediction": "direct bin ID; not rebinned or clipped"
+  },
+  "3.5__Pendulum-v1__next-action__H20": {
+    "edges": [
+      -2.0,
+      -1.6,
+      -1.2,
+      -0.7999999999999998,
+      -0.3999999999999999,
+      0.0,
+      0.40000000000000036,
+      0.8000000000000003,
+      1.2000000000000002,
+      1.6,
+      2.0
+    ],
+    "source": "llm_x.evaluation._action_range + manifest action_bins",
+    "assignment": "np.digitize(value, edges, right=True)-1; clip ground truth to 0..9",
+    "prediction": "direct bin ID; not rebinned or clipped"
+  },
+  "3.5__Pendulum-v1__next-action__H30": {
+    "edges": [
+      -2.0,
+      -1.6,
+      -1.2,
+      -0.7999999999999998,
+      -0.3999999999999999,
+      0.0,
+      0.40000000000000036,
+      0.8000000000000003,
+      1.2000000000000002,
+      1.6,
+      2.0
+    ],
+    "source": "llm_x.evaluation._action_range + manifest action_bins",
+    "assignment": "np.digitize(value, edges, right=True)-1; clip ground truth to 0..9",
+    "prediction": "direct bin ID; not rebinned or clipped"
+  },
+  "3.5__Pendulum-v1__last-action__H5": {
+    "edges": [
+      -2.0,
+      -1.6,
+      -1.2,
+      -0.7999999999999998,
+      -0.3999999999999999,
+      0.0,
+      0.40000000000000036,
+      0.8000000000000003,
+      1.2000000000000002,
+      1.6,
+      2.0
+    ],
+    "source": "llm_x.evaluation._action_range + manifest action_bins",
+    "assignment": "np.digitize(value, edges, right=True)-1; clip ground truth to 0..9",
+    "prediction": "direct bin ID; not rebinned or clipped"
+  },
+  "3.5__Pendulum-v1__last-action__H10": {
+    "edges": [
+      -2.0,
+      -1.6,
+      -1.2,
+      -0.7999999999999998,
+      -0.3999999999999999,
+      0.0,
+      0.40000000000000036,
+      0.8000000000000003,
+      1.2000000000000002,
+      1.6,
+      2.0
+    ],
+    "source": "llm_x.evaluation._action_range + manifest action_bins",
+    "assignment": "np.digitize(value, edges, right=True)-1; clip ground truth to 0..9",
+    "prediction": "direct bin ID; not rebinned or clipped"
+  },
+  "3.5__Pendulum-v1__last-action__H20": {
+    "edges": [
+      -2.0,
+      -1.6,
+      -1.2,
+      -0.7999999999999998,
+      -0.3999999999999999,
+      0.0,
+      0.40000000000000036,
+      0.8000000000000003,
+      1.2000000000000002,
+      1.6,
+      2.0
+    ],
+    "source": "llm_x.evaluation._action_range + manifest action_bins",
+    "assignment": "np.digitize(value, edges, right=True)-1; clip ground truth to 0..9",
+    "prediction": "direct bin ID; not rebinned or clipped"
+  },
+  "3.5__Pendulum-v1__last-action__H30": {
+    "edges": [
+      -2.0,
+      -1.6,
+      -1.2,
+      -0.7999999999999998,
+      -0.3999999999999999,
+      0.0,
+      0.40000000000000036,
+      0.8000000000000003,
+      1.2000000000000002,
+      1.6,
+      2.0
+    ],
+    "source": "llm_x.evaluation._action_range + manifest action_bins",
+    "assignment": "np.digitize(value, edges, right=True)-1; clip ground truth to 0..9",
+    "prediction": "direct bin ID; not rebinned or clipped"
+  }
+}

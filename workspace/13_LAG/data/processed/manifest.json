@@ -1,0 +1,671 @@
+{
+  "action_labels_by_id": {
+    "altitude_action": [
+      "up",
+      "hold",
+      "down"
+    ],
+    "heading_action": [
+      "left30",
+      "left15",
+      "hold",
+      "right15",
+      "right30"
+    ],
+    "shoot_action": [
+      "no",
+      "yes"
+    ],
+    "speed_action": [
+      "up",
+      "hold",
+      "down"
+    ]
+  },
+  "columns": [
+    {
+      "dtype": "string",
+      "name": "episode_id"
+    },
+    {
+      "dtype": "Int64",
+      "name": "step"
+    },
+    {
+      "dtype": "Float64",
+      "name": "time_s"
+    },
+    {
+      "dtype": "string",
+      "name": "object_id"
+    },
+    {
+      "dtype": "string",
+      "name": "entity_type"
+    },
+    {
+      "dtype": "string",
+      "name": "team"
+    },
+    {
+      "dtype": "string",
+      "name": "color"
+    },
+    {
+      "dtype": "string",
+      "name": "name"
+    },
+    {
+      "dtype": "string",
+      "name": "acmi_type"
+    },
+    {
+      "dtype": "string",
+      "name": "launcher_id"
+    },
+    {
+      "dtype": "string",
+      "name": "controller"
+    },
+    {
+      "dtype": "Int64",
+      "name": "alive"
+    },
+    {
+      "dtype": "Float64",
+      "name": "lon_deg"
+    },
+    {
+      "dtype": "Float64",
+      "name": "lat_deg"
+    },
+    {
+      "dtype": "Float64",
+      "name": "alt_m"
+    },
+    {
+      "dtype": "Float64",
+      "name": "roll_deg"
+    },
+    {
+      "dtype": "Float64",
+      "name": "pitch_deg"
+    },
+    {
+      "dtype": "Float64",
+      "name": "yaw_deg"
+    },
+    {
+      "dtype": "Float64",
+      "name": "tas_mps"
+    },
+    {
+      "dtype": "Float64",
+      "name": "vn_mps"
+    },
+    {
+      "dtype": "Float64",
+      "name": "ve_mps"
+    },
+    {
+      "dtype": "Float64",
+      "name": "vu_mps"
+    },
+    {
+      "dtype": "Float64",
+      "name": "health"
+    },
+    {
+      "dtype": "Int64",
+      "name": "missiles_remaining"
+    },
+    {
+      "dtype": "string",
+      "name": "altitude_action"
+    },
+    {
+      "dtype": "string",
+      "name": "heading_action"
+    },
+    {
+      "dtype": "string",
+      "name": "speed_action"
+    },
+    {
+      "dtype": "string",
+      "name": "shoot_action"
+    },
+    {
+      "dtype": "Int64",
+      "name": "altitude_action_id"
+    },
+    {
+      "dtype": "Int64",
+      "name": "heading_action_id"
+    },
+    {
+      "dtype": "Int64",
+      "name": "speed_action_id"
+    },
+    {
+      "dtype": "Int64",
+      "name": "shoot_action_id"
+    },
+    {
+      "dtype": "Float64",
+      "name": "p_altitude_up"
+    },
+    {
+      "dtype": "Float64",
+      "name": "p_altitude_hold"
+    },
+    {
+      "dtype": "Float64",
+      "name": "p_altitude_down"
+    },
+    {
+      "dtype": "Float64",
+      "name": "p_heading_left30"
+    },
+    {
+      "dtype": "Float64",
+      "name": "p_heading_left15"
+    },
+    {
+      "dtype": "Float64",
+      "name": "p_heading_hold"
+    },
+    {
+      "dtype": "Float64",
+      "name": "p_heading_right15"
+    },
+    {
+      "dtype": "Float64",
+      "name": "p_heading_right30"
+    },
+    {
+      "dtype": "Float64",
+      "name": "p_speed_up"
+    },
+    {
+      "dtype": "Float64",
+      "name": "p_speed_hold"
+    },
+    {
+      "dtype": "Float64",
+      "name": "p_speed_down"
+    },
+    {
+      "dtype": "Float64",
+      "name": "p_shoot_no"
+    },
+    {
+      "dtype": "Float64",
+      "name": "p_shoot_yes"
+    },
+    {
+      "dtype": "string",
+      "name": "missile_launched"
+    },
+    {
+      "dtype": "string",
+      "name": "acmi_event"
+    },
+    {
+      "dtype": "Float64",
+      "name": "radius_m"
+    },
+    {
+      "dtype": "Int64",
+      "name": "has_csv_record"
+    },
+    {
+      "dtype": "Int64",
+      "name": "has_acmi_record"
+    },
+    {
+      "dtype": "Int64",
+      "name": "state_valid"
+    },
+    {
+      "dtype": "string",
+      "name": "state_source"
+    },
+    {
+      "dtype": "string",
+      "name": "action_status"
+    },
+    {
+      "dtype": "Int64",
+      "name": "csv_row_number"
+    },
+    {
+      "dtype": "Int64",
+      "name": "acmi_line_number"
+    },
+    {
+      "dtype": "Float64",
+      "name": "acmi_time_s"
+    },
+    {
+      "dtype": "Float64",
+      "name": "acmi_lon_deg"
+    },
+    {
+      "dtype": "Float64",
+      "name": "acmi_lat_deg"
+    },
+    {
+      "dtype": "Float64",
+      "name": "acmi_alt_m"
+    },
+    {
+      "dtype": "Float64",
+      "name": "acmi_roll_deg"
+    },
+    {
+      "dtype": "Float64",
+      "name": "acmi_pitch_deg"
+    },
+    {
+      "dtype": "Float64",
+      "name": "acmi_yaw_deg"
+    },
+    {
+      "dtype": "Float64",
+      "name": "acmi_tas_mps"
+    },
+    {
+      "dtype": "string",
+      "name": "acmi_properties_json"
+    }
+  ],
+  "delimiter": ",",
+  "dt_s": 0.2,
+  "encoding": "UTF-8",
+  "episodes": [
+    {
+      "acmi_last_step": 341,
+      "acmi_last_time_s": 68.2,
+      "acmi_metadata": {
+        "FileType": "text/acmi/tacview",
+        "FileVersion": "2.1",
+        "ReferenceTime": "2020-04-01T00:00:00Z"
+      },
+      "acmi_removals": 8,
+      "action_status_counts": {
+        "inactive": 211,
+        "not_applicable": 758,
+        "not_recorded": 471,
+        "recorded": 682,
+        "state_only": 2
+      },
+      "csv_last_step": 340,
+      "csv_last_time_s": 68.0,
+      "episode_id": "mhi_v1.3_ic100601_win",
+      "launches": [
+        {
+          "action_step": 311,
+          "first_acmi_step": 312,
+          "launcher_id": "A0100",
+          "missile_id": "A01001",
+          "offset_steps": 1
+        },
+        {
+          "action_step": 46,
+          "first_acmi_step": 47,
+          "launcher_id": "A0100",
+          "missile_id": "A01002",
+          "offset_steps": 1
+        },
+        {
+          "action_step": 49,
+          "first_acmi_step": 50,
+          "launcher_id": "A0200",
+          "missile_id": "A02002",
+          "offset_steps": 1
+        },
+        {
+          "action_step": 176,
+          "first_acmi_step": 177,
+          "launcher_id": "B0100",
+          "missile_id": "B01001",
+          "offset_steps": 1
+        },
+        {
+          "action_step": 51,
+          "first_acmi_step": 52,
+          "launcher_id": "B0100",
+          "missile_id": "B01002",
+          "offset_steps": 1
+        },
+        {
+          "action_step": 46,
+          "first_acmi_step": 47,
+          "launcher_id": "B0200",
+          "missile_id": "B02002",
+          "offset_steps": 1
+        }
+      ],
+      "max_live_state_difference": {
+        "alt_m": 0.0,
+        "lat_deg": 0.0,
+        "lon_deg": 0.0,
+        "pitch_deg": 7.105427357601002e-15,
+        "roll_deg": 1.4210854715202004e-14,
+        "tas_mps": 0.04997035018027418,
+        "yaw_deg": 5.684341886080802e-14
+      },
+      "object_ids_by_entity_type": {
+        "aircraft": [
+          "A0100",
+          "A0200",
+          "B0100",
+          "B0200"
+        ],
+        "effect": [
+          "A01001F",
+          "A01002F",
+          "A02002F",
+          "B01001F",
+          "B01002F",
+          "B0100X",
+          "B02002F",
+          "B0200X"
+        ],
+        "missile": [
+          "A01001",
+          "A01002",
+          "A02002",
+          "B01001",
+          "B01002",
+          "B02002"
+        ]
+      },
+      "output": {
+        "bytes": 1385660,
+        "path": "mhi_v1.3_ic100601_win.csv",
+        "sha256": "812a44c4ba2d2d3a285394722da48fd93189be2c9495cac2866632fa997282f4"
+      },
+      "rows": 2124,
+      "rows_by_entity_type": {
+        "aircraft": 1366,
+        "effect": 8,
+        "missile": 750
+      },
+      "source_acmi_records": 1915,
+      "source_csv_rows": 1364,
+      "source_files": [
+        {
+          "bytes": 297226,
+          "path": "data/raw/20261005_LAG_2v2_ACMI/mhi_v1.3_ic100601_win.acmi",
+          "sha256": "74f1ab791679e8aa8a0a712b10aceb4d36f08530c8df627f21864534f20e3e32"
+        },
+        {
+          "bytes": 504503,
+          "path": "data/raw/20261005_LAG_2v2_ACMI/actions/mhi_v1.3_ic100601_win_actions.csv",
+          "sha256": "bb24342d062140af31d610a8c9e20394a0cd509d9bebc57decb6c1ea736b4358"
+        }
+      ],
+      "validation": "passed"
+    },
+    {
+      "acmi_last_step": 294,
+      "acmi_last_time_s": 58.8,
+      "acmi_metadata": {
+        "FileType": "text/acmi/tacview",
+        "FileVersion": "2.1",
+        "ReferenceTime": "2020-04-01T00:00:00Z"
+      },
+      "acmi_removals": 8,
+      "action_status_counts": {
+        "inactive": 242,
+        "not_applicable": 715,
+        "not_recorded": 431,
+        "recorded": 504,
+        "state_only": 1
+      },
+      "csv_last_step": 293,
+      "csv_last_time_s": 58.6,
+      "episode_id": "ours_seed100100_ic100601_loss",
+      "launches": [
+        {
+          "action_step": 45,
+          "first_acmi_step": 46,
+          "launcher_id": "A0100",
+          "missile_id": "A01002",
+          "offset_steps": 1
+        },
+        {
+          "action_step": 50,
+          "first_acmi_step": 51,
+          "launcher_id": "A0200",
+          "missile_id": "A02002",
+          "offset_steps": 1
+        },
+        {
+          "action_step": 175,
+          "first_acmi_step": 176,
+          "launcher_id": "B0100",
+          "missile_id": "B01001",
+          "offset_steps": 1
+        },
+        {
+          "action_step": 50,
+          "first_acmi_step": 51,
+          "launcher_id": "B0100",
+          "missile_id": "B01002",
+          "offset_steps": 1
+        },
+        {
+          "action_step": 45,
+          "first_acmi_step": 46,
+          "launcher_id": "B0200",
+          "missile_id": "B02002",
+          "offset_steps": 1
+        }
+      ],
+      "max_live_state_difference": {
+        "alt_m": 0.0,
+        "lat_deg": 0.0,
+        "lon_deg": 0.0,
+        "pitch_deg": 3.552713678800501e-15,
+        "roll_deg": 2.842170943040401e-14,
+        "tas_mps": 0.049905201445881175,
+        "yaw_deg": 5.684341886080802e-14
+      },
+      "object_ids_by_entity_type": {
+        "aircraft": [
+          "A0100",
+          "A0200",
+          "B0100",
+          "B0200"
+        ],
+        "effect": [
+          "A01002F",
+          "A0100X",
+          "A02002F",
+          "A0200X",
+          "B01001F",
+          "B01002F",
+          "B02002F",
+          "B0200X"
+        ],
+        "missile": [
+          "A01002",
+          "A02002",
+          "B01001",
+          "B01002",
+          "B02002"
+        ]
+      },
+      "output": {
+        "bytes": 1194390,
+        "path": "ours_seed100100_ic100601_loss.csv",
+        "sha256": "8884b108c6b0d2ae8d4f5adee2f83c6a8d69fe269c0c717d8d16d11a9060f4cc"
+      },
+      "rows": 1893,
+      "rows_by_entity_type": {
+        "aircraft": 1178,
+        "effect": 8,
+        "missile": 707
+      },
+      "source_acmi_records": 1654,
+      "source_csv_rows": 1176,
+      "source_files": [
+        {
+          "bytes": 253931,
+          "path": "data/raw/20261005_LAG_2v2_ACMI/ours_seed100100_ic100601_loss.acmi",
+          "sha256": "059e19a68594b5e53acc1d5c72a19416982768b7ecbbe23677766e01a652c227"
+        },
+        {
+          "bytes": 410307,
+          "path": "data/raw/20261005_LAG_2v2_ACMI/actions/ours_seed100100_ic100601_loss_actions.csv",
+          "sha256": "121c04fd78bcf292f297a1c64b880562913344b0e6d01d443b980c8e07be7e21"
+        }
+      ],
+      "validation": "passed"
+    },
+    {
+      "acmi_last_step": 496,
+      "acmi_last_time_s": 99.2,
+      "acmi_metadata": {
+        "FileType": "text/acmi/tacview",
+        "FileVersion": "2.1",
+        "ReferenceTime": "2020-04-01T00:00:00Z"
+      },
+      "acmi_removals": 8,
+      "action_status_counts": {
+        "inactive": 435,
+        "not_applicable": 1030,
+        "not_recorded": 557,
+        "recorded": 992,
+        "state_only": 2
+      },
+      "csv_last_step": 495,
+      "csv_last_time_s": 99.0,
+      "episode_id": "ours_seed100100_ic100606_win",
+      "launches": [
+        {
+          "action_step": 389,
+          "first_acmi_step": 390,
+          "launcher_id": "A0100",
+          "missile_id": "A01001",
+          "offset_steps": 1
+        },
+        {
+          "action_step": 38,
+          "first_acmi_step": 39,
+          "launcher_id": "A0100",
+          "missile_id": "A01002",
+          "offset_steps": 1
+        },
+        {
+          "action_step": 38,
+          "first_acmi_step": 39,
+          "launcher_id": "A0200",
+          "missile_id": "A02002",
+          "offset_steps": 1
+        },
+        {
+          "action_step": 38,
+          "first_acmi_step": 39,
+          "launcher_id": "B0100",
+          "missile_id": "B01002",
+          "offset_steps": 1
+        },
+        {
+          "action_step": 194,
+          "first_acmi_step": 195,
+          "launcher_id": "B0200",
+          "missile_id": "B02001",
+          "offset_steps": 1
+        },
+        {
+          "action_step": 69,
+          "first_acmi_step": 70,
+          "launcher_id": "B0200",
+          "missile_id": "B02002",
+          "offset_steps": 1
+        }
+      ],
+      "max_live_state_difference": {
+        "alt_m": 0.0,
+        "lat_deg": 0.0,
+        "lon_deg": 0.0,
+        "pitch_deg": 3.552713678800501e-15,
+        "roll_deg": 1.4210854715202004e-14,
+        "tas_mps": 0.049991399529318414,
+        "yaw_deg": 5.684341886080802e-14
+      },
+      "object_ids_by_entity_type": {
+        "aircraft": [
+          "A0100",
+          "A0200",
+          "B0100",
+          "B0200"
+        ],
+        "effect": [
+          "A01001F",
+          "A01002F",
+          "A02002F",
+          "B01002F",
+          "B0100X",
+          "B02001F",
+          "B02002F",
+          "B0200X"
+        ],
+        "missile": [
+          "A01001",
+          "A01002",
+          "A02002",
+          "B01002",
+          "B02001",
+          "B02002"
+        ]
+      },
+      "output": {
+        "bytes": 1953215,
+        "path": "ours_seed100100_ic100606_win.csv",
+        "sha256": "43211744056a66d627a968f237d7ca55fd2d7f44354c987bd62192a2401b69fd"
+      },
+      "rows": 3016,
+      "rows_by_entity_type": {
+        "aircraft": 1986,
+        "effect": 8,
+        "missile": 1022
+      },
+      "source_acmi_records": 2583,
+      "source_csv_rows": 1984,
+      "source_files": [
+        {
+          "bytes": 400633,
+          "path": "data/raw/20261005_LAG_2v2_ACMI/ours_seed100100_ic100606_win.acmi",
+          "sha256": "9107f5ae212af470dea5e97ae7861e12a3bef0f70560bfbac8113a406055913b"
+        },
+        {
+          "bytes": 729868,
+          "path": "data/raw/20261005_LAG_2v2_ACMI/actions/ours_seed100100_ic100606_win_actions.csv",
+          "sha256": "87e8bd3421b5aaec2453d117bbd7031930063346b0cc0d5df226e5298c4eed78"
+        }
+      ],
+      "validation": "passed"
+    }
+  ],
+  "generator": {
+    "lag_data/definitions.py": "62a13290e48f96d399489401a66131f415280d0585d3af239fd5dddbc1b1daec",
+    "lag_data/prepare.py": "6876a5137b9af05ac01400e0744dbe638b7e7024b7e435cb2c4e8a2c0dc2903d"
+  },
+  "missing_value": "",
+  "primary_key": [
+    "episode_id",
+    "step",
+    "object_id"
+  ],
+  "schema_version": "1.0",
+  "sort_order": [
+    "step",
+    "entity_type (aircraft, missile, effect)",
+    "object_id"
+  ]
+}

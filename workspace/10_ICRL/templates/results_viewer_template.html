@@ -1,0 +1,111 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>10 ICRL — 入出力ビューア</title><style>
+*{box-sizing:border-box}body{margin:auto;max-width:1440px;padding:28px;color:#172333;background:#f4f7fb;font:14px/1.65 system-ui,sans-serif;overflow-wrap:anywhere}h1{font-size:25px;margin:0}h2{font-size:18px;margin:0 0 12px}p{margin:8px 0 14px}.muted{color:#5e6b7c}.panel,.controls{background:white;border:1px solid #d7e0ed;border-radius:12px;padding:20px;margin:16px 0}.controls{position:sticky;top:0;z-index:2;box-shadow:0 5px 18px #17233315}.filters,.nav{display:flex;flex-wrap:wrap;gap:12px;align-items:end}.nav{align-items:center;margin-top:14px}label{display:flex;flex-direction:column;font-weight:600;gap:4px}select,button{font:inherit;border:1px solid #b9c6d8;border-radius:7px;padding:7px 10px;background:white;color:inherit}button{cursor:pointer}button:disabled{opacity:.4;cursor:default}a{color:#2457cf}button.primary{background:#2457cf;color:white;border-color:#2457cf}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.7 ui-monospace,monospace;margin:0}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:8px 10px;border-bottom:1px solid #e1e7ef;text-align:left;vertical-align:top}.scroll{overflow:auto}.pill{padding:5px 10px;background:#edf3ff;border-radius:7px}.warning{border-left:4px solid #e19e25}.panel{scroll-margin-top:240px}.jump{display:flex;gap:14px;margin-left:auto}.example-list{font-size:12px}summary{cursor:pointer;font-weight:600}details pre{margin-top:12px}#selection-note{font-size:12px;color:#5e6b7c;margin-top:10px}@media(max-width:700px){body{padding:12px}.controls{position:relative;padding:12px}.panel{padding:12px;scroll-margin-top:10px}select{max-width:260px}.jump{margin-left:0}th,td{padding:6px}}
+
+.quick{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.good{background:#e0f5e8;color:#145b33}.bad{background:#fee7e7;color:#912424}input{font:inherit;padding:8px;border:1px solid #b9c6d8;border-radius:7px}details.panel>pre{margin-top:12px}.controls{position:relative}.panel{scroll-margin-top:16px}#answer-start{border-left:4px solid #2468a2}#truth-start{border-left:4px solid #65a9ca} .search{min-width:250px} .nav select{max-width:500px}
+@media(max-width:700px){.nav select{max-width:100%;width:100%}.filters label{max-width:100%}.search{min-width:0;width:100%}}
+[hidden]{display:none!important}.view-switch{display:flex;gap:10px;margin:16px 0}.answer-table{min-width:2200px;table-layout:fixed}.answer-table th{background:#edf3ff}.answer-table td{white-space:pre-wrap}.answer-table .response-column{width:600px}.answer-table .id-column{width:180px}.answer-table .number-column{width:70px}.answer-table .condition-column{width:110px}.answer-table tbody tr:nth-child(even){background:#f7f9fc}.answer-table pre{font-size:13px}.answer-table button{white-space:nowrap}.list-scroll{max-height:78vh;overflow:auto}.answer-table thead th{position:sticky;top:0;z-index:1}
+</style></head><body>
+<h1>10 ICRL · Raw input / output viewer</h1>
+<nav class="view-switch" aria-label="表示タイプ"><button id="detail-view" aria-pressed="true" class="primary">詳細表示</button><button id="list-view" aria-pressed="false">回答一覧</button></nav>
+<p class="muted" id="overview"></p>
+<p class="muted">Pendulum-v1 · episode_9_seed3407 · H=20 · t=0 · 24条件 × 同一質問への3反復。Prompt 4通り × E=1/3/9 × 2モデル。正解判定はfinal action bin、誤差は連続トルク。推論レベルは1〜4で、高いほど具体的・定量的。空欄は未評価。</p>
+<div class="controls"><div class="filters" id="filters"></div>
+<div class="quick"><span id="result-count" role="status"></span><button id="reset">絞り込み解除</button></div>
+<div id="detail-controls"><div class="quick" id="quick"></div>
+<div class="nav"><button id="previous">← 前へ</button><span id="position" class="pill"></span><button id="next" class="primary">次へ →</button><select id="query" aria-label="回答を選択"></select><button id="download">この回答をJSON保存</button></div>
+<div class="quick"><a href="#input-start">入力</a><a href="#target-start">今回の質問のみ</a><a href="#answer-start">回答</a><a href="#truth-start">正解・比較</a><a href="#metadata-start">条件・時間・token</a></div></div></div>
+<main id="content"></main>
+<script id="dataset" type="application/json">__DATASET__</script><script>
+'use strict';
+const data=JSON.parse(document.getElementById('dataset').textContent),rows=data.rows,$=id=>document.getElementById(id);
+const names={match:'正解',mismatch:'不正解',ignored:'解析不可',empty_response:'空応答',api_error:'APIエラー',pending:'送信済み・採点待ち／結果不明',unstarted:'未送信'};
+const methodNames={direct:'Direct',ppo_prior:'PPO',icrfqi_k2:'ICRL (K=2)',icrfqi_k5:'ICRL (K=5)'};
+const fields={model_alias:'モデル',method:'Prompt',K:'FQI反復 K',E:'Episode数 E',repeat_id:'反復番号',reasoning_score:'推論レベル',status:'採点結果'};
+let filtered=rows,index=0,view='detail';
+function el(tag,text){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e}
+function value(v){return v===undefined||v===null?'—':typeof v==='object'?JSON.stringify(v,null,2):String(v)}
+function panel(title,id,text,collapsed=false){const p=el(collapsed?'details':'section');p.className='panel';p.id=id;p.append(el(collapsed?'summary':'h2',title),el('pre',text));return p}
+function filterValue(key,r){return r[key]===undefined||r[key]===null?'__missing__':String(r[key])}
+function caption(key,v){
+ if(v==='__missing__')return key==='reasoning_score'?'未評価':key==='K'?'対象外':'—';
+ if(key==='method')return methodNames[v]||v;
+ if(key==='model_alias')return v==='terra'?'Terra':v==='luna'?'Luna':v;
+ return key==='status'?(names[v]||v):String(v);
+}
+for(const [key,title] of Object.entries(fields)){
+ const label=el('label',title),select=el('select');select.id=key;select.append(new Option('すべて',''));
+ const vals=[...new Set(rows.map(q=>filterValue(key,q)))];
+ vals.sort((a,b)=>{
+  if(a==='__missing__')return 1;if(b==='__missing__')return -1;
+  if(key==='method')return Object.keys(methodNames).indexOf(a)-Object.keys(methodNames).indexOf(b);
+  if(key==='model_alias')return ['terra','luna'].indexOf(a)-['terra','luna'].indexOf(b);
+  return ['K','E','repeat_id','reasoning_score'].includes(key)?Number(a)-Number(b):a.localeCompare(b);
+ });
+ for(const v of vals)select.append(new Option(caption(key,v),v));
+ select.onchange=apply;label.append(select);$('filters').append(label);
+}
+const searchLabel=el('label','ID・入力・回答を検索'),search=el('input');search.id='search';search.className='search';search.type='search';search.placeholder='query ID / 回答中の語句';search.oninput=apply;searchLabel.append(search);$('filters').append(searchLabel);
+$('overview').textContent=`${rows.length}件 · 保存済み回答 ${rows.filter(r=>['match','mismatch','ignored','empty_response'].includes(r.status)).length}件 · 推論評価済み ${data.reasoning_scored} / ${rows.length}件 · ${data.created_at_jst} 時点のスナップショット。オフライン表示・API送信なし。`;
+function apply(){const term=search.value.toLowerCase();filtered=rows.filter(r=>Object.keys(fields).every(k=>!$(k).value||filterValue(k,r)===$(k).value)&&(!term||[r.query_id,r.user_prompt,r.assistant_text].some(v=>String(v??'').toLowerCase().includes(term))));index=0;$('query').replaceChildren();filtered.forEach((r,i)=>$('query').append(new Option(`${i+1}. ${caption('model_alias',r.model_alias)} / ${methodNames[r.method]} / E=${r.E} / 反復${r.repeat_id} / ${names[r.status]||r.status}`,i)));render()}
+function setView(next){view=next;render()}
+$('detail-view').onclick=()=>setView('detail');
+$('list-view').onclick=()=>setView('list');
+const columns=[
+ ['詳細','number-column',null],
+ ['assistant text（全文）','response-column',r=>r.assistant_text??'応答なし'],
+ ['モデル','condition-column',r=>r.model_alias],
+ ['Task','condition-column',r=>r.task],
+ ['予測対象','condition-column',r=>r.metric],
+ ['H','number-column',r=>r.H],
+ ['Prompt','condition-column',r=>methodNames[r.method]||r.method],
+ ['K','number-column',r=>r.K??'対象外'],
+ ['E','number-column',r=>r.E],
+ ['履歴reward','number-column',r=>r.reward_present?'あり':'なし'],
+ ['履歴開始 t','number-column',r=>r.history_start],
+ ['予測時点','number-column',r=>r.query_index],
+ ['反復番号','number-column',r=>r.repeat_id],
+ ['判定','condition-column',r=>names[r.status]||r.status],
+ ['推論レベル','number-column',r=>r.reasoning_score??'未評価'],
+ ['予測bin','number-column',r=>r.prediction],
+ ['正解bin','number-column',r=>r.ground_truth],
+ ['予測トルク','condition-column',r=>r.action_value_prediction],
+ ['正解トルク','condition-column',r=>r.action_value_ground_truth],
+ ['絶対誤差（トルク）','condition-column',r=>r.absolute_error],
+ ['episode','id-column',r=>r.episode_path],
+ ['query ID','id-column',r=>r.query_id]
+];
+function renderList(){
+ const section=el('section');section.className='panel';section.append(el('h2',`回答一覧 · ${filtered.length}件`));
+ section.append(el('p','絞り込みに一致する全回答を表示しています。表は横・縦にスクロールできます。「詳細」でその回答を開きます。'));
+ const scroll=el('div');scroll.className='list-scroll';scroll.tabIndex=0;scroll.setAttribute('aria-label','回答一覧表');
+ const table=el('table');table.className='answer-table';const head=el('thead'),header=el('tr');
+ for(const [title,cls] of columns){const th=el('th',title);th.className=cls;th.scope='col';header.append(th)}head.append(header);
+ const body=el('tbody');
+ filtered.forEach((r,i)=>{const tr=el('tr');for(const [title,cls,get] of columns){const td=el('td');td.className=cls;
+  if(!get){const button=el('button',`${i+1}. 詳細`);button.onclick=()=>{index=i;setView('detail')};td.append(button)}
+  else if(cls==='response-column')td.append(el('pre',get(r)));
+  else td.textContent=value(get(r));tr.append(td)
+ }body.append(tr)});
+ table.append(head,body);scroll.append(table);section.append(scroll);$('content').append(section);
+}
+function render(){
+ $('detail-view').className=view==='detail'?'primary':'';$('list-view').className=view==='list'?'primary':'';
+ $('detail-view').setAttribute('aria-pressed',String(view==='detail'));$('list-view').setAttribute('aria-pressed',String(view==='list'));
+ $('detail-controls').hidden=view==='list';$('result-count').textContent=`該当 ${filtered.length} / 全 ${rows.length}件`;
+ const r=filtered[index];$('content').replaceChildren();$('quick').replaceChildren();$('position').textContent=filtered.length?`${index+1} / ${filtered.length}件`:'0件';$('previous').disabled=!r||index===0;$('next').disabled=!r||index===filtered.length-1;$('download').disabled=!r;$('query').value=String(index);
+ if(!r){$('content').append(el('p','該当する回答はありません。'));return}
+ if(view==='list'){renderList();return}
+ for(const text of [`${names[r.status]||r.status}`,`予測: ${value(r.prediction)} / 正解: ${value(r.ground_truth)}`,`推論レベル: ${r.reasoning_score??'未評価'} / 4`,`Prompt: ${methodNames[r.method]} / E=${r.E} / 反復${r.repeat_id}`]){const pill=el('span',text);pill.className='pill';$('quick').append(pill)}
+ if(['match','mismatch'].includes(r.status))$('quick').firstChild.classList.add(r.status==='match'?'good':'bad');
+ $('content').append(panel('入力 1 — system','input-start',r.system_prompt,true),panel('入力 2 — user（補助episode・手順指示を含む送信全文）','user-start',r.user_prompt),panel('Target episode — 元のhistoryとnext-action question','target-start',r.target_user_prompt,true),panel('出力 — assistant_text','answer-start',r.assistant_text??'応答なし'));
+ const truth={判定:names[r.status]||r.status,予測ID:r.prediction??null,正解ID:r.ground_truth??null,解析エラー:r.parse_error??null,採点方式:r.scoring_version??null,行動値予測:r.action_value_prediction??null,行動値正解:r.action_value_ground_truth??null,行動値絶対誤差:r.absolute_error??null,行動値解析エラー:r.action_value_parse_error??null};
+ if(r.prediction!==undefined&&r.ground_truth!==undefined){const p=Array.isArray(r.prediction)?r.prediction:[r.prediction],g=Array.isArray(r.ground_truth)?r.ground_truth:[r.ground_truth];if(p.length===g.length&&p.every((v,i)=>typeof v==='number'&&typeof g[i]==='number'))truth['ID差の絶対値（物理量の誤差ではありません）']=p.map((v,i)=>Math.abs(v-g[i]));}
+ $('content').append(panel('正解データ・予測との比較','truth-start',JSON.stringify(truth,null,2)));
+ const meta={query_id:r.query_id,condition_id:r.condition_id,task:r.task,model:r.model,metric:r.metric,method:r.method,K:r.K,E:r.E,context_episode_count:r.context_episode_count,H:r.H,history_start:r.history_start,history_end_exclusive:r.history_end_exclusive,repeat_id:r.repeat_id,reward_present:r.reward_present,reasoning_score:r.reasoning_score,target_episode:r.target_episode,episode_path:r.episode_path,episode_sha256:r.episode_sha256,auxiliary_episode_paths:r.auxiliary_episode_paths,context_episode_sha256:r.context_episode_sha256,query_index:r.query_index,request_started_at_utc:r.request_started_at_utc,response_received_at_utc:r.response_received_at_utc,request_elapsed_seconds:r.request_elapsed_seconds,input_tokens:r.input_tokens,output_tokens:r.output_tokens,total_tokens:r.total_tokens,usage:r.usage,exception:r.exception};
+ $('content').append(panel('条件・識別子・時間・token等（プロンプトとは別表示）','metadata-start',JSON.stringify(meta,null,2)),panel('APIレスポンス全文','raw-start',JSON.stringify(r.raw_response??null,null,2),true));
+}
+$('previous').onclick=()=>{if(index>0){index--;render()}};$('next').onclick=()=>{if(index<filtered.length-1){index++;render()}};$('query').onchange=()=>{index=Number($('query').value);render()};
+$('reset').onclick=()=>{for(const k of Object.keys(fields))$(k).value='';search.value='';apply()};
+$('download').onclick=()=>{const r=filtered[index];if(!r)return;const u=URL.createObjectURL(new Blob([JSON.stringify(r,null,2)+'\n'],{type:'application/json'}));const a=el('a');a.href=u;a.download=r.query_id+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+apply();
+</script></body></html>

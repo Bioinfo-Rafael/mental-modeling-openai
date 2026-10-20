@@ -1,0 +1,20 @@
+{
+  "plan_id": "59c0adb28253fb7acb220f4cd1bd25ac137418bef0646b83b24fc46afa6d298b",
+  "scoring_version": "lag-trajectory10-action3-state10-v1",
+  "views": 20,
+  "figures": 40,
+  "responses": {
+    "valid": 48,
+    "parse_error": 12
+  },
+  "before": 50,
+  "after": 10,
+  "dt_s": 0.2,
+  "hashes": {
+    "experiments/16_dynamics_LAG/results/dynamics_batch_v1/manifest.json": "10c622e1bc54756d5ffb6fd6aac41449850cbff9d7aa3d93dc47b01657ab3f57",
+    "experiments/16_dynamics_LAG/results/dynamics_batch_v1/api/responses.jsonl": "f280d8838453e71c76f06c05e4bc36e14db18337fa4f1633e10ab1d69e9cc661",
+    "experiments/16_dynamics_LAG/plot_trajectory_timelines.py": "b7762dc98a473db8778944c5442af982a50fc8ca724c364f476ab3241f7a0760",
+    "experiments/16_dynamics_LAG/templates/trajectory_timelines.html": "ce29047e68e59f3958f77871f98bcd742b80d017d42f7d649cc40e97e5ed36c4",
+    "experiments/16_dynamics_LAG/dynamics_experiment/evaluation.py": "277b476ba5c6c0a631071fd5e6844f32b12e551e96909e0ff3562eb4e5374a52"
+  }
+}

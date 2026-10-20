@@ -1,0 +1,20 @@
+{
+  "source": "results/api/records.jsonl",
+  "source_sha256": "f34077e592be6c58151832506d327c86b6ce9213aef71388c584f79f2164edbd",
+  "manifest": "results/api/manifest.json",
+  "manifest_sha256": "b50349c4c9f9d2197f6781bc706e1e84b4b2a8e0af84519d3c3b02fe159856fd",
+  "extractor": "experiments/09_ablation_reward/reasoning_score_analysis/prepare_scoring.py",
+  "extractor_sha256": "5ae8155d6f8c18a3a6ce72b4b5af741e9910ba9c0001151d1c63987877594c97",
+  "rows": 72,
+  "unique_query_ids": 72,
+  "manifest_ids_match": true,
+  "metadata_matches_manifest": true,
+  "raw_response_text_verified": true,
+  "extracted_reasoning": 72,
+  "empty_reasoning": 0,
+  "empty_scores": 72,
+  "row_order_preserved": true,
+  "csv_roundtrip_verified": true,
+  "output_sha256": "35c789f94690b31ce0e23240c4a6221fa4febeba25b48cd88d611e554e8cfebf",
+  "score_scale": "1=generic, 2=policy, 3=specific, 4=quantitative"
+}

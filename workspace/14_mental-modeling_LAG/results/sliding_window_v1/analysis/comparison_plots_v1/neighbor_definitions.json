@@ -1,0 +1,138 @@
+{
+  "created_at": "2026-10-12T22:37:17.395771+09:00",
+  "plan_id": "30c260de9d69c74fd96e131d965c4a80f9a0cdf9d05cbfb0f85be7f92665220f",
+  "sources": {
+    "manifest_sha256": "671cfe5ab40b69356c1b503fe203760c4c56b0736526f64faf43e787598e4aed",
+    "responses": {
+      "sha256": "662b0aae2adf4f571018d2b1a85e387c9b43cfda1fcf83e52daff88b498998e7",
+      "bytes": 4533578,
+      "rows": 3600,
+      "trailing_bytes_excluded": 0
+    },
+    "requests": {
+      "sha256": "fef072ce6d25155ab59d8f33653b6d7748498951101b55ea0b1cab2933435331",
+      "bytes": 80655386,
+      "rows": 3600,
+      "trailing_bytes_excluded": 0
+    }
+  },
+  "csv_sha256": {
+    "mhi_v1.3_ic100601_win": "812a44c4ba2d2d3a285394722da48fd93189be2c9495cac2866632fa997282f4",
+    "ours_seed100100_ic100601_loss": "8884b108c6b0d2ae8d4f5adee2f83c6a8d69fe269c0c717d8d16d11a9060f4cc",
+    "ours_seed100100_ic100606_win": "43211744056a66d627a968f237d7ca55fd2d7f44354c987bd62192a2401b69fd"
+  },
+  "normalization": {
+    "n_unique_target_states": 177,
+    "fields": [
+      "lon_deg",
+      "lat_deg",
+      "alt_m",
+      "roll_deg",
+      "pitch_deg",
+      "yaw_deg",
+      "tas_mps",
+      "vn_mps",
+      "ve_mps",
+      "vu_mps"
+    ],
+    "minimum": [
+      119.77061636972488,
+      59.93915734303548,
+      3804.9948539460183,
+      262.3413742323187,
+      -20.81000796093963,
+      47.96305730329133,
+      184.96572208746036,
+      -293.3466552070691,
+      -335.33408444636353,
+      -56.80943093259072
+    ],
+    "maximum": [
+      120.22769643676168,
+      60.09071512967128,
+      6136.459607066882,
+      453.79159791483414,
+      14.539417957269045,
+      385.0429657245541,
+      345.6414034721618,
+      315.1767632247667,
+      338.33194413375816,
+      27.204903081237656
+    ],
+    "mean": [
+      119.98846561554194,
+      60.026718017969635,
+      5475.564604539737,
+      358.70939676818307,
+      -2.618442057477881,
+      263.8836725698338,
+      275.24440071269964,
+      91.70062612535487,
+      1.3621295903476487,
+      -18.568645206549093
+    ],
+    "range": [
+      0.4570800670367987,
+      0.15155778663579866,
+      2331.464753120864,
+      191.45022368251546,
+      35.349425918208674,
+      337.07990842126276,
+      160.67568138470145,
+      608.5234184318358,
+      673.6660285801217,
+      84.01433401382837
+    ],
+    "sd": [
+      0.08570576328073615,
+      0.03382239515780904,
+      719.6108880634786,
+      47.34374620913409,
+      6.211401682079949,
+      106.15220135098572,
+      45.90116985991281,
+      196.05825660305086,
+      173.5413412998641,
+      23.564922707456475
+    ],
+    "circular_origins_deg": {
+      "roll_deg": 262.3413742323187,
+      "yaw_deg": 47.96305730329133
+    }
+  },
+  "formulas": {
+    "action_next": "mean_i mean_j abs(prediction[t,j] - actual_action[t-1,j]); j=3 movement IDs",
+    "action_last": "mean_i mean_j abs(prediction[t,j] - actual_action[t+1,j]); j=3 movement IDs",
+    "state_next": "mean_i ||wrap(prediction[t] - S[t-1]) / scale||_2 / ||wrap(S[t] - S[t-1]) / scale||_2",
+    "state_last": "mean_i ||wrap(S[t+1] - prediction[t]) / scale||_2 / ||wrap(S[t+1] - S[t]) / scale||_2",
+    "difference": "mean ratios/MAEs for all - self, both computed over the same valid paired query IDs"
+  },
+  "notes": [
+    "t denotes the prediction target_step, not next-state query_step (which is t-1).",
+    "State uses a 10-dimensional L2 norm after shared fixed range or SD normalization. Same scales as preceding figures; angles use shortest roll/yaw residuals.",
+    "Ratio computed per query, then arithmetic mean; not ratio of aggregated changes.",
+    "0 means exact neighbor state copying; 1 means equal change magnitude, not equal direction or a correct prediction.",
+    "Zero actual-change norm gives an undefined ratio (including 0/0). Excluded, counted, and retained in per-query data; no epsilon substitution or clipping.",
+    "Action uses the mean absolute difference across three movement IDs, not shoot.",
+    "For last-action, actual action at t+1 was NOT supplied in the prompt; equality cannot establish input copying. Actual t-1 action was supplied.",
+    "If actual action is unchanged, matching the neighbor can also be correct. Actual neighbor MAE retained per query to distinguish this.",
+    "No improvement/worsening direction is assigned to these metrics or the all-minus-self difference."
+  ],
+  "excluded_counts": {
+    "invalid_prediction": 6
+  },
+  "metrics_summary": {
+    "action_neighbor_mae": {
+      "valid": 1800,
+      "eligible": 1800
+    },
+    "state_change_ratio_range": {
+      "valid": 1794,
+      "eligible": 1800
+    },
+    "state_change_ratio_sd": {
+      "valid": 1794,
+      "eligible": 1800
+    }
+  }
+}

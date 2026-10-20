@@ -1,0 +1,29 @@
+データ整合性検証記録
+実施日: 2026-10-13 JST
+
+実行ディレクトリ:
+/Users/cls-lab/Git/Matsuo/mental-modeling-openai
+
+実行コマンド:
+.venv/bin/python experiments/13_LAG/run.py --check
+
+終了コード: 0
+出力:
+mhi_v1.3_ic100601_win: 2124 rows, {'aircraft': 1366, 'effect': 8, 'missile': 750}, validation passed
+ours_seed100100_ic100601_loss: 1893 rows, {'aircraft': 1178, 'effect': 8, 'missile': 707}, validation passed
+ours_seed100100_ic100606_win: 3016 rows, {'aircraft': 1986, 'effect': 8, 'missile': 1022}, validation passed
+Saved files match regenerated data.
+
+結果:
+既存のデータ検証処理を実行し、3試合すべてで検証が通った。
+元データからメモリ内で再生成した内容と保存済み統合CSVが一致した。
+原本・統合CSVは変更していない。
+
+検証範囲:
+既存のprepare.pyによるデータ保存・統合の整合性確認。
+この成功は、LAG/JSBSimの運動方程式、制御性能、物理的忠実度の検証結果ではない。
+今回、物理残差の追加計算やシミュレータのリプレイは実施していない。
+
+作業ノート:
+physics_validation_note_20261013.txtは既存ノートを内容変更せず移動したもの。
+ノート中のdata/から始まる相対参照は、親の13_LAGディレクトリを基準とする。

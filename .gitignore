@@ -1,0 +1,37 @@
+# Claude Code Orchestra local state
+.claude/settings.local.json
+.claude/settings.orchestra.json
+.codex/config.orchestra.toml
+CLAUDE.local.md
+.claude/logs/
+.claude/checkpoints/
+.orchestra-backup-*/
+
+# Python / tooling
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.DS_Store
+
+# Downloaded datasets are reproducible inputs (see data/README.md and configs/sources.json).
+data/llmx_data/
+data/candidate_datasets/*/repository/
+data/candidate_datasets/*/*.zip
+data/candidate_datasets/*/extracted/
+
+# Generated analyses and paid-pilot outputs from src/mtd_rl_xavier/tools.
+outputs/**/*.csv
+outputs/**/*.json
+outputs/**/*.jsonl
+outputs/**/*.partial
+outputs/smoke/
+outputs/smoke-episode.npz
+
+# Experiment results under workspace/<NN_name>/results/ are shared in git;
+# only run-time lock and partial-write files stay local.
+workspace/**/results/**/.execution.lock
+workspace/**/results/**/*.partial
