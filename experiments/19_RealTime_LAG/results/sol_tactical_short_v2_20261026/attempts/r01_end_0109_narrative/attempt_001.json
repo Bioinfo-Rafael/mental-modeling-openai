@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0109_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:28:00.655321+00:00",
+  "api_status": "ok",
+  "latency_s": 31.027411917224526,
+  "raw": {
+    "id": "chatcmpl-Ed7XVvgE3VlRs6HwiiqMksnhoF1Of",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reduce exposure after an earlier missile exchange by executing a hard right turn and then extending east, nearly perpendicular to the closing opponents; its own missile is already northbound while opposing missiles advance south, and the maneuver creates lateral separation while preserving speed.\",\"A0200\":\"A0200 most plausibly seeks to sustain pressure before reducing exposure: it initially drives north behind its northbound missile while descending and accelerating, then shifts into a hard right, still-descending turn as opposing missiles close, creating lateral separation without immediately abandoning forward closure.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992481,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1898,
+      "prompt_tokens": 41635,
+      "total_tokens": 43533,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1751,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 38409,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to reduce exposure after an earlier missile exchange by executing a hard right turn and then extending east, nearly perpendicular to the closing opponents; its own missile is already northbound while opposing missiles advance south, and the maneuver creates lateral separation while preserving speed.",
+    "A0200": "A0200 most plausibly seeks to sustain pressure before reducing exposure: it initially drives north behind its northbound missile while descending and accelerating, then shifts into a hard right, still-descending turn as opposing missiles close, creating lateral separation without immediately abandoning forward closure."
+  },
+  "finished_at": "2026-10-26T05:28:31.684561+00:00",
+  "over_3s": true
+}

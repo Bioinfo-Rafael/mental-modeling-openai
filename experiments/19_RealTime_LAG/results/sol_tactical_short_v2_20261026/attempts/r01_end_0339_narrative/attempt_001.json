@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0339_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:44:39.459384+00:00",
+  "api_status": "ok",
+  "latency_s": 19.661530249752104,
+  "raw": {
+    "id": "chatcmpl-Ed7nbxng8nTeMm4QIgGhi4gyzyCdb",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to attack B0100 and then reduce post-launch exposure by completing a descending left-hand firing turn, expending its last missile, and reversing right while the missile continues toward B0100; the opponent’s subsequent removal alongside the missile supports the engagement interpretation without establishing a hit.\",\"A0200\":\"A0200 most plausibly seeks to survive the B0100 missile’s approach by sustaining high speed while repeatedly banking and bending its northeast track northward, keeping the missile behind and laterally offset; retaining its missile and continuing the maneuver after B0100 became inactive support a defensive interpretation rather than an immediate counterattack.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792993479,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1120,
+      "prompt_tokens": 29159,
+      "total_tokens": 30279,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 969,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 25933,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to attack B0100 and then reduce post-launch exposure by completing a descending left-hand firing turn, expending its last missile, and reversing right while the missile continues toward B0100; the opponent’s subsequent removal alongside the missile supports the engagement interpretation without establishing a hit.",
+    "A0200": "A0200 most plausibly seeks to survive the B0100 missile’s approach by sustaining high speed while repeatedly banking and bending its northeast track northward, keeping the missile behind and laterally offset; retaining its missile and continuing the maneuver after B0100 became inactive support a defensive interpretation rather than an immediate counterattack."
+  },
+  "finished_at": "2026-10-26T05:44:59.122076+00:00",
+  "over_3s": true
+}

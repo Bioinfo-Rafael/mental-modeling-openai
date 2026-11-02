@@ -1,0 +1,74 @@
+{
+  "query_id": "r02_end_0254_decisions",
+  "started_at": "2026-10-25T21:36:32.533037+00:00",
+  "status": "ok",
+  "latency_s": 1.9767978335730731,
+  "raw": {
+    "model": "gpt-6-luna",
+    "answers": [
+      {
+        "type": "choice",
+        "name": "changed_aircraft",
+        "choice": "BOTH",
+        "probabilities": [
+          {
+            "value": "NONE",
+            "probability": 0.02
+          },
+          {
+            "value": "A1",
+            "probability": 0.27
+          },
+          {
+            "value": "A2",
+            "probability": 0.29
+          },
+          {
+            "value": "BOTH",
+            "probability": 0.42
+          }
+        ],
+        "confidence": 0.23
+      }
+    ],
+    "usage": {
+      "input_tokens": 31095,
+      "input_tokens_details": {
+        "cached_tokens": 30813,
+        "cache_write_tokens": 0,
+        "cache_write_tokens_details": {
+          "ttl_30m_tokens": 0,
+          "ttl_12h_tokens": 0
+        }
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 31095
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": null,
+    "reason": null,
+    "aircraft_choice": "BOTH",
+    "selected_aircraft": [
+      "A0100",
+      "A0200"
+    ],
+    "choice_probabilities": {
+      "NONE": 0.02,
+      "A1": 0.27,
+      "A2": 0.29,
+      "BOTH": 0.42
+    },
+    "probability_yes": 0.98,
+    "aircraft_probabilities": {
+      "A0100": 0.69,
+      "A0200": 0.71
+    },
+    "confidence": 0.23
+  },
+  "finished_at": "2026-10-25T21:36:34.509874+00:00"
+}

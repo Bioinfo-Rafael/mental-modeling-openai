@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0274_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:41:10.140069+00:00",
+  "api_status": "ok",
+  "latency_s": 55.13993470789865,
+  "raw": {
+    "id": "chatcmpl-Ed7kE6sCmSPeN9nwAHcRfHvjd52W6",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to regain engagement geometry against B0100 by converting its fast eastbound extension into a sustained left, descending reversal, progressively reducing its heading error to the opponent astern; the turn begins as the comparable-altitude B-launched missile disappears, consistent with ending a drag phase.\",\"A0200\":\"A0200 most plausibly seeks to survive by keeping B0100 and the nearby B0100-launched missile in a prolonged tail chase, sustaining a high-speed east-to-northeast extension while descending and banking; both remain astern, the missile closes only modestly near A0200’s altitude, and A0200 retains its sole recorded missile.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792993270,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 3095,
+      "prompt_tokens": 28450,
+      "total_tokens": 31545,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2912,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 25224,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to regain engagement geometry against B0100 by converting its fast eastbound extension into a sustained left, descending reversal, progressively reducing its heading error to the opponent astern; the turn begins as the comparable-altitude B-launched missile disappears, consistent with ending a drag phase.",
+    "A0200": "A0200 most plausibly seeks to survive by keeping B0100 and the nearby B0100-launched missile in a prolonged tail chase, sustaining a high-speed east-to-northeast extension while descending and banking; both remain astern, the missile closes only modestly near A0200’s altitude, and A0200 retains its sole recorded missile."
+  },
+  "finished_at": "2026-10-26T05:42:05.282199+00:00",
+  "over_3s": true
+}

@@ -1,0 +1,208 @@
+{
+  "query_id": "r03_end_0054_responses_diagnostic",
+  "started_at": "2026-10-25T21:39:42.421378+00:00",
+  "status": "ok",
+  "latency_s": 9.174233082681894,
+  "raw": {
+    "id": "resp_05e957203d4850fd016ade77209eec87d09a586a41289e0263",
+    "created_at": 1792964384.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "rs_05e957203d4850fd016ade77213a8487d090865265ef458e9c",
+        "summary": [],
+        "type": "reasoning",
+        "content": [],
+        "encrypted_content": "gAAAAABq3ncnQsubk_Tp_bui8_NOViP0p4mfZ7PTFiW8jqLn6drrDoV8KTmODx-OIb8OpEXIHzSgOtOqR3wzWh4SqmtW2JW12Bnb1oTYNtrJKK0Cr-ORaVt0DhG0Cb5hS1BOv-pv6yR6rZS_kpudme3AQbynRnJRaHLJRmb4px6OuMw7AJ73pjtnJW7l1FkN10jJ9bkoCSZyGUpTSLMVqhxyWL4Wz3bEcMskHA3dmo1cJ5XY0YKNtjGr2ez4AjYdgjtDb-24o6TdkhMwvf4SsC9iIehIElLMA5I5isBsmZlPVGmnTAPod5Bg-Gu5xrxlyCAc9ij6dyTMezRgkEpOa4wtRTWMW4RSio7QjdtPTJB82SsJCbIVpZ3Xrzsk27LvKJmJzCTqxC87PVYWDdMChzCreJ-tSGWtUrllWyqO7WOqC3igzhnFwP7aviLmF-7pCSM4RObG55gq5Dno-CWXSkE0jcJDg86WRQ4fmroFzVlVBZsmwPofSWc7hjKASu61L9WKrMjE4CSbfUHt0XnDlP0wuU6D4ocs44vje2wi9uVYWMuEc6epo1CXfJDwyeb69rCv6LUtE9k6Y5aqpngGejorvh902ElQkE_R_77AnaCM93zLBm_4eWw2ycDihNd9X8QkGNxjtxWV3h-lnRnaIBm7pWLy0HoGufIrw2cB5QsPUgLaX552_nHFcGCRlr0avxrtzbgeMENnBeRbmonpin8l8pfOX7_HesTfOJjhHnvWGcvTVsSABw-SoRrPDAeq6zMSboFqknzqRGJQQKzak5BfX-1nbaQpwDpi2nYuUK-EFvd56uY3mAllpMOejhSlhKiSCogSExMJcJKjeZ1BHo0qkKaHRZ-6eeSWj3_IDYTbZ9FSNteyraL2OOiVgn_OOrRt8Pit_V92_X5_RZwfS4od_gGEYCmBh0p3FVrcSNzCc2wef0UIGyatlgLYMieuUgD0txf6EZMCN2YblcVajhqG5zpAaIWGk-oq6d_0U3EAgVX0Foelf_XV4OnrKn2MQRsS8gY4N_9djScawD2BmITK1AurDvJ0ccFtOB6ctHXeRgOiAjAmeEeqAS90OWYGDffuDKUy30-cNbzrgdcCsAhIeFhE_GrIes1J0ovs6uu-jAufiPX32wBVniDFrXT3YshiW0YnvQaIAWG6ziA7lg-EjuUp7gUwtSfVLpd1y-ilEOTmkL9ENOVmc1ROve3Rwh2OaUZk9XMx9FlfYjmva5usOAEO2_vpw7A84f9DRwsmugkZpzIyhA_82j3npBeYV6oJ3O2xLPvvkBVYAOdhNH2wYvcHja-cVrlupqldpgToj7U2LPRiGNvVyRidCKHqiow76XX444GAsQ5VbYyRk6c9ljwSa3_qF-vWVFZMvND3gcUwqsWHWl-PNzy4feutxZpdYM_JW-MNPGl63Kq8Myr4m3K1REwsaF6KjABy-iksTrF80xad8jeZlV4W5zpyI_SDt3coIGJ0ksVJMDfkeIaiRO5nwhWfkyQXIG-ZopBeUX3g9_AgW5le9fZhn-jdn3rO4ds6nuvnsxCIfHQ5BwRiv7wg_18qgJ7EWe7qU2ainMRcIjgsHRLQkLFj7tx-xjAz-il_GUL1DfeOh_Kc1oLM-9m2Q4uM6IuyHTNVc-FhmWCWqS_qT4TbHXzd6Z-U3EHnJ3K5tbjCdqnFBCLBMJ0siKZ6voIe8qRuXyLTMWTmtqbWiJ8a0jY6KoyFgHmTVelffMswwxgXuFBp5o4LUe4_rmQpy0gxPKgMJNrnVlJdz9IooVe2SdVdrMJiOu-ExQ4mbeOFD4m_o_sEteKyaWYu_vEbm-aAbbhjKiIsZ7GD06io3AadU8Zn_eZIhVAC377SUst50VzD1mS-Q7jgA7-NmZITVTBdZSGmbVaT-B2fWc6-5NJ5k5nm9-RDd_HSVLfys4nPqx1xNO8uBB2iRXvLfF-2_f0ZObND7xe8vZR7rAz5PdzOY_gMch5MkwzK8YKkgMYy2VCGNYRnEwm0-sioBnZVzhaxLGCzl_CaUUyexXLOiSoniqhD1EbeQN1DTf1QjkEyPp6nRoeU_W08SgqF7l4zG5XzXRiq-zUiVwrpPOZ10YatsnzucvBqOfMvDJIzprfYPVxHyYG5110xAgBUXH47U-jZ-hUCrWyY34A0CDQ_n-7NUx8OyeXWS1e-8bgyT5plrSqNf_ekVbp-iKS1oMMBmazTzEwdLwtkO4gXgyLbGiO5OSK8NwfP-1c3jYTx1LvNhW4dWY3w7jWqYpYvBywDH1kD3Nwnr7U9i59aqbeKTo5pXm59DH7ZlU9uK7McRcq-K0jtutWTd1s1gl0A2tuUDDt5ylj84Qrb_V91HbC1aYVKN5M92fgKav616-1h0HihJlHc6_-s4iwBr3J8bTO7ZoScmPd48A9jjFLLStClr8KM7q0wAOpLlnMhVXi8Y72qid7rg4c7eCTmZyjLFMc3OMvwDFuBfgMki7ioo3fuMfHQ7xavonS3jQwXWigz-EEztMDpiESBmnWLQsCAhUCBjY22tRefxB5rYM-VTJiFDHfqRjQU0jLXt-BjZWY9dE54m0SNzYOoGeRiauIvmKkARZF8hPdA5e1BX5MDSlJwwFoXQjPQ10jwZuf_M7aoGCyd6cF1zfBsPfmnKLrdyKBGF69z-DrOEBBjANhV8eTgurHg9S6PUNxGWFG9RPdVpUcU8Kg2t78yjmL8v8QxwtCsFLSTHCQYeP2Jia-Oi_2NYdYHlr63cRw54Nahf0VYqLTtfjChBdE1YdMxl9tMX6fmlNSrRVJG7jRKcKp8JiahHBXNowgcyNPZt6ReVTgCp5DgzuE90fTirgcQs7o-Iwi5E9rM0RAilcNDWQbp9VUbJzxB0Wf-C2oK5H2bAdDApXHEru9l7YfqV-0KfXGPVHD2E1tf7t0iKyiKqCUE2Z82w6xUt5T-Jf1-rRKq3v1CBrR5-zgvPQsM0fQC8OlmoavBlNJl6n3kSO-P8y-1_tYycjoAyoRVUobuh2r8ZFcMg9sva-dcU7sZSPGpYKGr0i1etW1-J7YywA090iYcrDWOlBxIJthDXfeI1GZvVKTKLUPQZoxIRKGyzFVxwAYIw6JiGRc1bvKpNFNRVZtHgP16_qbQJK3SPa9yNcdRlUDQmCGJ8J5yV86TjX4tna0XQAGcUEa50PR5ON6ykJbjefI4_8pluJRzHI9HEpY-ZtUkwz7vYyFqrAJTzFndoHgQOIkVihudYrEMz3cK8VQDerMy1BURvsKOC_sb-A-ycPvfGWGZnV-rl20AdEdHrxZYLutbfC1hOfJr576lvI4klgyK2W4ZBdp5x8lhLJa8RTciFHsjLLLCPUvq0tsMpX_-irwAzFmo3AhaCdbz6TqsQ-Xn5k2QlWxK353jnPzbwrRMtxyxuykVIP2uYCKOsJH061qFB1gXIddOTsKSwC8rN0aHO8GyAViYErp_PXlBVl3gfqNp9urt3FgAcGhYTaFfUl3X7Y7eO4kyFGr_gnK6Q4Xh8Aw0TR0ACE3iE9MHtVmPz8j-2DPJa1kmJlF_9FZgLcTDi9NUTsMN8mWpr1s3v2KjFWy0jrEnCFqq1g2c-UKvsvACrPZp9pFqcdOYyHvshx0eZZywdAwDPNKj6LGMzZHw-Gh2ZR9CmrGkqpPGb5IiKoNc8lDyTwIqafpHho5QdkARqUenpS7bTGluYY9XQxIvV54p8Qy5NjjAqZhKrkj2e5xR7b6tgTa9CMR3uhrehR7iCL-ZdC4HVDi4suaTHmNRk6ozL9WAs7-xHRk6HhvUAFqDsBG9Ri_jS9LFg7rI22Z2ViJNOLwx4By18DzK91Kk6WoikoKuK2vrVHC5bGQY-K3oWb56XYWL1LIvysRxW72AlY-cgomzU1nwdwpzn4MqpLhF3vThxYiY27BHWRLlMX2-Zp1yzStOG7saDb3NOqyyWW7Ext1839Um675jHoE_NnkGJZ0WWAreSZm7ioSaLD_cp2_Yr9vkF8oLSujklRDfdUiHmycyhZ_HPG5U4uPl2FWe22GQs3FzEB0ymoMuf6NiWTfLZktnRv7gwP1fLni6Gb6V-xiZFECDRokpfPVspgrdlx7K_wI53MTG8L2tngOp9HiXTnX2vKA8XHqVZoifyi180H_QiSUboaEbrDijIgJzOIzJRrj_MQwgqkDwjXMmknXWhZk8-JJT4V65S9qEBPL9O-oFhg1S4aGg6HW9-rDybPk0E6cSHVccKGY1lsN5AqXcmhqPmqgkVOHgpJnfjYr1RYWFtpPNAhn7trFs9el1eyWV41SmUzXNpDAtmmZzpdP6i2FgjqBYTHe1mCjLdj6N9htt49N2BdeXFKk8q_lKkPuzZ6HXLzz1yQAwaVH9kSQb8k94M7nlVRzD9C7ls78XpvIwXlkQdpr26EWUn4-VP1IJN0cwnSzl2GoXuuws6PkE8S-1XMztTXOcxuakTTpBZoi8iCSwYSUhDyPUbnA3JZwfC2eeZ-LBkFP8XeqhC_wWCII7ODYxKvOR4yiySg2b-h1dIBVjcP-RAhHLeHhMc32i_OaUzX71Qy7jJ9Tvw0U1TEjshIE5F70To4ZscyHS-1PSIhSp-uLvbjDYum2Sr0udLfj8if5gafjL1jI0qOawxlewz8Zw_cDK-eNsa0KWG3nojwV_gYi_N7TEtOWq12ZvoQOZWPHucCT-eI78zqjXk28q0rTaJTz8148wuKRwS8Q0vZG5gyYgJ1Pq0tG6VF3LkBVXpthhFD_Rp9Hbh6pcEL2Trmyd9ULzVCnXxmWPwHiOfbLGodTeNStxiIPhp_-_h2mhg3nIAODpOyhsYMlZjnCjJ1bGzna2RVmSCXjqIExJQVbNSm5MJ4Ylx1Y4GrIOZzhDryh3brqqZHkvXYbLZHSqAVcGJlBBo1lecbWqqOKFLq-6VCAdpxPH2EM3vGgf76GJhbmoq2XTrEHgVGz-5HMJuQ06T475geC6YVFH5aKEBNf380E_PzlqT3M4qA4a0HGJo89CgvYziipfKJoJLN0XRKg-vDCsU0WEBvvq4R59hdtQ8-aIq8Jx6gvt8suzS2syrUeqdPgPCyGyxetsolz2u0c_TvBlL7WMZ_aGSz5iCgsT6HstGAo2XqpAlMF3RhIbmntnkz7lAezfd53-Nu7GeVgTsuFs-P0FlvNsbVnAOjn9QvNoWguD-Ug54UGEONre8--bTwtFkPxrGlYVbm4-HVxYdWmKrmnWWOUIdbdd5L0wfAUyRKJBCxq1-YAQ4zRuxPFWtq0byPHwA2wkIBCVL59qQmJWOlSkTm7MPvyhh4eFGxMYTb_0ip4Z9-n4rP-RWL4skDSrwvXgRG6Gtk3A5CiEFIZnmf02tn092NSWgPd3UQHLMwOhB_zWDSakfY0AkYS045URDxzqvuiHx6K6WVhXFkjndT45Siex1JqIAjeSR5USVFF6l0Z_Lb9iFf318atqpT6mM1Cn-yf_1yK3r_XBAWOBg2BqBgSR4M-MDQefD-aDkTGAX6XxzmT7xH_sbLf3di0y3ETwi1_YQ6v8vnwnO6jL8s1mAXbpnk9MCdHGzZu_OMPEq5W2LMcIGSP6vqH0OLD4otvhV9EHndD6t4yBkEs7gC3s2AIEg_O8JO8Felq2Fr0Qa2gDlBWlwO08DFKFCTxPS0Mm3hSEynO2jyaKIrP0RGYLxpfygspBAPJSN8q7yTPd7ch09LWfbUjm6ivPtHB06Y8l0FTcBlYs_-60Muecubl9M1SkkYos9CgQf3lKzoSXUU884xchFgJPtpfxZVmWTuGrh7fd0lDsAa19ARlKLehzZt42tfx7M21iUKFyaZkM-ujaif2QLdh_bpS1Fk-oETcY2I5HsRLk28ykLonsi0__pqs0ZTitiXHUohPlSrPydUkPU36i7H0uWI2hgREBTfUn1lmssk8qNfjYRZslqbYEAnujwkKg9PXcXhpgutQ2duWqozhaXkN7hwYsCJQqJw0T3Ly2svt6rUB934KhVIijTptL_yIvpzgww6mtLRDKtV3EFrU=",
+        "status": null
+      },
+      {
+        "id": "msg_05e957203d4850fd016ade7724d7ec87d0b855a4deed358c2b",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0100\",\"step\":46,\"evidence_steps\":[42,43,44,45,46,47,48,52,54],\"reason\":\"A0100's earlier heading actions alternate between IDs 1 and 3 (steps 42–45), with yaw staying near 359° and roll cycling. At step 46 the action changes to [2,4,0] and remains so through step 54; yaw then advances through wraparound to 10.99° and eastward velocity turns positive, supporting a sustained right-turn departure rather than another correction. Its ammunition also falls from 2 at step 46 to 1 at step 47, with a launcher-attributed A0100 missile appearing at step 47; the exact launch instant is not established.\"},{\"aircraft_id\":\"A0200\",\"step\":50,\"evidence_steps\":[49,50],\"reason\":\"A0200's ammunition falls from 2 at step 49 to 1 at step 50, and a missile attributed to A0200 first appears at step 50. These records support new firing by step 50, but do not establish the exact launch instant.\"}],\"reason\":\"A0100 shifts from its recurring left/right heading corrections to a sustained right turn beginning at step 46, and its ammunition decrease supports a firing event by step 47. A0200 also has a recorded ammunition decrease and launcher-attributed missile at step 50; its movement otherwise remains within its recurring corrections.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792964391.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 27604,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 27601
+      },
+      "output_tokens": 716,
+      "output_tokens_details": {
+        "reasoning_tokens": 387
+      },
+      "total_tokens": 28320
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 46,
+        "evidence_steps": [
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          52,
+          54
+        ],
+        "reason": "A0100's earlier heading actions alternate between IDs 1 and 3 (steps 42–45), with yaw staying near 359° and roll cycling. At step 46 the action changes to [2,4,0] and remains so through step 54; yaw then advances through wraparound to 10.99° and eastward velocity turns positive, supporting a sustained right-turn departure rather than another correction. Its ammunition also falls from 2 at step 46 to 1 at step 47, with a launcher-attributed A0100 missile appearing at step 47; the exact launch instant is not established."
+      },
+      {
+        "aircraft_id": "A0200",
+        "step": 50,
+        "evidence_steps": [
+          49,
+          50
+        ],
+        "reason": "A0200's ammunition falls from 2 at step 49 to 1 at step 50, and a missile attributed to A0200 first appears at step 50. These records support new firing by step 50, but do not establish the exact launch instant."
+      }
+    ],
+    "reason": "A0100 shifts from its recurring left/right heading corrections to a sustained right turn beginning at step 46, and its ammunition decrease supports a firing event by step 47. A0200 also has a recorded ammunition decrease and launcher-attributed missile at step 50; its movement otherwise remains within its recurring corrections.",
+    "selected_aircraft": [
+      "A0100",
+      "A0200"
+    ],
+    "aircraft_choice": "BOTH"
+  },
+  "finished_at": "2026-10-25T21:39:51.595683+00:00"
+}

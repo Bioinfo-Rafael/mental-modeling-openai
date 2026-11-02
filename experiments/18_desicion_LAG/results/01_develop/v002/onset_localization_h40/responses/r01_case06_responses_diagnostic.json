@@ -1,0 +1,205 @@
+{
+  "query_id": "r01_case06_responses_diagnostic",
+  "started_at": "2026-10-25T16:36:19.588580+00:00",
+  "status": "ok",
+  "latency_s": 5.765626417007297,
+  "raw": {
+    "id": "resp_08cde4b207e9a077016ade3005eee887d091bd16e4f83cdcd6",
+    "created_at": 1792946181.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_08cde4b207e9a077016ade3006b14487d0b6efbb6bf12b439e",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0200\",\"step\":151,\"evidence_steps\":[150,151,152,153,154,155,156,157,158,159,160],\"reason\":\"At step 150 A0200 was commanding left15 while descending, after which it switches to right30 at 151 and sustains that command through 154. Its later bank and heading response, with heading turning from about 114° toward 105° by 160, supports a developing reversal rather than a lone correction.\"},{\"aircraft_id\":\"A0200\",\"step\":155,\"evidence_steps\":[154,155,156,157,158,159,160,161,162,163],\"reason\":\"After the right30 command pattern, A0200 changes to left15 at 155 and holds it through 158; subsequent heading shifts back toward roughly 112° and later 107°, supporting a new opposite-direction turn command. This is a distinct reversal in the command pattern, despite the continuing descent.\"}],\"reason\":\"A0200 shows supported changes in turn-command pattern with subsequent heading response. A0100 maintains hold-heading commands and nearly steady eastward motion; its ammunition remains 1, and no A-launched missile evidence appears.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792946185.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 31385,
+      "input_tokens_details": {
+        "cache_write_tokens": 29567,
+        "cached_tokens": 1815
+      },
+      "output_tokens": 272,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 31657
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0200",
+        "step": 151,
+        "evidence_steps": [
+          150,
+          151,
+          152,
+          153,
+          154,
+          155,
+          156,
+          157,
+          158,
+          159,
+          160
+        ],
+        "reason": "At step 150 A0200 was commanding left15 while descending, after which it switches to right30 at 151 and sustains that command through 154. Its later bank and heading response, with heading turning from about 114° toward 105° by 160, supports a developing reversal rather than a lone correction."
+      },
+      {
+        "aircraft_id": "A0200",
+        "step": 155,
+        "evidence_steps": [
+          154,
+          155,
+          156,
+          157,
+          158,
+          159,
+          160,
+          161,
+          162,
+          163
+        ],
+        "reason": "After the right30 command pattern, A0200 changes to left15 at 155 and holds it through 158; subsequent heading shifts back toward roughly 112° and later 107°, supporting a new opposite-direction turn command. This is a distinct reversal in the command pattern, despite the continuing descent."
+      }
+    ],
+    "reason": "A0200 shows supported changes in turn-command pattern with subsequent heading response. A0100 maintains hold-heading commands and nearly steady eastward motion; its ammunition remains 1, and no A-launched missile evidence appears."
+  },
+  "finished_at": "2026-10-25T16:36:25.354244+00:00"
+}

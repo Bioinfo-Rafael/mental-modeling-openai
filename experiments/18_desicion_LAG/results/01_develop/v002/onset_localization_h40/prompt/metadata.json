@@ -1,0 +1,17 @@
+{
+  "version": "v002",
+  "parent": "v001",
+  "parent_sha256": "5ec5489de24e414ee8dc86d8331d09d7e086c15637419fd9ed61b5331e123341",
+  "description": "Prioritize event localization and recall: anchor each aircraft transition to its local command-pattern onset, distinguish later confirmation and ongoing behavior, and require decision/events/reason consistency.",
+  "revision": "onset_localization_first",
+  "source_run": "01_develop/v001/concise_h40",
+  "audit": "analysis/20261026_concise_h40_error_audit.json",
+  "status": "untested_prompt_candidate",
+  "changes": [
+    "Check both A aircraft independently and verify evidence identity.",
+    "Anchor movement step to the first new command-pattern step supported by nearby before/after evidence, not boundary/confirmation/peak.",
+    "Allow developing motion and controller lag to retain near-end onsets.",
+    "Do not split ongoing correction cycles or passive settling into new events.",
+    "Return only accepted events, with consistent decision and reasons."
+  ]
+}

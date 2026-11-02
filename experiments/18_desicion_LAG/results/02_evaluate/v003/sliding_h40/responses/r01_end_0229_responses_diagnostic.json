@@ -1,0 +1,216 @@
+{
+  "query_id": "r01_end_0229_responses_diagnostic",
+  "started_at": "2026-10-25T21:28:58.402800+00:00",
+  "status": "ok",
+  "latency_s": 4.03864354128018,
+  "raw": {
+    "id": "resp_0f1a16e359a0f4d2016ade749b113887d08e775affd3a38080",
+    "created_at": 1792963739.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_0f1a16e359a0f4d2016ade749bd3c087d087e0382a95ec15c6",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0200\",\"step\":199,\"evidence_steps\":[195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229],\"reason\":\"A0200 shifts from repeated descending, left-commanded corrections (step 198: [2,1,0]) to a sustained rightward turn and climb: at step 199 it commands [2,4,1], then [1,4,1] at 200–201, with heading falling from about 97.6° at 199 to 78.3° at 227 and altitude continuing downward. This is a coherent change from the prior generally leftward, descending pattern, not just a single oscillation reversal; the turn-and-climb pattern is still developing by the window end.\"}],\"reason\":\"A0200 shows a supported transition beginning at step 199: sustained right-heading commands and a later climb command accompany a developing turn from the earlier descending, left-correction pattern. A0100 continues near-level, straight flight with hold-heading actions; its small altitude and heading fluctuations do not establish a new pattern. Neither A aircraft has a recorded ammunition decrease or launcher-attributed missile evidence supporting new firing.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792963742.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 34054,
+      "input_tokens_details": {
+        "cache_write_tokens": 32255,
+        "cached_tokens": 1796
+      },
+      "output_tokens": 315,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 34369
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0200",
+        "step": 199,
+        "evidence_steps": [
+          195,
+          196,
+          197,
+          198,
+          199,
+          200,
+          201,
+          202,
+          203,
+          204,
+          205,
+          206,
+          207,
+          208,
+          209,
+          210,
+          211,
+          212,
+          213,
+          214,
+          215,
+          216,
+          217,
+          218,
+          219,
+          220,
+          221,
+          222,
+          223,
+          224,
+          225,
+          226,
+          227,
+          228,
+          229
+        ],
+        "reason": "A0200 shifts from repeated descending, left-commanded corrections (step 198: [2,1,0]) to a sustained rightward turn and climb: at step 199 it commands [2,4,1], then [1,4,1] at 200–201, with heading falling from about 97.6° at 199 to 78.3° at 227 and altitude continuing downward. This is a coherent change from the prior generally leftward, descending pattern, not just a single oscillation reversal; the turn-and-climb pattern is still developing by the window end."
+      }
+    ],
+    "reason": "A0200 shows a supported transition beginning at step 199: sustained right-heading commands and a later climb command accompany a developing turn from the earlier descending, left-correction pattern. A0100 continues near-level, straight flight with hold-heading actions; its small altitude and heading fluctuations do not establish a new pattern. Neither A aircraft has a recorded ammunition decrease or launcher-attributed missile evidence supporting new firing.",
+    "selected_aircraft": [
+      "A0200"
+    ],
+    "aircraft_choice": "A2"
+  },
+  "finished_at": "2026-10-25T21:29:02.441487+00:00"
+}

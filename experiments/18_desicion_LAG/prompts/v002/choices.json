@@ -1,0 +1,10 @@
+[
+  {
+    "value": "YES",
+    "description": "At least one new movement-control transition or firing by A0100 or A0200 is supported inside this window. A coherent developing transition can qualify before the maneuver is complete."
+  },
+  {
+    "value": "NO",
+    "description": "No new transition or firing by either A aircraft is supported inside this window; only existing behavior, its settling, corrections, or unsupported candidates are present."
+  }
+]

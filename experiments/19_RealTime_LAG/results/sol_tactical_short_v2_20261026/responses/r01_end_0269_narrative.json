@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0269_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:40:33.905468+00:00",
+  "api_status": "ok",
+  "latency_s": 36.201438250020146,
+  "raw": {
+    "id": "chatcmpl-Ed7jeU1Fed8bGTC4Wj2rVlKtD2Bp5",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks lateral alignment for re-engaging the sole active opponent by reversing from eastbound separation into a sustained hard left turn and later descent while preserving speed and altitude advantage; this brings it near B0100’s latitude and slightly reduces their separation.\",\"A0200\":\"A0200 most plausibly seeks to complicate a missile intercept while preserving energy by using repeated steep banking turns and a controlled descent; B01001 remains behind and north in the same altitude corridor throughout, while A0200 changes its eastbound geometry without expending its remaining missile.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792993234,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1970,
+      "prompt_tokens": 29420,
+      "total_tokens": 31390,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1822,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 26194,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks lateral alignment for re-engaging the sole active opponent by reversing from eastbound separation into a sustained hard left turn and later descent while preserving speed and altitude advantage; this brings it near B0100’s latitude and slightly reduces their separation.",
+    "A0200": "A0200 most plausibly seeks to complicate a missile intercept while preserving energy by using repeated steep banking turns and a controlled descent; B01001 remains behind and north in the same altitude corridor throughout, while A0200 changes its eastbound geometry without expending its remaining missile."
+  },
+  "finished_at": "2026-10-26T05:41:10.108891+00:00",
+  "over_3s": true
+}

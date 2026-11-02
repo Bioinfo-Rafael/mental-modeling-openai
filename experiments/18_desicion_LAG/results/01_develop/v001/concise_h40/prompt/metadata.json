@@ -1,0 +1,18 @@
+{
+  "version": "v001",
+  "parent": null,
+  "description": "Team A behavior-change or firing detection; original LAG specification preserved, only system sections 6 and 7 condensed.",
+  "revision": "a_behavior_sections_6_7_concise",
+  "reference": "prompts/reference/tactical_short_v1",
+  "changes": [
+    "Detect only A0100/A0200 movement-pattern transitions or new missile-firing actions; remove generic importance and tactical-situation changes as standalone triggers.",
+    "Keep environment, state/action definitions and missile caveats from tactical_short_v1.",
+    "Replace centered 61-point hindsight timing with a variable past-only window.",
+    "Distinguish command switching and oscillation amplitude from a coherent change in actual movement, allowing command-to-motion lag.",
+    "Treat firing as an independent discrete event; preserve missing firing-command and uncertain launch-time caveats.",
+    "Prioritize before/after motion and firing evidence in reasons; update all shared questions, choices, and output instructions consistently.",
+    "Use generic oscillation examples without including annotated steps or expected answers in model inputs.",
+    "Shorten diagnostic.txt, question.txt, and choices.json by referring to the shared system criteria; preserve event fields, evidence, timing caveats, and event grouping in the output contract.",
+    "Restore the introduction and system sections 1–5 and 8 verbatim from behavior_change_h40; shorten only sections 6 and 7, preserving the Team A behavior-change/firing criteria."
+  ]
+}

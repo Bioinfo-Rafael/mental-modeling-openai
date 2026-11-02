@@ -1,0 +1,31 @@
+--- 17/user.txt
++++ 19/A1A2/user.txt
+@@ -1,16 +1,16 @@
+ Analyze the following LAG engagement recording.
+ 
+ Episode: {episode_alias}
+-Center step t: {center_step}
+-Center time: {center_time_s:.1f} seconds
++Current step t: {end_step}
++Current time: {end_time_s:.1f} seconds
+ Window: steps {start_step} through {end_step}, inclusive
+ Window times: {start_time_s:.1f} through {end_time_s:.1f} seconds
+-Time points: 61
+-Elapsed time: 12.0 seconds
++Time points: {time_points}
++Elapsed time: {elapsed_s:.1f} seconds
+ 
+ The records contain all aircraft and missiles recorded within this window, together with available movement actions, ammunition counts, and metadata.
+ 
+-relative_step = step - t.
++All observations end at t; no future observations are supplied.
+ 
+ State and action field orders, missing-value conventions, and evidence requirements are defined in the system message.
+ 
+@@ -21,5 +21,5 @@
+ END WINDOW DATA
+ 
+ Analyze the supplied window and return the tactical intention
+-explanation for each aircraft, following the analysis and output
++explanation for A0100 and A0200 only, following the analysis and output
+ requirements in the system message.

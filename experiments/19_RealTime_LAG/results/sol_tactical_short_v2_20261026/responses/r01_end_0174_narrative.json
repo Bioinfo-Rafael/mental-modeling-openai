@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0174_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:30:19.687665+00:00",
+  "api_status": "ok",
+  "latency_s": 32.39126770803705,
+  "raw": {
+    "id": "chatcmpl-Ed7ZkueK4Kra56cqrJC36nj9Gv44z",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reduce exposure and preserve energy by accelerating east in nearly level, steady flight, widening its lateral offset from surviving B0100 and the southeastbound enemy-missile tracks rather than turning back after its earlier missile engagement and B0200’s removal.\",\"A0200\":\"A0200 most plausibly seeks to survive the missile exchange by extending southeast in a sustained accelerating descent, using repeated hard banks while opening vertical separation below both southeastbound enemy missiles and continuing away from B0100 after B0200 becomes inactive and A0200’s earlier missile disappears.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992620,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1846,
+      "prompt_tokens": 31541,
+      "total_tokens": 33387,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1695,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 28315,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to reduce exposure and preserve energy by accelerating east in nearly level, steady flight, widening its lateral offset from surviving B0100 and the southeastbound enemy-missile tracks rather than turning back after its earlier missile engagement and B0200’s removal.",
+    "A0200": "A0200 most plausibly seeks to survive the missile exchange by extending southeast in a sustained accelerating descent, using repeated hard banks while opening vertical separation below both southeastbound enemy missiles and continuing away from B0100 after B0200 becomes inactive and A0200’s earlier missile disappears."
+  },
+  "finished_at": "2026-10-26T05:30:52.080671+00:00",
+  "over_3s": true
+}

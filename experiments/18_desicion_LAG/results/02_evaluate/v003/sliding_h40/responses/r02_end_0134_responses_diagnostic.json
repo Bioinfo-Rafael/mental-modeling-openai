@@ -1,0 +1,179 @@
+{
+  "query_id": "r02_end_0134_responses_diagnostic",
+  "started_at": "2026-10-25T21:33:04.217995+00:00",
+  "status": "ok",
+  "latency_s": 3.8379843747243285,
+  "raw": {
+    "id": "resp_09ea0731f198376e016ade7590b1a887d0bc3efe4c982eebc0",
+    "created_at": 1792963984.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "rs_09ea0731f198376e016ade7591449887d082c50bd3a38ee5d4",
+        "summary": [],
+        "type": "reasoning",
+        "content": [],
+        "encrypted_content": "gAAAAABq3nWTDYqJlrR4X-nSCz6_8a3UKYANSG0yDDq2Z8kEoVRVHRHNY00tM0bduKeDRm9WfEnUCYGcScFn3V8q98tQHxHYruN18yRLpY7nKoCnnnOTcqvm9bk2tFOi0RlPaP5gqgFcTbdx94MaJI4NztMY2BBgd8-FDOU8amP3aHlpWKsQsZbmo0OGUQGEd1picwKRTGxvLsRqkfd9SgTrTfTXsXUOROhisLqj5zChmreGLCot7f5E74ooImyLTvHGlQm6TeBYdKKWbofK_Edo_m75tifLrOkbAgn_29FxNZUIMz5uK6JcVCE98Jb8U-FnTove69qYfz-R_arJYLO6_HX7JbOQ5Op-AGdDwl1mB5Tf08P5Qk8WE2m40d1coA6EsSezmnrFRabQVPChUVJxDSm98uLx42M4purSFtM05WeBazxtfejmXop80HUb7Yq_S5tkaoZ3zgsChHS30eVVr18v3eMzzUU3ldppXcBNSo8ANcSJju-dMxoxa8lAKqjTIQMtAA_0qFGUOskK4k2tlPTjb155-kBy_c1InyHGvHMMvvyxIwdsKcQ1xWMzfNvfoThbSkgS91mri-w2XfgTqvqkthzbP3cxGG35nMVHpR70GOQI2SRRL9WL7LrKV5cX5KdG-pO5hKvRuQ8QDgsR-Nbw0f-Z_MnvIV6xDBnKJUB3C7ZiI-JnEuNEcw0gTOJTUm7fxYZFZGR_vUJ8vVj9kNp7zMOVvbCGnARIOgoGXgo4h_lA-NOUiXYFxO00nODT-oyXQkIGnTeSWbGgg0cwpC9lDEBUl502f_8EpfrCSW1fQW3pZA0vkxAqk_0vzsDI_CDqL2Bu9GiNEkIYGZoGt4hxOJ_lHhUBfVQpyp9bolkKc8kfg6XA51iaN4mnZ6iJz3reK7m-SAkibfK2Xx6wl3otZMbLqnHaNfXcZ1W866JYTvElK-8yjKZ_sM1hn-YgVhxpnPEWCWhhD1jt4tHal923eyOeAoK2-x-TS5YL_h9RosGcO_qvpj9Jl1YShEbVhB0hd0zM5t7y5rQCERlNrngR_5hkW8_R5pVv0OU2yg74LH2ifvyBst8nmksdkaHVzGf1FCL_0VlycN7RYGKY9AbUuYK04bxIgXxlYUIaw5G5T0gkO5dCICsNswvW_HaZ4I7HLm02pS8i-vJcNErGzbGX-s5beGyAzrEr-TNp-GRBWjwDEtJ5wZP-Q-9CC6UMLXIB27y2ylsZlPY3TJnTmmdMZ-z-Iabl922cg-G1RvuHZ8lDlZiaRea-_NZ_XwhZUsk82543YIrByujSpbg8LXREdboFBDJV3Asdv4w9fcXH_KCIneu1CoH6mX_Y4uuLBQmIGrMH3uVKCKfdf-qE3Ahc6_AaWW6X9hswzkYW7U-VfOjVoa00Zef3AQ2-2EMe46TsoHIfqbrkoksaOnQ5NfFWIZbPLlu4LtLNnUmYWNI12BfeI5UezMHNtWEAmfVJeKe8AwfWRCq0jLYggchKllpkleJZp5Zah2I-ligIY0T9wMsuoAVzwg3N5lI5Uuq3Iz4OSjitglqtJRwNtbprDC_Cp2XahWcN4lMAOcEa7ITjqMknc32MvkBIYieUWJIsSB8SkNPk8cAicJazieeN970a2Ky2Dj27AeAcalCNk7M_H3N4os8oCwRYlK0YnDPV-QLGXliU9WuEQROVS7b4h4OSwjvA-rIldCPenHhbaD_irhJetYXVtVyKDy119lHlpWdwOSzsGgZQgKgn4rxfS_3z5vVCosM9AH-TyiUnqlPNvKixtiwTvmez27R93_WI28wfZzy-6jzTTvwxNgJxExzg8JnckC4DspjD_dIcvpnvv9EqLYZ1oThfuR3lEj_OjzI56Nl41HODxaCCD0l2jqycT-UiDRltC17kosdZQt1Xu_8lLO2uwmviKRR6BSNWosnXCRDIGIMEc4yC-NJKEWpfeZvsA2KL6FHZ0zdThoRv2y8ZG7vbbuGzgVa6dxIZMDAY2mQ50WjyiGeIWglClh7Po9pzBwIaUQ2N_1ecarFBBDCXO0n9G53LYrx0Q_-48k76YqWhBlnGa9-J-6bi9OMS0kE064TDKtAcAkb7UMNfl987HAt5f938EMyjmqh9MSWnXuz_x2sQvap1a7DORYQzu8Li8tnBAYbMMAmAGIATafCJ8IXupRJtLiGSZQu_99SUXWWGDdxr7n-exuWGW3EBQ8AVr4aoC13HVHryOg4sJpqtkeQ8K5HbVMj_SLspZjdV1tVqK9k4zw7cH28i7rXnztXEl6aIdcUZ3TupS7iyTDvfLXAHxell8eaZ1GeiMz2QuKWpNu131JQaNnCtAdur_CiymKOLN2wutYH98dI2ku5Uw1uP44jDL_B0u_iRb7lXaG8_B4pCw5U04Myu5T1oajFXtmy7PQQy2b8wmh_KU2kec1g8Z-H9b2BYBpeEsggghgdNXUlLHbecJ_UbuUqp1HVfCKph8tj67AKmQF19cKtuh5tmEScbS9JO8byJVaJIfsdbesWoSbTarTJRcPw93N0O34XoGu-yQql2Ac9WC4wv0cjYMbi4mhRlHcrsCP3Ed7VSg0Dcx_e-RGPxcy3b4Tt3mfqnYHbO4QUdvOdMVPo5a6PQMPaFb7rty_aY5lJExMKgF3seI9lH79-VVi8Pwq64wc9zFDGMpOGxbdLj9WisSl1-2MrXIcvN8LTmlyIM8ck-xgU-WDUbVbG1LddiXIVUl5_Z-AAnSMNmC-SjQrGB3kLDaOSnSyh4GGEKldWMVhjicszG5Q3Cu9WPW4b3RYFZsoovXqZN3mo9KjjBOHBiPk9lPJYMFzG6lFyQZ6TESbi6QW3X-CN85tNLR1mRYnJ4GsACwGbMBysMwmplSOZBM341YfofnW7mwtUKuVTJw12fB2Co3fWiCmsFFo2Ufq6WkOWSnZeDPX3PfPOE2cFnR-tWRJsh-U-14bm1yQera_0J9uiE9BHgtPvKbWOjqw53eQ==",
+        "status": null
+      },
+      {
+        "id": "msg_09ea0731f198376e016ade7592cccc87d082949faedf6e2d59",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"NO\",\"events\":[],\"reason\":\"A0100 continues level/heading-hold commands with speed-up while moving generally east; its small altitude and motion variations do not establish a new pattern. A0200 maintains the same down, right30, speed-up commands and ongoing turn throughout the window. Both A aircraft retain one missile, and their launcher-attributed missiles are already present at step 95, so no new firing is supported.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792963987.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 40736,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 40733
+      },
+      "output_tokens": 228,
+      "output_tokens_details": {
+        "reasoning_tokens": 126
+      },
+      "total_tokens": 40964
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "NO",
+    "events": [],
+    "reason": "A0100 continues level/heading-hold commands with speed-up while moving generally east; its small altitude and motion variations do not establish a new pattern. A0200 maintains the same down, right30, speed-up commands and ongoing turn throughout the window. Both A aircraft retain one missile, and their launcher-attributed missiles are already present at step 95, so no new firing is supported.",
+    "selected_aircraft": [],
+    "aircraft_choice": "NONE"
+  },
+  "finished_at": "2026-10-25T21:33:08.056031+00:00"
+}

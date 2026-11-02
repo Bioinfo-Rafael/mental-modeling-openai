@@ -1,0 +1,94 @@
+{
+  "version": "mhi-selection-v1",
+  "episode_id": "mhi_v1.3_ic100601_win",
+  "source": "/Users/cls-lab/Downloads/MHI_annotated.xlsx / シート1 A1:E8",
+  "meaning": "Reproduction of the user's selected events; unannotated does not prove unimportant.",
+  "events": [
+    {
+      "id": "e46",
+      "step": 46,
+      "aircraft_id": "A0100",
+      "label": "ヒットアンドアウェー"
+    },
+    {
+      "id": "e49",
+      "step": 49,
+      "aircraft_id": "A0200",
+      "label": "攻撃"
+    },
+    {
+      "id": "e83",
+      "step": 83,
+      "aircraft_id": "A0100",
+      "label": "回避行動"
+    },
+    {
+      "id": "e95",
+      "step": 95,
+      "aircraft_id": "A0200",
+      "label": "援護"
+    },
+    {
+      "id": "e143",
+      "step": 143,
+      "aircraft_id": "A0200",
+      "label": "囮"
+    },
+    {
+      "id": "e243",
+      "step": 243,
+      "aircraft_id": "A0100",
+      "label": "追跡開始"
+    },
+    {
+      "id": "e311",
+      "step": 311,
+      "aircraft_id": "A0100",
+      "label": "攻撃"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene01",
+      "events": [
+        "e46",
+        "e49"
+      ],
+      "positive_end": 55,
+      "negative_end": 40
+    },
+    {
+      "id": "scene02",
+      "events": [
+        "e83",
+        "e95"
+      ],
+      "positive_end": 100,
+      "negative_end": 139
+    },
+    {
+      "id": "scene03",
+      "events": [
+        "e143"
+      ],
+      "positive_end": 150,
+      "negative_end": 189
+    },
+    {
+      "id": "scene04",
+      "events": [
+        "e243"
+      ],
+      "positive_end": 250,
+      "negative_end": 289
+    },
+    {
+      "id": "scene05",
+      "events": [
+        "e311"
+      ],
+      "positive_end": 320,
+      "negative_end": 309
+    }
+  ]
+}

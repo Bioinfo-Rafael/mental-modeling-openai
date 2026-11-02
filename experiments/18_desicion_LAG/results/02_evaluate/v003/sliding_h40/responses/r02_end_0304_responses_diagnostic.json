@@ -1,0 +1,199 @@
+{
+  "query_id": "r02_end_0304_responses_diagnostic",
+  "started_at": "2026-10-25T21:38:06.430342+00:00",
+  "status": "ok",
+  "latency_s": 5.80638970900327,
+  "raw": {
+    "id": "resp_02185dfaa3bfe233016ade76c11a0c87d08b8052f326597a5c",
+    "created_at": 1792964289.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_02185dfaa3bfe233016ade76c1b83887d086c6f72f2df25232",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0100\",\"step\":289,\"evidence_steps\":[287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304],\"reason\":\"A0100’s sustained leftward turn continues throughout the window, but at step 289 its speed command changes from [2,0,1] at steps 287–288 to [2,0,2], then changes to [2,0,0] at step 297 and remains there through 300. The aircraft’s speed falls from about 307 m/s at step 289 to about 290 m/s by step 303, supporting a developing deceleration beyond the prior steady-speed turning pattern; the later [2,0,2] at step 301 is a brief adjustment within that new speed-control phase.\"}],\"reason\":\"A0100 begins a sustained deceleration while continuing its existing left turn; the speed commands change at step 289 and the aircraft’s speed subsequently declines. A0200’s continuing turn and altitude loss, with intermittent heading-command reversals, do not establish a distinct new pattern. Neither A aircraft shows supported new firing.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792964291.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 26277,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 26274
+      },
+      "output_tokens": 268,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 26545
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 289,
+        "evidence_steps": [
+          287,
+          288,
+          289,
+          290,
+          291,
+          292,
+          293,
+          294,
+          295,
+          296,
+          297,
+          298,
+          299,
+          300,
+          301,
+          302,
+          303,
+          304
+        ],
+        "reason": "A0100’s sustained leftward turn continues throughout the window, but at step 289 its speed command changes from [2,0,1] at steps 287–288 to [2,0,2], then changes to [2,0,0] at step 297 and remains there through 300. The aircraft’s speed falls from about 307 m/s at step 289 to about 290 m/s by step 303, supporting a developing deceleration beyond the prior steady-speed turning pattern; the later [2,0,2] at step 301 is a brief adjustment within that new speed-control phase."
+      }
+    ],
+    "reason": "A0100 begins a sustained deceleration while continuing its existing left turn; the speed commands change at step 289 and the aircraft’s speed subsequently declines. A0200’s continuing turn and altitude loss, with intermittent heading-command reversals, do not establish a distinct new pattern. Neither A aircraft shows supported new firing.",
+    "selected_aircraft": [
+      "A0100"
+    ],
+    "aircraft_choice": "A1"
+  },
+  "finished_at": "2026-10-25T21:38:12.236862+00:00"
+}

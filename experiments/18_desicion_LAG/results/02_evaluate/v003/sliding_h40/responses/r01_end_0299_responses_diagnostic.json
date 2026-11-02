@@ -1,0 +1,171 @@
+{
+  "query_id": "r01_end_0299_responses_diagnostic",
+  "started_at": "2026-10-25T21:30:11.071252+00:00",
+  "status": "ok",
+  "latency_s": 2.342360124923289,
+  "raw": {
+    "id": "resp_035b198731d83759016ade74e3972087d0a1a6ee87d92214c5",
+    "created_at": 1792963811.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_035b198731d83759016ade74e4656887d0bbb9357d24ee7786",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"NO\",\"events\":[],\"reason\":\"A0100 continues a sustained left turn and descent across the window; its repeated [2,0,1] commands transition to [2,0,2] at step 289 and later speed-up commands, but do not establish a new movement pattern. A0200's repeated heading corrections and descent remain within its ongoing turning pattern. Neither aircraft shows a valid ammunition decrease or a launcher-attributed missile supporting new firing.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792963813.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 26284,
+      "input_tokens_details": {
+        "cache_write_tokens": 24485,
+        "cached_tokens": 1796
+      },
+      "output_tokens": 105,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 26389
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "NO",
+    "events": [],
+    "reason": "A0100 continues a sustained left turn and descent across the window; its repeated [2,0,1] commands transition to [2,0,2] at step 289 and later speed-up commands, but do not establish a new movement pattern. A0200's repeated heading corrections and descent remain within its ongoing turning pattern. Neither aircraft shows a valid ammunition decrease or a launcher-attributed missile supporting new firing.",
+    "selected_aircraft": [],
+    "aircraft_choice": "NONE"
+  },
+  "finished_at": "2026-10-25T21:30:13.413659+00:00"
+}

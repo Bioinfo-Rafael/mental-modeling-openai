@@ -1,0 +1,205 @@
+{
+  "query_id": "r01_end_0114_responses_diagnostic",
+  "started_at": "2026-10-25T21:26:48.142184+00:00",
+  "status": "ok",
+  "latency_s": 4.663872541859746,
+  "raw": {
+    "id": "resp_02565d9a8348295d016ade7418b41487d0936aae6671f7788a",
+    "created_at": 1792963608.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_02565d9a8348295d016ade7419ca7887d09b919106e2cd9b18",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0100\",\"step\":82,\"evidence_steps\":[75,81,82,83,88,89,100,114],\"reason\":\"A0100's earlier right-turning action changes to sustained heading hold: at steps 75–81 its action is [1,4,0], then at 82–100 and through 114 it is [1,2,0]. Its yaw rises from about 62° to 79° by step 82, then settles around 85° and its track continues eastward, a developing shift from the prior commanded turn rather than a new oscillation phase.\"},{\"aircraft_id\":\"A0200\",\"step\":89,\"evidence_steps\":[75,83,88,89,90,94,100,114],\"reason\":\"A0200's movement shifts from repeated left-turn commands ([2,1,0] at steps 75–78 and 83–88) to sustained right-turn commands ([2,4,0] from step 89 through 114). Heading had been near 5–13° and then begins increasing, reaching about 46° by step 114, supporting a developing redirected turn beyond the earlier corrections.\"}],\"reason\":\"Both aircraft show supported command-and-motion pattern transitions: A0100 starts holding heading after a sustained right-turn command, and A0200 begins a sustained right turn after its earlier left-turn corrections. Ammunition remains at 1 for both, and their launcher-attributed missiles are already present at step 75, so no new firing is supported.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792963612.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 40691,
+      "input_tokens_details": {
+        "cache_write_tokens": 38892,
+        "cached_tokens": 1796
+      },
+      "output_tokens": 341,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 41032
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 82,
+        "evidence_steps": [
+          75,
+          81,
+          82,
+          83,
+          88,
+          89,
+          100,
+          114
+        ],
+        "reason": "A0100's earlier right-turning action changes to sustained heading hold: at steps 75–81 its action is [1,4,0], then at 82–100 and through 114 it is [1,2,0]. Its yaw rises from about 62° to 79° by step 82, then settles around 85° and its track continues eastward, a developing shift from the prior commanded turn rather than a new oscillation phase."
+      },
+      {
+        "aircraft_id": "A0200",
+        "step": 89,
+        "evidence_steps": [
+          75,
+          83,
+          88,
+          89,
+          90,
+          94,
+          100,
+          114
+        ],
+        "reason": "A0200's movement shifts from repeated left-turn commands ([2,1,0] at steps 75–78 and 83–88) to sustained right-turn commands ([2,4,0] from step 89 through 114). Heading had been near 5–13° and then begins increasing, reaching about 46° by step 114, supporting a developing redirected turn beyond the earlier corrections."
+      }
+    ],
+    "reason": "Both aircraft show supported command-and-motion pattern transitions: A0100 starts holding heading after a sustained right-turn command, and A0200 begins a sustained right turn after its earlier left-turn corrections. Ammunition remains at 1 for both, and their launcher-attributed missiles are already present at step 75, so no new firing is supported.",
+    "selected_aircraft": [
+      "A0100",
+      "A0200"
+    ],
+    "aircraft_choice": "BOTH"
+  },
+  "finished_at": "2026-10-25T21:26:52.806075+00:00"
+}

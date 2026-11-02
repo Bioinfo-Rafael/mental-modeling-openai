@@ -1,0 +1,63 @@
+{
+  "run_id": "incremental_20261026",
+  "created_at": "2026-10-26T07:05:42.504015+00:00",
+  "planned_queries": 434,
+  "recorded_queries": 434,
+  "complete": true,
+  "groups": {
+    "gate": {
+      "planned": 62,
+      "attempted": 62,
+      "ok": 62,
+      "within_deadline": 60,
+      "late_ok": 2,
+      "errors": 0,
+      "p50_s": 0.829164708731696,
+      "p95_s": 1.5948532486334432
+    },
+    "goal_4": {
+      "planned": 124,
+      "attempted": 8,
+      "ok": 8,
+      "within_deadline": 8,
+      "late_ok": 0,
+      "errors": 0,
+      "p50_s": 0.9090026458725333,
+      "p95_s": 1.5366243540309368
+    },
+    "goal_8": {
+      "planned": 124,
+      "attempted": 8,
+      "ok": 8,
+      "within_deadline": 8,
+      "late_ok": 0,
+      "errors": 0,
+      "p50_s": 0.893248166423291,
+      "p95_s": 1.3650422145612537
+    },
+    "goal_32": {
+      "planned": 124,
+      "attempted": 8,
+      "ok": 8,
+      "within_deadline": 8,
+      "late_ok": 0,
+      "errors": 0,
+      "p50_s": 1.1909392711240798,
+      "p95_s": 1.8071104733040553
+    }
+  },
+  "replay_status_counts": {
+    "gate_none": 56,
+    "gate_trigger": 4,
+    "displayed": 18,
+    "late": 2,
+    "same_goal": 5,
+    "stale": 1
+  },
+  "estimated_cost": {
+    "known_usd": 0.272442105,
+    "unknown_attempts": 0,
+    "pricing_as_of": "2026-10-26",
+    "invoice_verified": false
+  }
+}

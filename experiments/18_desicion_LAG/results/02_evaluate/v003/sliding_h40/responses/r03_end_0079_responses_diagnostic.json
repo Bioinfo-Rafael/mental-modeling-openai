@@ -1,0 +1,216 @@
+{
+  "query_id": "r03_end_0079_responses_diagnostic",
+  "started_at": "2026-10-25T21:40:35.602186+00:00",
+  "status": "ok",
+  "latency_s": 7.817150166723877,
+  "raw": {
+    "id": "resp_00597a2aa07a5ccd016ade7756303487d0807b7192d2aafcd3",
+    "created_at": 1792964438.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_00597a2aa07a5ccd016ade7757c2b487d0920edbcc40efa351",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0100\",\"step\":42,\"evidence_steps\":[40,41,42,43,46,47,52,60,70,71,79],\"reason\":\"A0100 shifts from the prior nearly northbound flight (heading about 359° at steps 40–41, with action [2,1,0]) to sustained rightward turning: action [2,3,0] begins at step 42 and continues as [2,4,0] from step 46, while heading progresses through wraparound to 71° by step 79. This developing, persistent turn differs from a mere oscillation or correction. Ammunition falls from 2 at step 46 to 1 at step 47, with an A0100-attributed missile recorded at step 47; the precise launch instant is unavailable.\"},{\"aircraft_id\":\"A0200\",\"step\":50,\"evidence_steps\":[47,48,49,50,51,52,56,57,58,65,66,67,68,70,71,79],\"reason\":\"A0200's earlier commands and motion mostly show near-north flight with alternating heading corrections ([2,1,0] at steps 47–49, then [2,3,0] at 50–51). At step 50 its ammunition falls from 2 to 1 and an A0200-attributed missile first appears; this supports new firing, though the exact launch time is not established. Subsequent heading drift and repeated corrections are not counted as a separate movement-pattern transition.\"}],\"reason\":\"YES: A0100 begins a sustained right turn from its prior near-northbound pattern at step 42 and fires, supported by its ammunition decrease and launcher-attributed missile at step 47. A0200 also fires, supported by its ammunition decrease and launcher-attributed missile at step 50; its heading corrections do not independently establish a new movement pattern.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792964443.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 37195,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 37192
+      },
+      "output_tokens": 423,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 37618
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 42,
+        "evidence_steps": [
+          40,
+          41,
+          42,
+          43,
+          46,
+          47,
+          52,
+          60,
+          70,
+          71,
+          79
+        ],
+        "reason": "A0100 shifts from the prior nearly northbound flight (heading about 359° at steps 40–41, with action [2,1,0]) to sustained rightward turning: action [2,3,0] begins at step 42 and continues as [2,4,0] from step 46, while heading progresses through wraparound to 71° by step 79. This developing, persistent turn differs from a mere oscillation or correction. Ammunition falls from 2 at step 46 to 1 at step 47, with an A0100-attributed missile recorded at step 47; the precise launch instant is unavailable."
+      },
+      {
+        "aircraft_id": "A0200",
+        "step": 50,
+        "evidence_steps": [
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          56,
+          57,
+          58,
+          65,
+          66,
+          67,
+          68,
+          70,
+          71,
+          79
+        ],
+        "reason": "A0200's earlier commands and motion mostly show near-north flight with alternating heading corrections ([2,1,0] at steps 47–49, then [2,3,0] at 50–51). At step 50 its ammunition falls from 2 to 1 and an A0200-attributed missile first appears; this supports new firing, though the exact launch time is not established. Subsequent heading drift and repeated corrections are not counted as a separate movement-pattern transition."
+      }
+    ],
+    "reason": "YES: A0100 begins a sustained right turn from its prior near-northbound pattern at step 42 and fires, supported by its ammunition decrease and launcher-attributed missile at step 47. A0200 also fires, supported by its ammunition decrease and launcher-attributed missile at step 50; its heading corrections do not independently establish a new movement pattern.",
+    "selected_aircraft": [
+      "A0100",
+      "A0200"
+    ],
+    "aircraft_choice": "BOTH"
+  },
+  "finished_at": "2026-10-25T21:40:43.419413+00:00"
+}

@@ -1,0 +1,11 @@
+﻿query_id,sample_id,condition,repeat,start_step,end_step,expected_decision,expected_events,label_basis,status,decision,classification,predicted_events,reason,probability_yes,matches,exact_matches,latency_s,usage,estimated_usd,error
+r01_case01_responses_diagnostic,case01,responses_diagnostic,1,16,55,YES,"[{""aircraft_id"":""A0100"",""id"":""e46"",""label"":""ヒットアンドアウェー"",""step"":46},{""aircraft_id"":""A0200"",""id"":""e49"",""label"":""攻撃"",""step"":49}]",annotation_present,pending,,,,,,[],[],,,,
+r01_case02_responses_diagnostic,case02,responses_diagnostic,1,1,40,NO,[],annotation_absent_not_reviewed,pending,,,,,,[],[],,,,
+r01_case03_responses_diagnostic,case03,responses_diagnostic,1,61,100,YES,"[{""aircraft_id"":""A0100"",""id"":""e83"",""label"":""回避行動"",""step"":83},{""aircraft_id"":""A0200"",""id"":""e95"",""label"":""援護"",""step"":95}]",annotation_present,pending,,,,,,[],[],,,,
+r01_case04_responses_diagnostic,case04,responses_diagnostic,1,100,139,NO,[],annotation_absent_not_reviewed,pending,,,,,,[],[],,,,
+r01_case05_responses_diagnostic,case05,responses_diagnostic,1,111,150,YES,"[{""aircraft_id"":""A0200"",""id"":""e143"",""label"":""囮"",""step"":143}]",annotation_present,pending,,,,,,[],[],,,,
+r01_case06_responses_diagnostic,case06,responses_diagnostic,1,150,189,NO,[],annotation_absent_not_reviewed,pending,,,,,,[],[],,,,
+r01_case07_responses_diagnostic,case07,responses_diagnostic,1,211,250,YES,"[{""aircraft_id"":""A0100"",""id"":""e243"",""label"":""追跡開始"",""step"":243}]",annotation_present,pending,,,,,,[],[],,,,
+r01_case08_responses_diagnostic,case08,responses_diagnostic,1,250,289,NO,[],annotation_absent_not_reviewed,pending,,,,,,[],[],,,,
+r01_case09_responses_diagnostic,case09,responses_diagnostic,1,281,320,YES,"[{""aircraft_id"":""A0100"",""id"":""e311"",""label"":""攻撃"",""step"":311}]",annotation_present,pending,,,,,,[],[],,,,
+r01_case10_responses_diagnostic,case10,responses_diagnostic,1,270,309,NO,[],annotation_absent_not_reviewed,pending,,,,,,[],[],,,,

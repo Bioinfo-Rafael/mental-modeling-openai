@@ -1,0 +1,207 @@
+{
+  "query_id": "r01_end_0074_responses_diagnostic",
+  "started_at": "2026-10-25T21:25:58.144069+00:00",
+  "status": "ok",
+  "latency_s": 5.221066999714822,
+  "raw": {
+    "id": "resp_0031f16ec0fba552016ade73e6b95487d0bf3b925451cffece",
+    "created_at": 1792963558.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_0031f16ec0fba552016ade73e7a0dc87d09489534d838aa7f6",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0100\",\"step\":46,\"evidence_steps\":[43,44,45,46,47,48,49,50,51],\"reason\":\"A0100’s earlier heading commands vary between hold/right15 (steps 43–46: [2,3,0], [2,3,0], [2,3,0], [2,4,0]) while its track remains nearly northbound; at step 46 it begins sustained right30 commands, followed by a coherent rightward track change (longitude increases and eastward velocity grows from about −19 to +220 m/s by step 74). Its ammunition falls from 2 to 1 and its launcher-attributed missile first appears at step 47, supporting a firing event during this interval; the exact launch step is not established.\"},{\"aircraft_id\":\"A0200\",\"step\":50,\"evidence_steps\":[47,48,49,50,51,52,53,54,55],\"reason\":\"A0200 had been predominantly holding/left15 and continued a near-northbound track (steps 47–49 actions [2,1,0], [2,1,0], [2,3,0]); at step 50 it begins sustained right15 commands ([2,3,0] at steps 50–56), with eastward velocity then developing from near zero to increasingly positive values. Its launcher-attributed missile first appears at step 50, while ammunition is already 1 then; the exact launch time cannot be assigned from first appearance alone.\"}],\"reason\":\"Both A aircraft show supported new firing evidence: A0100’s ammunition drops by step 47 and A0200’s launcher-attributed missile appears at step 50. A0100 also transitions from near-northbound flight to a sustained rightward turn beginning at step 46; A0200’s sustained rightward command/track departure begins at step 50.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792963563.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 35285,
+      "input_tokens_details": {
+        "cache_write_tokens": 33486,
+        "cached_tokens": 1796
+      },
+      "output_tokens": 419,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 35704
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 46,
+        "evidence_steps": [
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51
+        ],
+        "reason": "A0100’s earlier heading commands vary between hold/right15 (steps 43–46: [2,3,0], [2,3,0], [2,3,0], [2,4,0]) while its track remains nearly northbound; at step 46 it begins sustained right30 commands, followed by a coherent rightward track change (longitude increases and eastward velocity grows from about −19 to +220 m/s by step 74). Its ammunition falls from 2 to 1 and its launcher-attributed missile first appears at step 47, supporting a firing event during this interval; the exact launch step is not established."
+      },
+      {
+        "aircraft_id": "A0200",
+        "step": 50,
+        "evidence_steps": [
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55
+        ],
+        "reason": "A0200 had been predominantly holding/left15 and continued a near-northbound track (steps 47–49 actions [2,1,0], [2,1,0], [2,3,0]); at step 50 it begins sustained right15 commands ([2,3,0] at steps 50–56), with eastward velocity then developing from near zero to increasingly positive values. Its launcher-attributed missile first appears at step 50, while ammunition is already 1 then; the exact launch time cannot be assigned from first appearance alone."
+      }
+    ],
+    "reason": "Both A aircraft show supported new firing evidence: A0100’s ammunition drops by step 47 and A0200’s launcher-attributed missile appears at step 50. A0100 also transitions from near-northbound flight to a sustained rightward turn beginning at step 46; A0200’s sustained rightward command/track departure begins at step 50.",
+    "selected_aircraft": [
+      "A0100",
+      "A0200"
+    ],
+    "aircraft_choice": "BOTH"
+  },
+  "finished_at": "2026-10-25T21:26:03.365166+00:00"
+}

@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0059_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:24:11.111067+00:00",
+  "api_status": "ok",
+  "latency_s": 20.753373542334884,
+  "raw": {
+    "id": "chatcmpl-Ed7TnLcVEbMBxekTf1hDgHNzcVpR5",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly sought head-on firing geometry through a fast descending northbound closure, then reduced direct exposure while supporting its missile by making a sustained hard right turn immediately after missile expenditure, coincident with B0200’s opposing launch.\",\"A0200\":\"A0200 most plausibly sought to preserve attack geometry long enough to fire by maintaining the straighter northbound closure after A0100 turned away; after expending a missile, it began a gentler rightward offset, consistent with reducing head-on exposure while retaining pressure on the approaching opponents.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992251,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1157,
+      "prompt_tokens": 30491,
+      "total_tokens": 31648,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 27265,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly sought head-on firing geometry through a fast descending northbound closure, then reduced direct exposure while supporting its missile by making a sustained hard right turn immediately after missile expenditure, coincident with B0200’s opposing launch.",
+    "A0200": "A0200 most plausibly sought to preserve attack geometry long enough to fire by maintaining the straighter northbound closure after A0100 turned away; after expending a missile, it began a gentler rightward offset, consistent with reducing head-on exposure while retaining pressure on the approaching opponents."
+  },
+  "finished_at": "2026-10-26T05:24:31.866004+00:00",
+  "over_3s": true
+}

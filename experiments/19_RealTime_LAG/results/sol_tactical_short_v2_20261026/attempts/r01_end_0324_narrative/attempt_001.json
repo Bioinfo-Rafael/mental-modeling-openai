@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0324_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:43:09.001018+00:00",
+  "api_status": "ok",
+  "latency_s": 37.74080145871267,
+  "raw": {
+    "id": "chatcmpl-Ed7m9SbtxtVAgO1PEp6BWB9ATKRKr",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"To obtain and sustain firing geometry on B0100, A0100 most plausibly uses a hard descending left turn to collapse their separation, expends its last missile once the geometry develops, and then steadies on a westward pursuit course as its missile bends toward the still-active opponent.\",\"A0200\":\"A0200 most plausibly seeks to deny the pursuing B0100 missile an intercept by maintaining high speed while arcing left toward north-northeast, thereby opening northward separation from B0100; the missile remains behind to the west and follows the turn, while A0200 neither fires nor becomes inactive.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792993389,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 2172,
+      "prompt_tokens": 28497,
+      "total_tokens": 30669,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2013,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 25271,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "To obtain and sustain firing geometry on B0100, A0100 most plausibly uses a hard descending left turn to collapse their separation, expends its last missile once the geometry develops, and then steadies on a westward pursuit course as its missile bends toward the still-active opponent.",
+    "A0200": "A0200 most plausibly seeks to deny the pursuing B0100 missile an intercept by maintaining high speed while arcing left toward north-northeast, thereby opening northward separation from B0100; the missile remains behind to the west and follows the turn, while A0200 neither fires nor becomes inactive."
+  },
+  "finished_at": "2026-10-26T05:43:46.743044+00:00",
+  "over_3s": true
+}

@@ -1,0 +1,16 @@
+Analyze the following LAG history.
+
+Episode: {episode_alias}
+Current step: {end_step}
+Window: steps {start_step} through {end_step}, inclusive
+Window times: {start_time_s:.1f} through {end_time_s:.1f} seconds
+Time points: {time_points}
+Elapsed time: {elapsed_s:.1f} seconds
+
+The records contain all aircraft and missiles recorded within this window,
+with available movement actions, ammunition counts, and metadata.
+State and action field orders are defined in the system instructions.
+
+BEGIN WINDOW DATA
+{window_data}
+END WINDOW DATA

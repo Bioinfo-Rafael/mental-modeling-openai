@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "status": "implemented_incremental_gate",
+  "created_date_jst": "2026-10-26",
+  "episode_id": "mhi_v1.3_ic100601_win",
+  "input_source": "experiments/13_LAG/data/processed/mhi_v1.3_ic100601_win.csv",
+  "dt_s": 0.2,
+  "history_points": 40,
+  "stride_steps": 5,
+  "append_final_complete_step": true,
+  "pilot_repeats": 1,
+  "evaluation_repeats": 3,
+  "gate": {
+    "api": "decisions",
+    "model": "gpt-6-luna",
+    "prompt_source": "experiments/19_RealTime_Lag_v2/prompts/gate_v001",
+    "question_name": "changed_aircraft",
+    "values": [
+      "NONE",
+      "A1",
+      "A2",
+      "BOTH"
+    ],
+    "trigger_values": [
+      "A1",
+      "A2",
+      "BOTH"
+    ],
+    "shared_across_goal_conditions": true,
+    "use_selected_choice_not_probability_threshold": true,
+    "target_policy": "new_steps_since_previous_window",
+    "first_window_policy": "whole_initial_window",
+    "previous_boundary_policy": "previous_scheduled_window_even_if_none_late_or_error"
+  },
+  "goal": {
+    "api": "decisions",
+    "model": "gpt-6-luna",
+    "choice_counts": [
+      4,
+      8,
+      32
+    ],
+    "catalog_version": "goals-v001",
+    "aircraft_ids": [
+      "A0100",
+      "A0200"
+    ],
+    "request_per_aircraft": true,
+    "parallel_aircraft_requests": 2,
+    "parallel_choice_conditions": 1,
+    "condition_order_seed": 19,
+    "choice_order_policy": "catalog_order_fixed_v001",
+    "input_snapshot": "same_window_as_gate",
+    "target_time": "window_end",
+    "include_gate_choice_in_model_input": false,
+    "include_previous_predictions": false,
+    "include_annotations": false,
+    "abstention_choice": false
+  },
+  "deadline": {
+    "scope": "each_api_call",
+    "limit_seconds": 3.0,
+    "accepted_comparison": "latency_seconds <= 3.0",
+    "measurement": "monotonic_sdk_call_start_to_return_or_exception",
+    "late_gate_starts_goal": false,
+    "discard_independently_per_aircraft": true,
+    "retain_late_response_for_analysis": true,
+    "transport_timeout_seconds": 30.0,
+    "automatic_retries": 0
+  },
+  "replay": {
+    "simulation_rate_for_latency": 1.0,
+    "timestamp_mode": "measured_latency_counterfactual",
+    "pending_policy": "allow_overlapping_candidates",
+    "arrival_order": "per_aircraft_completion",
+    "reject_stale_source_step": true,
+    "collapse_consecutive_same_goal": true,
+    "late_response_changes_current_goal": false,
+    "keep_previous_goal_with_source_time": true,
+    "tail_policy": "freeze_last_frame_and_drain_events",
+    "branch_mode": "three_independent_choice_count_conditions",
+    "primary_artifact": "html"
+  },
+  "baseline_experiment": "experiments/19_RealTime_LAG"
+}

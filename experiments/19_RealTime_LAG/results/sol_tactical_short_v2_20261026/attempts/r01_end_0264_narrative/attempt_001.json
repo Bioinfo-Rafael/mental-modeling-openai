@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0264_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:39:43.233409+00:00",
+  "api_status": "ok",
+  "latency_s": 50.6324364580214,
+  "raw": {
+    "id": "chatcmpl-Ed7ipilGGjPkFVrng6MZ8jb8pbhlL",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reposition for a later attack on the sole active opponent by replacing its fast, level eastbound transit with a sustained left turn and slight descent, which sharply reduces its north-south offset from B0100 while preserving a large altitude advantage and its remaining missile.\",\"A0200\":\"A0200 most plausibly seeks to complicate an intercept by the B0100-launched missile behind it, using repeated hard banking, a net turn north, and sustained descent while preserving speed; the missile remains near its altitude and closes in both longitudinal and lateral separation throughout the window.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792993183,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 2947,
+      "prompt_tokens": 30393,
+      "total_tokens": 33340,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2782,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 27167,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to reposition for a later attack on the sole active opponent by replacing its fast, level eastbound transit with a sustained left turn and slight descent, which sharply reduces its north-south offset from B0100 while preserving a large altitude advantage and its remaining missile.",
+    "A0200": "A0200 most plausibly seeks to complicate an intercept by the B0100-launched missile behind it, using repeated hard banking, a net turn north, and sustained descent while preserving speed; the missile remains near its altitude and closes in both longitudinal and lateral separation throughout the window."
+  },
+  "finished_at": "2026-10-26T05:40:33.867838+00:00",
+  "over_3s": true
+}

@@ -1,0 +1,236 @@
+{
+  "query_id": "r01_end_0104_responses_diagnostic",
+  "started_at": "2026-10-25T21:26:30.922614+00:00",
+  "status": "ok",
+  "latency_s": 5.258338958024979,
+  "raw": {
+    "id": "resp_0ebbc2e2f3c4b188016ade7407921887d080d8685e9501bf34",
+    "created_at": 1792963591.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_0ebbc2e2f3c4b188016ade740898ac87d09d99fbd38923d12b",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0100\",\"step\":82,\"evidence_steps\":[79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104],\"reason\":\"A0100 shifts from a sustained right-turning and descending pattern (steps 79–81: action [1,4,0]) to heading hold with altitude hold (step 82 onward: [1,2,0]). Heading increases only to about 89° by step 87, then stays near east while the aircraft continues descending more slowly and then levels; this is a sustained change from the preceding turn, not just another command reversal. The missiles_remaining count stays at 1, with no new A firing evidence.\"},{\"aircraft_id\":\"A0200\",\"step\":89,\"evidence_steps\":[84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104],\"reason\":\"A0200's earlier pattern includes repeated left/right heading corrections (for example [2,1,0] at steps 84–88) while heading remains around 5–13°. At step 89 its action switches to [2,4,0], followed by continued right-30 commands at steps 90–104; heading and eastward velocity increase substantially (heading from about 11° to 24°, eastward velocity to about 99 m/s), supporting a coherent new right-turning departure rather than a brief oscillation.\"}],\"reason\":\"Both aircraft show supported movement-pattern transitions: A0100 settles from its right turn into heading hold at step 82, and A0200 begins a sustained right-turning departure at step 89. Neither has recorded new missile expenditure.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792963596.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 40659,
+      "input_tokens_details": {
+        "cache_write_tokens": 38860,
+        "cached_tokens": 1796
+      },
+      "output_tokens": 417,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 41076
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 82,
+        "evidence_steps": [
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104
+        ],
+        "reason": "A0100 shifts from a sustained right-turning and descending pattern (steps 79–81: action [1,4,0]) to heading hold with altitude hold (step 82 onward: [1,2,0]). Heading increases only to about 89° by step 87, then stays near east while the aircraft continues descending more slowly and then levels; this is a sustained change from the preceding turn, not just another command reversal. The missiles_remaining count stays at 1, with no new A firing evidence."
+      },
+      {
+        "aircraft_id": "A0200",
+        "step": 89,
+        "evidence_steps": [
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104
+        ],
+        "reason": "A0200's earlier pattern includes repeated left/right heading corrections (for example [2,1,0] at steps 84–88) while heading remains around 5–13°. At step 89 its action switches to [2,4,0], followed by continued right-30 commands at steps 90–104; heading and eastward velocity increase substantially (heading from about 11° to 24°, eastward velocity to about 99 m/s), supporting a coherent new right-turning departure rather than a brief oscillation."
+      }
+    ],
+    "reason": "Both aircraft show supported movement-pattern transitions: A0100 settles from its right turn into heading hold at step 82, and A0200 begins a sustained right-turning departure at step 89. Neither has recorded new missile expenditure.",
+    "selected_aircraft": [
+      "A0100",
+      "A0200"
+    ],
+    "aircraft_choice": "BOTH"
+  },
+  "finished_at": "2026-10-25T21:26:36.181049+00:00"
+}

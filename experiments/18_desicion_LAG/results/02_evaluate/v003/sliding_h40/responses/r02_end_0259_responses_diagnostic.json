@@ -1,0 +1,202 @@
+{
+  "query_id": "r02_end_0259_responses_diagnostic",
+  "started_at": "2026-10-25T21:36:34.514794+00:00",
+  "status": "ok",
+  "latency_s": 4.061942167114466,
+  "raw": {
+    "id": "resp_0e17de03cba4fb7e016ade76638e0887d0831d1e7021f7a06a",
+    "created_at": 1792964195.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_0e17de03cba4fb7e016ade766458f087d09d0191faa4f680c9",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0100\",\"step\":242,\"evidence_steps\":[239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259],\"reason\":\"A0100’s earlier pattern is nearly straight eastbound travel, with action [1,2,0] at steps 239–241 and only minor heading/roll fluctuations. At step 242 it switches to [1,4,1], then [1,0,1] from steps 243–252 and [2,0,1] from 253 onward; the sustained left-turn commands and motion confirm a new turning/decelerating departure, with heading falling from about 82° at step 241 to 47° by 259 and altitude beginning to descend.\"}],\"reason\":\"A0100 departs its prior near-straight eastbound pattern at step 242, supported by the sustained new turn commands and developing leftward motion. A0200 continues its descending, turning trajectory with alternating heading commands characteristic of its existing motion; neither its fluctuations nor the unchanged ammunition count support a new event.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792964198.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 30401,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 30398
+      },
+      "output_tokens": 264,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 30665
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 242,
+        "evidence_steps": [
+          239,
+          240,
+          241,
+          242,
+          243,
+          244,
+          245,
+          246,
+          247,
+          248,
+          249,
+          250,
+          251,
+          252,
+          253,
+          254,
+          255,
+          256,
+          257,
+          258,
+          259
+        ],
+        "reason": "A0100’s earlier pattern is nearly straight eastbound travel, with action [1,2,0] at steps 239–241 and only minor heading/roll fluctuations. At step 242 it switches to [1,4,1], then [1,0,1] from steps 243–252 and [2,0,1] from 253 onward; the sustained left-turn commands and motion confirm a new turning/decelerating departure, with heading falling from about 82° at step 241 to 47° by 259 and altitude beginning to descend."
+      }
+    ],
+    "reason": "A0100 departs its prior near-straight eastbound pattern at step 242, supported by the sustained new turn commands and developing leftward motion. A0200 continues its descending, turning trajectory with alternating heading commands characteristic of its existing motion; neither its fluctuations nor the unchanged ammunition count support a new event.",
+    "selected_aircraft": [
+      "A0100"
+    ],
+    "aircraft_choice": "A1"
+  },
+  "finished_at": "2026-10-25T21:36:38.576819+00:00"
+}

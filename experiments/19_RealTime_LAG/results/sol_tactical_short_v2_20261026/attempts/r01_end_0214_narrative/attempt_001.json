@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0214_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:34:56.022519+00:00",
+  "api_status": "ok",
+  "latency_s": 39.52726262528449,
+  "raw": {
+    "id": "chatcmpl-Ed7eCpWhEoCiAo6e5mWZpoj1Lli19",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to limit exposure while preserving energy by extending steadily east at constant altitude and increasing speed, given that B0100 remains behind to the northwest on partially converging geometry; its unchanged course and retained missile favor controlled disengagement over an immediate attack.\",\"A0200\":\"A0200 most plausibly seeks to survive the missile engagement by combining a sustained descent, acceleration, and repeated right-turn commands to shift its track from southeast toward east, consistent with complicating intercept geometry, given B0100's fresh missile launch and its subsequent steady closure from the northwest.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992896,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 2198,
+      "prompt_tokens": 34814,
+      "total_tokens": 37012,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2048,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 31588,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to limit exposure while preserving energy by extending steadily east at constant altitude and increasing speed, given that B0100 remains behind to the northwest on partially converging geometry; its unchanged course and retained missile favor controlled disengagement over an immediate attack.",
+    "A0200": "A0200 most plausibly seeks to survive the missile engagement by combining a sustained descent, acceleration, and repeated right-turn commands to shift its track from southeast toward east, consistent with complicating intercept geometry, given B0100's fresh missile launch and its subsequent steady closure from the northwest."
+  },
+  "finished_at": "2026-10-26T05:35:35.551689+00:00",
+  "over_3s": true
+}

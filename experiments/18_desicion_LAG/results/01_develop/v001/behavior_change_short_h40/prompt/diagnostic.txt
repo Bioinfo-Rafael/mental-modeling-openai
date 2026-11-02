@@ -1,0 +1,20 @@
+Return JSON with decision, events, and reason. Write brief reasons in English.
+For YES, list every distinct supported Team A movement-pattern transition or
+new missile-firing action you identify under the shared criteria. Each event must
+have aircraft_id (A0100 or A0200), step (onset inside the supplied window),
+evidence_steps (nonempty list of supplied steps), and reason (one or two
+sentences summarizing the detection evidence).
+For movement, name the before/after motion patterns and relate the command
+history to observed motion, explaining why this is a transition rather than
+oscillatory correction or continuation. Include evidence_steps that support
+the before/after comparison. For firing, identify the ammunition or
+launcher-attributed missile evidence; if exact launch timing is unavailable,
+report the earliest supported evidence step and state that limitation.
+Combine simultaneous turning and firing by the same aircraft at the same
+supported onset in one event. Keep different aircraft or distinct onsets separate.
+The top-level reason briefly states which detection criterion is satisfied.
+For NO, return an empty events list and briefly explain why the supplied
+history does not support a movement-pattern transition or new firing by A.
+Identify continuation, corrective oscillation, or insufficient evidence when
+applicable; do not justify the decision using vague tactical importance.
+Do not emit prose outside the JSON.

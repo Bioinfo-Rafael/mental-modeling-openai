@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0184_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:30:52.111445+00:00",
+  "api_status": "ok",
+  "latency_s": 46.69698833394796,
+  "raw": {
+    "id": "chatcmpl-Ed7aGQQbH53Pk8aBWO1voKUxuWQe6",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to create eastward lateral separation while preserving a high-energy option by holding an almost level course and accelerating, given that B0100 and the recorded Team B missiles remained to its northwest rather than ahead; it neither turned toward the opponent nor expended its remaining missile.\",\"A0200\":\"A0200 most plausibly seeks to survive a missile-threatened disengagement by accelerating through a sustained descent and repeated hard banks while extending east-southeast, creating vertical and lateral separation from B0100 to the northwest; B0100's late missile appeared approximately aligned with A0200's southeast bearing, reinforcing but not proving this defensive reading.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992652,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 2733,
+      "prompt_tokens": 31927,
+      "total_tokens": 34660,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2559,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 28701,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to create eastward lateral separation while preserving a high-energy option by holding an almost level course and accelerating, given that B0100 and the recorded Team B missiles remained to its northwest rather than ahead; it neither turned toward the opponent nor expended its remaining missile.",
+    "A0200": "A0200 most plausibly seeks to survive a missile-threatened disengagement by accelerating through a sustained descent and repeated hard banks while extending east-southeast, creating vertical and lateral separation from B0100 to the northwest; B0100's late missile appeared approximately aligned with A0200's southeast bearing, reinforcing but not proving this defensive reading."
+  },
+  "finished_at": "2026-10-26T05:31:38.810963+00:00",
+  "over_3s": true
+}

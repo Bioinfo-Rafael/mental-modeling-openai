@@ -1,0 +1,179 @@
+{
+  "query_id": "r02_end_0289_responses_diagnostic",
+  "started_at": "2026-10-25T21:37:36.869406+00:00",
+  "status": "ok",
+  "latency_s": 8.3347087088041,
+  "raw": {
+    "id": "resp_0ed7de48001a7f34016ade76a3bc7c87d08c44dbd21062040c",
+    "created_at": 1792964259.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "rs_0ed7de48001a7f34016ade76a47f5087d0a2e894713588698f",
+        "summary": [],
+        "type": "reasoning",
+        "content": [],
+        "encrypted_content": "gAAAAABq3naoh2xYBdhuf2B71Gb7S2qc6ZttTmcM-32EbcwyhK97xIRcPbVAIjfmNKESA3No7-x6P59mEfyaThq66S7vwrPboCl0myzUKgkxJfHBIWRUwvK6821Xgp3-EzPRFQPIDq3Dl52KVZPGRtFhONIaacdfmXj1PkaftHHfmQZ5RKZWKNtsLKFwii6MYimFx_Ick42Af5NoqybSrwtAqry8AWdrV3-dJ9lIT2FuRxmRsSpeSziL1m7LLpbPXQ2eq54HsP1bnn4mtMPOyTdJvdGpCdPDS-8oWbEUt992XRSW4J3BA3fMjhtPBwH-nLxvvsU7k5nuIn0U8Pq_X4FS1_qaO9o29pawqBxsxj2KgMyq_Q-bwYfVQce76FyPLjEEgSd02L9i0P3daSp6TrOf6oxAL9uXoCakAZyqy29O7r5mSypqbR0JgUGA20u7iL3EI7bdOouAgstAYUDFyNbR3MPdDII5ULO0fVPj9D6w46Ptxm5Qj5keosdqA7Xt8DQavsCyBBEJTyhYYJex2fGoRMvzX8HPSBYqyQvjt5TzNH9zCegzW40TMDLiobbQwl1iRMzmxwDIdkL7ohseaXuw6Tlf6gP7DIsZaaTvXlOp7p7kwTPJm20j2eLM4ehGjUMVLtWgkKmVb_vtSxN-RdVJhNSgrCnoXDl4Q5Cr_GUwG6nkhU7OIu38SNzXQrH69CPoRE-t5wtTmYUy-PQHMiAfbo31HN0W6S3A1s4b1A7jHYo8cQdKG8caKp_gzrsnE8Bn1h7QuZIXxKPS3Qg8woLDPCjJJHGh2CuibBex7UYbUs1I-Z9l_jzCVherAPOApM4bEalgbqO7YKGlGsQfg8ugvO2t-_3tXrAMkExJhKlGM4gR7-UOXXHN7o9jsCpLijJa4ToSs_QdRA_e4SIL6jwnxGFAfrMOLyQlhu7gUUuZreqfy--2dZT3aJpWeLu7WKH2aGvoNhOn88iMl9DevUWw5czAgNDWJeiEKS5Zpl2TpLfo16QXCNHc5az3s3dd9mF5zYAmKSK8LyzsE_ePHF_maxbKdYEwvAM_A72Kla9SywSr4tZHhh0J2ZxBvfRAV6Ez1U6A0ZxMAn5yBPt25E9e-f__SeFl4TxsAbquvYECI4d2ehl97cFpHW3WZ19p8fN7dT7N-FI3OpcGnQBth5GZ4pK5a5RbAxPAJolmNdO9JYUbW-S09L5cnv6YiisD5M0b57hfdlgnCvzM4ByP8lIrAxxlEX6wsLUZ05KraRmtvoQ-WiEp7IgNITbTGGJ8VVe9NHccJwAxGpVeCB7gvZnktnvv0sYR0PaUF4jaNwuf2-78ygow73EOKIABw3PdIiv3fS8EMgRrDOKere9W4fRp0Ndw3Y8dQWiA0mr_-KZn4bLgiQC5pBjR9w3Bcy30EHwlgrDNtZ5l4aXiH9mMnn9sgmh5GGs1aL-83tgkd6YFdzb_2w7hfNDtQpg8PM-gm6AaKUSQNi4C42YIsP78zmZLfg6JzgTJGPSWbPj0nZLzIDNs21WJbM5x4x2J8htWqY08-oHvfc17lm80Kqh7szja6AkwBCzljfORCaaXq0thlUAHCFWBr42o3gE7BYxni2ggfAdlxJdTVAZTsq4EF84_nmFnQeQPQrqtCyNcadCTt4-72JxwzBvqyjnpIKt7hT3_BCbxJFlZFqp-mi-duojXV8kOZZUFCwjzmZDGS7wUxVvnBXaL4cNvuU2J7M3GwOnf6UjJkmKFUzKJXzISSyHpqhql8dm8CeMJMShnA-HaYrDAQVcXLH28YgE1mj2NFPWwoBtewPRsSoj74CDHdoctCQjB32fSALvblgJ9szuURnmFdJEmM97wqYSrX5DS6y-HQ7TeJAMvAZAaN6-oL5figIJbUAzy0WH10PBCG6KaJv_ABOT07pTB9QlC1OFeXgY47bpEcVI1GktbNAM1yA9jHZ3BQ8yYKk7GwVjiY9EeUIex0fmiTgMQZOKo7Fl8McjG36LfAhSQXNJ50yfiGqHfR5CWidu7jumk07wipnXfikF9ohUf0QYxMWtei_JBx7TchTdOP5aNrnKw5SB0YiBozLLZJ9DvLGu_GPjwBvDgcihmL90xIDBf8pLc8qMKMZbMHuOlqFo5p6OGumQPqIF8hM6q58W4KvD19JkDLA93J6umq9uSCEsQYjdC-IQoUKfmGSqY7r10plkfGr8ASKpLVySvLVHpAB6PeFR3U4zOLSbOcIX2k-EVL6TyDw2K2HPVk-KoVicSQG9OeRRDfgN_RiB8tjyb9xqafUdSQkD2heDsSxG4H1cPWefakq6F-znGxpzuoqXFZRDXI_Kzld-V_VOWM4ZpAJiE1jOkQtFWF2eHaVHw3pu1AbQosXmf-JJ29FLcgACFAvpMTgU7hqyP2zMT0lIs8wsZGgPuAo9wg_4sdKVcuSvStm-wQgEV_5ghVAB9WRrBc1HyQs4qJ4YQUay4tAioo-snBKQJdB0d4SRziI2Y-ZoU36VKUG6aKT_ZS-vyMN-NMyAc8dpVddtVck07giDlzIN8U_BtoC7PUDgxYJl3UROIDrzDS_r6jY_Ucdpa9ni377tKyVN_ADlsx4Ol1ZeyJwBRDgmUJUboY_I4cA3fJ4mX3H70xCkH-RckWoKXqM6G4XkHf-f5eRHCriCRPGa8twTSsAjA_qCsU4KnnqNMeQGh21PLb2y4xXso9OhWdcXXPpmXCZuVNA4YW5cabif34u6cSAxh23vs690fvj3kbcieBv92zZobFaDfTDZpbgc5jVbBRVzrcYPD7ipBZsHosT3W06sGbhqEdjuu9HUCP24VL4RmXQevCNi8jdEnuH37vz3PyAWDxwxah8W_Ky0dLrHW3gE6EKSFJ_l3eq9ppcat18UMhwgyyEE9IieKwAlIvhkJsPCyik9bDasd4FVQAnxSjM4d694-sDNn5ptH12U-_JJbAcWT4y90fO9-zcF4gIQq7pf6qNXZQtoJgCjq7MLDsApZEJn_-KDV_U0IkrQwrawtLWRSxUvLREKOpSk7-AL9oA2VdPcGFluNkxKih-YeR68k9Wrm60Phb3MFyOsO2S-f7RHuCY4f3YFvy_dphXzs71XFuVApheEScIcY2t-6wrE6VH-W6UcQ1-CRlJ7TGJ1oi_BgmCC3EBMCUsdzNZF18WAYTB1mId9fb2fbHb1p_9LVsYtESln4F8upMruX_5h28Jbmtr8NO0d2fgyNTAqrQnhRptaHDIasVYvtvx_FL8n-kMXLrvR-F2ZdnlXY0DbPWxKgW3uNJney53zcosfoUehKlkzS4nUtxxZLnJ-EuRjIO8DyDR5J-4y-Q3L3wBwv7AOr2PYp_myJni5rYyqBtMp1ylwrHxKxYt8Hx9FjLp7Je8zZaydoAC6yrrQAPz8l8cPi9mOQl_R5-Lfvf0pzpWF2GAp95qchy0idL1B_FHSh461t1ufDS5DWCRPj451zMipLvn6Qa--nzzji_RORRHqOmR9ikCJbNv-IoXzvtgnYo3osg41LWqvbKi4rLrrMedmQsdDG-iOzgVNQzWBE9iwQA0fewg1wtwFoPhQOQo6MnQHedYJuVdjjjQVK1YzVpiYkgO_LahkZ9JmpcQFL0S_FWmPxt7_mSps-cejnfJPnI8hJX0vUdTEs3DpHo_rZ9zG_P5O0AxHiQzKcn56ja_NALmaWCCLBY6PZUVDUxVJtFqFhIULINt7K8o_YolLZBQRgSnOptdkHwYhPfdQSNNkrBX5OVQQKRbcnryf1auFjIWGM2tqwvI1VzoXnzKYpV4ELpm3k-fziqUpgM5z75I07vmUugZ6BPcy_DqCfPYB0sO4KQTUfiKpYwJOoe6uRjGe32Rf_K1S2XcIAg7MjIRCrLCa1yHOtWNNE-L2a-kdv-upmnzy99qPR_YBZ3RKK3dQ6-eygz09p8RBYq10flxGNXeGOrH4txz5goykT-AqKU4yhZA2s5bE9D4YnVSayGAkON2rwkDQi-szINBI12BZ0ciwxUYK-ccoNjPVPVLM1qpl4k2wqQOJgrcbI3yMrv8paSchShtnv7PNDZmf6i25TlIsxYNB7XRH8EuO9lgPLuETnvyKoD-Czo5dVJ9lUB6ZSaOP9yDFV7Xqmg29bQoGYy_y4cUnqSiPtZgmsaWGSuAfi2uX-T2GJQHqs2MJUJQxsSoGLAjgyggOJTUi9b8hwDItK_6vOtwdy5WDEd0qs6_x2gJC5WMlEFkYYkOwUqACI7bra0vrGJwZCWqSDrKGBKkPUhUPhpvN0oPfML5tdiOfq5DCWsg2lFZ-OQ9-zhDwqIjLQQlcawiH5-NLNijLOKSf6eAAQoQhfuRso8J2TO4IsRFx2B__yKiUX7s2TWFDsU9zFF3DVBy0XLHCgY6tEfvdc5lYL4vQippm0WFNzkDEmg4CsVKj_kvFCMvyu8Qd0z0FwgZMzc5ydXU7gyxveeYhqculBjsRqya9GJJiI1S1wNfYXe5gW6q5TJ3k-vKnCKpjtGFEBXK2Ipv-2D3hjbI8tWQ1e_dI-VxpCNfZbnD8icfPlQyI8m1jzXmm0HCKNNSPsh4I0_rib1Uh5ekez5WTfGH5suljV9_Z975ha7IySimlssmmO5LGr4QvuguCg3I-kdbX_0DEt-7lMl75JvBv0gk5zkE6WWtRs0gJpoUX_cYYf14s9dtxpr8dfn8IOyHaz9Q9PC0jjt-BymPXor8JtwQRJfrjVvQwR2S6ROniPONsDyyGfk2upz2sR9v-oUmEF7UwFy62hD3YWQWViBfst5PJ1HYbwK1_Wxq9API2BvW6eJ_G7cdfusXO8UeNipPC883oRccecuN1qdaJ76IiWrTyGnFuYsdplkfL9Ng1PNhbC8IL3_PLY4Iu3LxBbfkeeidj7qrGn",
+        "status": null
+      },
+      {
+        "id": "msg_0ed7de48001a7f34016ade76a7a59887d0bdc9d6fcc24ce973",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"NO\",\"events\":[],\"reason\":\"A0100 continues its sustained left-turn pattern: left30 (heading ID 0) is recorded throughout, with yaw progressing from about 67° to 338°; its later down-altitude commands are not a distinct movement-pattern transition. A0200’s changing heading commands and yaw remain consistent with its ongoing corrections, and its altitude and speed command IDs stay at hold and hold. Neither A aircraft’s recorded ammunition decreases, and no A-launched missile is recorded.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792964264.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 26295,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 26292
+      },
+      "output_tokens": 413,
+      "output_tokens_details": {
+        "reasoning_tokens": 296
+      },
+      "total_tokens": 26708
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "NO",
+    "events": [],
+    "reason": "A0100 continues its sustained left-turn pattern: left30 (heading ID 0) is recorded throughout, with yaw progressing from about 67° to 338°; its later down-altitude commands are not a distinct movement-pattern transition. A0200’s changing heading commands and yaw remain consistent with its ongoing corrections, and its altitude and speed command IDs stay at hold and hold. Neither A aircraft’s recorded ammunition decreases, and no A-launched missile is recorded.",
+    "selected_aircraft": [],
+    "aircraft_choice": "NONE"
+  },
+  "finished_at": "2026-10-25T21:37:45.204198+00:00"
+}

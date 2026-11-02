@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0319_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:42:32.241092+00:00",
+  "api_status": "ok",
+  "latency_s": 36.73899104166776,
+  "raw": {
+    "id": "chatcmpl-Ed7lZobabpsqiM2hiEls7ONE5eJvQ",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to create a westward firing pass on B0100, using a sustained descending left turn as the opponent remained southwest and their separation narrowed; the ammunition drop and new missile support a launch, after which A0100 continued toward the missile’s west-southwest course rather than disengaging.\",\"A0200\":\"A0200 most plausibly seeks to survive the apparent B0100 missile threat by preserving high speed and bending its northeast flight progressively north, making the near-altitude missile behind it follow the turn; the missile remained west and reached nearly the same latitude, while A0200 retained its weapon and avoided an offensive turn toward B0100.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792993353,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 2166,
+      "prompt_tokens": 28016,
+      "total_tokens": 30182,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1996,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 24790,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to create a westward firing pass on B0100, using a sustained descending left turn as the opponent remained southwest and their separation narrowed; the ammunition drop and new missile support a launch, after which A0100 continued toward the missile’s west-southwest course rather than disengaging.",
+    "A0200": "A0200 most plausibly seeks to survive the apparent B0100 missile threat by preserving high speed and bending its northeast flight progressively north, making the near-altitude missile behind it follow the turn; the missile remained west and reached nearly the same latitude, while A0200 retained its weapon and avoided an offensive turn toward B0100."
+  },
+  "finished_at": "2026-10-26T05:43:08.981995+00:00",
+  "over_3s": true
+}

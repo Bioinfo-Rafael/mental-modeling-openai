@@ -1,0 +1,142 @@
+--- v002/system.txt
++++ v003/system.txt
+@@ -116,39 +116,39 @@
+ 
+ # DETECTION TARGET: TEAM A BEHAVIOR CHANGES OR FIRING
+ 
+-Inspect A0100 and A0200 separately; finding one event must not end the search
+-for another. Return YES for a supported event inside the window:
+-- A coherent change in movement-control pattern: starting, ending, redirecting,
+-  or reducing a maneuver. Use commands to locate the shift and motion to check
+-  its interpretation, allowing controller delay.
+-- New firing, supported by valid ammunition changes or launcher-attributed
+-  missile evidence under the caveats above, independently of movement changes.
++First identify each A aircraft's overall movement pattern across the ENTIRE
++window, including its recurring oscillations and gradual drift. Then decide
++whether any point introduces a different pattern. Inspect both aircraft.
++Return YES for a supported change of underlying behavior, such as starting,
++ending, or redirecting a maneuver, or for new firing under the missile rules.
++Other entities provide context, not substitute events.
+ 
+-Prioritize retaining supported onsets. A new command pattern with compatible
+-emerging motion need not wait for a large heading change or a completed maneuver.
+-Uncertain tactical intent is not a reason to reject it. Other entities are
+-context only. Return NO when neither event type is supported.
++A phase of repeated left/right or up/down motion is part of the existing pattern.
++Do not report every reversal, brief plateau, or small stair-step while the
++broader trajectory remains the same. Several consecutive commands and a local
++motion response are not sufficient if they simply repeat that pattern.
++Evaluate the whole sequence, not just its endpoints or one neighboring pair.
++
++A genuine change can begin near the right boundary and need not occupy most of
++the window. Retain a coherent departure with compatible emerging motion without
++waiting for a completed maneuver or large displacement. Firing qualifies
++independently. Return NO if only the existing pattern and its fluctuations remain.
+ 
+ # CONTROL OSCILLATION VERSUS A MOVEMENT-PATTERN TRANSITION
+ 
+-For each movement event at c, identify the same aircraft's preceding pattern,
+-the new command pattern starting at c, and subsequent motion supporting the
+-change. Use local sequences, not just window endpoints. Report c, not the
+-first recorded step, a maneuver peak, or the later confirmation time. Include
+-both pre-change and post-change evidence; recheck aircraft_id against the
+-actual command and state rows at those steps.
++Establish a new pattern BEFORE choosing its onset c. Compare the candidate
++with behavior farther before and after it, including other oscillation cycles
++when present. If it is another instance of the same fluctuation or settling,
++do not create an event there. Otherwise locate the first supported command or
++movement shift, using later motion as confirmation rather than as the onset.
++A window boundary or a peak is not an onset by itself.
+ 
+-Motion may initially continue in the old direction after commands change.
+-Braking or ending a turn can therefore begin before heading stops changing.
+-Do not discard a coherent onset near the right boundary merely because the
+-full response lies beyond the window; use only the available emerging evidence.
++Select object_id first, then read that object's actions and states before c,
++at c, and afterward. Verify the raw IDs: heading 0=left30, 4=right30.
++Never borrow another aircraft's motion or infer a command from motion alone.
+ 
+-A command sign flip, large bank angle, or one oscillation cycle is not a new
+-pattern. Judge it against surrounding corrections and the ongoing trajectory.
+-Do not count gradual settling under an unchanged command pattern as a second
+-onset; distinguish this from a new braking or hold command. If a pattern is already underway at the left boundary,
+-do not assign its onset to that boundary. An isolated unsupported command is
+-insufficient. Apply these rules independently to each overlapping window.
++Allow controller delay and short post-onset evidence, but not a single
++unsupported command. Judge each overlapping window independently.
+ 
+ # EVIDENCE AND INTERPRETATION
+ 
+--- v002/user.txt
++++ v003/user.txt
+@@ -11,9 +11,10 @@
+ The records contain all aircraft and missiles recorded within this window,
+ with available movement actions, ammunition counts, and metadata.
+ State and action field orders are defined in the system instructions.
+-Focus detection on Team A's behavior. Use other entities only as supporting
+-context. Judge command patterns together with actual motion; command changes
+-or oscillation amplitude alone do not establish a movement transition.
++Assess each A aircraft's overall movement across the entire window before
++locating any event. A recurring oscillation phase or small step within the
++same overall pattern is not a new event. Read actions and motion together
++under the same object_id; other entities provide supporting context only.
+ 
+ BEGIN WINDOW DATA
+ {window_data}
+--- v002/diagnostic.txt
++++ v003/diagnostic.txt
+@@ -5,15 +5,19 @@
+ 
+ Each event contains aircraft_id (A0100 or A0200), step, evidence_steps
+ (a nonempty list), and reason (one or two English sentences).
+-All steps must lie inside the supplied window. For movement, state what this
+-aircraft was doing before step c, what changed from c, and which later motion
+-supports that onset; return c as step. Include evidence from before c and at
+-or after c, with verified aircraft IDs. For firing, give the recorded evidence
+-and timing limitation. Keep distinct aircraft or onsets separate; combine
+-simultaneous turning and firing by the same aircraft at the same onset.
++All steps must lie inside the supplied window. For movement, briefly name the
++aircraft's overall pattern and explain how the candidate changes that pattern
++rather than repeating an oscillation or small step within it. Then locate c.
++Cite the actual before/after action-ID triplets and their steps for that same
++object_id, together with the motion supporting the change. Evidence must cover
++the surrounding pattern, not just a convenient adjacent pair. For firing, cite
++the recorded ammunition or missile evidence and timing limitation.
++Keep distinct aircraft or onsets separate; merge repeated mentions of the same
++aircraft/onset, including simultaneous turning and firing, into one event.
+ 
+-List accepted events only. Continuation, missile removal without new firing,
+-and rejected candidates belong in the overall reason, never in events.
++List accepted changes of overall pattern or firing only. Existing oscillation
++phases, minor steps, continuation, and rejected candidates belong in the overall
++reason, never in events.
+ Set decision from the accepted list: nonempty means YES; empty means NO.
+ The overall reason must agree. If a reason says no new event is supported,
+ do not return YES or populate events with non-events. Check both A aircraft
+--- v002/question.txt
++++ v003/question.txt
+@@ -1 +1 @@
+-Does this window contain a supported onset of a change in A0100 or A0200's movement-control pattern, including a developing transition, or new missile firing by either aircraft? Apply the system criteria to both aircraft.
++Considering the entire window for each A aircraft, is there a supported change in the underlying movement pattern, rather than another fluctuation within it, or new missile firing? Apply the system criteria to both A0100 and A0200.
+--- v002/choices.json
++++ v003/choices.json
+@@ -1,10 +1,10 @@
+ [
+   {
+     "value": "YES",
+-    "description": "At least one new movement-control transition or firing by A0100 or A0200 is supported inside this window. A coherent developing transition can qualify before the maneuver is complete."
++    "description": "The whole-window context supports a new movement pattern for A0100 or A0200, including a coherent developing departure, or new firing. The candidate is not merely a fluctuation within existing behavior."
+   },
+   {
+     "value": "NO",
+-    "description": "No new transition or firing by either A aircraft is supported inside this window; only existing behavior, its settling, corrections, or unsupported candidates are present."
++    "description": "Neither a new movement pattern nor new firing is supported. Local reversals, oscillation phases, small steps, or settling remain part of the same ongoing behavior."
+   }
+ ]
+--- v002/choice.txt
++++ v003/choice.txt
+@@ -1,3 +1,3 @@
+-Apply the shared Team A movement-pattern transition or new-firing criteria.
++Apply the shared whole-window Team A movement-pattern change or new-firing criteria.
+ Return only a JSON object with one field, decision, whose value is YES or NO.
+ Do not generate reasons or event locations.

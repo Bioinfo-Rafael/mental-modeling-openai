@@ -1,0 +1,187 @@
+{
+  "query_id": "r02_end_0294_responses_diagnostic",
+  "started_at": "2026-10-25T21:37:45.213389+00:00",
+  "status": "ok",
+  "latency_s": 8.99360708380118,
+  "raw": {
+    "id": "resp_08588eee649dbe45016ade76ac022c87d09e65203e7cc796d2",
+    "created_at": 1792964268.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_08588eee649dbe45016ade76acf98c87d0b9fef092862d5699",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0100\",\"step\":255,\"evidence_steps\":[255,263,271,280,289,294],\"reason\":\"A0100's recorded commands remain [2,0,1] from step 255 through 288, with heading steadily changing from about 55° to 1.7° by step 278 and continuing through north to about 325.7° at step 294; this is a sustained turning trajectory, not a back-and-forth correction. The commands change to [2,0,2] at step 289 and stay so through 294, while the turn continues and speed decreases; step 255 is the earliest supplied evidence of this developing turn, although its onset may precede the window.\"}],\"reason\":\"A0100 shows a coherent, continuing turn across the window, with the heading wrapping through north; its late speed-command reduction is also recorded. A0200's heading commands and motion continue a turning pattern with local command variation, and neither aircraft has recorded evidence of a new missile expenditure or A-launched missile.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792964271.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 26293,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 26290
+      },
+      "output_tokens": 239,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 26532
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 255,
+        "evidence_steps": [
+          255,
+          263,
+          271,
+          280,
+          289,
+          294
+        ],
+        "reason": "A0100's recorded commands remain [2,0,1] from step 255 through 288, with heading steadily changing from about 55° to 1.7° by step 278 and continuing through north to about 325.7° at step 294; this is a sustained turning trajectory, not a back-and-forth correction. The commands change to [2,0,2] at step 289 and stay so through 294, while the turn continues and speed decreases; step 255 is the earliest supplied evidence of this developing turn, although its onset may precede the window."
+      }
+    ],
+    "reason": "A0100 shows a coherent, continuing turn across the window, with the heading wrapping through north; its late speed-command reduction is also recorded. A0200's heading commands and motion continue a turning pattern with local command variation, and neither aircraft has recorded evidence of a new missile expenditure or A-launched missile.",
+    "selected_aircraft": [
+      "A0100"
+    ],
+    "aircraft_choice": "A1"
+  },
+  "finished_at": "2026-10-25T21:37:54.207077+00:00"
+}

@@ -1,0 +1,183 @@
+{
+  "query_id": "r01_case02_responses_diagnostic",
+  "started_at": "2026-10-25T16:16:47.238326+00:00",
+  "status": "ok",
+  "latency_s": 3.026656750123948,
+  "raw": {
+    "id": "resp_0c911296a1770406016ade2b6fc1dc87d08ef1c712be4d3263",
+    "created_at": 1792945007.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_0c911296a1770406016ade2b70867c87d09881c5d380d916da",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0200\",\"step\":25,\"evidence_steps\":[23,24,25,26,27,28],\"reason\":\"A0200's descent continues, but its previously nearly northward heading/course begins a sustained left turn: yaw shifts from about 3–4° to near 0° and then wraps toward 359°/0°, while heading commands alternate between hold and right. The evolving heading/course and large alternating bank support a movement transition rather than treating command fluctuations alone as the onset.\"}],\"reason\":\"A0200 shows a supported change in horizontal movement pattern around step 25. Neither aircraft has an ammunition decrease or launcher-attributed missile record supporting new firing.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792945010.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 25035,
+      "input_tokens_details": {
+        "cache_write_tokens": 23251,
+        "cached_tokens": 1781
+      },
+      "output_tokens": 160,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 25195
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0200",
+        "step": 25,
+        "evidence_steps": [
+          23,
+          24,
+          25,
+          26,
+          27,
+          28
+        ],
+        "reason": "A0200's descent continues, but its previously nearly northward heading/course begins a sustained left turn: yaw shifts from about 3–4° to near 0° and then wraps toward 359°/0°, while heading commands alternate between hold and right. The evolving heading/course and large alternating bank support a movement transition rather than treating command fluctuations alone as the onset."
+      }
+    ],
+    "reason": "A0200 shows a supported change in horizontal movement pattern around step 25. Neither aircraft has an ammunition decrease or launcher-attributed missile record supporting new firing."
+  },
+  "finished_at": "2026-10-25T16:16:50.264988+00:00"
+}

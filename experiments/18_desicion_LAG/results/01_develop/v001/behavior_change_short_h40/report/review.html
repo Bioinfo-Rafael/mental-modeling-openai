@@ -1,0 +1,67 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>LAG decision review</title>
+<style>body{font:15px/1.6 system-ui;max-width:1100px;margin:32px auto;padding:0 20px;background:#f7f8fa;color:#17212b}article{background:white;padding:16px 24px;margin:16px 0;border:1px solid #d9dfe5;border-radius:8px}pre{white-space:pre-wrap;overflow-wrap:anywhere}select{padding:8px}a{color:#1766a7}</style>
+<h1>develop / v001 / behavior_change_short_h40</h1>
+<p>model=gpt-6-luna · H=40 · prompt SHA=b0564fcb8728</p>
+<p>未注釈窓は暫定負例。同一試合で調整・評価するため、未知試合への汎化性能ではありません。理由は人手で確認してください。</p>
+<p><a href="summary.md">集計</a> · <a href="predictions.csv">全応答CSV</a> · <a href="review_template.csv">レビュー用CSV</a> · <a href="../prompt/system.txt">保存プロンプト</a></p>
+<label>表示 <select id="filter"><option value="all">すべて</option><option>FN</option><option>FP</option><option>TP</option><option>TN</option><option>invalid_output</option><option>api_error</option><option>uncertain</option><option>pending</option></select></label>
+<article data-result="pending">
+<h3>case01 · 16–55 · responses_diagnostic · repeat 1</h3>
+<p><b>pending</b>　reference=YES　prediction=—　— s</p>
+<p>参考注釈: A0100@46 (ヒットアンドアウェー), A0200@49 (攻撃)</p><pre></pre><p>—</p>
+<p></p><a href="../inputs/case01.txt">入力</a> ·
+<a href="../responses/r01_case01_responses_diagnostic.json">応答</a></article>
+<article data-result="pending">
+<h3>case02 · 1–40 · responses_diagnostic · repeat 1</h3>
+<p><b>pending</b>　reference=NO　prediction=—　— s</p>
+<p>参考注釈: なし（未注釈）</p><pre></pre><p>—</p>
+<p></p><a href="../inputs/case02.txt">入力</a> ·
+<a href="../responses/r01_case02_responses_diagnostic.json">応答</a></article>
+<article data-result="pending">
+<h3>case03 · 61–100 · responses_diagnostic · repeat 1</h3>
+<p><b>pending</b>　reference=YES　prediction=—　— s</p>
+<p>参考注釈: A0100@83 (回避行動), A0200@95 (援護)</p><pre></pre><p>—</p>
+<p></p><a href="../inputs/case03.txt">入力</a> ·
+<a href="../responses/r01_case03_responses_diagnostic.json">応答</a></article>
+<article data-result="pending">
+<h3>case04 · 100–139 · responses_diagnostic · repeat 1</h3>
+<p><b>pending</b>　reference=NO　prediction=—　— s</p>
+<p>参考注釈: なし（未注釈）</p><pre></pre><p>—</p>
+<p></p><a href="../inputs/case04.txt">入力</a> ·
+<a href="../responses/r01_case04_responses_diagnostic.json">応答</a></article>
+<article data-result="pending">
+<h3>case05 · 111–150 · responses_diagnostic · repeat 1</h3>
+<p><b>pending</b>　reference=YES　prediction=—　— s</p>
+<p>参考注釈: A0200@143 (囮)</p><pre></pre><p>—</p>
+<p></p><a href="../inputs/case05.txt">入力</a> ·
+<a href="../responses/r01_case05_responses_diagnostic.json">応答</a></article>
+<article data-result="pending">
+<h3>case06 · 150–189 · responses_diagnostic · repeat 1</h3>
+<p><b>pending</b>　reference=NO　prediction=—　— s</p>
+<p>参考注釈: なし（未注釈）</p><pre></pre><p>—</p>
+<p></p><a href="../inputs/case06.txt">入力</a> ·
+<a href="../responses/r01_case06_responses_diagnostic.json">応答</a></article>
+<article data-result="pending">
+<h3>case07 · 211–250 · responses_diagnostic · repeat 1</h3>
+<p><b>pending</b>　reference=YES　prediction=—　— s</p>
+<p>参考注釈: A0100@243 (追跡開始)</p><pre></pre><p>—</p>
+<p></p><a href="../inputs/case07.txt">入力</a> ·
+<a href="../responses/r01_case07_responses_diagnostic.json">応答</a></article>
+<article data-result="pending">
+<h3>case08 · 250–289 · responses_diagnostic · repeat 1</h3>
+<p><b>pending</b>　reference=NO　prediction=—　— s</p>
+<p>参考注釈: なし（未注釈）</p><pre></pre><p>—</p>
+<p></p><a href="../inputs/case08.txt">入力</a> ·
+<a href="../responses/r01_case08_responses_diagnostic.json">応答</a></article>
+<article data-result="pending">
+<h3>case09 · 281–320 · responses_diagnostic · repeat 1</h3>
+<p><b>pending</b>　reference=YES　prediction=—　— s</p>
+<p>参考注釈: A0100@311 (攻撃)</p><pre></pre><p>—</p>
+<p></p><a href="../inputs/case09.txt">入力</a> ·
+<a href="../responses/r01_case09_responses_diagnostic.json">応答</a></article>
+<article data-result="pending">
+<h3>case10 · 270–309 · responses_diagnostic · repeat 1</h3>
+<p><b>pending</b>　reference=NO　prediction=—　— s</p>
+<p>参考注釈: なし（未注釈）</p><pre></pre><p>—</p>
+<p></p><a href="../inputs/case10.txt">入力</a> ·
+<a href="../responses/r01_case10_responses_diagnostic.json">応答</a></article><script>document.querySelector('#filter').addEventListener('change',e=>{document.querySelectorAll('article').forEach(a=>a.hidden=e.target.value!=='all'&&a.dataset.result!==e.target.value)})</script></html>

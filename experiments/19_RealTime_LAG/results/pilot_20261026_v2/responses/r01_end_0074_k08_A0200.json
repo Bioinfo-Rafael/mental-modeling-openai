@@ -1,0 +1,106 @@
+{
+  "query_id": "r01_end_0074_k08_A0200",
+  "started_at": "2026-10-26T00:08:49.905137+00:00",
+  "api_status": "ok",
+  "choice": "A2",
+  "dispatch_offset_s": 0.01054720813408494,
+  "latency_s": 0.40518758399412036,
+  "raw": {
+    "model": "gpt-6-luna",
+    "answers": [
+      {
+        "type": "choice",
+        "name": "primary_goal",
+        "choice": "A2",
+        "probabilities": [
+          {
+            "value": "A1",
+            "probability": 0.21
+          },
+          {
+            "value": "A2",
+            "probability": 0.61
+          },
+          {
+            "value": "B1",
+            "probability": 0.07
+          },
+          {
+            "value": "B2",
+            "probability": 0.04
+          },
+          {
+            "value": "C1",
+            "probability": 0.02
+          },
+          {
+            "value": "C2",
+            "probability": 0.02
+          },
+          {
+            "value": "D1",
+            "probability": 0.01
+          },
+          {
+            "value": "D2",
+            "probability": 0.02
+          }
+        ],
+        "confidence": 0.55
+      }
+    ],
+    "usage": {
+      "input_tokens": 34528,
+      "input_tokens_details": {
+        "cached_tokens": 34051,
+        "cache_write_tokens": 0,
+        "cache_write_tokens_details": {
+          "ttl_30m_tokens": 0,
+          "ttl_12h_tokens": 0
+        }
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 34528
+    }
+  },
+  "probabilities": [
+    {
+      "value": "A1",
+      "probability": 0.21
+    },
+    {
+      "value": "A2",
+      "probability": 0.61
+    },
+    {
+      "value": "B1",
+      "probability": 0.07
+    },
+    {
+      "value": "B2",
+      "probability": 0.04
+    },
+    {
+      "value": "C1",
+      "probability": 0.02
+    },
+    {
+      "value": "C2",
+      "probability": 0.02
+    },
+    {
+      "value": "D1",
+      "probability": 0.01
+    },
+    {
+      "value": "D2",
+      "probability": 0.02
+    }
+  ],
+  "confidence": 0.55,
+  "finished_at": "2026-10-26T00:08:50.310363+00:00",
+  "deadline_status": "within"
+}

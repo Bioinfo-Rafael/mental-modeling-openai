@@ -1,0 +1,205 @@
+{
+  "query_id": "r01_end_0309_responses_diagnostic",
+  "started_at": "2026-10-25T21:30:17.637248+00:00",
+  "status": "ok",
+  "latency_s": 3.588168708141893,
+  "raw": {
+    "id": "resp_0dc70b213f5b5775016ade74ea2ce087d094270feebafa7c83",
+    "created_at": 1792963818.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_0dc70b213f5b5775016ade74eadda487d0a2105cf598e872ba",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0100\",\"step\":289,\"evidence_steps\":[286,287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309],\"reason\":\"A0100’s recorded heading action stays [2,0,1] through steps 286–288, then its speed command changes to down: [2,0,2] at 289 and remains predominantly down thereafter (with [2,0,0] from 297). This is a sustained shift from its prior steady-speed, broadly descending turn: the heading continues changing from about 342° at 287 to 286° at 309 while eastward velocity becomes increasingly negative, and speed falls from about 309 to 287 m/s. The onset is step 289; the subsequent response supports a continuing departure, not a repeated turn reversal.\"}],\"reason\":\"A0100 begins a supported sustained speed-command change at step 289 alongside its continuing turn and developing motion response. A0200’s repeated heading corrections and descent do not establish a distinct new pattern, and neither aircraft has a recorded ammunition decrease or launcher-attributed missile evidence of new firing.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792963821.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 26281,
+      "input_tokens_details": {
+        "cache_write_tokens": 24482,
+        "cached_tokens": 1796
+      },
+      "output_tokens": 280,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 26561
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 289,
+        "evidence_steps": [
+          286,
+          287,
+          288,
+          289,
+          290,
+          291,
+          292,
+          293,
+          294,
+          295,
+          296,
+          297,
+          298,
+          299,
+          300,
+          301,
+          302,
+          303,
+          304,
+          305,
+          306,
+          307,
+          308,
+          309
+        ],
+        "reason": "A0100’s recorded heading action stays [2,0,1] through steps 286–288, then its speed command changes to down: [2,0,2] at 289 and remains predominantly down thereafter (with [2,0,0] from 297). This is a sustained shift from its prior steady-speed, broadly descending turn: the heading continues changing from about 342° at 287 to 286° at 309 while eastward velocity becomes increasingly negative, and speed falls from about 309 to 287 m/s. The onset is step 289; the subsequent response supports a continuing departure, not a repeated turn reversal."
+      }
+    ],
+    "reason": "A0100 begins a supported sustained speed-command change at step 289 alongside its continuing turn and developing motion response. A0200’s repeated heading corrections and descent do not establish a distinct new pattern, and neither aircraft has a recorded ammunition decrease or launcher-attributed missile evidence of new firing.",
+    "selected_aircraft": [
+      "A0100"
+    ],
+    "aircraft_choice": "A1"
+  },
+  "finished_at": "2026-10-25T21:30:21.225470+00:00"
+}

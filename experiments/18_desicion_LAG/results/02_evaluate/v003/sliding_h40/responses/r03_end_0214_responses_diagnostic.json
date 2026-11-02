@@ -1,0 +1,201 @@
+{
+  "query_id": "r03_end_0214_responses_diagnostic",
+  "started_at": "2026-10-25T21:45:22.969578+00:00",
+  "status": "ok",
+  "latency_s": 7.915506000164896,
+  "raw": {
+    "id": "resp_0f44db87bd3ce743016ade78766b4487d0a03574396f8cd144",
+    "created_at": 1792964726.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_0f44db87bd3ce743016ade7877d81887d09ec00986e0adeb98",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0200\",\"step\":199,\"evidence_steps\":[195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214],\"reason\":\"A0200's earlier pattern is a steep descent with alternating left15/right30 commands (steps 195–198: [2,1,0], [2,1,0], [2,1,0], [2,1,0]); from step 199 it repeatedly commands right30 while beginning to level (199–200: [2,4,1], [1,4,1]), then resumes down commands while maintaining that rightward turn (201–202: [1,4,1], [2,1,0]; 203–208: [2,1,0] repeatedly; 209–214: [2,1,1]/[2,1,0] and [1,4,1]). The descent continues, but altitude first bottoms into a more level trajectory and the eastward velocity grows as heading trends from about 100° to 86°; this is a coherent developing turn/leveling departure, not simply a repeated left/right correction.\"}],\"reason\":\"A0200 begins a sustained, increasingly rightward turn with a brief leveling phase around step 199, departing from its prior steep descent and alternating heading corrections. A0100 continues nearly level, straight eastward flight with hold-heading commands; its ammunition remains unchanged.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792964730.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 33852,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 33849
+      },
+      "output_tokens": 338,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 34190
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0200",
+        "step": 199,
+        "evidence_steps": [
+          195,
+          196,
+          197,
+          198,
+          199,
+          200,
+          201,
+          202,
+          203,
+          204,
+          205,
+          206,
+          207,
+          208,
+          209,
+          210,
+          211,
+          212,
+          213,
+          214
+        ],
+        "reason": "A0200's earlier pattern is a steep descent with alternating left15/right30 commands (steps 195–198: [2,1,0], [2,1,0], [2,1,0], [2,1,0]); from step 199 it repeatedly commands right30 while beginning to level (199–200: [2,4,1], [1,4,1]), then resumes down commands while maintaining that rightward turn (201–202: [1,4,1], [2,1,0]; 203–208: [2,1,0] repeatedly; 209–214: [2,1,1]/[2,1,0] and [1,4,1]). The descent continues, but altitude first bottoms into a more level trajectory and the eastward velocity grows as heading trends from about 100° to 86°; this is a coherent developing turn/leveling departure, not simply a repeated left/right correction."
+      }
+    ],
+    "reason": "A0200 begins a sustained, increasingly rightward turn with a brief leveling phase around step 199, departing from its prior steep descent and alternating heading corrections. A0100 continues nearly level, straight eastward flight with hold-heading commands; its ammunition remains unchanged.",
+    "selected_aircraft": [
+      "A0200"
+    ],
+    "aircraft_choice": "A2"
+  },
+  "finished_at": "2026-10-25T21:45:30.885108+00:00"
+}

@@ -1,0 +1,36 @@
+--- 19/gate/system.txt
++++ 19_v2/gate/system.txt
+@@ -75,8 +75,12 @@
+ movement action a_k, which acts from k to k+1. The result of the last action
+ is not supplied. Do not infer unseen later developments.
+ The number of time points and exact bounds are stated in the user message.
+-Analyze the ENTIRE window; there is no marked change point or required event.
+-A change may occur anywhere in the window, or there may be no relevant change.
++Analyze the ENTIRE window as context; there is no required event.
++Count only a supported change whose onset, or new firing, falls inside the
++TARGET INTERVAL stated in the user message. Earlier steps provide context only.
++A change that began before the target interval does not qualify merely because
++it continues or becomes clearer inside it. The initial target covers the whole
++first window; later targets cover only newly added steps.
+ 
+ null means unavailable, not zero. Invalid state vectors are masked as null.
+ state_valid=0 must not be interpreted as active flight. alive=0 is inactive;
+@@ -118,7 +122,7 @@
+ 
+ First identify each A aircraft's overall movement pattern across the ENTIRE
+ window, including its recurring oscillations and gradual drift. Then decide
+-whether any point introduces a different pattern. Inspect both aircraft.
++whether a point inside the target interval introduces a different pattern. Inspect both aircraft.
+ Return YES for a supported change of underlying behavior, such as starting,
+ ending, or redirecting a maneuver, or for new firing under the missile rules.
+ Other entities provide context, not substitute events.
+@@ -148,7 +152,8 @@
+ Never borrow another aircraft's motion or infer a command from motion alone.
+ 
+ Allow controller delay and short post-onset evidence, but not a single
+-unsupported command. Judge each overlapping window independently.
++unsupported command. Judge each overlapping window independently, but count
++only qualifying events inside its stated target interval.
+ 
+ # EVIDENCE AND INTERPRETATION
+ 

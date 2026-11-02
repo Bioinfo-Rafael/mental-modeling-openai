@@ -1,0 +1,189 @@
+{
+  "query_id": "r03_end_0284_responses_diagnostic",
+  "started_at": "2026-10-25T21:47:32.443774+00:00",
+  "status": "ok",
+  "latency_s": 4.125233416911215,
+  "raw": {
+    "id": "resp_09303c6f77cbff74016ade78f619ac87d0876e5f9aa0f622a8",
+    "created_at": 1792964854.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_09303c6f77cbff74016ade78f6b14887d0adef637ab5f95430",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0100\",\"step\":252,\"evidence_steps\":[245,250,251,252,253,260,270,284],\"reason\":\"A0100 shifts from the earlier shallow, nearly level track (altitude action 1, heading 0, speed 1 at steps 245–251) to a sustained descending left turn: at step 252 the triplet becomes [2,0,1] and stays so through 284, while altitude falls and heading continues left through wraparound. This is a sustained pattern change, not just a reversal; the descent is confirmed in subsequent motion.\"}],\"reason\":\"A0100 begins a sustained descending left turn at step 252, distinct from its preceding nearly level left-turn track. A0200’s changing heading commands and gradual descent remain consistent with its ongoing turning/descending pattern; neither aircraft has recorded ammunition expenditure or an A-attributed missile.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792964856.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 26294,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 26291
+      },
+      "output_tokens": 206,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 26500
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 252,
+        "evidence_steps": [
+          245,
+          250,
+          251,
+          252,
+          253,
+          260,
+          270,
+          284
+        ],
+        "reason": "A0100 shifts from the earlier shallow, nearly level track (altitude action 1, heading 0, speed 1 at steps 245–251) to a sustained descending left turn: at step 252 the triplet becomes [2,0,1] and stays so through 284, while altitude falls and heading continues left through wraparound. This is a sustained pattern change, not just a reversal; the descent is confirmed in subsequent motion."
+      }
+    ],
+    "reason": "A0100 begins a sustained descending left turn at step 252, distinct from its preceding nearly level left-turn track. A0200’s changing heading commands and gradual descent remain consistent with its ongoing turning/descending pattern; neither aircraft has recorded ammunition expenditure or an A-attributed missile.",
+    "selected_aircraft": [
+      "A0100"
+    ],
+    "aircraft_choice": "A1"
+  },
+  "finished_at": "2026-10-25T21:47:36.569092+00:00"
+}

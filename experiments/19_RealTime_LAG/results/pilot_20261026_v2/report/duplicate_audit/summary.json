@@ -1,0 +1,583 @@
+{
+  "run_id": "pilot_20261026_v2",
+  "complete": true,
+  "manifest_sha256": "2858b195f097cc08f6c9d699ad740c6a54a81dc231fd6ca6984b56e780d26cfc",
+  "responses_digest": "ea3ad6715eec02a403c59f2dbae2fb85fc959f7263a7650e2d8ff46fd7db00f5",
+  "definitions": {
+    "same_goal": "In arrival order, equals latest accepted choice for same repeat/K/aircraft; stale excluded.",
+    "displayed": "First accepted goal or a changed accepted label; includes two initial labels per condition.",
+    "stale": "Older source window arrives after a newer accepted window for same repeat/K/aircraft.",
+    "short_return": "Three consecutive displayed labels X,Y,X within 3 simulated seconds, counting overlapping triples.",
+    "pending_overlap": "At simulated goal send time an earlier goal of same repeat/K/aircraft is still pending; not observed live concurrency.",
+    "accuracy": "Not measured: no human event IDs or goal truth labels."
+  },
+  "gate_choices": {
+    "NONE": 19,
+    "A1": 14,
+    "BOTH": 10,
+    "A2": 19
+  },
+  "positive_streaks": [
+    {
+      "repeat": 1,
+      "steps": [
+        49,
+        54,
+        59,
+        64,
+        69,
+        74,
+        79,
+        84,
+        89,
+        94,
+        99,
+        104,
+        109,
+        114
+      ]
+    },
+    {
+      "repeat": 1,
+      "steps": [
+        159,
+        164,
+        169,
+        174
+      ]
+    },
+    {
+      "repeat": 1,
+      "steps": [
+        184,
+        189,
+        194,
+        199,
+        204,
+        209,
+        214,
+        219,
+        224,
+        229,
+        234
+      ]
+    },
+    {
+      "repeat": 1,
+      "steps": [
+        244,
+        249,
+        254,
+        259,
+        264,
+        269,
+        274
+      ]
+    },
+    {
+      "repeat": 1,
+      "steps": [
+        314,
+        319,
+        324,
+        329,
+        334,
+        339,
+        340
+      ]
+    }
+  ],
+  "goal_statuses": {
+    "displayed": 87,
+    "same_goal": 162,
+    "stale": 9
+  },
+  "conditions": {
+    "4": {
+      "total": 86,
+      "statuses": {
+        "displayed": 19,
+        "same_goal": 65,
+        "stale": 2
+      },
+      "aircraft": {
+        "r01_A0100": {
+          "displayed": 10,
+          "same_goal": 32,
+          "stale": 1
+        },
+        "r01_A0200": {
+          "displayed": 9,
+          "same_goal": 33,
+          "stale": 1
+        }
+      },
+      "simulated_pending_overlap_count": 4,
+      "short_return_count": 3
+    },
+    "8": {
+      "total": 86,
+      "statuses": {
+        "displayed": 31,
+        "same_goal": 52,
+        "stale": 3
+      },
+      "aircraft": {
+        "r01_A0100": {
+          "displayed": 11,
+          "same_goal": 30,
+          "stale": 2
+        },
+        "r01_A0200": {
+          "displayed": 20,
+          "same_goal": 22,
+          "stale": 1
+        }
+      },
+      "simulated_pending_overlap_count": 4,
+      "short_return_count": 7
+    },
+    "32": {
+      "total": 86,
+      "statuses": {
+        "displayed": 37,
+        "same_goal": 45,
+        "stale": 4
+      },
+      "aircraft": {
+        "r01_A0100": {
+          "displayed": 24,
+          "same_goal": 16,
+          "stale": 3
+        },
+        "r01_A0200": {
+          "displayed": 13,
+          "same_goal": 29,
+          "stale": 1
+        }
+      },
+      "simulated_pending_overlap_count": 9,
+      "short_return_count": 3
+    }
+  },
+  "short_returns": [
+    {
+      "choice_count": 4,
+      "repeat": 1,
+      "aircraft_id": "A0100",
+      "query_ids": [
+        "r01_end_0234_k04_A0100",
+        "r01_end_0244_k04_A0100",
+        "r01_end_0249_k04_A0100"
+      ],
+      "choices": [
+        "B",
+        "A",
+        "B"
+      ],
+      "labels": [
+        "自機の被弾を防ぐ",
+        "自機の攻撃を成立させる",
+        "自機の被弾を防ぐ"
+      ],
+      "source_steps": [
+        234,
+        244,
+        249
+      ],
+      "arrival_times_s": [
+        48.63965770807118,
+        49.90954158287496,
+        50.92482674978674
+      ],
+      "span_s": 2.2851690417155623
+    },
+    {
+      "choice_count": 4,
+      "repeat": 1,
+      "aircraft_id": "A0200",
+      "query_ids": [
+        "r01_end_0214_k04_A0200",
+        "r01_end_0219_k04_A0200",
+        "r01_end_0224_k04_A0200"
+      ],
+      "choices": [
+        "B",
+        "A",
+        "B"
+      ],
+      "labels": [
+        "自機の被弾を防ぐ",
+        "自機の攻撃を成立させる",
+        "自機の被弾を防ぐ"
+      ],
+      "source_steps": [
+        214,
+        219,
+        224
+      ],
+      "arrival_times_s": [
+        43.41720191687346,
+        45.063044334482406,
+        45.5991011668928
+      ],
+      "span_s": 2.1818992500193417
+    },
+    {
+      "choice_count": 4,
+      "repeat": 1,
+      "aircraft_id": "A0200",
+      "query_ids": [
+        "r01_end_0219_k04_A0200",
+        "r01_end_0224_k04_A0200",
+        "r01_end_0229_k04_A0200"
+      ],
+      "choices": [
+        "A",
+        "B",
+        "A"
+      ],
+      "labels": [
+        "自機の攻撃を成立させる",
+        "自機の被弾を防ぐ",
+        "自機の攻撃を成立させる"
+      ],
+      "source_steps": [
+        219,
+        224,
+        229
+      ],
+      "arrival_times_s": [
+        45.063044334482406,
+        45.5991011668928,
+        46.57615508297459
+      ],
+      "span_s": 1.5131107484921813
+    },
+    {
+      "choice_count": 8,
+      "repeat": 1,
+      "aircraft_id": "A0100",
+      "query_ids": [
+        "r01_end_0064_k08_A0100",
+        "r01_end_0069_k08_A0100",
+        "r01_end_0074_k08_A0100"
+      ],
+      "choices": [
+        "A2",
+        "B1",
+        "A2"
+      ],
+      "labels": [
+        "自機の攻撃を継続・完遂する",
+        "自機に迫る攻撃を回避する",
+        "自機の攻撃を継続・完遂する"
+      ],
+      "source_steps": [
+        64,
+        69,
+        74
+      ],
+      "arrival_times_s": [
+        13.915631374996156,
+        14.489482167363168,
+        15.977716208156199
+      ],
+      "span_s": 2.0620848331600428
+    },
+    {
+      "choice_count": 8,
+      "repeat": 1,
+      "aircraft_id": "A0200",
+      "query_ids": [
+        "r01_end_0184_k08_A0200",
+        "r01_end_0189_k08_A0200",
+        "r01_end_0194_k08_A0200"
+      ],
+      "choices": [
+        "A1",
+        "B1",
+        "A1"
+      ],
+      "labels": [
+        "自機の攻撃機会を作る",
+        "自機に迫る攻撃を回避する",
+        "自機の攻撃機会を作る"
+      ],
+      "source_steps": [
+        184,
+        189,
+        194
+      ],
+      "arrival_times_s": [
+        37.756226416863505,
+        38.87372837513686,
+        40.066484498977665
+      ],
+      "span_s": 2.31025808211416
+    },
+    {
+      "choice_count": 8,
+      "repeat": 1,
+      "aircraft_id": "A0200",
+      "query_ids": [
+        "r01_end_0244_k08_A0200",
+        "r01_end_0254_k08_A0200",
+        "r01_end_0259_k08_A0200"
+      ],
+      "choices": [
+        "B1",
+        "A1",
+        "B1"
+      ],
+      "labels": [
+        "自機に迫る攻撃を回避する",
+        "自機の攻撃機会を作る",
+        "自機に迫る攻撃を回避する"
+      ],
+      "source_steps": [
+        244,
+        254,
+        259
+      ],
+      "arrival_times_s": [
+        49.99882687553764,
+        51.534532374423,
+        52.83258799994365
+      ],
+      "span_s": 2.83376112440601
+    },
+    {
+      "choice_count": 8,
+      "repeat": 1,
+      "aircraft_id": "A0200",
+      "query_ids": [
+        "r01_end_0254_k08_A0200",
+        "r01_end_0259_k08_A0200",
+        "r01_end_0264_k08_A0200"
+      ],
+      "choices": [
+        "A1",
+        "B1",
+        "A1"
+      ],
+      "labels": [
+        "自機の攻撃機会を作る",
+        "自機に迫る攻撃を回避する",
+        "自機の攻撃機会を作る"
+      ],
+      "source_steps": [
+        254,
+        259,
+        264
+      ],
+      "arrival_times_s": [
+        51.534532374423,
+        52.83258799994365,
+        53.5168751670979
+      ],
+      "span_s": 1.982342792674899
+    },
+    {
+      "choice_count": 8,
+      "repeat": 1,
+      "aircraft_id": "A0200",
+      "query_ids": [
+        "r01_end_0259_k08_A0200",
+        "r01_end_0264_k08_A0200",
+        "r01_end_0269_k08_A0200"
+      ],
+      "choices": [
+        "B1",
+        "A1",
+        "B1"
+      ],
+      "labels": [
+        "自機に迫る攻撃を回避する",
+        "自機の攻撃機会を作る",
+        "自機に迫る攻撃を回避する"
+      ],
+      "source_steps": [
+        259,
+        264,
+        269
+      ],
+      "arrival_times_s": [
+        52.83258799994365,
+        53.5168751670979,
+        54.73026600033045
+      ],
+      "span_s": 1.8976780003868043
+    },
+    {
+      "choice_count": 8,
+      "repeat": 1,
+      "aircraft_id": "A0200",
+      "query_ids": [
+        "r01_end_0264_k08_A0200",
+        "r01_end_0269_k08_A0200",
+        "r01_end_0274_k08_A0200"
+      ],
+      "choices": [
+        "A1",
+        "B1",
+        "A1"
+      ],
+      "labels": [
+        "自機の攻撃機会を作る",
+        "自機に迫る攻撃を回避する",
+        "自機の攻撃機会を作る"
+      ],
+      "source_steps": [
+        264,
+        269,
+        274
+      ],
+      "arrival_times_s": [
+        53.5168751670979,
+        54.73026600033045,
+        55.90146883409471
+      ],
+      "span_s": 2.384593666996807
+    },
+    {
+      "choice_count": 8,
+      "repeat": 1,
+      "aircraft_id": "A0200",
+      "query_ids": [
+        "r01_end_0329_k08_A0200",
+        "r01_end_0334_k08_A0200",
+        "r01_end_0339_k08_A0200"
+      ],
+      "choices": [
+        "A1",
+        "B1",
+        "A1"
+      ],
+      "labels": [
+        "自機の攻撃機会を作る",
+        "自機に迫る攻撃を回避する",
+        "自機の攻撃機会を作る"
+      ],
+      "source_steps": [
+        329,
+        334,
+        339
+      ],
+      "arrival_times_s": [
+        67.43138570776209,
+        67.90891625005752,
+        68.49181712390855
+      ],
+      "span_s": 1.0604314161464572
+    },
+    {
+      "choice_count": 32,
+      "repeat": 1,
+      "aircraft_id": "A0100",
+      "query_ids": [
+        "r01_end_0094_k32_A0100",
+        "r01_end_0099_k32_A0100",
+        "r01_end_0109_k32_A0100"
+      ],
+      "choices": [
+        "A1b",
+        "A1a",
+        "A1b"
+      ],
+      "labels": [
+        "敵を自機の攻撃可能な方向に捉える",
+        "敵を自機の攻撃可能な距離に収める",
+        "敵を自機の攻撃可能な方向に捉える"
+      ],
+      "source_steps": [
+        94,
+        99,
+        109
+      ],
+      "arrival_times_s": [
+        19.837039250601084,
+        20.522606792114676,
+        22.516611625161023
+      ],
+      "span_s": 2.679572374559939
+    },
+    {
+      "choice_count": 32,
+      "repeat": 1,
+      "aircraft_id": "A0100",
+      "query_ids": [
+        "r01_end_0194_k32_A0100",
+        "r01_end_0199_k32_A0100",
+        "r01_end_0209_k32_A0100"
+      ],
+      "choices": [
+        "A1a",
+        "B2b",
+        "A1a"
+      ],
+      "labels": [
+        "敵を自機の攻撃可能な距離に収める",
+        "敵の攻撃圏へ不用意に入ることを避ける",
+        "敵を自機の攻撃可能な距離に収める"
+      ],
+      "source_steps": [
+        194,
+        199,
+        209
+      ],
+      "arrival_times_s": [
+        40.10648687528447,
+        40.53540449980647,
+        42.778937250096355
+      ],
+      "span_s": 2.6724503748118877
+    },
+    {
+      "choice_count": 32,
+      "repeat": 1,
+      "aircraft_id": "A0100",
+      "query_ids": [
+        "r01_end_0209_k32_A0100",
+        "r01_end_0214_k32_A0100",
+        "r01_end_0219_k32_A0100"
+      ],
+      "choices": [
+        "A1a",
+        "A1c",
+        "A1a"
+      ],
+      "labels": [
+        "敵を自機の攻撃可能な距離に収める",
+        "攻撃に有利な高度・速度条件を得る",
+        "敵を自機の攻撃可能な距離に収める"
+      ],
+      "source_steps": [
+        209,
+        214,
+        219
+      ],
+      "arrival_times_s": [
+        42.778937250096355,
+        43.49475716678426,
+        44.87661708444357
+      ],
+      "span_s": 2.0976798343472183
+    }
+  ],
+  "goals_for_unflagged_aircraft": {
+    "displayed": 35,
+    "same_goal": 63,
+    "stale": 1
+  },
+  "cross_condition_broad_agreement": {
+    "8": {
+      "pairs": 86,
+      "agree": 65
+    },
+    "32": {
+      "pairs": 86,
+      "agree": 60
+    }
+  }
+}

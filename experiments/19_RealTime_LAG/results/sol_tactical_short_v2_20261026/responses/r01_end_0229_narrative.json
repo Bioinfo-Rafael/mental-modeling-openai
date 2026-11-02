@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0229_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:36:32.090307+00:00",
+  "api_status": "ok",
+  "latency_s": 34.968192709144205,
+  "raw": {
+    "id": "chatcmpl-Ed7fkFuFSYsHfMta76zJLT1qFFiLH",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to deny closure and reduce exposure by extending east in level, increasingly fast flight instead of turning toward B0100, given B0100 remained behind-left while the two opposing missiles nearest its altitude stayed northwest and did not materially close.\",\"A0200\":\"A0200 most plausibly seeks to spoil an intercept and escape east by combining a sustained descent with repeated high-bank course changes while retaining high speed, given that B01001 approached from behind-left near its altitude and substantially closed; the maneuver had not opened separation by the window’s end.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992992,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 2093,
+      "prompt_tokens": 35016,
+      "total_tokens": 37109,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1945,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 31790,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to deny closure and reduce exposure by extending east in level, increasingly fast flight instead of turning toward B0100, given B0100 remained behind-left while the two opposing missiles nearest its altitude stayed northwest and did not materially close.",
+    "A0200": "A0200 most plausibly seeks to spoil an intercept and escape east by combining a sustained descent with repeated high-bank course changes while retaining high speed, given that B01001 approached from behind-left near its altitude and substantially closed; the maneuver had not opened separation by the window’s end."
+  },
+  "finished_at": "2026-10-26T05:37:07.060685+00:00",
+  "over_3s": true
+}

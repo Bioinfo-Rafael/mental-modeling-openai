@@ -1,0 +1,5617 @@
+{
+  "episode_alias": "episode_01",
+  "start_step": 265,
+  "end_step": 304,
+  "time_points": 40,
+  "start_time_s": 53.0,
+  "end_time_s": 60.8,
+  "elapsed_s": 7.8,
+  "blocks": [
+    {
+      "step": 265,
+      "time_s": 53.0,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22157006692504,
+            60.05728449307731,
+            5243.2248765757895,
+            -98.09489643787175,
+            -2.863994230183891,
+            33.58386042483096,
+            319.10262144818284,
+            246.65610989725704,
+            201.04216499549855,
+            -23.859890179489113
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.17310953710378,
+            60.0616797348878,
+            3872.537267251897,
+            -47.70813060156848,
+            2.951294417647368,
+            63.43100755711888,
+            345.4692882835544,
+            147.77158790019146,
+            312.0757669189098,
+            -11.013748615976729
+          ],
+          "action": [
+            1,
+            1,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.10391323994033,
+            60.06208403222464,
+            3898.947315546611,
+            -84.42628761760771,
+            0.8523032829293566,
+            91.98756716485134,
+            332.2578932788141,
+            -38.7560414169508,
+            329.7509251676432,
+            -12.55405316409077
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.14254498067746,
+            60.06944799069389,
+            3885.663289572136,
+            0.0,
+            -2.8952738091541375,
+            76.3147690028141,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 266,
+      "time_s": 53.2,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22227230809496,
+            60.05773326656061,
+            5238.01809282614,
+            -109.90362255572671,
+            -4.056218549756883,
+            30.880253380378637,
+            318.5298508851864,
+            253.47033993866785,
+            190.79561993003753,
+            -28.47953812525632
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.1742194977561,
+            60.06195305095898,
+            3871.038816439587,
+            -73.31604363551115,
+            3.3996628043387296,
+            61.361723187491634,
+            344.19820916474873,
+            157.01122719494882,
+            306.2597802831487,
+            -4.982841345433989
+          ],
+          "action": [
+            1,
+            1,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.10509793896546,
+            60.06202629091934,
+            3896.525094256801,
+            -70.72347321370799,
+            1.187763062547911,
+            89.12150528751587,
+            331.610665290148,
+            -25.892976113660303,
+            330.4061314196231,
+            -11.268338052736713
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.1437030449495,
+            60.069591228834206,
+            3882.456285517772,
+            0.0,
+            -2.7815166207383606,
+            75.57081922875241,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 267,
+      "time_s": 53.4,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22294026734198,
+            60.058193210541496,
+            5231.837648945708,
+            -104.27290923926088,
+            -5.421634843634604,
+            28.43568664516355,
+            318.31800733864475,
+            259.3237124809853,
+            181.59549953321425,
+            -33.1759022546055
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.17530527241136,
+            60.06224515135961,
+            3870.232618141535,
+            -99.51429148827752,
+            3.212246911355245,
+            56.04565646183391,
+            343.0755606996315,
+            168.94487418632644,
+            298.5662684383713,
+            -4.080831572032869
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.1062847108512,
+            60.061989474942074,
+            3894.5973848996314,
+            -51.61100188176523,
+            1.0055907652681355,
+            89.19648707435722,
+            331.5131332117276,
+            -16.33158842615948,
+            331.0129187950451,
+            -8.042655166054066
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.14485065720017,
+            60.06974135752011,
+            3879.422661448376,
+            0.0,
+            -2.637351921186934,
+            74.76803519265606,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 268,
+      "time_s": 53.6,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22357419316997,
+            60.058663528532946,
+            5224.810062485665,
+            -96.78198542282722,
+            -6.24230742346283,
+            26.36319790529258,
+            317.97222823166646,
+            265.0927954586414,
+            171.6685611656306,
+            -36.90599991676216
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.17636294462572,
+            60.06255822289904,
+            3869.033772748268,
+            -111.75235335016858,
+            1.4225144758591344,
+            52.386210612624936,
+            342.2108269512103,
+            179.82579047676498,
+            291.0371205707082,
+            -8.266172750969222
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.10747345962984,
+            60.06196327663999,
+            3893.127763574195,
+            -29.521139864019965,
+            -0.5089375498615626,
+            91.23681643742304,
+            331.856632957938,
+            -13.401435561695532,
+            331.51289264487895,
+            -6.9590497404653995
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.14598697934514,
+            60.069898863250394,
+            3876.559997723402,
+            0.0,
+            -2.531247051093606,
+            73.89952600330267,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 269,
+      "time_s": 53.8,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22417143930748,
+            60.05914410760809,
+            5217.163843162644,
+            -88.57231586693312,
+            -6.5875654908747885,
+            24.325506301417743,
+            317.5563933445054,
+            270.7467466626824,
+            161.22273398270775,
+            -39.31274822095955
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.1773961306056,
+            60.06288931917889,
+            3866.9620117925406,
+            -100.91385783899408,
+            0.492910193096237,
+            52.250132066472965,
+            342.269336845672,
+            188.11808077800217,
+            285.69277241848744,
+            -11.812130079519385
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.10866409988785,
+            60.06194040143591,
+            3891.767069525287,
+            -18.456560262561325,
+            -1.2864868403046867,
+            91.68866726717918,
+            332.24610669629504,
+            -12.186302905122709,
+            331.95597422631033,
+            -6.648354067861806
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.14711118919844,
+            60.07006416153739,
+            3873.8042922860905,
+            0.0,
+            -2.486756526645911,
+            72.97796024069481,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 270,
+      "time_s": 54.0,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22473083026908,
+            60.05963465582735,
+            5209.1884093221815,
+            -79.77235674752836,
+            -6.479995351127716,
+            22.235126401847378,
+            317.1405295007683,
+            276.19332994878863,
+            150.60482319499732,
+            -40.16898273831289
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.17842134263208,
+            60.063227804599705,
+            3864.5103768775016,
+            -82.8232978741549,
+            0.6862956281411505,
+            58.00995850409137,
+            342.8327098196035,
+            188.2619236878171,
+            286.2360489537233,
+            -12.674355643451651
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.1098559882921,
+            60.06191909220212,
+            3890.409327698976,
+            -12.476340805145206,
+            -1.8225764941533784,
+            91.8531655311696,
+            332.554827412419,
+            -11.633801977582008,
+            332.2751161571002,
+            -7.114426866288948
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.14822269476744,
+            60.07023743499473,
+            3871.1013667169864,
+            0.0,
+            -2.46806582184348,
+            72.04771477047835,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 271,
+      "time_s": 54.2,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.2252522147674,
+            60.060134715992895,
+            5201.20904970958,
+            -70.49983839942774,
+            -5.9129488656198745,
+            20.159936657788517,
+            316.72922898645606,
+            281.334444007092,
+            140.07551811666454,
+            -39.33426412078103
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.17945221858324,
+            60.06356394004754,
+            3861.831510221288,
+            -65.21647197489449,
+            -0.1911212301816162,
+            59.23498508935211,
+            343.5621785664964,
+            186.20140621519695,
+            288.36970502690855,
+            -14.384717151690364
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.11104897903712,
+            60.06189848080239,
+            3888.881050332427,
+            -6.722667426518839,
+            -2.163291648774971,
+            91.8769646613995,
+            332.86376851172696,
+            -11.375991712304444,
+            332.56762415641657,
+            -8.224996252070882
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.14932150318788,
+            60.0704184093694,
+            3868.430724692296,
+            0.0,
+            -2.4658533228689636,
+            71.14907548253561,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 272,
+      "time_s": 54.4,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.225735107434,
+            60.06064379148071,
+            5193.583406879729,
+            -70.28457020124587,
+            -5.165465710350928,
+            18.087262164453584,
+            316.0683145696825,
+            286.3151993108068,
+            128.7237462508691,
+            -36.782920896451664
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.18049233318786,
+            60.063894892263534,
+            3858.6252161327006,
+            -47.49287780712071,
+            -2.0655513488116934,
+            61.397784676322,
+            344.23827616127045,
+            182.59464967941568,
+            291.2610338600309,
+            -18.060864810980156
+          ],
+          "action": [
+            1,
+            1,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.11224296842512,
+            60.06187819608527,
+            3887.1058013265433,
+            -1.0666533867645454,
+            -2.431670793450801,
+            91.84704607157111,
+            333.1629476199217,
+            -11.253505610607515,
+            332.8359643903356,
+            -9.54615559384769
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.150407921028,
+            60.07060661842127,
+            3865.764780138141,
+            0.0,
+            -2.498206934017707,
+            70.29503627865958,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 273,
+      "time_s": 54.6,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22617268475352,
+            60.06116174973058,
+            5186.420618251446,
+            -87.06953057531933,
+            -4.8616011911687975,
+            15.824447494309938,
+            314.9694703443,
+            291.139370576555,
+            114.84415510461368,
+            -35.4182747683128
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.1815425248888,
+            60.06421909091226,
+            3854.470433714443,
+            -30.115707790955256,
+            -4.03422729855337,
+            62.62413599578196,
+            344.85931056421515,
+            178.90036404982757,
+            293.8712245922812,
+            -23.71301714877217
+          ],
+          "action": [
+            1,
+            1,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.11343723108766,
+            60.06185805096656,
+            3885.037305635262,
+            -4.324285832072229,
+            -4.288207135428111,
+            91.76118726245592,
+            333.0233070554519,
+            -11.200097837357369,
+            332.6318613413547,
+            -11.624356806688356
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.15148240096352,
+            60.0708015062679,
+            3863.05207227815,
+            0.0,
+            -2.588795113084203,
+            69.4938240499281,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 274,
+      "time_s": 54.8,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.2265609327698,
+            60.061687479082686,
+            5179.127764541433,
+            -97.65862576768131,
+            -5.317404928584358,
+            13.07707581241256,
+            314.3108137014597,
+            294.89821479049135,
+            101.96084379306242,
+            -37.81953008779553
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.18260078830949,
+            60.064537585449465,
+            3849.130070008582,
+            -11.424791892513296,
+            -4.784694709605223,
+            62.52313453658369,
+            345.60058923978954,
+            176.62659361672303,
+            295.6190981149145,
+            -29.191823169635732
+          ],
+          "action": [
+            1,
+            1,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.1146304766564,
+            60.06183792223011,
+            3882.3162502819423,
+            -2.2139212968157755,
+            -4.163901683476027,
+            91.79443012821773,
+            332.9703323263424,
+            -11.21590549513462,
+            332.4300755657405,
+            -15.286939942158794
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.15254541376684,
+            60.0710025111454,
+            3860.220638747282,
+            0.0,
+            -2.746905889600445,
+            68.74014067865691,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 275,
+      "time_s": 55.0,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.2269062701376,
+            60.06221926770133,
+            5171.29912227468,
+            -91.22882508328526,
+            -5.980164295882752,
+            10.423401132530762,
+            314.0929858979475,
+            297.9984252598268,
+            90.7070599841044,
+            -40.29356774960219
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.18366372041044,
+            60.06485377000221,
+            3843.099353063885,
+            -13.185805919861725,
+            -4.0645988715533115,
+            61.63208082109375,
+            346.07822015340975,
+            176.02667404340727,
+            296.47467360621624,
+            -29.791146333357897
+          ],
+          "action": [
+            1,
+            1,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.11582336811044,
+            60.061817887197705,
+            3879.123851561585,
+            -5.393237725966469,
+            -3.731258451246059,
+            91.64731305411762,
+            332.9596035759491,
+            -11.086932875255108,
+            332.38108821127344,
+            -16.186096884747055
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.15359729498525,
+            60.07120919074421,
+            3857.211135198875,
+            0.0,
+            -2.934454913059339,
+            68.01576486225737,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 276,
+      "time_s": 55.2,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22721143778004,
+            60.062756332950144,
+            5163.093706548634,
+            -83.28065488634643,
+            -6.188115958158597,
+            8.15268604582284,
+            313.83785950949897,
+            300.798870412367,
+            79.30926926219713,
+            -41.52446783818386
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.18472607976248,
+            60.06517149638646,
+            3837.900875103816,
+            -38.03214532699747,
+            1.1035320329785734,
+            58.92257783699702,
+            345.6414034721618,
+            179.19567352442917,
+            294.7940996265984,
+            -21.29152905911425
+          ],
+          "action": [
+            1,
+            1,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.11701656933552,
+            60.06179826530292,
+            3875.875782818797,
+            -3.311144261314553,
+            -3.0358126418202516,
+            91.61462861421016,
+            333.2269806437256,
+            -10.799367123821314,
+            332.6537918588038,
+            -16.280327411279032
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.15463829943783,
+            60.071421275508754,
+            3854.037310509697,
+            0.0,
+            -3.0535296649461845,
+            67.30174719857987,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 277,
+      "time_s": 55.4,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.2274752093537,
+            60.06329815125342,
+            5154.7901784484775,
+            -74.71098941387595,
+            -5.93372668281259,
+            6.056099429235544,
+            313.4911591383675,
+            303.296095041546,
+            67.7271754873991,
+            -41.24579119093029
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.18577569070088,
+            60.06549869989991,
+            3834.40875389421,
+            -63.99415052718574,
+            1.958182923012018,
+            56.66058439530944,
+            344.51609998140884,
+            185.99270343263677,
+            289.6444846660434,
+            -14.287404199555212
+          ],
+          "action": [
+            1,
+            1,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.11821086867396,
+            60.06177910451868,
+            3872.7379128501448,
+            -6.364550113405728,
+            -2.5614231738636386,
+            91.47106517378052,
+            333.37524575100684,
+            -10.505605331944,
+            332.8815056451924,
+            -14.784787301255223
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.1556684903669,
+            60.07163876555009,
+            3850.809986740264,
+            0.0,
+            -3.0620627660461888,
+            66.5633780878066,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 278,
+      "time_s": 55.6,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22769643676168,
+            60.063844156986264,
+            5146.7089555585835,
+            -75.32087389971653,
+            -5.517846252101313,
+            3.946159024510087,
+            312.8791508217082,
+            305.42934765634135,
+            55.19358902692995,
+            -39.49613068974406
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.18680109869268,
+            60.06584167373701,
+            3831.9712114726785,
+            -90.02118038390512,
+            2.715763036419465,
+            51.43651174718236,
+            343.44966737445293,
+            196.70138628226047,
+            281.32557583430514,
+            -11.052557882948191
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.11940600698478,
+            60.06176070975329,
+            3869.9148180822554,
+            -4.328318957493994,
+            -2.1757135302174424,
+            91.4608367590827,
+            333.634475273353,
+            -10.045500353585869,
+            333.2044812554712,
+            -13.631752816276288
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.15668748652378,
+            60.07186187103122,
+            3847.626329064816,
+            0.0,
+            -3.009432958263885,
+            65.77477112112418,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 279,
+      "time_s": 55.8,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.2278711282465,
+            60.06439344970876,
+            5138.893393190441,
+            -78.12086237962355,
+            -5.08767580050307,
+            1.666100506119916,
+            312.34670647226466,
+            306.99125641859655,
+            42.59106775225938,
+            -38.766409097632696
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.18779503531462,
+            60.06620401255497,
+            3829.606039834706,
+            -102.2051724401308,
+            1.5553951299270288,
+            47.38938431506112,
+            342.62350045348944,
+            207.0626537496688,
+            272.66564266842136,
+            -13.014138210569236
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.12060216712278,
+            60.06174298073973,
+            3867.370783102271,
+            -10.456155303520744,
+            -1.8836949803362255,
+            91.24078699936788,
+            333.6483669075777,
+            -9.589649338308408,
+            333.3173507515492,
+            -11.349671961365615
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.15769448908162,
+            60.07209095783332,
+            3844.5217997080586,
+            0.0,
+            -2.9607183817885026,
+            64.92314348132827,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 280,
+      "time_s": 56.0,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22800367789642,
+            60.06494527368125,
+            5131.242676314229,
+            -69.80727447103695,
+            -4.608301840744921,
+            359.4059418541101,
+            312.0872673209232,
+            308.248157655126,
+            31.255414933686303,
+            -37.47845732397546
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.18876055119902,
+            60.06658363222935,
+            3826.777161160684,
+            -91.15259555679916,
+            0.6718078253004202,
+            47.1795053111349,
+            342.70444650373054,
+            214.9900432100405,
+            266.4658193620824,
+            -14.885767889742866
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.12179837061166,
+            60.06172685886629,
+            3865.3509224930945,
+            -15.145233830327998,
+            -1.5365415964705504,
+            91.24989037974588,
+            333.65406952416873,
+            -8.487386974592294,
+            333.4153105337909,
+            -9.339864776223864
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.15868863248856,
+            60.07232635789702,
+            3841.471660822684,
+            0.0,
+            -2.9450886233430356,
+            64.01793813049274,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 281,
+      "time_s": 56.2,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22809436718562,
+            60.06549893971497,
+            5124.021684263009,
+            -70.54309249901257,
+            -4.021868050428118,
+            357.30107001987875,
+            311.4778869031566,
+            308.96890985936665,
+            18.90476819565717,
+            -34.630860651139905
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.1897166564482,
+            60.06697032249308,
+            3823.7272065470697,
+            -73.0473829601365,
+            -0.1007307250092374,
+            52.78267014998622,
+            343.2829988628463,
+            215.2046841445458,
+            266.9855444760161,
+            -15.775939634786292
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.12299495989114,
+            60.06171228611786,
+            3863.544940217105,
+            -21.3874927836338,
+            -3.1762227799812552,
+            91.52612690347524,
+            333.4811008399767,
+            -7.829532523032059,
+            333.263151280757,
+            -9.16597165240943
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.15966931038226,
+            60.07256821253744,
+            3838.448785341565,
+            0.0,
+            -2.9443446620619467,
+            63.10350166353179,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 282,
+      "time_s": 56.4,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22813637080834,
+            60.066053009781434,
+            5117.292675545821,
+            -88.59489390054657,
+            -3.9045137491308446,
+            354.9438009378852,
+            310.4550162777825,
+            308.6345187455554,
+            4.252022522993637,
+            -33.30122032601117
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.19067919911716,
+            60.067354717808534,
+            3820.3697182612896,
+            -55.37059292012168,
+            -1.414677859432537,
+            54.399002102788614,
+            344.02950273878554,
+            213.0341623541398,
+            269.5231379867525,
+            -18.166521806334817
+          ],
+          "action": [
+            1,
+            1,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.12418952815112,
+            60.06169860750517,
+            3861.529315355015,
+            -44.505238950083466,
+            -4.212614675169501,
+            91.75097040998006,
+            332.7523775568663,
+            -7.234957147743569,
+            332.49916602291995,
+            -10.775191825685562
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.16063658112012,
+            60.07281628267843,
+            3835.4374026190376,
+            0.0,
+            -2.963511653663028,
+            62.22012176764106,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 283,
+      "time_s": 56.6,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22812742934396,
+            60.06660578538068,
+            5110.4032271792385,
+            -100.37525279013998,
+            -4.6132735097884385,
+            352.064811471813,
+            309.92327727467705,
+            307.7089422986269,
+            -8.781903893028613,
+            -35.923847095630904
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.19165214763736,
+            60.06773405249658,
+            3816.306037696204,
+            -37.791776473120905,
+            -3.364428226026724,
+            56.137641410607245,
+            344.70572624833716,
+            209.7725350885796,
+            272.57641971081426,
+            -22.795101415396807
+          ],
+          "action": [
+            1,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.12538151830198,
+            60.06168803491161,
+            3859.3638634054632,
+            -66.74104024069337,
+            -3.6929137848768,
+            91.4224108932474,
+            332.03529327783366,
+            -4.361703648889244,
+            331.8224870743577,
+            -11.05660866468511
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.16159083458778,
+            60.07307015986984,
+            3832.405330202036,
+            0.0,
+            -3.025663853001158,
+            61.38097362157382,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 284,
+      "time_s": 56.8,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.2280753892817,
+            60.06715684911447,
+            5102.913044358677,
+            -94.8804341510429,
+            -5.574045015481936,
+            349.33879660350556,
+            309.82512404182023,
+            306.7243586157079,
+            -20.08310103096998,
+            -38.83869684080231
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.19263410090672,
+            60.06810819091812,
+            3811.33072041176,
+            -41.071571752056336,
+            -3.559438047723984,
+            55.34709999528358,
+            344.88417324417077,
+            208.03326073708865,
+            273.86922950368785,
+            -25.74685441886141
+          ],
+          "action": [
+            1,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.12657095478735,
+            60.06168459934568,
+            3857.0496017607006,
+            -88.89929335210005,
+            -3.041310624067654,
+            88.42911287876329,
+            331.2149526484241,
+            2.0732612958271797,
+            330.98786749182,
+            -12.086273979785428
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.16253257871163,
+            60.07332937980419,
+            3829.2993592133266,
+            0.0,
+            -3.1378954177717264,
+            60.5873652226932,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 285,
+      "time_s": 57.0,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22798262682754,
+            60.067705826219544,
+            5094.936295984081,
+            -87.42799914396235,
+            -6.0582804739536575,
+            347.03983309051364,
+            309.64675751816367,
+            305.315254043747,
+            -31.70906044198959,
+            -40.72156155651338
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.19361046277044,
+            60.06848575849821,
+            3806.680050681514,
+            -66.02705719648495,
+            0.9754353552798082,
+            49.000662893802605,
+            344.39519829811877,
+            214.42863831816896,
+            268.7430279929016,
+            -20.13942861709222
+          ],
+          "action": [
+            1,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.12775680754022,
+            60.06170023676353,
+            3854.366486299512,
+            -93.23877681264482,
+            -2.9537642769977768,
+            82.84247092291736,
+            330.51632047572633,
+            15.388087007963064,
+            329.82104768137276,
+            -14.910445513466463
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.16346217162004,
+            60.07359361679129,
+            3826.099039196393,
+            0.0,
+            -3.2192014318856073,
+            59.79633509291695,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 286,
+      "time_s": 57.2,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22784750726258,
+            60.06825188612463,
+            5086.716793539521,
+            -79.25164178385091,
+            -6.053976623249832,
+            344.8927928052972,
+            309.37288538934826,
+            303.499648730468,
+            -43.591306376532955,
+            -41.22309356417351
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.19455970576,
+            60.06887864455595,
+            3802.976444861841,
+            -91.74910593838388,
+            0.7173978670197158,
+            46.873028222036915,
+            343.26145952140337,
+            223.28662996559817,
+            260.0983142503309,
+            -17.899089236779812
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.12893792174812,
+            60.06173867503536,
+            3851.188816901296,
+            -77.3442779928136,
+            -2.5146779190587134,
+            80.15031168723492,
+            330.02174016944565,
+            27.325589459072265,
+            328.481567962644,
+            -16.35605863239146
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.16437930369209,
+            60.07386297650234,
+            3822.8648750014218,
+            0.0,
+            -3.2421681475342665,
+            58.95612685143547,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 287,
+      "time_s": 57.4,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22766997782644,
+            60.068794435653494,
+            5078.552142803424,
+            -70.47580780112182,
+            -5.5749790003263415,
+            342.80446922874006,
+            309.0671052872697,
+            301.42028183034563,
+            -55.283673674525986,
+            -40.14977829348239
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.19547633235388,
+            60.0692876583876,
+            3799.1876858459295,
+            -102.81387304845876,
+            -0.5936884770450732,
+            41.33474092947294,
+            342.6281316727307,
+            232.77724854499593,
+            250.58145380373608,
+            -20.43830186129386
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.13011522914589,
+            60.06179680133037,
+            3848.012555394298,
+            -56.933247473184814,
+            -2.294235398279989,
+            79.98464314708961,
+            330.11856007269586,
+            36.361193781756505,
+            327.7545883578817,
+            -15.266207832699568
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.16528328502042,
+            60.07413768704403,
+            3819.626421316592,
+            0.0,
+            -3.2734738560604453,
+            58.06707580957651,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 288,
+      "time_s": 57.6,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22745001452908,
+            60.069332808491986,
+            5070.779592621821,
+            -70.58557472111265,
+            -4.930318424289371,
+            340.6952862336724,
+            308.48051960809477,
+            298.6361632421221,
+            -67.63040030744172,
+            -37.453997596517326
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.19636316752852,
+            60.06971187306132,
+            3794.8651002242896,
+            -89.93725075730609,
+            -0.9763194206657494,
+            43.47258235949549,
+            342.91260043425586,
+            238.72289066785976,
+            245.1601391877836,
+            -22.292132271078348
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.13129099559372,
+            60.06186577624649,
+            3845.037573367641,
+            -33.97556123080321,
+            -2.206559659604885,
+            80.84509893753622,
+            330.39790010183367,
+            40.19984440087762,
+            327.6235117317057,
+            -14.476859550032264
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.16617333624204,
+            60.0744179486543,
+            3816.359025044907,
+            0.0,
+            -3.336248983658884,
+            57.13247288175451,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 289,
+      "time_s": 57.8,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22718197509364,
+            60.06986467441918,
+            5063.487001990771,
+            -87.66654542383515,
+            -4.735870005076279,
+            338.33790640022175,
+            307.43701770660977,
+            294.10580269585097,
+            -81.96264580728712,
+            -36.075218214622645
+          ],
+          "action": [
+            2,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.1972448099085,
+            60.07014000099588,
+            3790.307507763747,
+            -71.74621152417676,
+            -1.5663139868406932,
+            47.65602154393274,
+            343.5560082325718,
+            238.125330615145,
+            246.52788177444995,
+            -23.474693180735517
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.132467063201,
+            60.061939843111865,
+            3842.2122667241783,
+            -21.78641869855859,
+            -2.948543589898327,
+            81.32783426660133,
+            330.73417966932493,
+            42.2193106681662,
+            327.7358410377632,
+            -13.850845010907642
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.16704900900234,
+            60.07470377689344,
+            3813.0417466583312,
+            0.0,
+            -3.4094565053484236,
+            56.20153295798712,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 290,
+      "time_s": 58.0,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22686428099604,
+            60.0703878372764,
+            5056.054591620406,
+            -98.95286083815206,
+            -5.319031118515873,
+            335.4739036495157,
+            306.8552483275571,
+            289.34560654158867,
+            -94.6131864416318,
+            -38.56952621705271
+          ],
+          "action": [
+            2,
+            0,
+            2
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.19813449740464,
+            60.07056553092627,
+            3785.380052163166,
+            -54.13419090131142,
+            -2.8887978685590596,
+            49.59125095262158,
+            344.31926579846066,
+            235.96565313504544,
+            249.38567385088268,
+            -26.129543020948088
+          ],
+          "action": [
+            1,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.13364346870772,
+            60.06201666455664,
+            3839.414561090613,
+            -14.882993496303612,
+            -3.411003460693624,
+            81.61931277935643,
+            331.02770996484054,
+            43.293077997091856,
+            327.8722105085247,
+            -14.313201541164633
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.16791049982464,
+            60.074994903185285,
+            3809.662877247302,
+            0.0,
+            -3.5007650494568923,
+            55.302370602418115,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 291,
+      "time_s": 58.2,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.2265056779168,
+            60.07090231471205,
+            5048.063076427094,
+            -93.12696480878108,
+            -6.157642057485295,
+            332.65706008315306,
+            305.80542240434306,
+            284.258672980546,
+            -104.96802137504808,
+            -41.17860725965772
+          ],
+          "action": [
+            2,
+            0,
+            2
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.1990358316692,
+            60.070986066593875,
+            3779.7055505348953,
+            -36.57568393883687,
+            -4.768089964425745,
+            51.16896905372805,
+            345.0116720149847,
+            232.81332705918445,
+            252.7312004748513,
+            -30.950749211434193
+          ],
+          "action": [
+            1,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.13482041580107,
+            60.062094901111394,
+            3836.442040506417,
+            -8.315279941935783,
+            -3.6579974112016207,
+            81.74556073826518,
+            331.3114475987478,
+            43.875883293011945,
+            328.0285438971691,
+            -15.474384121471
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.1687582528042,
+            60.075290954994955,
+            3806.1951593924905,
+            0.0,
+            -3.631215417096404,
+            54.44735080030462,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 292,
+      "time_s": 58.4,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22611073534756,
+            60.071407248727766,
+            5039.653255063641,
+            -85.6260854055961,
+            -6.388679139120515,
+            330.20697601068605,
+            304.5237544731015,
+            278.65537980444753,
+            -115.17427572777568,
+            -42.67062871595899
+          ],
+          "action": [
+            2,
+            0,
+            2
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.1999469668789,
+            60.071401653982086,
+            3773.0873677462846,
+            -40.12768037535709,
+            -4.958290559202716,
+            50.358636127237254,
+            345.2359193838215,
+            231.13844550536737,
+            254.1798672916382,
+            -33.99197119556372
+          ],
+          "action": [
+            1,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.13599728752372,
+            60.06217389070192,
+            3833.1961192377,
+            -10.716435749472796,
+            -5.447639232378993,
+            81.95702814742964,
+            331.15520024224867,
+            44.10422052336921,
+            327.7405722024132,
+            -17.45570714536079
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.16959281813746,
+            60.07559151420388,
+            3802.592587390478,
+            0.0,
+            -3.807254490267781,
+            53.63684771716849,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 293,
+      "time_s": 58.6,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.2256787200178,
+            60.071901690312515,
+            5031.0994061451765,
+            -77.25755324278845,
+            -6.243370046769338,
+            327.9351401169804,
+            303.1350609305352,
+            272.607971770404,
+            -125.52983036940992,
+            -42.638252544084054
+          ],
+          "action": [
+            2,
+            0,
+            2
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.20085244765184,
+            60.07182035782334,
+            3766.7972826385353,
+            -65.02208327620468,
+            -0.3318415544372899,
+            44.095625892301335,
+            344.79411462539395,
+            237.06565895745752,
+            248.76698825687325,
+            -28.24606834553158
+          ],
+          "action": [
+            1,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.1371729416556,
+            60.062252901528645,
+            3829.3206476174178,
+            -7.997373844022325,
+            -5.287771326813315,
+            82.03995614267524,
+            331.1166787472535,
+            44.03596758625948,
+            327.5014624849578,
+            -21.020955581694277
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.1704145875052,
+            60.07589628909569,
+            3798.840425528289,
+            0.0,
+            -3.948699917237579,
+            52.82962418444947,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 294,
+      "time_s": 58.8,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22521007720958,
+            60.072385133318186,
+            5022.702394623918,
+            -68.44930842171391,
+            -5.630019921448094,
+            325.7434985790473,
+            301.7244976583347,
+            266.4270517097978,
+            -135.53046184463918,
+            -41.05840372661809
+          ],
+          "action": [
+            2,
+            0,
+            2
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.20172977139242,
+            60.072252969546334,
+            3761.5226167995934,
+            -74.42896847301792,
+            -0.0992497182535933,
+            41.991756564800646,
+            343.8874266156182,
+            244.8772298882641,
+            240.14748922497287,
+            -24.957721961428668
+          ],
+          "action": [
+            1,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.13834806430916,
+            60.06233213868567,
+            3825.001884595844,
+            -13.64919969417636,
+            -4.719775635359521,
+            81.79170720227435,
+            331.0363355141106,
+            44.44622769314209,
+            327.340050265473,
+            -21.40279810346732
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.17122330187644,
+            60.07620535804051,
+            3795.000627454355,
+            0.0,
+            -4.0257212668210745,
+            51.97764776212778,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 295,
+      "time_s": 59.0,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22470538983949,
+            60.07285700438013,
+            5014.80194178991,
+            -68.12375129009534,
+            -4.8394503232088715,
+            323.54161450476823,
+            300.01189974643745,
+            259.37941599614896,
+            -145.94975369724474,
+            -37.790580078595525
+          ],
+          "action": [
+            2,
+            0,
+            2
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.20257560921333,
+            60.07269970611301,
+            3756.850193206635,
+            -67.48309601330908,
+            0.65780321711888,
+            37.940932672338256,
+            343.3333153011709,
+            253.22791410834287,
+            230.85035628147193,
+            -21.48259567064505
+          ],
+          "action": [
+            1,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.13952241936818,
+            60.06241274670982,
+            3820.7897154630664,
+            -17.72321214308151,
+            -4.666656038645788,
+            81.95745298527882,
+            331.02413894703517,
+            45.26359516210195,
+            327.2249302571509,
+            -21.261056813576204
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.17201836379364,
+            60.07651888590589,
+            3791.1218993738744,
+            0.0,
+            -4.0654786030207095,
+            51.08207180722072,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 296,
+      "time_s": 59.2,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22416036698596,
+            60.07331415676135,
+            5007.5234990303015,
+            -84.20356705123599,
+            -4.489037375249302,
+            321.0771741457984,
+            297.77830144434193,
+            249.92566802880623,
+            -157.94388763383634,
+            -35.53597656660653
+          ],
+          "action": [
+            2,
+            0,
+            2
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.20338434144723,
+            60.07316180407026,
+            3753.053447833407,
+            -73.92662848693884,
+            1.0418631991605214,
+            35.35620383808102,
+            342.0752437708296,
+            262.1167238006234,
+            219.16687490602845,
+            -16.618557362944752
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.1406967714803,
+            60.06249447637168,
+            3816.481237152798,
+            -23.365923572152532,
+            -4.902898001373565,
+            81.85472474512602,
+            331.0199775060973,
+            46.00474369929294,
+            327.10705962093084,
+            -21.4186977066371
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.17279911272452,
+            60.076837025996994,
+            3787.2470689544575,
+            0.0,
+            -4.0545705376365975,
+            50.13856207919829,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 297,
+      "time_s": 59.4,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22357377444672,
+            60.07375374482909,
+            5000.290936587033,
+            -95.47420878312067,
+            -4.877428663967264,
+            318.06743284019177,
+            295.95735248617524,
+            240.48716566415771,
+            -168.4566474258303,
+            -37.135368309680686
+          ],
+          "action": [
+            2,
+            0,
+            2
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.20414850842332,
+            60.07364004089892,
+            3749.935489639914,
+            -82.29464444670403,
+            1.2611550234234088,
+            32.37042823823569,
+            341.066865061376,
+            270.7397585896107,
+            206.89207170018688,
+            -14.908394589591213
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.14186957624918,
+            60.06257856885165,
+            3812.297164353061,
+            -45.52631697774362,
+            -5.055106977420373,
+            81.89210074213203,
+            330.5743329344522,
+            47.875495392446325,
+            326.43939510521676,
+            -20.60698569238245
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.17356483441564,
+            60.07715992380141,
+            3783.422954416345,
+            0.0,
+            -4.0102966654716,
+            49.146183598726026,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 298,
+      "time_s": 59.6,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22295329827466,
+            60.07417765194192,
+            4992.654390410856,
+            -89.95641320629271,
+            -5.567685012858959,
+            314.99771932033264,
+            294.7178445242958,
+            232.3630100641036,
+            -177.02443929584388,
+            -39.0945946006399
+          ],
+          "action": [
+            2,
+            0,
+            0
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.204873878593,
+            60.074132015308514,
+            3747.102556833583,
+            -67.47864117140698,
+            0.7356991956759065,
+            32.31051434322657,
+            341.0101775229062,
+            276.93779777714764,
+            198.52603398651425,
+            -13.4466042602978
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.14303946961428,
+            60.06266721856123,
+            3808.203261750064,
+            -68.15999577833517,
+            -4.620984000062171,
+            81.20443397361097,
+            330.1255824598154,
+            51.35477346608356,
+            325.4697356426167,
+            -20.372496592338297
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.17431481663276,
+            60.07748767477449,
+            3779.668754713779,
+            0.0,
+            -3.9550533469029654,
+            48.11426162257304,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 299,
+      "time_s": 59.8,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22230323238234,
+            60.07458722715319,
+            4984.725970734903,
+            -82.42237238929204,
+            -5.799909298801909,
+            312.3065293248993,
+            293.5344969025708,
+            224.18205291795175,
+            -185.222551146677,
+            -39.96892002612355
+          ],
+          "action": [
+            2,
+            0,
+            0
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.20558486779989,
+            60.074629942717,
+            3744.3661933462504,
+            -47.8250975089285,
+            -2.170634295863776,
+            37.15166353998091,
+            341.4431938157311,
+            277.49726839362097,
+            198.4069797519923,
+            -14.607909599189863
+          ],
+          "action": [
+            1,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.14420462067382,
+            60.06276490557069,
+            3804.08324570421,
+            -90.41347137696584,
+            -4.033270669808435,
+            78.24152173130652,
+            329.4594893140392,
+            58.7360479082816,
+            323.49896962797925,
+            -21.02494767697019
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.1750485945466,
+            60.0778202569071,
+            3775.992478573992,
+            0.0,
+            -3.899624680985276,
+            47.07523964398582,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 300,
+      "time_s": 60.0,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22162225503727,
+            60.07498217210494,
+            4976.753951517275,
+            -74.17601701903486,
+            -5.502207918247928,
+            309.91466447976313,
+            293.2661120882502,
+            216.16696223653815,
+            -194.20872523311832,
+            -39.494657614826814
+          ],
+          "action": [
+            2,
+            0,
+            0
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.20630057883766,
+            60.075126932515,
+            3741.069053520763,
+            -27.349059370741433,
+            -3.7334061966006833,
+            37.95530271442614,
+            341.9042865802809,
+            276.42024697020906,
+            200.34395028583916,
+            -18.7800380927371
+          ],
+          "action": [
+            1,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.14535970869898,
+            60.062881677819504,
+            3799.592284519046,
+            -95.63420834003296,
+            -4.21903763483162,
+            72.85172657565924,
+            328.8966148854675,
+            71.47727009129052,
+            320.1307514122213,
+            -24.08910840323542
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.17576623127027,
+            60.07815745072211,
+            3772.377264586836,
+            0.0,
+            -3.880422894798745,
+            46.05931419838374,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 301,
+      "time_s": 60.2,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.22090939555746,
+            60.075362649773936,
+            4969.03709246192,
+            -65.32306955987664,
+            -4.691566951359911,
+            307.71168415250656,
+            293.01954935692635,
+            208.08055147362904,
+            -202.89090341245145,
+            -37.39280300065667
+          ],
+          "action": [
+            2,
+            0,
+            2
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.2070222390262,
+            60.07562201182484,
+            3736.90343884559,
+            -26.015392871677047,
+            -3.548757146546956,
+            37.3673973706262,
+            341.98082231626387,
+            275.83677734830246,
+            201.0221861167706,
+            -21.331567758734742
+          ],
+          "action": [
+            1,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.14650229410309,
+            60.06302068508294,
+            3794.5384263459655,
+            -80.3160647971038,
+            -4.0392642420512725,
+            69.93075878503981,
+            328.5075172532326,
+            83.37028261721866,
+            316.691158105848,
+            -25.94793336250125
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.17646804212735,
+            60.078498953971,
+            3768.777634755841,
+            0.0,
+            -3.910214981855834,
+            45.071852527653526,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 302,
+      "time_s": 60.4,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.2201668727934,
+            60.075727631292374,
+            4961.938338893259,
+            -64.37548236806286,
+            -3.7059275631944617,
+            305.4991097944118,
+            291.4558855339032,
+            198.4018596144069,
+            -210.876059120715,
+            -33.38447249266562
+          ],
+          "action": [
+            2,
+            0,
+            0
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.20773592185968,
+            60.07611967075013,
+            3733.418017998031,
+            -49.170365489443654,
+            2.4645515894329497,
+            32.77954068826263,
+            341.28790462585243,
+            279.81266422198553,
+            194.999302836446,
+            -12.553034621131644
+          ],
+          "action": [
+            1,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.14763379695864,
+            60.063179630336755,
+            3789.4162679109872,
+            -60.18447886220894,
+            -3.782071166997808,
+            69.51645884780127,
+            328.58473725715953,
+            92.83736195568748,
+            314.20039841998965,
+            -25.0452274133214
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.17715431016244,
+            60.07884451482556,
+            3765.178772974776,
+            0.0,
+            -3.89458412266857,
+            44.091294168228835,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 303,
+      "time_s": 60.6,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.21939293866262,
+            60.07607310763969,
+            4955.64455568729,
+            -79.11025373491434,
+            -3.1305620683225084,
+            303.03683864025294,
+            290.20469707764477,
+            186.2780608775746,
+            -220.4973503177243,
+            -30.002812276200476
+          ],
+          "action": [
+            2,
+            0,
+            0
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.2084181589106,
+            60.076626644537455,
+            3731.579189563098,
+            -74.45816925113698,
+            2.627551674948124,
+            31.15656596852266,
+            339.9812772385518,
+            285.24896687833075,
+            184.85999659312705,
+            -6.861299234913775
+          ],
+          "action": [
+            1,
+            0,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.14875956878568,
+            60.06335027788947,
+            3784.494069313744,
+            -37.47539526750762,
+            -3.912478153958729,
+            70.64704254497659,
+            328.9181354788101,
+            96.99516515703284,
+            313.3572504094077,
+            -24.2138679040038
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.17782492846136,
+            60.07919406327635,
+            3761.6567491505607,
+            0.0,
+            -3.790840824108256,
+            43.08852142363875,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "step": 304,
+      "time_s": 60.8,
+      "entities": [
+        {
+          "object_id": "A0100",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.2185853770426,
+            60.07639600456512,
+            4949.64492138159,
+            -89.85382719418843,
+            -3.1880694676221295,
+            300.0528332897363,
+            289.3628180658573,
+            174.15044120988864,
+            -229.08494944311943,
+            -30.373512211447785
+          ],
+          "action": [
+            2,
+            0,
+            0
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "A0200",
+          "entity_type": "aircraft",
+          "team": "A",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "recorded",
+          "state": [
+            120.20906086501635,
+            60.07714408513707,
+            3730.3850839320753,
+            -84.90148641252127,
+            2.908830100103186,
+            25.99620320930794,
+            339.19937638352604,
+            291.6734956133533,
+            173.06817275407653,
+            -5.49513195703941
+          ],
+          "action": [
+            1,
+            3,
+            1
+          ],
+          "missiles_remaining": 1
+        },
+        {
+          "object_id": "B0100",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 1,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_recorded",
+          "state": [
+            120.1498838951943,
+            60.06352641472083,
+            3779.7179698486,
+            -25.376347135831043,
+            -4.637910963117839,
+            71.18294194993828,
+            329.341774685531,
+            99.19533019628996,
+            313.15862739436466,
+            -23.62128507811419
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": 0
+        },
+        {
+          "object_id": "B0200",
+          "entity_type": "aircraft",
+          "team": "B",
+          "launcher_id": null,
+          "alive": 0,
+          "state_valid": 0,
+          "acmi_event": "none",
+          "action_status": "inactive",
+          "state": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "action": [
+            null,
+            null,
+            null
+          ],
+          "missiles_remaining": null
+        },
+        {
+          "object_id": "B01001",
+          "entity_type": "missile",
+          "team": "B",
+          "launcher_id": "B0100",
+          "alive": null,
+          "state_valid": 1,
+          "acmi_event": "update",
+          "action_status": "not_applicable",
+          "state": [
+            120.1784795267862,
+            60.07954756810604,
+            3758.266567428529,
+            0.0,
+            -3.661222240466077,
+            42.05846624419821,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  ],
+  "context_start_step": 265,
+  "previous_end_step": 299,
+  "previous_end_step_text": "299",
+  "target_start_step": 300,
+  "target_end_step": 304,
+  "target_time_points": 5
+}

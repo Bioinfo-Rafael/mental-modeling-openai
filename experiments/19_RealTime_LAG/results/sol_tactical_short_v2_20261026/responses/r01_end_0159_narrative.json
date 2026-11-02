@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0159_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:28:59.424412+00:00",
+  "api_status": "ok",
+  "latency_s": 20.41209925012663,
+  "raw": {
+    "id": "chatcmpl-Ed7YSmxZpeB3Z7D3pRJxGDJBiO6n0",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reduce post-launch exposure while preserving energy by extending steadily east at level altitude and increasing speed, rather than turning toward the southbound opponents; its own missile is already advancing north, while two opposing missiles continue southeast from the north.\",\"A0200\":\"A0200 most plausibly seeks to escape the converging missile corridor by sustaining a hard right turn into an east-southeast descent, creating lateral and vertical separation while retaining speed; the maneuver begins with two opposing missiles approaching from the north and continues after B0200 becomes inactive.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992540,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1254,
+      "prompt_tokens": 35499,
+      "total_tokens": 36753,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1112,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 32273,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to reduce post-launch exposure while preserving energy by extending steadily east at level altitude and increasing speed, rather than turning toward the southbound opponents; its own missile is already advancing north, while two opposing missiles continue southeast from the north.",
+    "A0200": "A0200 most plausibly seeks to escape the converging missile corridor by sustaining a hard right turn into an east-southeast descent, creating lateral and vertical separation while retaining speed; the maneuver begins with two opposing missiles approaching from the north and continues after B0200 becomes inactive."
+  },
+  "finished_at": "2026-10-26T05:29:19.838204+00:00",
+  "over_3s": true
+}

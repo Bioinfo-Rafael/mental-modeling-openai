@@ -1,0 +1,74 @@
+{
+  "query_id": "r01_end_0229_gate",
+  "started_at": "2026-10-26T07:01:21.643258+00:00",
+  "api_status": "ok",
+  "choice": "NONE",
+  "dispatch_offset_s": 0.0,
+  "latency_s": 0.7392291249707341,
+  "raw": {
+    "model": "gpt-6-luna",
+    "answers": [
+      {
+        "type": "choice",
+        "name": "changed_aircraft",
+        "choice": "NONE",
+        "probabilities": [
+          {
+            "value": "NONE",
+            "probability": 0.69
+          },
+          {
+            "value": "A1",
+            "probability": 0.1
+          },
+          {
+            "value": "A2",
+            "probability": 0.2
+          },
+          {
+            "value": "BOTH",
+            "probability": 0.01
+          }
+        ],
+        "confidence": 0.59
+      }
+    ],
+    "usage": {
+      "input_tokens": 33907,
+      "input_tokens_details": {
+        "cached_tokens": 1766,
+        "cache_write_tokens": 31850,
+        "cache_write_tokens_details": {
+          "ttl_30m_tokens": 31850,
+          "ttl_12h_tokens": 0
+        }
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 33907
+    }
+  },
+  "probabilities": [
+    {
+      "value": "NONE",
+      "probability": 0.69
+    },
+    {
+      "value": "A1",
+      "probability": 0.1
+    },
+    {
+      "value": "A2",
+      "probability": 0.2
+    },
+    {
+      "value": "BOTH",
+      "probability": 0.01
+    }
+  ],
+  "confidence": 0.59,
+  "finished_at": "2026-10-26T07:01:22.382540+00:00",
+  "deadline_status": "within"
+}

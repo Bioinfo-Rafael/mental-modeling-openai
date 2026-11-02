@@ -1,0 +1,34 @@
+{
+  "plan_id": "8d345dfde2af860014ed7849371369ac0c72642a2c00e67c5816198530556ea3",
+  "counts": {
+    "events": 6,
+    "excluded_events": 1,
+    "samples": 18,
+    "models": 3,
+    "input_conditions": 3,
+    "model_conditions": 9,
+    "repeats": 1,
+    "requests": 54
+  },
+  "statuses": {
+    "valid": 54
+  },
+  "excluded_events": [
+    {
+      "event": {
+        "id": "e311",
+        "step": 311,
+        "aircraft_id": "A0100",
+        "label": "攻撃"
+      },
+      "reason": "incomplete_common_reference_window",
+      "required_start": 281,
+      "required_end": 341,
+      "missing_steps": [
+        341
+      ]
+    }
+  ],
+  "interpretation": "n=30 is a hindsight reference, not ground truth or a forecast.",
+  "latency": "Batch latency is not online response latency."
+}

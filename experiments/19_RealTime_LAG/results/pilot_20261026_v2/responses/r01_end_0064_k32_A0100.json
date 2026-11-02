@@ -1,0 +1,298 @@
+{
+  "query_id": "r01_end_0064_k32_A0100",
+  "started_at": "2026-10-26T00:08:45.097272+00:00",
+  "api_status": "ok",
+  "choice": "A2b",
+  "dispatch_offset_s": 0.012852792162448168,
+  "latency_s": 0.3492064168676734,
+  "raw": {
+    "model": "gpt-6-luna",
+    "answers": [
+      {
+        "type": "choice",
+        "name": "primary_goal",
+        "choice": "A2b",
+        "probabilities": [
+          {
+            "value": "A1a",
+            "probability": 0.1
+          },
+          {
+            "value": "A1b",
+            "probability": 0.1
+          },
+          {
+            "value": "A1c",
+            "probability": 0.08
+          },
+          {
+            "value": "A1d",
+            "probability": 0.05
+          },
+          {
+            "value": "A2a",
+            "probability": 0.09
+          },
+          {
+            "value": "A2b",
+            "probability": 0.18
+          },
+          {
+            "value": "A2c",
+            "probability": 0.04
+          },
+          {
+            "value": "A2d",
+            "probability": 0.04
+          },
+          {
+            "value": "B1a",
+            "probability": 0.04
+          },
+          {
+            "value": "B1b",
+            "probability": 0.01
+          },
+          {
+            "value": "B1c",
+            "probability": 0.01
+          },
+          {
+            "value": "B1d",
+            "probability": 0.05
+          },
+          {
+            "value": "B2a",
+            "probability": 0.08
+          },
+          {
+            "value": "B2b",
+            "probability": 0.03
+          },
+          {
+            "value": "B2c",
+            "probability": 0.03
+          },
+          {
+            "value": "B2d",
+            "probability": 0.04
+          },
+          {
+            "value": "C1a",
+            "probability": 0.01
+          },
+          {
+            "value": "C1b",
+            "probability": 0.01
+          },
+          {
+            "value": "C1c",
+            "probability": 0.0
+          },
+          {
+            "value": "C1d",
+            "probability": 0.0
+          },
+          {
+            "value": "C2a",
+            "probability": 0.0
+          },
+          {
+            "value": "C2b",
+            "probability": 0.0
+          },
+          {
+            "value": "C2c",
+            "probability": 0.0
+          },
+          {
+            "value": "C2d",
+            "probability": 0.0
+          },
+          {
+            "value": "D1a",
+            "probability": 0.0
+          },
+          {
+            "value": "D1b",
+            "probability": 0.0
+          },
+          {
+            "value": "D1c",
+            "probability": 0.0
+          },
+          {
+            "value": "D1d",
+            "probability": 0.0
+          },
+          {
+            "value": "D2a",
+            "probability": 0.0
+          },
+          {
+            "value": "D2b",
+            "probability": 0.0
+          },
+          {
+            "value": "D2c",
+            "probability": 0.0
+          },
+          {
+            "value": "D2d",
+            "probability": 0.01
+          }
+        ],
+        "confidence": 0.15
+      }
+    ],
+    "usage": {
+      "input_tokens": 32369,
+      "input_tokens_details": {
+        "cached_tokens": 1156,
+        "cache_write_tokens": 29064,
+        "cache_write_tokens_details": {
+          "ttl_30m_tokens": 29064,
+          "ttl_12h_tokens": 0
+        }
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 32369
+    }
+  },
+  "probabilities": [
+    {
+      "value": "A1a",
+      "probability": 0.1
+    },
+    {
+      "value": "A1b",
+      "probability": 0.1
+    },
+    {
+      "value": "A1c",
+      "probability": 0.08
+    },
+    {
+      "value": "A1d",
+      "probability": 0.05
+    },
+    {
+      "value": "A2a",
+      "probability": 0.09
+    },
+    {
+      "value": "A2b",
+      "probability": 0.18
+    },
+    {
+      "value": "A2c",
+      "probability": 0.04
+    },
+    {
+      "value": "A2d",
+      "probability": 0.04
+    },
+    {
+      "value": "B1a",
+      "probability": 0.04
+    },
+    {
+      "value": "B1b",
+      "probability": 0.01
+    },
+    {
+      "value": "B1c",
+      "probability": 0.01
+    },
+    {
+      "value": "B1d",
+      "probability": 0.05
+    },
+    {
+      "value": "B2a",
+      "probability": 0.08
+    },
+    {
+      "value": "B2b",
+      "probability": 0.03
+    },
+    {
+      "value": "B2c",
+      "probability": 0.03
+    },
+    {
+      "value": "B2d",
+      "probability": 0.04
+    },
+    {
+      "value": "C1a",
+      "probability": 0.01
+    },
+    {
+      "value": "C1b",
+      "probability": 0.01
+    },
+    {
+      "value": "C1c",
+      "probability": 0.0
+    },
+    {
+      "value": "C1d",
+      "probability": 0.0
+    },
+    {
+      "value": "C2a",
+      "probability": 0.0
+    },
+    {
+      "value": "C2b",
+      "probability": 0.0
+    },
+    {
+      "value": "C2c",
+      "probability": 0.0
+    },
+    {
+      "value": "C2d",
+      "probability": 0.0
+    },
+    {
+      "value": "D1a",
+      "probability": 0.0
+    },
+    {
+      "value": "D1b",
+      "probability": 0.0
+    },
+    {
+      "value": "D1c",
+      "probability": 0.0
+    },
+    {
+      "value": "D1d",
+      "probability": 0.0
+    },
+    {
+      "value": "D2a",
+      "probability": 0.0
+    },
+    {
+      "value": "D2b",
+      "probability": 0.0
+    },
+    {
+      "value": "D2c",
+      "probability": 0.0
+    },
+    {
+      "value": "D2d",
+      "probability": 0.01
+    }
+  ],
+  "confidence": 0.15,
+  "finished_at": "2026-10-26T00:08:45.446582+00:00",
+  "deadline_status": "within"
+}

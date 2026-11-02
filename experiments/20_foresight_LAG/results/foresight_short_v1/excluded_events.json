@@ -1,0 +1,16 @@
+[
+  {
+    "event": {
+      "id": "e311",
+      "step": 311,
+      "aircraft_id": "A0100",
+      "label": "攻撃"
+    },
+    "reason": "incomplete_common_reference_window",
+    "required_start": 281,
+    "required_end": 341,
+    "missing_steps": [
+      341
+    ]
+  }
+]

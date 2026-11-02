@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0084_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:25:57.324899+00:00",
+  "api_status": "ok",
+  "latency_s": 19.56033574976027,
+  "raw": {
+    "id": "chatcmpl-Ed7VWokViyqQsvceJCwaLRyeNdeAp",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reduce exposure after firing by making a sustained descending right break from northward closure toward the east, given its ammunition drop and B0200’s simultaneous launch; the maneuver creates substantial lateral separation while preserving speed.\",\"A0200\":\"A0200 most plausibly seeks to maintain offensive pressure and support its missile engagement by continuing a fast, descending northward approach after firing, rather than following A0100’s eastward break, given both opponents remained ahead and continued southward as the range closed.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992358,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1151,
+      "prompt_tokens": 40067,
+      "total_tokens": 41218,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 36841,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to reduce exposure after firing by making a sustained descending right break from northward closure toward the east, given its ammunition drop and B0200’s simultaneous launch; the maneuver creates substantial lateral separation while preserving speed.",
+    "A0200": "A0200 most plausibly seeks to maintain offensive pressure and support its missile engagement by continuing a fast, descending northward approach after firing, rather than following A0100’s eastward break, given both opponents remained ahead and continued southward as the range closed."
+  },
+  "finished_at": "2026-10-26T05:26:16.886773+00:00",
+  "over_3s": true
+}

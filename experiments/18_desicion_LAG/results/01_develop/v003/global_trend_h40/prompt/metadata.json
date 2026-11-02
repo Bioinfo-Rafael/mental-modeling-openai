@@ -1,0 +1,24 @@
+{
+  "version": "v003",
+  "parent": "v002",
+  "parent_sha256": "f188c2b83bbaf195ad30cde1d07fb757ee6697ab5dfd9dc74fba7eb8d0a8dfd4",
+  "description": "Evaluate whole-window movement trends before localizing events; suppress recurring oscillation phases and small steps within an unchanged pattern, and verify aircraft identity against raw action/state rows.",
+  "revision": "whole_window_pattern_then_onset",
+  "status": "untested_prompt_candidate",
+  "source_run": "01_develop/v002/onset_localization_h40",
+  "audit": "analysis/20261026_v002_global_pattern_review.json",
+  "changes": [
+    "Make whole-window pattern assessment precede local onset selection.",
+    "Treat recurrent oscillation phases and small steps within the same underlying pattern as continuation.",
+    "Keep short developing departures near the right edge eligible; do not require the new behavior to dominate the window.",
+    "Recheck same-object action/state rows and heading ID mapping; cite raw before/after action triplets in event reasons.",
+    "Merge duplicate mentions of one aircraft/onset."
+  ],
+  "preserved": [
+    "System introduction and sections 1–5/8",
+    "Model gpt-6-luna",
+    "H=40, same 10 examples and labels",
+    "Responses schema and API settings",
+    "Independent firing detection"
+  ]
+}

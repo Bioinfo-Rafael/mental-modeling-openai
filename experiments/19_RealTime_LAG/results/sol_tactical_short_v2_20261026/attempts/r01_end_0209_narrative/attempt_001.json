@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0209_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:34:24.449210+00:00",
+  "api_status": "ok",
+  "latency_s": 31.541079209186137,
+  "raw": {
+    "id": "chatcmpl-Ed7dg5VYJaAtewuEhUS8c7Ch88ELy",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reduce exposure while preserving energy for re-engagement by extending east in level, accelerating flight, maintaining growing lateral separation from B0100 and the missiles trailing to its northwest rather than turning back toward the fight.\",\"A0200\":\"A0200 most plausibly seeks to complicate the inbound missile geometry by sustaining a fast, descending, high-bank turn toward east, given the B-team missiles to its north and the newly launched B0100 missile continuing to close from the northwest.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992864,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1666,
+      "prompt_tokens": 34332,
+      "total_tokens": 35998,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1538,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 31106,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to reduce exposure while preserving energy for re-engagement by extending east in level, accelerating flight, maintaining growing lateral separation from B0100 and the missiles trailing to its northwest rather than turning back toward the fight.",
+    "A0200": "A0200 most plausibly seeks to complicate the inbound missile geometry by sustaining a fast, descending, high-bank turn toward east, given the B-team missiles to its north and the newly launched B0100 missile continuing to close from the northwest."
+  },
+  "finished_at": "2026-10-26T05:34:55.992508+00:00",
+  "over_3s": true
+}

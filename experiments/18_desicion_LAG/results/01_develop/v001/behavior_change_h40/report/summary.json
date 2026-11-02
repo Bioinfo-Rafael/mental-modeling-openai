@@ -1,0 +1,70 @@
+{
+  "created_at": "2026-10-25T16:03:40.814333+00:00",
+  "stage": "develop",
+  "run_name": "behavior_change_h40",
+  "prompt_version": "v001",
+  "prompt_sha256": "e0dd6c1827a5c711c2bfbc049d4a59a06016519c78f32a3cde077b967763db34",
+  "config": {
+    "history": 40,
+    "stride": 5,
+    "repeats": 1,
+    "conditions": [
+      "responses_diagnostic"
+    ],
+    "reasoning_effort": "low",
+    "max_output_tokens": 4096,
+    "timeout_seconds": 180,
+    "step_tolerance": 2,
+    "order_seed": 18
+  },
+  "limitations": [
+    "Single episode reused for development and evaluation; not a held-out test.",
+    "Unannotated windows are weak negatives, not verified absence of important events.",
+    "Window-wide retrospective detection, not future-event prediction."
+  ],
+  "analysis_code_sha256": {
+    "__init__.py": "287bb33fe633df3471937363b20a8ededd262797228882665725a7fd1617ea6c",
+    "cli.py": "7001f864155fc448cc1d756b193a2b5091d279690aacbea598676c26bcb0056c",
+    "dataset.py": "a508efa8256a701701d1cf79b3630b6fc3d8bcd52631a8f2aa3452184ddb138a",
+    "evaluation.py": "07787b2abe7ce3824bdcb42a414abbf0e1932b26d5bfeb2ffd454d1057ca6e8e",
+    "execution.py": "d99bc0ab2a45a142a346bf937ade2d6e20774defcbd2e949dfdfdfbad4f97d6d",
+    "metrics.py": "da12a3b79794a1c9ae70b97dc720898606c36db73b91d7add03fc6b067833608",
+    "outputs.py": "d0ea4fcac908ce3b5a9a2799af6e169f3fff15a65c028128bf6844775bcf1625",
+    "planning.py": "d68f126fc13bd0327306bed74b6f805793897b8a3a7fcdc6d099bedf2f0988b2",
+    "prompts.py": "a1c24e5a749d56489e3ff49c6a586060c2c09bf96b9eacd9f26404347bb15307",
+    "storage.py": "48a72efe7b039cb54cc3a95cdf773027b0c3e5c9f38065f1ef0b7b54f8397865"
+  },
+  "conditions": {
+    "responses_diagnostic": {
+      "planned": 10,
+      "attempted": 0,
+      "valid": 0,
+      "pending": 10,
+      "errors_or_uncertain": 0,
+      "valid_fraction_of_attempts": null,
+      "TP": 0,
+      "TN": 0,
+      "FP": 0,
+      "FN": 0,
+      "accuracy_valid": null,
+      "precision_valid": null,
+      "recall_valid": null,
+      "false_negative_rate_valid": null,
+      "false_positive_rate_valid": null,
+      "f2_valid": null,
+      "accuracy_attempted_errors_as_misses": null,
+      "positive_recall_attempted_errors_as_misses": null,
+      "latency_valid_p50_s": null,
+      "latency_valid_p95_s": null,
+      "latency_attempted_p95_s": null,
+      "known_cost_usd": null,
+      "cost_known_attempts": 0,
+      "cost_unknown_attempts": 0,
+      "cost_complete": false,
+      "cost_per_valid_decision_known_usd": null,
+      "event_localization": null
+    }
+  },
+  "paired_comparisons": [],
+  "streams": {}
+}

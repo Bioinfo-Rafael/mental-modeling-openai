@@ -1,0 +1,165 @@
+{
+  "query_id": "r01_end_0324_responses_diagnostic",
+  "started_at": "2026-10-25T21:30:32.886813+00:00",
+  "status": "invalid_output",
+  "latency_s": 4.237974958028644,
+  "raw": {
+    "id": "resp_03e19c42a991ac78016ade74f961ec87d0b33aacddd1f03ef7",
+    "created_at": 1792963833.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_03e19c42a991ac78016ade74fa202887d0b972fb86f8f85b9f",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0100\",\"step\":312,\"evidence_steps\":[308,309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324],\"reason\":\"A0100 had been descending and turning left with action [2,0,0] at steps 308–311, with yaw moving from 289.0° to 280.3° and then 277.8°. At step 312 the heading command changes to [2,1,0], continuing through step 318, while yaw keeps turning left to 261.9°; the subsequent [2,3,0] commands from step 319 onward and emerging rightward yaw change mark a developing turn reversal, not just the preceding steady left turn.\"},{\"aircraft_id\":\"A0100\",\"step\":312,\"evidence_steps\":[311,312],\"reason\":\"A0100's recorded missiles_remaining falls from 1 at step 311 to 0 at step 312, and missile A01001 is recorded with launcher_id A0100 at step 312. This supports firing by that step, but does not establish the exact launch instant.\"}],\"reason\":\"YES. A0100 shows a developing departure from its sustained left-turn pattern and has ammunition/launcher evidence of firing at step 312. A0200 continues its established turning and altitude-loss pattern without a supported new transition or firing.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792963836.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 27535,
+      "input_tokens_details": {
+        "cache_write_tokens": 25736,
+        "cached_tokens": 1796
+      },
+      "output_tokens": 317,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 27852
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "error": "Duplicate event in a response",
+  "finished_at": "2026-10-25T21:30:37.124878+00:00"
+}

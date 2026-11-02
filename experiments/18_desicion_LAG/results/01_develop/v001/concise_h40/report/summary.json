@@ -1,0 +1,79 @@
+{
+  "created_at": "2026-10-25T16:17:34.496318+00:00",
+  "stage": "develop",
+  "run_name": "concise_h40",
+  "prompt_version": "v001",
+  "prompt_sha256": "5ec5489de24e414ee8dc86d8331d09d7e086c15637419fd9ed61b5331e123341",
+  "config": {
+    "history": 40,
+    "stride": 5,
+    "repeats": 1,
+    "conditions": [
+      "responses_diagnostic"
+    ],
+    "reasoning_effort": "low",
+    "max_output_tokens": 4096,
+    "timeout_seconds": 180,
+    "step_tolerance": 2,
+    "order_seed": 18
+  },
+  "limitations": [
+    "Single episode reused for development and evaluation; not a held-out test.",
+    "Unannotated windows are weak negatives, not verified absence of important events.",
+    "Window-wide retrospective detection, not future-event prediction."
+  ],
+  "analysis_code_sha256": {
+    "__init__.py": "287bb33fe633df3471937363b20a8ededd262797228882665725a7fd1617ea6c",
+    "cli.py": "7001f864155fc448cc1d756b193a2b5091d279690aacbea598676c26bcb0056c",
+    "dataset.py": "a508efa8256a701701d1cf79b3630b6fc3d8bcd52631a8f2aa3452184ddb138a",
+    "evaluation.py": "07787b2abe7ce3824bdcb42a414abbf0e1932b26d5bfeb2ffd454d1057ca6e8e",
+    "execution.py": "a762b24682a119a50321a1fe643314c6ceb197b45d6205d56fd2e8e2aee218d7",
+    "metrics.py": "da12a3b79794a1c9ae70b97dc720898606c36db73b91d7add03fc6b067833608",
+    "outputs.py": "d0ea4fcac908ce3b5a9a2799af6e169f3fff15a65c028128bf6844775bcf1625",
+    "planning.py": "d68f126fc13bd0327306bed74b6f805793897b8a3a7fcdc6d099bedf2f0988b2",
+    "prompts.py": "a1c24e5a749d56489e3ff49c6a586060c2c09bf96b9eacd9f26404347bb15307",
+    "storage.py": "48a72efe7b039cb54cc3a95cdf773027b0c3e5c9f38065f1ef0b7b54f8397865"
+  },
+  "conditions": {
+    "responses_diagnostic": {
+      "planned": 10,
+      "attempted": 10,
+      "valid": 10,
+      "pending": 0,
+      "errors_or_uncertain": 0,
+      "valid_fraction_of_attempts": 1.0,
+      "TP": 5,
+      "TN": 1,
+      "FP": 4,
+      "FN": 0,
+      "accuracy_valid": 0.6,
+      "precision_valid": 0.5555555555555556,
+      "recall_valid": 1.0,
+      "false_negative_rate_valid": 0.0,
+      "false_positive_rate_valid": 0.8,
+      "f2_valid": 0.8620689655172413,
+      "accuracy_attempted_errors_as_misses": 0.6,
+      "positive_recall_attempted_errors_as_misses": 1.0,
+      "latency_valid_p50_s": 4.50880031241104,
+      "latency_valid_p95_s": 9.12786293341778,
+      "latency_attempted_p95_s": 9.12786293341778,
+      "known_cost_usd": 0.03873829,
+      "cost_known_attempts": 10,
+      "cost_unknown_attempts": 0,
+      "cost_complete": true,
+      "cost_per_valid_decision_known_usd": 0.003873829,
+      "event_localization": {
+        "expected_event_window_occurrences": 7,
+        "predicted_event_window_occurrences": 12,
+        "matched": 3,
+        "exact_matched": 0,
+        "precision": 0.25,
+        "recall": 0.42857142857142855,
+        "exact_recall": 0.0,
+        "mean_absolute_error_matched_steps": 1
+      }
+    }
+  },
+  "paired_comparisons": [],
+  "streams": {}
+}

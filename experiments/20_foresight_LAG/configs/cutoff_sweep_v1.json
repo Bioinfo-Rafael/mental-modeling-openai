@@ -1,0 +1,21 @@
+{
+  "episode_id": "mhi_v1.3_ic100601_win",
+  "history_before": 30,
+  "horizon": 30,
+  "offsets": [
+    -1,
+    1,
+    30
+  ],
+  "models": [
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-5.6-luna"
+  ],
+  "request_options": {
+    "reasoning_effort": "medium"
+  },
+  "repeats": 1,
+  "boundary_policy": "exclude_event_from_all_conditions",
+  "prompt_version": "foresight_short_v1"
+}

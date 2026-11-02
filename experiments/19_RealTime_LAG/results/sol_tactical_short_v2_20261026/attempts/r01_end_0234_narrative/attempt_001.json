@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0234_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:37:07.092534+00:00",
+  "api_status": "ok",
+  "latency_s": 33.00555137498304,
+  "raw": {
+    "id": "chatcmpl-Ed7gJVLclmEfe2sLwg0W9yGBaLaaP",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reduce exposure by extending east at increasing speed while holding high altitude and an almost constant heading, keeping B0100 and two eastbound missiles behind and north; their failure to gain appreciably supports an energy-preserving defensive extension rather than an attack.\",\"A0200\":\"A0200 most plausibly seeks to spoil a pursuing threat’s geometry while extending away from B0100, using a sustained descent, repeated hard heading corrections, and high eastward speed; B01001 remains behind-left, descends toward its altitude, and closes substantially, making defensive missile-dragging more likely than attack positioning.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792993027,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 2167,
+      "prompt_tokens": 35013,
+      "total_tokens": 37180,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2005,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 31787,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to reduce exposure by extending east at increasing speed while holding high altitude and an almost constant heading, keeping B0100 and two eastbound missiles behind and north; their failure to gain appreciably supports an energy-preserving defensive extension rather than an attack.",
+    "A0200": "A0200 most plausibly seeks to spoil a pursuing threat’s geometry while extending away from B0100, using a sustained descent, repeated hard heading corrections, and high eastward speed; B01001 remains behind-left, descends toward its altitude, and closes substantially, making defensive missile-dragging more likely than attack positioning."
+  },
+  "finished_at": "2026-10-26T05:37:40.099775+00:00",
+  "over_3s": true
+}

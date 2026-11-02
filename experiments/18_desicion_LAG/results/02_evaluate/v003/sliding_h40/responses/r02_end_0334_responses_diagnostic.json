@@ -1,0 +1,218 @@
+{
+  "query_id": "r02_end_0334_responses_diagnostic",
+  "started_at": "2026-10-25T21:38:58.283953+00:00",
+  "status": "ok",
+  "latency_s": 6.542668791953474,
+  "raw": {
+    "id": "resp_0b20bc251255001e016ade76f4b48487d0b10da0b7d4a505c7",
+    "created_at": 1792964340.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_0b20bc251255001e016ade76f5e24887d0aad9b74090568d83",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0100\",\"step\":311,\"evidence_steps\":[309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334],\"reason\":\"A0100’s earlier motion is a sustained left turn: at steps 309–310 its action is [2,0,0] (left30), with heading falling from about 286° to 280°. At step 311 the action changes to [2,0,0] again, then at 312–317 to [2,1,0] (left15); the continuing leftward heading change reaches about 262° at 318. From step 319 onward the command switches to [2,3,0] (right15), unlike the preceding repeated left-turn commands, and heading then rises from about 259° to 289° by step 334, supporting a developing reversal rather than another small correction.\"},{\"aircraft_id\":\"A0100\",\"step\":312,\"evidence_steps\":[311,312,313,314],\"reason\":\"A0100’s valid ammunition count drops from 1 at step 311 to 0 at step 312, and an A0100-launched missile is recorded at step 312. This supports firing by that step; the exact launch instant within the interval is not established.\"}],\"reason\":\"A0100 makes a sustained turn and then begins a coherent right-turn reversal, and its ammunition decrease plus launcher-attributed missile support a firing event. A0200’s alternating heading commands and changing heading remain consistent with its ongoing oscillatory corrections; no distinct transition or new firing is supported.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792964344.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 28495,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 28492
+      },
+      "output_tokens": 383,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 28878
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 311,
+        "evidence_steps": [
+          309,
+          310,
+          311,
+          312,
+          313,
+          314,
+          315,
+          316,
+          317,
+          318,
+          319,
+          320,
+          321,
+          322,
+          323,
+          324,
+          325,
+          326,
+          327,
+          328,
+          329,
+          330,
+          331,
+          332,
+          333,
+          334
+        ],
+        "reason": "A0100’s earlier motion is a sustained left turn: at steps 309–310 its action is [2,0,0] (left30), with heading falling from about 286° to 280°. At step 311 the action changes to [2,0,0] again, then at 312–317 to [2,1,0] (left15); the continuing leftward heading change reaches about 262° at 318. From step 319 onward the command switches to [2,3,0] (right15), unlike the preceding repeated left-turn commands, and heading then rises from about 259° to 289° by step 334, supporting a developing reversal rather than another small correction."
+      },
+      {
+        "aircraft_id": "A0100",
+        "step": 312,
+        "evidence_steps": [
+          311,
+          312,
+          313,
+          314
+        ],
+        "reason": "A0100’s valid ammunition count drops from 1 at step 311 to 0 at step 312, and an A0100-launched missile is recorded at step 312. This supports firing by that step; the exact launch instant within the interval is not established."
+      }
+    ],
+    "reason": "A0100 makes a sustained turn and then begins a coherent right-turn reversal, and its ammunition decrease plus launcher-attributed missile support a firing event. A0200’s alternating heading commands and changing heading remain consistent with its ongoing oscillatory corrections; no distinct transition or new firing is supported.",
+    "selected_aircraft": [
+      "A0100"
+    ],
+    "aircraft_choice": "A1"
+  },
+  "finished_at": "2026-10-25T21:39:04.826737+00:00"
+}

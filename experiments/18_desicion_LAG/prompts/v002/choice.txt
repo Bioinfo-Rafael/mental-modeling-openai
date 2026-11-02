@@ -1,0 +1,3 @@
+Apply the shared Team A movement-pattern transition or new-firing criteria.
+Return only a JSON object with one field, decision, whose value is YES or NO.
+Do not generate reasons or event locations.

@@ -1,0 +1,189 @@
+{
+  "query_id": "r01_case08_responses_diagnostic",
+  "started_at": "2026-10-25T16:48:31.075510+00:00",
+  "status": "ok",
+  "latency_s": 4.168551542330533,
+  "raw": {
+    "id": "resp_0e31289a4b8b24ff016ade32dfbed487d085f27874a1a824ec",
+    "created_at": 1792946911.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_0e31289a4b8b24ff016ade32e09ae887d09c2f308956eeebca",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0200\",\"step\":282,\"evidence_steps\":[278,279,280,281,282,283,284,285,286,287,288,289],\"reason\":\"A0200's prior course is a generally east-northeast drift with small heading-command corrections: at steps 278–281 its triplets are [1,3,1], [1,3,1], [1,3,1], [1,3,1]. At step 282 it shifts to [1,1,1], then [1,0,1] at steps 283–284, with the northward velocity component falling from about 213 m/s at 282 to 208 m/s at 284 while eastward motion persists; this begins a sustained departure from the preceding correction pattern, not just another isolated command fluctuation.\"}],\"reason\":\"A0200 shows a supported emerging change beginning at step 282, from repeated right-heading corrections to hold and then left commands with compatible evolving motion. A0100 continues its sustained left-turn/descent pattern under [2,0,1]; neither aircraft has recorded ammunition decrease or launcher-attributed missile evidence of new firing.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792946915.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 26295,
+      "input_tokens_details": {
+        "cache_write_tokens": 24496,
+        "cached_tokens": 1796
+      },
+      "output_tokens": 265,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 26560
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0200",
+        "step": 282,
+        "evidence_steps": [
+          278,
+          279,
+          280,
+          281,
+          282,
+          283,
+          284,
+          285,
+          286,
+          287,
+          288,
+          289
+        ],
+        "reason": "A0200's prior course is a generally east-northeast drift with small heading-command corrections: at steps 278–281 its triplets are [1,3,1], [1,3,1], [1,3,1], [1,3,1]. At step 282 it shifts to [1,1,1], then [1,0,1] at steps 283–284, with the northward velocity component falling from about 213 m/s at 282 to 208 m/s at 284 while eastward motion persists; this begins a sustained departure from the preceding correction pattern, not just another isolated command fluctuation."
+      }
+    ],
+    "reason": "A0200 shows a supported emerging change beginning at step 282, from repeated right-heading corrections to hold and then left commands with compatible evolving motion. A0100 continues its sustained left-turn/descent pattern under [2,0,1]; neither aircraft has recorded ammunition decrease or launcher-attributed missile evidence of new firing."
+  },
+  "finished_at": "2026-10-25T16:48:35.244124+00:00"
+}

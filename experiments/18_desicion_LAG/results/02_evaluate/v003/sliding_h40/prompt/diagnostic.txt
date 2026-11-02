@@ -1,0 +1,25 @@
+Apply the system's detection and timing rules. Return JSON only:
+- decision: YES or NO.
+- events: for YES, all distinct supported events; for NO, an empty list.
+- reason: a brief explanation of the decision in English.
+
+Each event contains aircraft_id (A0100 or A0200), step, evidence_steps
+(a nonempty list), and reason (one or two English sentences).
+All steps must lie inside the supplied window. For movement, briefly name the
+aircraft's overall pattern and explain how the candidate changes that pattern
+rather than repeating an oscillation or small step within it. Then locate c.
+Cite the actual before/after action-ID triplets and their steps for that same
+object_id, together with the motion supporting the change. Evidence must cover
+the surrounding pattern, not just a convenient adjacent pair. For firing, cite
+the recorded ammunition or missile evidence and timing limitation.
+Keep distinct aircraft or onsets separate; merge repeated mentions of the same
+aircraft/onset, including simultaneous turning and firing, into one event.
+
+List accepted changes of overall pattern or firing only. Existing oscillation
+phases, minor steps, continuation, and rejected candidates belong in the overall
+reason, never in events.
+Set decision from the accepted list: nonempty means YES; empty means NO.
+The overall reason must agree. If a reason says no new event is supported,
+do not return YES or populate events with non-events. Check both A aircraft
+before finalizing; do not remove a supported onset just because its motion
+is still developing or its exact timing is uncertain.

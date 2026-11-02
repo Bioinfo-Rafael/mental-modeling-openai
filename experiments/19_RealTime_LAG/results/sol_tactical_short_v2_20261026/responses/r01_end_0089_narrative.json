@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0089_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:26:16.907344+00:00",
+  "api_status": "ok",
+  "latency_s": 21.449662999715656,
+  "raw": {
+    "id": "chatcmpl-Ed7Vphgp8AqKWJTivYVfMwkmL62qf",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reduce exposure after firing by accelerating through a sustained descending right break, then holding an easterly separation line, given its outbound missile, the southbound opposing formation, and two opposing missiles advancing through the head-on exchange.\",\"A0200\":\"A0200 most plausibly seeks to maintain offensive pressure and forward engagement geometry by accelerating northward on a shallow rightward, descending course, given the opponents’ continuing southbound closure and its own missile running ahead; unlike A0100, it does not substantially leave the closing axis.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992377,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1158,
+      "prompt_tokens": 41406,
+      "total_tokens": 42564,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 38180,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to reduce exposure after firing by accelerating through a sustained descending right break, then holding an easterly separation line, given its outbound missile, the southbound opposing formation, and two opposing missiles advancing through the head-on exchange.",
+    "A0200": "A0200 most plausibly seeks to maintain offensive pressure and forward engagement geometry by accelerating northward on a shallow rightward, descending course, given the opponents’ continuing southbound closure and its own missile running ahead; unlike A0100, it does not substantially leave the closing axis."
+  },
+  "finished_at": "2026-10-26T05:26:38.358681+00:00",
+  "over_3s": true
+}

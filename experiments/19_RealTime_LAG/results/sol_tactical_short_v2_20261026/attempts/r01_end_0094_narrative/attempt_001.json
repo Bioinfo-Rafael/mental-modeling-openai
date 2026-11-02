@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0094_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:26:38.382647+00:00",
+  "api_status": "ok",
+  "latency_s": 26.75638174964115,
+  "raw": {
+    "id": "chatcmpl-Ed7WA8pWrh91aNkrtniYjAg9DfH4Z",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reduce head-on exposure and create lateral separation from the incoming threat by executing a sustained descending right break to an easterly beam, then stabilizing there, as both opposing missiles advance southward along the Team A corridor.\",\"A0200\":\"A0200 most plausibly seeks to maintain pressure and forward attack geometry by accelerating north-northeast in a sustained descent with only modest heading corrections, rather than joining A0100’s lateral break, while the opposing formation closes head-on and A0200’s already-airborne missile continues ahead on roughly the same axis.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992398,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1433,
+      "prompt_tokens": 41607,
+      "total_tokens": 43040,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1286,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 38381,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to reduce head-on exposure and create lateral separation from the incoming threat by executing a sustained descending right break to an easterly beam, then stabilizing there, as both opposing missiles advance southward along the Team A corridor.",
+    "A0200": "A0200 most plausibly seeks to maintain pressure and forward attack geometry by accelerating north-northeast in a sustained descent with only modest heading corrections, rather than joining A0100’s lateral break, while the opposing formation closes head-on and A0200’s already-airborne missile continues ahead on roughly the same axis."
+  },
+  "finished_at": "2026-10-26T05:27:05.140959+00:00",
+  "over_3s": true
+}

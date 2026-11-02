@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>18 Decision LAG — 入出力・検出結果ビューア</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#172333;font:14px/1.65 system-ui,sans-serif}main,header{max-width:1500px;margin:auto;padding:20px 28px}header{padding-bottom:0}h1{font-size:26px;margin:0}h2{font-size:19px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}p{margin:8px 0 12px}a{color:#2457cf}.muted{color:#5e6b7c}.panel,.controls{background:#fff;border:1px solid #d7e0ed;border-radius:12px;padding:20px;margin:16px 0;min-width:0}.filters,.nav,.tabs,.legend{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.filters{align-items:end}label{display:flex;flex-direction:column;gap:4px;font-weight:600}select,button,input{font:inherit;padding:8px 10px;border:1px solid #b9c6d8;border-radius:7px;background:white;color:inherit}select{max-width:100%}button{cursor:pointer}button:disabled{opacity:.4;cursor:default}button.primary{background:#2457cf;color:white;border-color:#2457cf}.tabs{margin:20px 0 0}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}.stat{background:white;border:1px solid #d7e0ed;border-radius:10px;padding:15px}.stat strong{display:block;font-size:25px}.stat small{display:block;color:#5e6b7c}.paired{display:grid;grid-template-columns:1fr 1.5fr;gap:16px}.paired>section{min-width:0}.pill{display:inline-block;border-radius:6px;padding:3px 8px;background:#edf3ff;white-space:nowrap}.TP,.TN{background:#e0f5e8;color:#145b33}.FP,.FN{background:#fee7e7;color:#912424}.invalid_output,.api_error,.uncertain{background:#fff2d8;color:#755219}.notice{border-left:4px solid #65a9ca}.scroll{overflow:auto;max-height:600px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;border-bottom:1px solid #e1e7ef;text-align:left;vertical-align:top}th{background:#edf3ff;position:sticky;top:0;z-index:1}.wide{min-width:1050px}.telemetry{white-space:nowrap;min-width:1600px}.selected-step{background:#fff2d8}.list-reason{min-width:320px;max-width:500px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.7 ui-monospace,monospace;max-height:550px;overflow:auto}summary{cursor:pointer;font-weight:600}details pre{margin-top:12px}.event{padding:12px 0;border-bottom:1px solid #e1e7ef}.event p{white-space:pre-wrap}.chart{width:100%;height:auto;display:block;cursor:crosshair}.slider{flex:1;min-width:160px}.json-detail{margin-top:10px}#query{max-width:650px}#search{width:260px}#run-selector{width:min(100%,900px)}#run-description{overflow-wrap:anywhere}.empty{padding:36px;text-align:center;color:#5e6b7c}[hidden]{display:none!important}:focus-visible{outline:3px solid #77a7ef;outline-offset:2px}.blue{color:#2167b3}.red{color:#c34e31}code{overflow-wrap:anywhere}.comparison{border-top:3px solid #2457cf}@media(max-width:800px){main,header{padding:12px}.panel,.controls{padding:14px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.paired{grid-template-columns:1fr}.filters label,#search{width:100%}.nav select{max-width:100%}h1{font-size:22px}}
+
+.analysis-chart{width:100%;min-width:760px;display:block}.chart-scroll{overflow-x:auto}.analysis-point{cursor:pointer}.analysis-point:hover,.analysis-point:focus{stroke:#111;stroke-width:3;outline:none}.analysis-controls{display:flex;gap:20px;align-items:end;flex-wrap:wrap}.matrix-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px}.matrix td{text-align:center}.matrix th{position:static}.matrix td small{display:block}.analysis-legend{display:flex;flex-wrap:wrap;gap:12px 24px;margin:12px 0}.series-key{display:inline-flex;align-items:center;gap:8px}.series-key i{display:inline-block;flex:none;width:12px;height:12px}.legend-dot{border-radius:50%;background:var(--series-color)}.legend-square{border:2px solid var(--series-color);background:transparent}.annotation-legend{display:flex;flex-direction:column;gap:6px;color:#5e6b7c;margin:0 0 12px}.annotation-legend span{display:flex;align-items:center;gap:8px}.legend-annotation{display:inline-block;flex:none;width:12px;height:16px;border-left:2px solid rgba(220,85,85,.4)}.legend-reference{display:inline-block;flex:none;width:16px;border-top:2px dashed #8893a3}.matrix-note{font-size:12px;color:#5e6b7c}@media(max-width:800px){.matrix-wrap{grid-template-columns:1fr}}
+</style></head><body>
+<header><h1>18 Decision LAG · 入出力・検出結果ビューア</h1><p class="muted" id="overview"></p>
+<div class="controls"><label>段階 / プロンプト / 実行<select id="run-selector"></select></label><p class="muted" id="run-description"></p></div>
+<div class="controls" id="detail-filters"><div class="filters">
+<label>API条件<select id="condition"></select></label><label>参考ラベル<select id="expected"><option value="">すべて</option><option>YES</option><option>NO</option></select></label>
+<label>判定結果<select id="result"><option value="">すべて</option><option>TP</option><option>TN</option><option>FP</option><option>FN</option><option value="invalid_output">形式エラー</option><option value="api_error">APIエラー</option><option value="uncertain">送信不確定</option><option value="pending">未実行</option></select></label>
+<label>機体選択<select id="aircraft-filter"><option value="">すべて</option><option>NONE</option><option>A1</option><option>A2</option><option>BOTH</option></select></label><label>反復<select id="repeat"></select></label><label>機体・step・理由を検索<input id="search" type="search" placeholder="A0100 / 143 / turn"></label><button id="reset">絞り込み解除</button></div>
+<p id="count" role="status" aria-live="polite"></p></div>
+<div class="stats" id="stats"></div><p class="muted" id="stats-note">集計は絞り込み中の有効応答が対象。YESが合っても、窓内の各地点を拾えたとは限りません。step一致は同じ機体・一対一対応で評価します。負例は「未注釈」の暫定ラベルです。</p>
+<nav class="tabs" aria-label="表示形式"><button id="analysis-tab" aria-pressed="false">時系列・確率・混同行列</button><button id="detail-tab" class="primary" aria-pressed="true">詳細表示</button><button id="list-tab" aria-pressed="false">回答一覧</button><button id="compare-tab" aria-pressed="false">同じ窓の比較</button></nav>
+<div class="controls nav" id="navigation"><button id="previous" title="同じAPI・同じ反復の前の入力窓">← 前の時間へ</button><span id="position" class="pill"></span><button id="next" title="同じAPI・同じ反復の次の入力窓">次の時間へ →</button><select id="query" aria-label="回答を選択"></select><button id="download">この回答をJSON保存</button></div>
+</header><main id="content"></main><noscript>表示にはJavaScriptが必要です。外部通信は行いません。</noscript>
+<script id="dataset" type="application/json">__DATASET__</script>
+<script>
+'use strict';
+const bundle=JSON.parse(document.getElementById('dataset').textContent),$=id=>document.getElementById(id);
+const esc=v=>String(v??'—').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const val=v=>v==null?'—':typeof v==='object'?JSON.stringify(v,null,2):String(v);
+const num=(v,d=2)=>typeof v==='number'?v.toFixed(d):'—';
+const json=v=>esc(JSON.stringify(v,null,2));
+const statuses={ok:'有効応答',pending:'未実行',uncertain:'送信不確定',invalid_output:'形式エラー',api_error:'APIエラー'};
+const pill=r=>`<span class="pill ${esc(r.classification||r.status)}">${esc(r.classification||statuses[r.status]||r.status)}</span>`;
+let run,filtered=[],index=0,view='detail',aircraft='A0100',currentStep=0,telemetryMetric='heading';
+// State/action indices follow prompts/v003/system.txt. Offsets are targets, not measured changes.
+const telemetryMetrics = {
+ heading: {label:'方位 yaw', field:5, unit:'deg', unwrap:true, action:1, offsets:[-30,-15,0,15,30], actionLabels:['左30°','左15°','維持','右15°','右30°']},
+ altitude: {label:'高度', field:2, unit:'m', action:0, offsets:[100,0,-100], actionLabels:['上昇','維持','下降']},
+ speed: {label:'速度 TAS', field:6, unit:'m/s', action:2, offsets:[17,0,-17], actionLabels:['加速','維持','減速']},
+ roll: {label:'ロール角', field:3, unit:'deg', unwrap:true},
+ pitch: {label:'ピッチ角', field:4, unit:'deg'},
+ vn: {label:'北向き速度 vn', field:7, unit:'m/s'},
+ ve: {label:'東向き速度 ve', field:8, unit:'m/s'},
+ vu: {label:'上向き速度 vu', field:9, unit:'m/s'}
+};
+__ANALYSIS_SCRIPT__
+function selected(){return filtered[index]}
+function label(r){return `${r.sample_id} · ${r.start_step}–${r.end_step} · ${r.condition} · #${r.repeat} · ${r.classification||statuses[r.status]}`}
+function setOptions(id,values){$(id).replaceChildren(new Option('すべて',''),...values.map(v=>new Option(v,v)))}
+function selectRun(id){run=bundle.runs.find(r=>r.id===id);$('run-selector').value=id;
+ analysisRepeat='1';
+ setOptions('condition',run.config.conditions);setOptions('repeat',[...new Set(run.rows.map(r=>r.repeat))]);
+ $('expected').value='';$('result').value='';$('aircraft-filter').value='';$('search').value='';
+ $('run-description').textContent=`${run.model} · H=${run.config.history} · stride=${run.config.stride} · prompt SHA ${run.prompt_sha256.slice(0,16)} · 一致許容 ±${run.config.step_tolerance} step`;
+ apply();
+}
+function apply(){const search=$('search').value.trim().toLowerCase();filtered=run.rows.filter(r=>(!$('condition').value||r.condition===$('condition').value)&&(!$('expected').value||r.expected_decision===$('expected').value)&&(!$('result').value||(r.classification||r.status)===$('result').value)&&(!$('aircraft-filter').value||r.aircraft_choice===$('aircraft-filter').value)&&(!$('repeat').value||String(r.repeat)===$('repeat').value)&&(!search||JSON.stringify([r.query_id,r.start_step,r.end_step,r.reason,r.predicted_events,r.expected_events,r.error]).toLowerCase().includes(search)));
+ index=0;$('count').textContent=`${filtered.length} / ${run.rows.length} 件を表示`;
+ const valid=filtered.filter(r=>r.status==='ok'),c={TP:0,TN:0,FP:0,FN:0};valid.forEach(r=>c[r.classification]++);
+ const local=valid.filter(r=>r.predicted_events!==null),matched=local.reduce((n,r)=>n+r.matches.length,0),truth=local.reduce((n,r)=>n+r.expected_events.length,0);
+ const selectedSets=valid.filter(r=>r.selected_aircraft!=null),correctSets=selectedSets.filter(r=>r.aircraft_set_correct).length;
+ const fraction=(n,d)=>d?`${n}/${d} (${Math.round(n/d*100)}%)`:'—';
+ const cards=[['機体集合の一致率',fraction(correctSets,selectedSets.length),'NONE / A1 / A2 / BOTH'],['有効応答',`${valid.length} / ${filtered.length}`,'エラー・未実行は正誤に混ぜない'],['二択の一致率',fraction(c.TP+c.TN,valid.length),'参考ラベルとの一致'],['正例をYES',fraction(c.TP,c.TP+c.FN),`TP ${c.TP} / FN ${c.FN}`],['負例をNO',fraction(c.TN,c.TN+c.FP),`TN ${c.TN} / FP ${c.FP}`],['注釈地点の検出',fraction(matched,truth),`同じ機体・±${run.config.step_tolerance} step`]];
+ $('stats').innerHTML=cards.map(([t,n,h])=>`<div class="stat"><span>${t}</span><strong>${n}</strong><small>${h}</small></div>`).join('');
+ $('query').replaceChildren(...filtered.map((r,i)=>new Option(label(r),i)));render();
+}
+function setView(next){view=next;for(const v of ['detail','list','compare','analysis']){$(v+'-tab').classList.toggle('primary',v===view);$(v+'-tab').setAttribute('aria-pressed',String(v===view))}render()}
+function timeNavigation(){
+ const r=selected();
+ if(!r)return [];
+ return filtered.map((row,i)=>({row,i})).filter(({row})=>row.condition===r.condition&&row.repeat===r.repeat)
+  .sort((a,b)=>a.row.end_step-b.row.end_step||a.row.start_step-b.row.start_step).map(({i})=>i);
+}
+function moveTime(direction){const sequence=timeNavigation(),at=sequence.indexOf(index),next=sequence[at+direction];if(next!==undefined){index=next;render()}}
+function render(){for(const id of ['detail-filters','stats','stats-note'])$(id).hidden=view==='analysis';const r=selected(),sequence=timeNavigation(),at=sequence.indexOf(index);$('navigation').hidden=view==='list'||view==='analysis'||!r;$('previous').disabled=at<=0;$('next').disabled=at<0||at>=sequence.length-1;$('query').value=String(index);$('position').textContent=r?`${apiLabels[r.condition]||r.condition} · r${String(r.repeat).padStart(2,'0')} · ${at+1} / ${sequence.length} 窓`:'';
+ if(view==='analysis'){renderAnalysis();return}
+ if(!r){$('content').innerHTML='<div class="panel empty">該当する回答がありません。</div>';return}
+ if(view==='list'){renderList();return}if(view==='compare'){renderCompare(r);return}renderDetail(r);
+}
+function aircraftSummary(r){return `機体集合：参考 ${esc(r.expected_aircraft_choice)} → 回答 <b>${esc(r.aircraft_choice)}</b>（A1=A0100 / A2=A0200）`}
+function eventsHtml(r,interactive=true){if(r.predicted_events===null)return '<p class="muted">step・理由は取得されていません。機体選択だけでは個別の開始地点を特定したとは扱いません。</p>';
+ if(!r.predicted_events.length)return '<p class="muted">指摘イベントなし</p>';
+ return r.predicted_events.map((e,i)=>{const match=r.matches.find(m=>m.prediction_index===i),truth=r.expected_events.find(t=>t.id===match?.event_id);
+ return `<article class="event"><h3>${esc(e.aircraft_id)} · step ${e.step} <span class="pill ${match?'TP':'FP'}">${match?`注釈 ${truth.step} / 差 ${e.step-truth.step>0?'+':''}${e.step-truth.step}`:'対応する注釈なし'}</span></h3><p>${esc(e.reason)}</p><small>根拠step: ${e.evidence_steps.map(s=>interactive?`<button class="jump-step" data-step="${s}">${s}</button>`:`<span class="pill">${s}</span>`).join(' ')}</small></article>`}).join('');
+}
+function referenceHtml(r){if(!r.expected_events.length)return '<p>対象の注釈はありません。</p><p class="muted">モデルの指摘が実際の行動変化なら、未注釈事象の可能性もあります。</p>';
+ return r.expected_events.map(e=>`<article class="event"><h3>${esc(e.aircraft_id)} · step ${e.step}</h3><p>${esc(e.label)}</p><span class="pill ${r.predicted_events===null?'':r.matches.some(m=>m.event_id===e.id)?'TP':'FN'}">${r.predicted_events===null?'局所化は未評価':r.matches.some(m=>m.event_id===e.id)?'許容範囲内の指摘あり':'許容範囲内の指摘なし'}</span></article>`).join('');
+}
+function details(title,text){return `<details class="panel"><summary>${esc(title)}</summary><pre>${esc(text)}</pre></details>`}
+function renderDetail(r){const request=run.requests[r.request_sha256],record=run.responses[r.query_id];
+ currentStep=(r.predicted_events?.[0]?.step??r.expected_events[0]?.step??r.start_step);aircraft=r.predicted_events?.[0]?.aircraft_id??'A0100';
+ $('content').innerHTML=`<section class="panel"><h2>${esc(r.sample_id)} · step ${r.start_step}–${r.end_step}</h2><p>${pill(r)}　参考 ${esc(r.expected_decision)} → モデル <b>${esc(r.decision)}</b>　${num(r.latency_s,3)} 秒　推定 $${num(r.estimated_usd,6)}</p><p>${aircraftSummary(r)}</p><p>${esc(r.reason||r.error||(r.status==='ok'?'4択の回答を取得済みです。理由の自由記述はこの条件では取得しません。':'応答はまだありません。'))}</p><small>${esc(r.condition)} / 反復 ${r.repeat} / ${esc(r.query_id)}</small></section>
+ <div class="paired"><section class="panel notice"><h2>参考アノテーション</h2>${referenceHtml(r)}</section><section class="panel"><h2>モデルの指摘と理由</h2>${eventsHtml(r)}</section></div>
+ <section class="panel"><h2>入力データと指摘step</h2><div class="nav"><label>機体・オブジェクト<select id="object"></select></label><label>表示項目<select id="telemetry-metric"></select></label><label>確認step <input id="step-number" type="number" min="${r.start_step}" max="${r.end_step}" value="${currentStep}"></label><input class="slider" id="step-slider" aria-label="確認step" type="range" min="${r.start_step}" max="${r.end_step}" value="${currentStep}"></div><p class="legend"><span class="blue">青の破線：参考注釈</span><span class="red">赤の実線：モデルの指摘</span><span>灰色：確認step</span></p><div id="charts"></div><div id="step-record"></div><details><summary>このオブジェクトの全入力時点</summary><div class="scroll" id="telemetry"></div></details><p class="muted">方位・ロールは360°境界を連続化し、ピッチは記録値を表示します。方位と進行方向は異なる場合があります。高度・方位・TASのactionは概算の目標オフセットで、実測の変化量ではありません。状態s_kに対するaction a_kはk→k+1に作用します。欠損値は補間しません。</p></section>
+ ${details('送信したsystem / developer本文',request.input[0].content)}${details('送信したuser本文（履歴・質問・出力指示）',request.input[1].content)}${details('送信リクエスト全体',JSON.stringify(request,null,2))}${r.condition==='responses_diagnostic'?details('Responsesの回答本文（形式エラー時も表示）',responseText(record)):''}${details('保存された生応答',JSON.stringify(record??null,null,2))}${details('実行条件・usage・再現用ハッシュ',JSON.stringify({config:run.config,model:record?.raw?.model??run.model,usage:r.usage,aircraft_choice:r.aircraft_choice,choice_probabilities:r.choice_probabilities,probability_yes:r.probability_yes,aircraft_probabilities:r.aircraft_probabilities,aircraft_metrics:run.summary[r.condition]?.aircraft_selection,prompt_sha256:run.prompt_sha256,request_sha256:r.request_sha256,manifest_sha256:run.manifest_sha256,source:run.source,started_at:record?.started_at,finished_at:record?.finished_at},null,2))}`;
+ const ids=[...new Set(run.samples[r.sample_id].window.blocks.flatMap(b=>b.entities.map(e=>e.object_id)))].sort();$('object').replaceChildren(...ids.map(id=>new Option(id,id)));$('object').value=aircraft;
+ $('object').onchange=()=>{aircraft=$('object').value;renderTelemetry(r)};
+ $('telemetry-metric').replaceChildren(...Object.entries(telemetryMetrics).map(([key,spec])=>new Option(spec.label,key)));
+ $('telemetry-metric').value=telemetryMetric;
+ $('telemetry-metric').onchange=()=>{telemetryMetric=$('telemetry-metric').value;renderTelemetry(r)};
+ $('step-slider').oninput=e=>chooseStep(r,Number(e.target.value));$('step-number').onchange=e=>chooseStep(r,Number(e.target.value));
+ document.querySelectorAll('.jump-step').forEach(b=>b.onclick=()=>{chooseStep(r,Number(b.dataset.step));$('step-record').scrollIntoView({block:'center',behavior:'smooth'})});renderTelemetry(r);
+}
+function chooseStep(r,step){currentStep=Math.max(r.start_step,Math.min(r.end_step,Math.round(Number.isFinite(step)?step:r.start_step)));$('step-slider').value=currentStep;$('step-number').value=currentStep;renderTelemetry(r)}
+function chart(r,points,title,commandValues=null){const isCommand=commandValues!==null;const W=1000,H=160,L=65,R=24,T=24,B=26,values=points.filter(p=>Number.isFinite(p.y)).map(p=>p.y);if(!values.length)return `<p class="muted">${esc(title)}：記録なし</p>`;
+ const bound=isCommand?Math.max(...commandValues.map(Math.abs))*1.15:0;let lo=isCommand?-bound:Math.min(...values),hi=isCommand?bound:Math.max(...values);if(hi===lo){lo-=1;hi+=1}else if(!isCommand){const p=(hi-lo)*.1;lo-=p;hi+=p}
+ const x=s=>L+(s-r.start_step)/(r.end_step-r.start_step||1)*(W-L-R),y=v=>T+(hi-v)/(hi-lo)*(H-T-B);let path='',last=null;
+ for(const p of points){if(!Number.isFinite(p.y)){last=null;continue}if(last!==null&&p.step===last+1){path+=(isCommand?`H${x(p.step)} V${y(p.y)} `:`L${x(p.step)} ${y(p.y)} `)}else path+=`M${x(p.step)} ${y(p.y)} `;last=p.step}
+ const marks=(r.expected_events||[]).filter(e=>e.aircraft_id===aircraft).map(e=>`<line x1="${x(e.step)}" x2="${x(e.step)}" y1="${T}" y2="${H-B}" stroke="#2167b3" stroke-dasharray="5 4"><title>注釈 step ${e.step}</title></line>`).join('')+(r.predicted_events||[]).filter(e=>e.aircraft_id===aircraft).map(e=>`<line x1="${x(e.step)}" x2="${x(e.step)}" y1="${T}" y2="${H-B}" stroke="#c34e31"><title>指摘 step ${e.step}</title></line>`).join('');
+ return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)}"><text x="${L}" y="16" fill="#172333" font-size="13">${esc(title)}</text>${(isCommand?[...commandValues].sort((a,b)=>a-b):[lo,(lo+hi)/2,hi]).map(v=>{return `<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="#e1e7ef"/><text x="4" y="${y(v)+4}" font-size="12">${v.toFixed(1)}</text>`}).join('')}${marks}<line x1="${x(currentStep)}" x2="${x(currentStep)}" y1="${T}" y2="${H-B}" stroke="#8794a6" stroke-width="2"/><path d="${path}" fill="none" stroke="#172333" stroke-width="2"/>${points.filter(p=>Number.isFinite(p.y)).map(p=>`<circle cx="${x(p.step)}" cy="${y(p.y)}" r="2.5" fill="#172333"><title>step ${p.step}: ${p.y.toFixed(2)}${p.description?` · ${esc(p.description)}`:''}</title></circle>`).join('')}<text x="${L}" y="${H-5}" font-size="12">${r.start_step}</text><text x="${W-R-18}" y="${H-5}" font-size="12">${r.end_step}</text></svg>`;
+}
+function renderTelemetry(r){
+ const blocks=run.samples[r.sample_id].window.blocks;
+ const records=blocks.map(b=>({step:b.step,entity:b.entities.find(e=>e.object_id===aircraft)}));
+ const spec=telemetryMetrics[telemetryMetric];
+ let previous=null,unwrapped=0;
+ const measured=records.map(({step,entity:e})=>{
+  const raw=e?.state?.[spec.field];
+  if(!Number.isFinite(raw)){previous=null;return {step,y:null}}
+  if(!spec.unwrap)return {step,y:raw};
+  if(previous===null)unwrapped=raw;else unwrapped+=((raw-previous+540)%360)-180;
+  previous=raw;return {step,y:unwrapped,description:`記録値 ${raw.toFixed(2)} ${spec.unit}`};
+ });
+ let plots=chart(r,measured,`${aircraft} · 実測 ${spec.label} (${spec.unit}${spec.unwrap?', unwrap':''})`);
+ if(spec.action!==undefined){
+  const commands=records.map(({step,entity:e})=>{
+   const id=e?.action?.[spec.action];
+   const valid=Number.isInteger(id)&&id>=0&&id<spec.offsets.length;
+   return {step,y:valid?spec.offsets[id]:null,description:valid?`action ID ${id}: ${spec.actionLabels[id]}`:''};
+  });
+  plots+=chart(r,commands,`${aircraft} · ${spec.label} action：概算の目標オフセット (${spec.unit})`,spec.offsets);
+  plots+=`<p class="muted">${spec.offsets.map((offset,id)=>`ID ${id}＝${spec.actionLabels[id]}（${offset>0?'+':''}${offset} ${spec.unit}）`).join(' / ')}</p>`;
+ }else{
+  plots+='<p class="muted">この項目に直接対応するactionは記録されていません。actionは高度・方位・TASの3種類です。</p>';
+ }
+ $('charts').innerHTML=plots;
+ $('charts').querySelectorAll('svg').forEach(svg=>svg.onclick=e=>{const box=svg.getBoundingClientRect(),x=(e.clientX-box.left)/box.width*1000;chooseStep(r,r.start_step+(x-65)/(1000-65-24)*(r.end_step-r.start_step))});
+ const at=records.find(p=>p.step===currentStep)?.entity;
+ $('step-record').innerHTML=`<h3>${esc(aircraft)} · step ${currentStep} (${num(currentStep*.2,1)} 秒)</h3><pre>${json(at??'このstepに記録なし')}</pre>`;
+ const head=['step','時刻 s','行動ID [高度,方位,速度]','残弾','lon °','lat °','alt m','roll °','pitch °','yaw °','TAS m/s','vn','ve','vu','alive','state_valid'];
+ $('telemetry').innerHTML=`<table class="telemetry"><thead><tr>${head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${records.map(({step,entity:e})=>`<tr class="${step===currentStep?'selected-step':''}"><td>${step}</td><td>${num(step*.2,1)}</td><td>${esc(e?.action?JSON.stringify(e.action):null)}</td><td>${esc(e?.missiles_remaining)}</td>${Array.from({length:10},(_,i)=>`<td>${num(e?.state?.[i],i<2?6:2)}</td>`).join('')}<td>${esc(e?.alive)}</td><td>${esc(e?.state_valid)}</td></tr>`).join('')}</tbody></table>`;
+}
+function renderList(){const content=r=>r.predicted_events?.map(e=>`${e.aircraft_id}@${e.step}: ${e.reason}`).join('\n\n')||r.reason||r.error||'—';
+ $('content').innerHTML=`<section class="panel"><h2>回答一覧</h2><div class="scroll" style="max-height:75vh"><table class="wide"><thead><tr>${['窓 / 条件','判定 / 機体集合','注釈step','指摘step','理由','秒 / 推定USD'].map(t=>`<th>${t}</th>`).join('')}</tr></thead><tbody>${filtered.map((r,i)=>`<tr><td><button class="open-detail" data-index="${i}">${esc(r.sample_id)} / ${r.start_step}–${r.end_step}</button><br>${esc(r.condition)} #${r.repeat}</td><td>${pill(r)}<br>${esc(r.expected_decision)} → ${esc(r.decision)}<br>${esc(r.expected_aircraft_choice)} → ${esc(r.aircraft_choice)}</td><td>${r.expected_events.map(e=>`${esc(e.aircraft_id)}@${e.step}`).join('<br>')||'なし'}</td><td>${r.predicted_events?.map(e=>`${esc(e.aircraft_id)}@${e.step}`).join('<br>')||'—'}</td><td class="list-reason" style="white-space:pre-wrap">${esc(content(r))}</td><td>${num(r.latency_s,3)} s<br>$${num(r.estimated_usd,6)}</td></tr>`).join('')}</tbody></table></div></section>`;
+ document.querySelectorAll('.open-detail').forEach(b=>b.onclick=()=>{index=Number(b.dataset.index);setView('detail');window.scrollTo(0,0)});
+}
+function renderCompare(r){const pairs=bundle.runs.flatMap(other=>other.source.csv_sha256===run.source.csv_sha256?other.rows.filter(x=>x.start_step===r.start_step&&x.end_step===r.end_step).map(x=>({other,row:x})):[]);
+ $('content').innerHTML=`<section class="panel"><h2>同じ入力範囲：${r.start_step}–${r.end_step}</h2><p>同一CSV・同一範囲の保存済み条件を表示します。プロンプト、反復、API条件は各カードで確認してください。</p></section>`+pairs.map(({other,row})=>`<section class="panel comparison"><h3>${esc(other.id)} / ${esc(row.condition)} #${row.repeat}</h3><p>prompt SHA ${esc(other.prompt_sha256.slice(0,16))} · 許容 ±${other.config.step_tolerance} step</p><p>${pill(row)}　参考 ${esc(row.expected_decision)} → ${esc(row.decision)}　${num(row.latency_s,3)} s / $${num(row.estimated_usd,6)}</p><p>${aircraftSummary(row)}</p><p>${esc(row.reason||row.error)}</p>${eventsHtml(row,false)}</section>`).join('');
+}
+for(const id of ['condition','expected','result','repeat','aircraft-filter'])$(id).onchange=apply;$('search').oninput=apply;
+ $('reset').onclick=()=>{for(const id of ['condition','expected','result','repeat','aircraft-filter','search'])$(id).value='';apply()};
+for(const v of ['detail','list','compare','analysis'])$(v+'-tab').onclick=()=>setView(v);
+$('previous').onclick=()=>moveTime(-1);$('next').onclick=()=>moveTime(1);$('query').onchange=e=>{index=Number(e.target.value);render()};
+$('download').onclick=()=>{const r=selected(),blob=new Blob([JSON.stringify({run:run.id,row:r,request:run.requests[r.request_sha256],response:run.responses[r.query_id]??null},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=r.query_id+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+$('overview').textContent=`${bundle.created_at_jst} 時点の保存済み入出力 · オフライン表示・API送信なし`;
+ $('run-selector').replaceChildren(...bundle.runs.map(r=>new Option(r.id,r.id)));$('run-selector').onchange=e=>selectRun(e.target.value);selectRun(bundle.default_run);if(run.stage==='evaluate')setView('analysis');
+</script></body></html>

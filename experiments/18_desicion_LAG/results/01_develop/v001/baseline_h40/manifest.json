@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-25T15:52:36.059347+00:00",
+  "stage": "develop",
+  "prompt_version": "v001",
+  "prompt_sha256": "d0d08bc930bc1264a620658fdefe1672186189c8e002a4e2daab0d8db0c51c78",
+  "run_name": "baseline_h40",
+  "model": "gpt-6-luna",
+  "config": {
+    "history": 40,
+    "stride": 5,
+    "repeats": 1,
+    "conditions": [
+      "responses_diagnostic"
+    ],
+    "reasoning_effort": "low",
+    "max_output_tokens": 4096,
+    "timeout_seconds": 180,
+    "step_tolerance": 2,
+    "order_seed": 18
+  },
+  "queries": [
+    {
+      "id": "r01_case01_responses_diagnostic",
+      "sample_id": "case01",
+      "repeat": 1,
+      "condition": "responses_diagnostic",
+      "request_sha256": "569ceb9729e04daf75fc825472ad867a3ee0936d24e7da9df6e6039adfd3f30e"
+    },
+    {
+      "id": "r01_case02_responses_diagnostic",
+      "sample_id": "case02",
+      "repeat": 1,
+      "condition": "responses_diagnostic",
+      "request_sha256": "67811c92fea48bcd3776f9a57439d5bc61c539aa6bdd0149d72558bbf8ee11e8"
+    },
+    {
+      "id": "r01_case03_responses_diagnostic",
+      "sample_id": "case03",
+      "repeat": 1,
+      "condition": "responses_diagnostic",
+      "request_sha256": "c12c5d390bf950e92c853b83b194c2cf62b0c8b42e5f1ef7b73a1b9569ee08ed"
+    },
+    {
+      "id": "r01_case04_responses_diagnostic",
+      "sample_id": "case04",
+      "repeat": 1,
+      "condition": "responses_diagnostic",
+      "request_sha256": "69f4b0ea2438aa42cf3163e36cce96660825315445d9ff35b531a49cd10d0719"
+    },
+    {
+      "id": "r01_case05_responses_diagnostic",
+      "sample_id": "case05",
+      "repeat": 1,
+      "condition": "responses_diagnostic",
+      "request_sha256": "ca3ab16d1679f32deb40737667090cfad2c85899176abeae93d5145ba29bf5d6"
+    },
+    {
+      "id": "r01_case06_responses_diagnostic",
+      "sample_id": "case06",
+      "repeat": 1,
+      "condition": "responses_diagnostic",
+      "request_sha256": "c2a1da8f65032cfe7d1249565f010198ebc0a82082cbddcea9bfa151f178b37a"
+    },
+    {
+      "id": "r01_case07_responses_diagnostic",
+      "sample_id": "case07",
+      "repeat": 1,
+      "condition": "responses_diagnostic",
+      "request_sha256": "c0c9392592c6d26b6e9bd34063e21ffb5d09f3ed67421b88fdcfdc25607c2f36"
+    },
+    {
+      "id": "r01_case08_responses_diagnostic",
+      "sample_id": "case08",
+      "repeat": 1,
+      "condition": "responses_diagnostic",
+      "request_sha256": "149890fe28cf554d6e56b45be3377834d66e088cb465fe3999803e51d7b7fe75"
+    },
+    {
+      "id": "r01_case09_responses_diagnostic",
+      "sample_id": "case09",
+      "repeat": 1,
+      "condition": "responses_diagnostic",
+      "request_sha256": "fb33e30c9982c485a8c6b71a2cf0ede0a5bac3814a590b322519633eaafc4ef3"
+    },
+    {
+      "id": "r01_case10_responses_diagnostic",
+      "sample_id": "case10",
+      "repeat": 1,
+      "condition": "responses_diagnostic",
+      "request_sha256": "5a9ff776df5db0186cfdd2160174fc9118797ab8092ea801ecab99c19a1e519c"
+    }
+  ],
+  "source": {
+    "csv": "experiments/13_LAG/data/processed/mhi_v1.3_ic100601_win.csv",
+    "csv_sha256": "812a44c4ba2d2d3a285394722da48fd93189be2c9495cac2866632fa997282f4",
+    "manifest_sha256": "61f9469899eede61522f907d6b3a1a1f6fc93ed73c31d77890822d8b8424a38c",
+    "loader_sha256": "04b2d72be11c53fa4c124e547cc0d860f0c89f50e454fb382e292085e92685a5"
+  },
+  "files": {
+    "annotations.json": "99de4aeb04fe4a600bef05885f4a3704f8c5e86b33b0cd174a6eef1ae891403b",
+    "code/__init__.py": "287bb33fe633df3471937363b20a8ededd262797228882665725a7fd1617ea6c",
+    "code/cli.py": "7001f864155fc448cc1d756b193a2b5091d279690aacbea598676c26bcb0056c",
+    "code/dataset.py": "a508efa8256a701701d1cf79b3630b6fc3d8bcd52631a8f2aa3452184ddb138a",
+    "code/evaluation.py": "07787b2abe7ce3824bdcb42a414abbf0e1932b26d5bfeb2ffd454d1057ca6e8e",
+    "code/execution.py": "d99bc0ab2a45a142a346bf937ade2d6e20774defcbd2e949dfdfdfbad4f97d6d",
+    "code/metrics.py": "da12a3b79794a1c9ae70b97dc720898606c36db73b91d7add03fc6b067833608",
+    "code/outputs.py": "d0ea4fcac908ce3b5a9a2799af6e169f3fff15a65c028128bf6844775bcf1625",
+    "code/planning.py": "d68f126fc13bd0327306bed74b6f805793897b8a3a7fcdc6d099bedf2f0988b2",
+    "code/prompts.py": "a1c24e5a749d56489e3ff49c6a586060c2c09bf96b9eacd9f26404347bb15307",
+    "code/storage.py": "48a72efe7b039cb54cc3a95cdf773027b0c3e5c9f38065f1ef0b7b54f8397865",
+    "inputs/case01.txt": "475aec94dd6393b9a8cc61ccdc507c47043860ae0813e4115b1145cac29759ac",
+    "inputs/case02.txt": "3a9c0eafefdbe68ccaf9e1518f9055df1f7314d256818dbdda216667fcec2236",
+    "inputs/case03.txt": "cd335ad07b3133e7b4f283906ecb43a9f0ae3be43a0ed65c0adfc798ae609106",
+    "inputs/case04.txt": "2b80236a28240519bf78f38494dc0a45abcde01478fba1bfa8056ac2686beb9f",
+    "inputs/case05.txt": "dcc2c0fc09eea64ca94306754a6aa0262f19626a7c3366f422a469af0667a0b9",
+    "inputs/case06.txt": "bf6b7ee28f50e342e94f760f02e2fe80597fd5c140f85206191b7db10249c8f2",
+    "inputs/case07.txt": "0ff501089f13bdb905380af466aefd5c502f203c61c5f5a821be10d8c7241f0e",
+    "inputs/case08.txt": "ae72ffdaf8a7e6b760e9f2d13d97b0532d6ab82f94ce67dcb09902d8d8dc80ea",
+    "inputs/case09.txt": "4481e6395334464f027ed3a09f0d32fabdfdc0f9b3ffb2b1a6443a03843bb7ad",
+    "inputs/case10.txt": "a9c523666a91d007799d653dfb2a8e3013565285fc844a5404c9c10b44a09cc5",
+    "pricing.json": "9c8b18ef91cb29b60d5d9a46e0b9885740b5bf827df9e564a89309836987610b",
+    "prompt/choice.txt": "bd5e3583f8c31237eb253f062d9089b5989f7ad752ed4a230c584cfbe080ec3b",
+    "prompt/choices.json": "f92cd863f02745e21a83d3e4f6d24167a1c7a737f6f7885ca4f99942088e0e81",
+    "prompt/diagnostic.txt": "68a9ee456f3b0d05cf2ff477be0ca7bb0abfec69145ac68c5c9af938a90bfd86",
+    "prompt/metadata.json": "39a7d9d2c9106b6b2b77964b43f54ba9c7d793753e8edd1b529d6a45b5ba2c6a",
+    "prompt/question.txt": "5db35f9c21df98faae30ce9db6809bbdb6ca2c5882ecb37ccde9a8b19afbb1b9",
+    "prompt/system.diff": "57dff90a30c5a3e98b9592b4e68e09f6d7d553975f358c2508b9c6a67c835343",
+    "prompt/system.txt": "3f0ec683e30de9f368978cfe74b2ac5af830cc1a6accc1f2b59c348f9358f469",
+    "prompt/user.diff": "374170b19b6544f682ecf7fa91a72dd9ed81941e2d26cc3b80c72ef34cd5c224",
+    "prompt/user.txt": "7e548459e081614dd3ed49aa20d3d7b7f8a37b3e290e8d951f1b357129bea246",
+    "samples.json": "4eb026d614b0c676dfd0577dc8ef85a43c246f84a973490ddf4279ff47ff997e"
+  },
+  "limitations": [
+    "Single episode reused for development and evaluation; not a held-out test.",
+    "Unannotated windows are weak negatives, not verified absence of important events.",
+    "Window-wide retrospective detection, not future-event prediction."
+  ]
+}

@@ -1,0 +1,78 @@
+--- 17/system.txt
++++ 19/A1A2/system.txt
+@@ -72,17 +72,17 @@
+ 
+ # TIME AND DATA AVAILABILITY
+ 
+-The input contains 61 consecutive time points, from t-30 through t+30 inclusive, separated by 0.2 seconds.
+-
+-The complete observation window spans 12 seconds.
++The input contains 40 consecutive time points ending at the current step t, separated by 0.2 seconds.
++
++The complete observation window spans 7.8 seconds.
+ 
+ State s_k precedes action a_k. Action a_k influences the transition from step k to k+1.
+ 
+ The next state resulting from the final action is outside the recorded window.
+ 
+-Use ALL 61 time points to reconstruct the aircraft's behavior.
+-
+-The center step t is a reference point for constructing the window, NOT the exclusive subject of the interpretation.
++Use ALL 40 time points to reconstruct the aircraft's behavior.
++
++The current step t is the final observed step. Explain the supplied window; no observation after t is available.
+ 
+ You may use later observations to interpret earlier actions retrospectively, but distinguish subsequent evidence from circumstances already present when an action was taken.
+ 
+@@ -193,7 +193,7 @@
+ 
+ # TEMPORAL AND CAUSAL INTERPRETATION
+ 
+-Treat the 61-step window as a continuous episode, not as 61 independent observations.
++Treat the 40-step window as a continuous episode, not as 40 independent observations.
+ 
+ Identify meaningful behavioral phases, such as:
+ 
+@@ -291,7 +291,7 @@
+ 
+ Write in English.
+ 
+-Output ONLY the most plausible intention narrative for each of the four aircraft.
++Output ONLY the most plausible intention narratives for A0100 and A0200. All four aircraft and missiles remain available as context.
+ 
+ Do NOT produce separate sections for:
+ - scene overview
+@@ -319,15 +319,13 @@
+ 
+ For an aircraft that remains inactive or has no interpretable flight data, provide one concise sentence explaining that its intention cannot be inferred within the window.
+ 
+-Do not add a title, introduction, conclusion, notes, or commentary outside the four aircraft narratives.
+-
+-Return a valid JSON object containing exactly four string fields:
++Do not add a title, introduction, conclusion, notes, or commentary outside the two Team A aircraft narratives.
++
++Return a valid JSON object containing exactly two string fields:
+ 
+ {
+   "A0100": "...",
+-  "A0200": "...",
+-  "B0100": "...",
+-  "B0200": "..."
++  "A0200": "..."
+ }
+ 
+ Each value must contain the concise purpose-first explanation for that aircraft, subject to the evidence limits above.
+@@ -338,11 +336,11 @@
+ 
+ Before producing the JSON, verify:
+ 
+-1. Did I use all 61 time points as evidence while selecting only what matters to the explanation?
++1. Did I use all 40 time points as evidence while selecting only what matters to the explanation?
+ 2. Does the explanation lead with a supported purpose or desired near-term situation and link it to the behavior serving it within the same sentence?
+ 3. Did I retain the key supporting circumstance and any important change of purpose, without forcing a transition or inventing a trigger?
+ 4. Did I keep only context, outcomes, or qualifications whose omission would materially change the interpretation?
+ 5. Did I keep inferred intentions qualified, or acknowledge insufficient evidence, without strengthening claims for brevity?
+ 6. Did I avoid inventing targets, hits, awareness, coordination, instructions, priorities, or causes?
+ 7. Is each active aircraft's explanation normally one sentence, at most two when essential, and no more than 55 words in total, without a maneuver chronology?
+-8. Does the response contain only the four required JSON fields?
++8. Does the response contain only the two required JSON fields?

@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0164_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:29:19.863979+00:00",
+  "api_status": "ok",
+  "latency_s": 28.4730262090452,
+  "raw": {
+    "id": "chatcmpl-Ed7YmmyxNbQzlcNtdo97AMs1H4ys7",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reduce exposure after an earlier missile commitment by maintaining a fast, level eastward extension rather than turning toward the southbound opponents; its missile remained active to the north while an opposing missile closed from that quarter, and speed steadily increased without sacrificing altitude.\",\"A0200\":\"A0200 most plausibly seeks to survive the missile exchange by diving and making a sustained right turn into a southeastward extension, building speed and lateral separation as a B-launched missile closed from the north; it continued the extension after B0200 became inactive instead of redirecting toward B0100.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992560,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1685,
+      "prompt_tokens": 34178,
+      "total_tokens": 35863,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1536,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 30952,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to reduce exposure after an earlier missile commitment by maintaining a fast, level eastward extension rather than turning toward the southbound opponents; its missile remained active to the north while an opposing missile closed from that quarter, and speed steadily increased without sacrificing altitude.",
+    "A0200": "A0200 most plausibly seeks to survive the missile exchange by diving and making a sustained right turn into a southeastward extension, building speed and lateral separation as a B-launched missile closed from the north; it continued the extension after B0200 became inactive instead of redirecting toward B0100."
+  },
+  "finished_at": "2026-10-26T05:29:48.338663+00:00",
+  "over_3s": true
+}

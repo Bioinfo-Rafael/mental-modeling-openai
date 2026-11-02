@@ -1,0 +1,191 @@
+{
+  "query_id": "r01_case05_responses_diagnostic",
+  "started_at": "2026-10-25T16:17:01.626153+00:00",
+  "status": "ok",
+  "latency_s": 3.9768780833110213,
+  "raw": {
+    "id": "resp_0640f52e21601878016ade2b7e701487d080f54931ac0876b6",
+    "created_at": 1792945022.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_0640f52e21601878016ade2b7f757887d0bd3aad466510a0a1",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0200\",\"step\":111,\"evidence_steps\":[111,120,130,136,150],\"reason\":\"A0200 is already in a sustained rightward turn and descent at the window start (heading about 39°), continuing to turn right to roughly 114° by step 150 while descending. The repeated right30/down commands and steadily changing heading/course and altitude indicate continuation, not a new transition in this window.\"},{\"aircraft_id\":\"A0100\",\"step\":136,\"evidence_steps\":[135,136],\"reason\":\"A0100’s valid ammunition count remains 1, and missiles attributed to A0100 were already present earlier in the window; their removal at step 136 does not establish a new firing.\"}],\"reason\":\"NO supported new transition or firing is established. A0200’s turn and descent are ongoing from the first supplied step; both A aircraft retain one missile, and existing missile records or removals do not show a new launch.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792945025.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 36661,
+      "input_tokens_details": {
+        "cache_write_tokens": 34877,
+        "cached_tokens": 1781
+      },
+      "output_tokens": 221,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 36882
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0200",
+        "step": 111,
+        "evidence_steps": [
+          111,
+          120,
+          130,
+          136,
+          150
+        ],
+        "reason": "A0200 is already in a sustained rightward turn and descent at the window start (heading about 39°), continuing to turn right to roughly 114° by step 150 while descending. The repeated right30/down commands and steadily changing heading/course and altitude indicate continuation, not a new transition in this window."
+      },
+      {
+        "aircraft_id": "A0100",
+        "step": 136,
+        "evidence_steps": [
+          135,
+          136
+        ],
+        "reason": "A0100’s valid ammunition count remains 1, and missiles attributed to A0100 were already present earlier in the window; their removal at step 136 does not establish a new firing."
+      }
+    ],
+    "reason": "NO supported new transition or firing is established. A0200’s turn and descent are ongoing from the first supplied step; both A aircraft retain one missile, and existing missile records or removals do not show a new launch."
+  },
+  "finished_at": "2026-10-25T16:17:05.603066+00:00"
+}

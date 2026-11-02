@@ -1,0 +1,11 @@
+{
+  "query_id": "r01_end_0054_responses_diagnostic",
+  "started_at": "2026-10-25T17:03:16.934040+00:00",
+  "status": "api_error",
+  "latency_s": 180.00480516720563,
+  "error_type": "APITimeoutError",
+  "error": "Request timed out.",
+  "http_status": null,
+  "request_id": null,
+  "finished_at": "2026-10-25T17:06:16.937315+00:00"
+}

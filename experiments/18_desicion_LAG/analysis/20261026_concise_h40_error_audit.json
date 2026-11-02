@@ -1,0 +1,1962 @@
+{
+  "date_jst": "2026-10-26",
+  "topic": "Prioritize localization and event recall before reducing false positives",
+  "source_run": "experiments/18_desicion_LAG/results/01_develop/v001/concise_h40",
+  "source_manifest_sha256": "9ba7061a4987f1c04e69f602d24893f0f0cc3e1eaa9e5dc513d2fa827b5e4ef6",
+  "source_prompt_sha256": "5ec5489de24e414ee8dc86d8331d09d7e086c15637419fd9ed61b5331e123341",
+  "scope": {
+    "episodes": 1,
+    "fixed_windows": 10,
+    "positive_windows": 5,
+    "weak_negative_windows": 5,
+    "annotated_events": 7,
+    "repeats": 1,
+    "model": "gpt-6-luna",
+    "config": {
+      "history": 40,
+      "stride": 5,
+      "repeats": 1,
+      "conditions": [
+        "responses_diagnostic"
+      ],
+      "reasoning_effort": "low",
+      "max_output_tokens": 4096,
+      "timeout_seconds": 180,
+      "step_tolerance": 2,
+      "order_seed": 18
+    }
+  },
+  "observed_metrics": {
+    "planned": 10,
+    "attempted": 10,
+    "valid": 10,
+    "pending": 0,
+    "errors_or_uncertain": 0,
+    "valid_fraction_of_attempts": 1.0,
+    "TP": 5,
+    "TN": 1,
+    "FP": 4,
+    "FN": 0,
+    "accuracy_valid": 0.6,
+    "precision_valid": 0.5555555555555556,
+    "recall_valid": 1.0,
+    "false_negative_rate_valid": 0.0,
+    "false_positive_rate_valid": 0.8,
+    "f2_valid": 0.8620689655172413,
+    "accuracy_attempted_errors_as_misses": 0.6,
+    "positive_recall_attempted_errors_as_misses": 1.0,
+    "latency_valid_p50_s": 4.50880031241104,
+    "latency_valid_p95_s": 9.12786293341778,
+    "latency_attempted_p95_s": 9.12786293341778,
+    "known_cost_usd": 0.03873829,
+    "cost_known_attempts": 10,
+    "cost_unknown_attempts": 0,
+    "cost_complete": true,
+    "cost_per_valid_decision_known_usd": 0.003873829,
+    "event_localization": {
+      "expected_event_window_occurrences": 7,
+      "predicted_event_window_occurrences": 12,
+      "matched": 3,
+      "exact_matched": 0,
+      "precision": 0.25,
+      "recall": 0.42857142857142855,
+      "exact_recall": 0.0,
+      "mean_absolute_error_matched_steps": 1
+    }
+  },
+  "endpoint_counts": {
+    "predicted_events": 12,
+    "left_boundary": 4,
+    "right_boundary": 0
+  },
+  "manual_semantic_contradictions": [
+    "case05",
+    "case08"
+  ],
+  "arithmetic_counterfactual_not_a_model_run": {
+    "description": "If only case05 and case08 decisions were changed to NO to agree with their reasons",
+    "TP": 4,
+    "TN": 2,
+    "FP": 3,
+    "FN": 1,
+    "positive_window_recall": 0.8,
+    "localized_reference_events_unchanged": 3
+  },
+  "cases": [
+    {
+      "case": "case01",
+      "window": [
+        16,
+        55
+      ],
+      "reference_decision": "YES",
+      "reference_events": [
+        {
+          "id": "e46",
+          "step": 46,
+          "aircraft_id": "A0100",
+          "label": "ヒットアンドアウェー"
+        },
+        {
+          "id": "e49",
+          "step": 49,
+          "aircraft_id": "A0200",
+          "label": "攻撃"
+        }
+      ],
+      "returned_decision": "YES",
+      "returned_events": [
+        {
+          "aircraft_id": "A0100",
+          "step": 47,
+          "evidence_steps": [
+            46,
+            47,
+            48,
+            50,
+            55
+          ],
+          "reason": "A0100 had been descending in near-straight flight, with heading around 353–356° and commands mostly right15. At step 47 it began sustained right30 commands and bank increased markedly, followed by heading turning through north to about 14° by step 55; ammunition fell from 2 to 1 and a missile attributed to A0100 appeared at step 47, supporting firing by then but not the exact launch instant."
+        },
+        {
+          "aircraft_id": "A0200",
+          "step": 50,
+          "evidence_steps": [
+            49,
+            50
+          ],
+          "reason": "A0200’s recorded ammunition decreased from 2 to 1 between steps 49 and 50, and a missile attributed to A0200 first appears at step 50. This supports new firing by step 50, though the exact launch instant is not established."
+        }
+      ],
+      "returned_reason": "A0100 shows a transition into a sustained right turn beginning around step 47, and ammunition plus launcher-attributed missile records support firing by both A0100 and A0200 within the window.",
+      "manual_error_category": "timing_convention",
+      "observed": "A0100@47 と A0200@50 は注釈46/49に対して各+1。両方とも±2step評価では一致。",
+      "interpretation_or_hypothesis": "発射指令を与えていないため、観測できたstepと発射行動の注釈stepの差を重大な局所化失敗と混同しない。",
+      "response_file": "experiments/18_desicion_LAG/results/01_develop/v001/concise_h40/responses/r01_case01_responses_diagnostic.json"
+    },
+    {
+      "case": "case02",
+      "window": [
+        1,
+        40
+      ],
+      "reference_decision": "NO",
+      "reference_events": [],
+      "returned_decision": "YES",
+      "returned_events": [
+        {
+          "aircraft_id": "A0200",
+          "step": 25,
+          "evidence_steps": [
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
+          ],
+          "reason": "A0200's descent continues, but its previously nearly northward heading/course begins a sustained left turn: yaw shifts from about 3–4° to near 0° and then wraps toward 359°/0°, while heading commands alternate between hold and right. The evolving heading/course and large alternating bank support a movement transition rather than treating command fluctuations alone as the onset."
+        }
+      ],
+      "returned_reason": "A0200 shows a supported change in horizontal movement pattern around step 25. Neither aircraft has an ammunition decrease or launcher-attributed missile record supporting new firing.",
+      "manual_error_category": "oscillation_and_action_reading",
+      "observed": "予測A0200@25。理由のhold/rightという指令説明に対し、23–26はleft15、27–31はright15。courseは23で2.25°、25で2.37°、28で0.76°。",
+      "interpretation_or_hypothesis": "振動の一部分を新しい持続的旋回とみなした可能性。未注釈事象の可能性は参考ラベルだけでは排除できない。",
+      "response_file": "experiments/18_desicion_LAG/results/01_develop/v001/concise_h40/responses/r01_case02_responses_diagnostic.json"
+    },
+    {
+      "case": "case03",
+      "window": [
+        61,
+        100
+      ],
+      "reference_decision": "YES",
+      "reference_events": [
+        {
+          "id": "e83",
+          "step": 83,
+          "aircraft_id": "A0100",
+          "label": "回避行動"
+        },
+        {
+          "id": "e95",
+          "step": 95,
+          "aircraft_id": "A0200",
+          "label": "援護"
+        }
+      ],
+      "returned_decision": "YES",
+      "returned_events": [
+        {
+          "aircraft_id": "A0100",
+          "step": 61,
+          "evidence_steps": [
+            61,
+            69,
+            83,
+            88,
+            100
+          ],
+          "reason": "A0100’s existing right-turning, descending pattern continues at the start of this window, then levels into nearly straight eastbound flight: heading rises to about 89° by step 87 and remains near 85–88° through step 100, while the sustained large bank relaxes toward level and the descent slows. The hold-heading commands from step 82 onward and subsequent motion support this transition, rather than merely a correction within the earlier turn."
+        }
+      ],
+      "returned_reason": "A0100 shows a supported transition from a sustained turning descent to nearly straight, level eastbound flight; no new firing is established because its ammunition remains unchanged and its attributed missile is already present.",
+      "manual_error_category": "left_boundary_and_omitted_aircraft",
+      "observed": "予測A0100@61。A0100のheading_actionは82の4から83の2へ変化し、100まで2。A0200は95から100まで4が続くが指摘なし。",
+      "interpretation_or_hypothesis": "全窓の始点を変化の始点と取り違え、A0100のイベントを見つけた後にA0200を十分検査しなかった可能性。95の運動応答は短い後半では弱く、完全な旋回を要求すると取り逃しやすい。",
+      "response_file": "experiments/18_desicion_LAG/results/01_develop/v001/concise_h40/responses/r01_case03_responses_diagnostic.json"
+    },
+    {
+      "case": "case04",
+      "window": [
+        100,
+        139
+      ],
+      "reference_decision": "NO",
+      "reference_events": [],
+      "returned_decision": "YES",
+      "returned_events": [
+        {
+          "aircraft_id": "A0100",
+          "step": 107,
+          "evidence_steps": [
+            100,
+            107,
+            113,
+            115,
+            139
+          ],
+          "reason": "A0100's descent progressively levels off: vertical velocity is about -4 m/s at step 100, near -1 m/s by step 107, and close to zero thereafter, with altitude nearly level from about step 113 onward. Its altitude command remains hold, so the change is supported by actual motion rather than a command change."
+        }
+      ],
+      "returned_reason": "A0100 transitions from descending to approximately level flight. A0200's turn and descent continue an already-established pattern, and the A missiles are already present with no ammunition decrease or new launcher-attributed missile evidence.",
+      "manual_error_category": "settling_under_constant_commands",
+      "observed": "予測A0100@107。100–139の全40点でactions=[1,2,0]。vuは100で-3.99、107で-2.33、113で-0.84 m/sで、以後も小さく変動。",
+      "interpretation_or_hypothesis": "同じ指令下の緩やかな収束を新しい開始点として拾った可能性。物理的変化がないとは断定しない。",
+      "response_file": "experiments/18_desicion_LAG/results/01_develop/v001/concise_h40/responses/r01_case04_responses_diagnostic.json"
+    },
+    {
+      "case": "case05",
+      "window": [
+        111,
+        150
+      ],
+      "reference_decision": "YES",
+      "reference_events": [
+        {
+          "id": "e143",
+          "step": 143,
+          "aircraft_id": "A0200",
+          "label": "囮"
+        }
+      ],
+      "returned_decision": "YES",
+      "returned_events": [
+        {
+          "aircraft_id": "A0200",
+          "step": 111,
+          "evidence_steps": [
+            111,
+            120,
+            130,
+            136,
+            150
+          ],
+          "reason": "A0200 is already in a sustained rightward turn and descent at the window start (heading about 39°), continuing to turn right to roughly 114° by step 150 while descending. The repeated right30/down commands and steadily changing heading/course and altitude indicate continuation, not a new transition in this window."
+        },
+        {
+          "aircraft_id": "A0100",
+          "step": 136,
+          "evidence_steps": [
+            135,
+            136
+          ],
+          "reason": "A0100’s valid ammunition count remains 1, and missiles attributed to A0100 were already present earlier in the window; their removal at step 136 does not establish a new firing."
+        }
+      ],
+      "returned_reason": "NO supported new transition or firing is established. A0200’s turn and descent are ongoing from the first supplied step; both A aircraft retain one missile, and existing missile records or removals do not show a new launch.",
+      "manual_error_category": "contradictory_output_and_missed_command_shift",
+      "observed": "decisionはYESだがoverall reasonはNO supported new transition。eventsは継続とミサイル除去を否定的に説明。A0200のheading_actionは142の4から143の1へ変化し150まで継続。",
+      "interpretation_or_hypothesis": "候補や否定根拠をaccepted eventsに混入した可能性。単にdecisionをNOへ補正するとこの正例がFNになるため、143の取り逃しを直す必要がある。",
+      "response_file": "experiments/18_desicion_LAG/results/01_develop/v001/concise_h40/responses/r01_case05_responses_diagnostic.json"
+    },
+    {
+      "case": "case06",
+      "window": [
+        150,
+        189
+      ],
+      "reference_decision": "NO",
+      "reference_events": [],
+      "returned_decision": "NO",
+      "returned_events": [],
+      "returned_reason": "A0100 maintains nearly straight, level flight. A0200 continues an established descending turn throughout the window, with heading/course changes and bank consistent with that ongoing maneuver rather than a clear transition; neither A aircraft has a recorded ammunition decrease or launcher-attributed missile.",
+      "manual_error_category": "reference_true_negative",
+      "observed": "NO・events=[]で参考負例と一致。",
+      "interpretation_or_hypothesis": "改善後もこの継続窓で不要なイベントを作らないか確認する。",
+      "response_file": "experiments/18_desicion_LAG/results/01_develop/v001/concise_h40/responses/r01_case06_responses_diagnostic.json"
+    },
+    {
+      "case": "case07",
+      "window": [
+        211,
+        250
+      ],
+      "reference_decision": "YES",
+      "reference_events": [
+        {
+          "id": "e243",
+          "step": 243,
+          "aircraft_id": "A0100",
+          "label": "追跡開始"
+        }
+      ],
+      "returned_decision": "YES",
+      "returned_events": [
+        {
+          "aircraft_id": "A0200",
+          "step": 243,
+          "evidence_steps": [
+            242,
+            243,
+            244,
+            245,
+            246,
+            247,
+            248,
+            249,
+            250
+          ],
+          "reason": "A0200's earlier motion was a sustained descent (vertical velocity around −30 to −50 m/s), while from step 243 it transitions into a strong climb, with vertical velocity becoming less negative and then positive by steps 249–250. The recorded heading command changes to left30 at 243, and the subsequent bank and motion support a developing turn/climb rather than command oscillation alone."
+        }
+      ],
+      "returned_reason": "A0200 shows a supported transition from descending to climbing during the window. A0100's movement is largely steady until its late turn begins, with no confirmed A-team ammunition decrease or launcher-attributed missile launch.",
+      "manual_error_category": "wrong_aircraft_and_incorrect_evidence",
+      "observed": "予測A0200@243。実際の243のactionsはA0100=[1,0,1]、A0200=[1,4,1]。250のvuはA0100=+4.58、A0200=-11.29 m/s。",
+      "interpretation_or_hypothesis": "モデルのleft30と上昇の説明は別機A0100の記録と整合し、機体の取り違えが疑われる。A0200の上昇という主張は入力値と矛盾する。",
+      "response_file": "experiments/18_desicion_LAG/results/01_develop/v001/concise_h40/responses/r01_case07_responses_diagnostic.json"
+    },
+    {
+      "case": "case08",
+      "window": [
+        250,
+        289
+      ],
+      "reference_decision": "NO",
+      "reference_events": [],
+      "returned_decision": "YES",
+      "returned_events": [
+        {
+          "aircraft_id": "A0100",
+          "step": 250,
+          "evidence_steps": [
+            250,
+            260,
+            270,
+            280,
+            289
+          ],
+          "reason": "A0100 is already in a sustained left turn at the window start: its recorded left-30 command accompanies yaw falling from about 67° to 338° and a continuing course change. No distinct onset within this window is established, so this is continuation rather than a supported transition."
+        },
+        {
+          "aircraft_id": "A0200",
+          "step": 250,
+          "evidence_steps": [
+            250,
+            260,
+            270,
+            280,
+            289
+          ],
+          "reason": "A0200 is already turning at the window start; its heading/course and velocity direction continue changing through the window while its heading commands alternate among right and left corrections. This supports ongoing turning, not a new movement-pattern transition. Ammunition remains at 1 and no A-launched missile is recorded."
+        }
+      ],
+      "returned_reason": "Although both A aircraft continue turning, their patterns are already underway at step 250, and the window provides no supported onset or reversal. There is no evidence of new firing by Team A, so the correct decision is NO.",
+      "manual_error_category": "contradictory_output_and_left_boundary",
+      "observed": "decisionはYESで2イベントともstep250。両event reasonとoverall reasonは既存旋回の継続、開始点なし、正しいdecisionはNOと説明。",
+      "interpretation_or_hypothesis": "否定根拠をeventsに混入した出力整合性の問題。分類基準を厳しくするだけではなく、accepted eventsとdecisionを一致させる。",
+      "response_file": "experiments/18_desicion_LAG/results/01_develop/v001/concise_h40/responses/r01_case08_responses_diagnostic.json"
+    },
+    {
+      "case": "case09",
+      "window": [
+        281,
+        320
+      ],
+      "reference_decision": "YES",
+      "reference_events": [
+        {
+          "id": "e311",
+          "step": 311,
+          "aircraft_id": "A0100",
+          "label": "攻撃"
+        }
+      ],
+      "returned_decision": "YES",
+      "returned_events": [
+        {
+          "aircraft_id": "A0100",
+          "step": 312,
+          "evidence_steps": [
+            311,
+            312
+          ],
+          "reason": "A0100’s recorded missiles_remaining decreases from 1 at step 311 to 0 at step 312, and a missile attributed to A0100 is recorded at step 312. The exact launch instant within that interval is not established."
+        }
+      ],
+      "returned_reason": "New missile firing by A0100 is supported by the ammunition decrease and launcher-attributed missile record; no distinct movement-pattern transition is supported.",
+      "manual_error_category": "timing_convention",
+      "observed": "A0100@312は注釈311に対して+1で、±2step評価では一致。",
+      "interpretation_or_hypothesis": "弾数変化とミサイル出現を利用した発射検出は維持する。",
+      "response_file": "experiments/18_desicion_LAG/results/01_develop/v001/concise_h40/responses/r01_case09_responses_diagnostic.json"
+    },
+    {
+      "case": "case10",
+      "window": [
+        270,
+        309
+      ],
+      "reference_decision": "NO",
+      "reference_events": [],
+      "returned_decision": "YES",
+      "returned_events": [
+        {
+          "aircraft_id": "A0200",
+          "step": 272,
+          "evidence_steps": [
+            271,
+            272,
+            275,
+            278,
+            282
+          ],
+          "reason": "A0200 shifts from a nearly steady heading/course to a sustained leftward turn: left-turn commands begin at step 272, followed by declining heading and course from about steps 275–278 onward. Later command corrections do not stop the overall leftward motion trend."
+        }
+      ],
+      "returned_reason": "A0200 shows a supported transition from near-steady flight into a sustained left turn; no new A-team missile firing is supported.",
+      "manual_error_category": "oscillation_phase_or_unannotated_event",
+      "observed": "予測A0200@272。270–271はright15、272–277はleft15、278–281はright15。courseは56.67→59.30→51.10°と推移し、その後も振動を伴い全体では減少。",
+      "interpretation_or_hypothesis": "窓内の2点だけを前の定常パターンとみなし、振動の一相を新規開始とした可能性。ただし注釈なしだけで全ての変化を誤りとは断定できない。",
+      "response_file": "experiments/18_desicion_LAG/results/01_develop/v001/concise_h40/responses/r01_case10_responses_diagnostic.json"
+    }
+  ],
+  "input_evidence": {
+    "case02": [
+      {
+        "step": 23,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 4.366698659454943,
+        "course_deg_derived": 2.247687366369118,
+        "roll_deg": 2.6385379593896467,
+        "alt_m": 5974.075379696989,
+        "vu_mps": -50.89107405965814,
+        "tas_mps": 248.23894302209845,
+        "missiles_remaining": 2
+      },
+      {
+        "step": 24,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 3.7308803913879416,
+        "course_deg_derived": 2.2792302160116424,
+        "roll_deg": 12.036954395191062,
+        "alt_m": 5963.439449222741,
+        "vu_mps": -54.85773674629956,
+        "tas_mps": 249.6895122720988,
+        "missiles_remaining": 2
+      },
+      {
+        "step": 25,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 3.108166989085524,
+        "course_deg_derived": 2.365033884173399,
+        "roll_deg": 2.3244250634564336,
+        "alt_m": 5952.380864406261,
+        "vu_mps": -54.899388091439754,
+        "tas_mps": 250.54482611157584,
+        "missiles_remaining": 2
+      },
+      {
+        "step": 26,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 2.377167199151979,
+        "course_deg_derived": 2.2652456463893476,
+        "roll_deg": -14.556007560068206,
+        "alt_m": 5941.733068463499,
+        "vu_mps": -51.138237017203075,
+        "tas_mps": 251.254182623696,
+        "missiles_remaining": 2
+      },
+      {
+        "step": 27,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          3,
+          0
+        ],
+        "yaw_deg": 0.8599287213587903,
+        "course_deg_derived": 1.5428717159788663,
+        "roll_deg": -33.56218459327664,
+        "alt_m": 5932.104473448024,
+        "vu_mps": -45.194134979144245,
+        "tas_mps": 251.48583357621789,
+        "missiles_remaining": 2
+      },
+      {
+        "step": 28,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          3,
+          0
+        ],
+        "yaw_deg": 1.0720439077710668,
+        "course_deg_derived": 0.7584852686725666,
+        "roll_deg": -48.25798006700341,
+        "alt_m": 5923.3883662150565,
+        "vu_mps": -42.6279520051513,
+        "tas_mps": 252.0430529571651,
+        "missiles_remaining": 2
+      },
+      {
+        "step": 31,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          3,
+          0
+        ],
+        "yaw_deg": 4.5297918732307725,
+        "course_deg_derived": 1.4558313288734614,
+        "roll_deg": -23.53933232040053,
+        "alt_m": 5896.28371373958,
+        "vu_mps": -50.898516577500395,
+        "tas_mps": 257.39625562504426,
+        "missiles_remaining": 2
+      }
+    ],
+    "case03": [
+      {
+        "step": 81,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          4,
+          0
+        ],
+        "yaw_deg": 76.26204325148741,
+        "course_deg_derived": 68.53573617471058,
+        "roll_deg": 73.2837436192663,
+        "alt_m": 5362.152558563787,
+        "vu_mps": -37.34833124256228,
+        "tas_mps": 281.8363619389492,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 81,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          3,
+          0
+        ],
+        "yaw_deg": 6.1549917978787105,
+        "course_deg_derived": 5.927707724028218,
+        "roll_deg": 8.163971640226928,
+        "alt_m": 5410.337494830126,
+        "vu_mps": -50.13810615787795,
+        "tas_mps": 306.9614157809707,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 82,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          4,
+          0
+        ],
+        "yaw_deg": 78.76032869796876,
+        "course_deg_derived": 70.78193448616393,
+        "roll_deg": 78.76628985381147,
+        "alt_m": 5354.789741149852,
+        "vu_mps": -36.39935509161584,
+        "tas_mps": 281.8034657490999,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 82,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          3,
+          0
+        ],
+        "yaw_deg": 6.444319292339633,
+        "course_deg_derived": 5.926741570770674,
+        "roll_deg": 27.27561134028661,
+        "alt_m": 5400.064104836959,
+        "vu_mps": -52.32144932690866,
+        "tas_mps": 308.19193008590787,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 83,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 81.25018920429898,
+        "course_deg_derived": 73.1106244036224,
+        "roll_deg": 84.77257930273086,
+        "alt_m": 5347.531233088241,
+        "vu_mps": -36.35666635583857,
+        "tas_mps": 281.7202703608091,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 83,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          3,
+          0
+        ],
+        "yaw_deg": 7.865239010661315,
+        "course_deg_derived": 6.205301537633613,
+        "roll_deg": 46.144105236592935,
+        "alt_m": 5389.5320839074975,
+        "vu_mps": -52.45675389876955,
+        "tas_mps": 309.24747067797335,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 84,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 83.39844722142385,
+        "course_deg_derived": 75.68682027220036,
+        "roll_deg": 85.01922714259229,
+        "alt_m": 5340.193413533002,
+        "vu_mps": -36.9411019586121,
+        "tas_mps": 281.3853667039494,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 84,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 10.93795043660798,
+        "course_deg_derived": 7.333814471760432,
+        "roll_deg": 56.383561206799314,
+        "alt_m": 5379.285927030167,
+        "vu_mps": -49.647070381283264,
+        "tas_mps": 309.8354145826424,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 87,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 88.9255299534025,
+        "course_deg_derived": 83.11123549834001,
+        "roll_deg": 30.033079545599513,
+        "alt_m": 5320.38329861961,
+        "vu_mps": -24.629139932182493,
+        "tas_mps": 279.3238098146269,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 87,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 12.03206205580091,
+        "course_deg_derived": 11.291219051793924,
+        "roll_deg": 13.997747591648114,
+        "alt_m": 5353.9010415138155,
+        "vu_mps": -34.681384942702635,
+        "tas_mps": 309.17588690430557,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 88,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 89.23107186160402,
+        "course_deg_derived": 84.03079846373377,
+        "roll_deg": 5.420798183579162,
+        "alt_m": 5316.306499980327,
+        "vu_mps": -16.029387349098947,
+        "tas_mps": 279.0817365878864,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 88,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 11.700361700946488,
+        "course_deg_derived": 11.383021796431414,
+        "roll_deg": -9.68607922506312,
+        "alt_m": 5347.313766960785,
+        "vu_mps": -31.337936546698625,
+        "tas_mps": 309.29682481213246,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 90,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 88.27916688837142,
+        "course_deg_derived": 84.25975759557035,
+        "roll_deg": -13.244369904847405,
+        "alt_m": 5312.120363701666,
+        "vu_mps": -8.135719324521789,
+        "tas_mps": 280.43372969490486,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 90,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 11.249580523211415,
+        "course_deg_derived": 11.01602273600576,
+        "roll_deg": -25.905616769974777,
+        "alt_m": 5335.365947606099,
+        "vu_mps": -28.477275361115485,
+        "tas_mps": 310.1222419526153,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 91,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 87.95479553215648,
+        "course_deg_derived": 84.38225936296524,
+        "roll_deg": -12.500969740671596,
+        "alt_m": 5310.482146673754,
+        "vu_mps": -8.394840503941142,
+        "tas_mps": 281.6341987542997,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 91,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          3,
+          0
+        ],
+        "yaw_deg": 11.56744532306312,
+        "course_deg_derived": 10.768304495440555,
+        "roll_deg": -32.0022780179233,
+        "alt_m": 5329.776800067964,
+        "vu_mps": -27.91957529730694,
+        "tas_mps": 310.52871286597804,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 92,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 87.69743228512989,
+        "course_deg_derived": 84.51368305589564,
+        "roll_deg": -11.247561004028896,
+        "alt_m": 5308.714173903198,
+        "vu_mps": -9.378341848304276,
+        "tas_mps": 282.8516393726969,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 92,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 11.917133955338404,
+        "course_deg_derived": 10.79610603669766,
+        "roll_deg": -18.065399766749294,
+        "alt_m": 5324.029830200011,
+        "vu_mps": -29.890065372966497,
+        "tas_mps": 311.47563604509423,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 93,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 87.48738310334056,
+        "course_deg_derived": 84.64339054444503,
+        "roll_deg": -9.532043111645727,
+        "alt_m": 5306.701373414496,
+        "vu_mps": -10.806637765332958,
+        "tas_mps": 284.0717869237987,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 93,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 12.016623679432817,
+        "course_deg_derived": 10.850224270283434,
+        "roll_deg": 0.4124081953134472,
+        "alt_m": 5317.784461384223,
+        "vu_mps": -32.4987598466741,
+        "tas_mps": 312.3852001992788,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 94,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 87.15220171493237,
+        "course_deg_derived": 84.76756986424611,
+        "roll_deg": -7.2224754481970175,
+        "alt_m": 5304.379408942304,
+        "vu_mps": -12.447169373720106,
+        "tas_mps": 285.27300369740516,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 94,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 11.379700368254992,
+        "course_deg_derived": 10.888611764169127,
+        "roll_deg": 5.822136883931166,
+        "alt_m": 5311.042346012244,
+        "vu_mps": -35.05615677661593,
+        "tas_mps": 313.28677407112644,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 95,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 86.813511690078,
+        "course_deg_derived": 84.86562351110295,
+        "roll_deg": -4.548382644805428,
+        "alt_m": 5301.7081716861785,
+        "vu_mps": -14.2797374174836,
+        "tas_mps": 286.466719876186,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 95,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 10.825190300434116,
+        "course_deg_derived": 10.879812744852844,
+        "roll_deg": -12.528886964573628,
+        "alt_m": 5303.7950595926195,
+        "vu_mps": -36.77053764066382,
+        "tas_mps": 313.4190896226738,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 96,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 86.47733136012903,
+        "course_deg_derived": 84.94084132201756,
+        "roll_deg": -1.3821704842644482,
+        "alt_m": 5298.695965839234,
+        "vu_mps": -15.701035727270083,
+        "tas_mps": 287.5808960882552,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 96,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 10.916255211140925,
+        "course_deg_derived": 10.761478275859208,
+        "roll_deg": -21.880258943710675,
+        "alt_m": 5296.463075681136,
+        "vu_mps": -36.88157845619007,
+        "tas_mps": 313.79366436698774,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 97,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 86.19447773681036,
+        "course_deg_derived": 85.0048723408337,
+        "roll_deg": 2.2463966424981976,
+        "alt_m": 5295.483714577702,
+        "vu_mps": -16.301266540275115,
+        "tas_mps": 288.64753222089,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 97,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 11.335307738628767,
+        "course_deg_derived": 10.77659892317492,
+        "roll_deg": -7.160021293144676,
+        "alt_m": 5288.881791396869,
+        "vu_mps": -39.2790814507515,
+        "tas_mps": 314.7924259300389,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 98,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 85.93523404600164,
+        "course_deg_derived": 85.06317527550661,
+        "roll_deg": -0.9271855377222468,
+        "alt_m": 5292.35560996956,
+        "vu_mps": -14.05470260164036,
+        "tas_mps": 289.14783213221205,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 98,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 11.409653182889915,
+        "course_deg_derived": 10.78004313760236,
+        "roll_deg": 12.047792069809534,
+        "alt_m": 5280.743830362967,
+        "vu_mps": -42.03606793273914,
+        "tas_mps": 315.64757037389745,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 99,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 85.70398954019487,
+        "course_deg_derived": 85.06768005126742,
+        "roll_deg": -1.7499081389079794,
+        "alt_m": 5290.064923860473,
+        "vu_mps": -8.755921509185647,
+        "tas_mps": 289.65296732760186,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 99,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 11.624176803681864,
+        "course_deg_derived": 10.813401649497091,
+        "roll_deg": 30.94117016456373,
+        "alt_m": 5272.127011389595,
+        "vu_mps": -43.88971790868261,
+        "tas_mps": 316.8381584445676,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 100,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 85.50378147379142,
+        "course_deg_derived": 85.03950962826349,
+        "roll_deg": -4.261048177246961,
+        "alt_m": 5288.824284470299,
+        "vu_mps": -3.990240774960783,
+        "tas_mps": 289.9313812803509,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 100,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 13.090297500660308,
+        "course_deg_derived": 11.174296682795568,
+        "roll_deg": 49.66305599921206,
+        "alt_m": 5263.311942423705,
+        "vu_mps": -43.70743802235056,
+        "tas_mps": 317.6671929853118,
+        "missiles_remaining": 1
+      }
+    ],
+    "case04": [
+      {
+        "step": 100,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 85.50378147379142,
+        "course_deg_derived": 85.03950962826349,
+        "roll_deg": -4.261048177246961,
+        "alt_m": 5288.824284470299,
+        "vu_mps": -3.990240774960783,
+        "tas_mps": 289.9313812803509,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 107,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 85.39302856939148,
+        "course_deg_derived": 85.18603688065055,
+        "roll_deg": -0.5431216228069634,
+        "alt_m": 5283.973403759399,
+        "vu_mps": -2.3319176789253997,
+        "tas_mps": 294.9201291026753,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 113,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 85.17746760432816,
+        "course_deg_derived": 85.21416686727981,
+        "roll_deg": -1.313977328849399,
+        "alt_m": 5281.710529648421,
+        "vu_mps": -0.8380537012909902,
+        "tas_mps": 298.65954028615295,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 115,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 85.15460474338651,
+        "course_deg_derived": 85.19657300548376,
+        "roll_deg": -3.005982958269429,
+        "alt_m": 5281.537827877307,
+        "vu_mps": 0.3685699744500974,
+        "tas_mps": 299.77377246989715,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 118,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 85.16028016941955,
+        "course_deg_derived": 85.15449750694123,
+        "roll_deg": -4.095686169308746,
+        "alt_m": 5281.579758282584,
+        "vu_mps": -0.7061689005829838,
+        "tas_mps": 301.51580101087706,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 125,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 85.0451211602289,
+        "course_deg_derived": 85.09917665642291,
+        "roll_deg": -3.056550862043119,
+        "alt_m": 5278.689687243113,
+        "vu_mps": -2.804026807375983,
+        "tas_mps": 305.3727588625453,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 139,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 85.01197130265415,
+        "course_deg_derived": 85.03606952544199,
+        "roll_deg": -0.5523840745192402,
+        "alt_m": 5275.599052253527,
+        "vu_mps": 0.6084764320059458,
+        "tas_mps": 312.1160180136762,
+        "missiles_remaining": 1
+      }
+    ],
+    "case05": [
+      {
+        "step": 140,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 105.36517745728676,
+        "course_deg_derived": 99.07412236766781,
+        "roll_deg": 85.50280946929185,
+        "alt_m": 4883.620616062761,
+        "vu_mps": -48.57376217757103,
+        "tas_mps": 305.80661293039446,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 141,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 107.6909114936644,
+        "course_deg_derived": 101.5476145147687,
+        "roll_deg": 84.21212862928951,
+        "alt_m": 4873.825027979091,
+        "vu_mps": -49.25858572501185,
+        "tas_mps": 305.37416298430657,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 142,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 110.04785432822128,
+        "course_deg_derived": 104.06749544621523,
+        "roll_deg": 76.22652225570855,
+        "alt_m": 4863.994710836783,
+        "vu_mps": -48.788404375556546,
+        "tas_mps": 304.857695547859,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 143,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 112.44771303179904,
+        "course_deg_derived": 106.29877915588236,
+        "roll_deg": 75.85718921267893,
+        "alt_m": 4854.370139583242,
+        "vu_mps": -47.59047751387062,
+        "tas_mps": 304.6509760283423,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 144,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 114.33395890027404,
+        "course_deg_derived": 108.62497582562834,
+        "roll_deg": 72.9000138892351,
+        "alt_m": 4844.947837709195,
+        "vu_mps": -46.38749990632106,
+        "tas_mps": 304.32251056655895,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 145,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 115.99397926839822,
+        "course_deg_derived": 111.10846978256734,
+        "roll_deg": 54.94807897145385,
+        "alt_m": 4836.0060222305865,
+        "vu_mps": -42.33162636223413,
+        "tas_mps": 303.54814851535554,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 146,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 116.2607730449084,
+        "course_deg_derived": 112.72344740377686,
+        "roll_deg": 31.425993991159935,
+        "alt_m": 4828.156729240546,
+        "vu_mps": -36.22594742337642,
+        "tas_mps": 303.288948286547,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 147,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 115.17367494755028,
+        "course_deg_derived": 113.26408240807994,
+        "roll_deg": 6.3559601693589505,
+        "alt_m": 4821.375230098817,
+        "vu_mps": -31.987341809924253,
+        "tas_mps": 303.3496363097297,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 148,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 114.63635888454203,
+        "course_deg_derived": 113.29318418205885,
+        "roll_deg": -18.60657717973553,
+        "alt_m": 4815.263113922283,
+        "vu_mps": -29.310775149323156,
+        "tas_mps": 303.59347408579134,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 149,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 114.34862570407432,
+        "course_deg_derived": 113.15201581742284,
+        "roll_deg": -30.582929559844768,
+        "alt_m": 4809.506932717279,
+        "vu_mps": -28.67615161377568,
+        "tas_mps": 304.1352873361178,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 150,
+        "aircraft_id": "A0200",
+        "actions": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 113.7081124782436,
+        "course_deg_derived": 112.90204508702155,
+        "roll_deg": -37.62681132970052,
+        "alt_m": 4803.810056117088,
+        "vu_mps": -27.925765185468727,
+        "tas_mps": 304.69725388780915,
+        "missiles_remaining": 1
+      }
+    ],
+    "case07": [
+      {
+        "step": 241,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 82.68007938379166,
+        "course_deg_derived": 83.01400566138823,
+        "roll_deg": -1.4529010389147807,
+        "alt_m": 5280.585130200193,
+        "vu_mps": -2.4135532477424437,
+        "tas_mps": 336.0867877920002,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 241,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 77.06291732311007,
+        "course_deg_derived": 77.54223217931025,
+        "roll_deg": -50.77880759820215,
+        "alt_m": 3941.996130265421,
+        "vu_mps": -21.169186713895773,
+        "tas_mps": 344.51708525442405,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 242,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 82.72192032413366,
+        "course_deg_derived": 82.98809938078213,
+        "roll_deg": 0.1026083645631493,
+        "alt_m": 5280.145753804529,
+        "vu_mps": -2.050611870801531,
+        "tas_mps": 336.30790013824975,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 242,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          4,
+          1
+        ],
+        "yaw_deg": 72.76418499362751,
+        "course_deg_derived": 75.4573545051244,
+        "roll_deg": -76.48776894958952,
+        "alt_m": 3938.4806229719193,
+        "vu_mps": -14.874772116069854,
+        "tas_mps": 343.3644273251553,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 243,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 82.58121137890105,
+        "course_deg_derived": 82.97007048940506,
+        "roll_deg": -2.4794231701351204,
+        "alt_m": 5279.863617636225,
+        "vu_mps": -0.5284800800490304,
+        "tas_mps": 336.34246041666114,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 243,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          4,
+          1
+        ],
+        "yaw_deg": 70.72834528164046,
+        "course_deg_derived": 73.5940352179791,
+        "roll_deg": -88.2363531543929,
+        "alt_m": 3935.6652785247,
+        "vu_mps": -13.81550416662078,
+        "tas_mps": 342.89670267551145,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 244,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 82.36617061013045,
+        "course_deg_derived": 82.8378370560736,
+        "roll_deg": -16.66373025810235,
+        "alt_m": 5280.017085276362,
+        "vu_mps": 2.409269696612323,
+        "tas_mps": 336.0164960920906,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 244,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          4,
+          1
+        ],
+        "yaw_deg": 74.33999025731009,
+        "course_deg_derived": 73.33642198138716,
+        "roll_deg": -77.59075258452586,
+        "alt_m": 3932.8845408904463,
+        "vu_mps": -14.158964971849954,
+        "tas_mps": 343.4708608760182,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 245,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 82.13906533187777,
+        "course_deg_derived": 82.42758591141614,
+        "roll_deg": -39.67109272697478,
+        "alt_m": 5280.790680891708,
+        "vu_mps": 5.0976116761367285,
+        "tas_mps": 335.57360624101693,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 245,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 77.03917374611964,
+        "course_deg_derived": 73.99690758206903,
+        "roll_deg": -60.59445999686498,
+        "alt_m": 3929.8842552313777,
+        "vu_mps": -16.183166768425814,
+        "tas_mps": 344.3436266823882,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 246,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 80.15088331588095,
+        "course_deg_derived": 81.52015742298146,
+        "roll_deg": -62.83153718468569,
+        "alt_m": 5282.0230098766215,
+        "vu_mps": 7.413603811045664,
+        "tas_mps": 334.87332862212696,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 246,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 78.81911296567253,
+        "course_deg_derived": 74.82267799014215,
+        "roll_deg": -43.68579653163886,
+        "alt_m": 3926.266599682975,
+        "vu_mps": -20.266519296597053,
+        "tas_mps": 345.0542482950898,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 247,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 75.34359777138495,
+        "course_deg_derived": 79.54012808729118,
+        "roll_deg": -86.00293806687058,
+        "alt_m": 5283.734206720456,
+        "vu_mps": 9.143969094479342,
+        "tas_mps": 333.8821466790993,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 247,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 79.03155846295387,
+        "course_deg_derived": 75.4216678618064,
+        "roll_deg": -25.490469105426104,
+        "alt_m": 3921.728466480473,
+        "vu_mps": -24.73197439099729,
+        "tas_mps": 345.9150053256044,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 248,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 71.79974146211629,
+        "course_deg_derived": 77.30716369512311,
+        "roll_deg": -96.25239012796916,
+        "alt_m": 5285.397955951721,
+        "vu_mps": 7.176482645761696,
+        "tas_mps": 332.9637346243691,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 248,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 77.96917625427727,
+        "course_deg_derived": 75.5488896809006,
+        "roll_deg": -27.58090357255581,
+        "alt_m": 3916.638470811376,
+        "vu_mps": -25.029462692401076,
+        "tas_mps": 346.40824832277235,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 249,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 69.03137329614651,
+        "course_deg_derived": 75.19406519786406,
+        "roll_deg": -89.28853373067707,
+        "alt_m": 5286.616250237337,
+        "vu_mps": 5.192794139795573,
+        "tas_mps": 332.25015738196043,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 249,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 73.09188359222654,
+        "course_deg_derived": 74.44142077823692,
+        "roll_deg": -52.79054747045582,
+        "alt_m": 3912.361343025506,
+        "vu_mps": -16.87926624395245,
+        "tas_mps": 345.83117186273347,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 250,
+        "aircraft_id": "A0100",
+        "actions": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 66.78439796955826,
+        "course_deg_derived": 73.01103082174268,
+        "roll_deg": -81.28233671368426,
+        "alt_m": 5287.567794955212,
+        "vu_mps": 4.577951955295071,
+        "tas_mps": 331.3728653264067,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 250,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          4,
+          1
+        ],
+        "yaw_deg": 70.43869198069926,
+        "course_deg_derived": 72.45600916580582,
+        "roll_deg": -78.87116600493626,
+        "alt_m": 3909.651603570548,
+        "vu_mps": -11.293381979383636,
+        "tas_mps": 344.5695863566829,
+        "missiles_remaining": 1
+      }
+    ],
+    "case10": [
+      {
+        "step": 270,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          3,
+          1
+        ],
+        "yaw_deg": 58.00995850409137,
+        "course_deg_derived": 56.666455302296164,
+        "roll_deg": -82.8232978741549,
+        "alt_m": 3864.5103768775016,
+        "vu_mps": -12.674355643451651,
+        "tas_mps": 342.8327098196035,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 271,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          3,
+          1
+        ],
+        "yaw_deg": 59.23498508935211,
+        "course_deg_derived": 57.149516750048505,
+        "roll_deg": -65.21647197489449,
+        "alt_m": 3861.831510221288,
+        "vu_mps": -14.384717151690364,
+        "tas_mps": 343.5621785664964,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 272,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 61.397784676322,
+        "course_deg_derived": 57.91596202059471,
+        "roll_deg": -47.49287780712071,
+        "alt_m": 3858.6252161327006,
+        "vu_mps": -18.060864810980156,
+        "tas_mps": 344.23827616127045,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 273,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 62.62413599578196,
+        "course_deg_derived": 58.66814517368276,
+        "roll_deg": -30.115707790955256,
+        "alt_m": 3854.470433714443,
+        "vu_mps": -23.71301714877217,
+        "tas_mps": 344.85931056421515,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 274,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 62.52313453658369,
+        "course_deg_derived": 59.142513666884135,
+        "roll_deg": -11.424791892513296,
+        "alt_m": 3849.130070008582,
+        "vu_mps": -29.191823169635732,
+        "tas_mps": 345.60058923978954,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 275,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 61.63208082109375,
+        "course_deg_derived": 59.30101522628699,
+        "roll_deg": -13.185805919861725,
+        "alt_m": 3843.099353063885,
+        "vu_mps": -29.791146333357897,
+        "tas_mps": 346.07822015340975,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 276,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 58.92257783699702,
+        "course_deg_derived": 58.70595291843879,
+        "roll_deg": -38.03214532699747,
+        "alt_m": 3837.900875103816,
+        "vu_mps": -21.29152905911425,
+        "tas_mps": 345.6414034721618,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 277,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 56.66058439530944,
+        "course_deg_derived": 57.29380201017706,
+        "roll_deg": -63.99415052718574,
+        "alt_m": 3834.40875389421,
+        "vu_mps": -14.287404199555212,
+        "tas_mps": 344.51609998140884,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 278,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          3,
+          1
+        ],
+        "yaw_deg": 51.43651174718236,
+        "course_deg_derived": 55.03895341234453,
+        "roll_deg": -90.02118038390512,
+        "alt_m": 3831.9712114726785,
+        "vu_mps": -11.052557882948191,
+        "tas_mps": 343.44966737445293,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 279,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          3,
+          1
+        ],
+        "yaw_deg": 47.38938431506112,
+        "course_deg_derived": 52.786914702933714,
+        "roll_deg": -102.2051724401308,
+        "alt_m": 3829.606039834706,
+        "vu_mps": -13.014138210569236,
+        "tas_mps": 342.62350045348944,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 280,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          3,
+          1
+        ],
+        "yaw_deg": 47.1795053111349,
+        "course_deg_derived": 51.10270472439412,
+        "roll_deg": -91.15259555679916,
+        "alt_m": 3826.777161160684,
+        "vu_mps": -14.885767889742866,
+        "tas_mps": 342.70444650373054,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 281,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          3,
+          1
+        ],
+        "yaw_deg": 52.78267014998622,
+        "course_deg_derived": 51.12932085311838,
+        "roll_deg": -73.0473829601365,
+        "alt_m": 3823.7272065470697,
+        "vu_mps": -15.775939634786292,
+        "tas_mps": 343.2829988628463,
+        "missiles_remaining": 1
+      },
+      {
+        "step": 282,
+        "aircraft_id": "A0200",
+        "actions": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 54.399002102788614,
+        "course_deg_derived": 51.67675357033402,
+        "roll_deg": -55.37059292012168,
+        "alt_m": 3820.3697182612896,
+        "vu_mps": -18.166521806334817,
+        "tas_mps": 344.02950273878554,
+        "missiles_remaining": 1
+      }
+    ]
+  },
+  "derived_values": {
+    "course_deg_derived": "degrees(atan2(ve_mps, vn_mps)) mod 360; travel direction, not yaw"
+  },
+  "proposed_intervention": {
+    "prompt": "prompts/v002",
+    "preserve": "Same model, windows, labels, input representation, output schema, reasoning effort, matching tolerance, and system introduction/sections 1–5/8.",
+    "changes": [
+      "Check both A aircraft independently and verify evidence identity.",
+      "Anchor movement step to the first new command-pattern step supported by nearby before/after evidence, not boundary/confirmation/peak.",
+      "Allow developing motion and controller lag to retain near-end onsets.",
+      "Do not split ongoing correction cycles or passive settling into new events.",
+      "Return only accepted events, with consistent decision and reasons."
+    ],
+    "priority_order": [
+      "Retain existing three localized firing annotations.",
+      "Recover A0100@83, A0200@95, A0200@143, A0100@243, with same-aircraft ±2 matching.",
+      "Maintain 5/5 positive-window recall without contradiction-only YES answers.",
+      "Then reduce false positives; review possible unannotated events separately."
+    ],
+    "not_done": [
+      "No paid API calls.",
+      "No relabeling or forced postprocessing of current predictions.",
+      "No claims that v002 has improved accuracy or zero false negatives."
+    ],
+    "follow_up": "Run v002 once on the same 10 cases, inspect localization and contradictions, then repeat v001 and v002 three times each. If contradictions or identity swaps persist, test reasoning effort or input layout separately instead of changing several factors at once."
+  },
+  "limitations": [
+    "Single selected episode and one response per case; no generalization estimate.",
+    "Reasons are model-generated claims, not verified internal causes.",
+    "No guarantee of zero false negatives; prompt effectiveness needs new inference.",
+    "Weak-negative labels may omit real changes.",
+    "Firing reference action and first observable evidence differ by one step in these data."
+  ]
+}

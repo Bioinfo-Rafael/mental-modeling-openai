@@ -1,0 +1,1863 @@
+{
+  "created_at": "2026-10-25T21:49:39.547617+00:00",
+  "stage": "evaluate",
+  "run_name": "sliding_h40",
+  "prompt_version": "v003",
+  "prompt_sha256": "1e3acc10e8c9fe704ce61dcbaa017ed51b92fdf356ba757278c8bc6b1e55ee1e",
+  "config": {
+    "history": 40,
+    "stride": 5,
+    "repeats": 3,
+    "conditions": [
+      "responses_diagnostic",
+      "decisions"
+    ],
+    "decisions_task": "aircraft_set",
+    "reasoning_effort": "low",
+    "max_output_tokens": 4096,
+    "timeout_seconds": 180,
+    "step_tolerance": 2,
+    "order_seed": 18
+  },
+  "limitations": [
+    "Single episode reused for development and evaluation; not a held-out test.",
+    "Unannotated windows are weak negatives, not verified absence of important events.",
+    "Window-wide retrospective detection, not future-event prediction."
+  ],
+  "analysis_code_sha256": {
+    "__init__.py": "287bb33fe633df3471937363b20a8ededd262797228882665725a7fd1617ea6c",
+    "cli.py": "5700162418f619257145e8c6f8bc1aff8d49f107c15a691a8f42303c2d6f071c",
+    "dataset.py": "a508efa8256a701701d1cf79b3630b6fc3d8bcd52631a8f2aa3452184ddb138a",
+    "evaluation.py": "42c5271c288afd7d3374d6436d062c3ca71d0aa7c8057a567a093c1f0a01e9a6",
+    "execution.py": "a375c606301b5293b5e8a134639a4d55b39227a1569344cbfe5d34887efc1e9d",
+    "metrics.py": "487240e767c9fdc6f494464bad745ebaf6c22f0f0d01f83c859bd277714944a0",
+    "outputs.py": "1b2d027abf851c0635725288ce0e5a0f501880d5892311358f633913d865ec41",
+    "planning.py": "9f0c0703cb37fb7a88c65cc847a96184588cb6932aba0ae202fb0c8e01197459",
+    "prompts.py": "0416ae9169681d7041bafb93b108500545a12cc534dfdba12d6dbc4bc52f7be0",
+    "storage.py": "48a72efe7b039cb54cc3a95cdf773027b0c3e5c9f38065f1ef0b7b54f8397865"
+  },
+  "conditions": {
+    "responses_diagnostic": {
+      "planned": 186,
+      "attempted": 186,
+      "valid": 169,
+      "pending": 0,
+      "errors_or_uncertain": 17,
+      "valid_fraction_of_attempts": 0.9086021505376344,
+      "TP": 88,
+      "TN": 25,
+      "FP": 38,
+      "FN": 18,
+      "accuracy_valid": 0.6686390532544378,
+      "precision_valid": 0.6984126984126984,
+      "recall_valid": 0.8301886792452831,
+      "false_negative_rate_valid": 0.16981132075471697,
+      "false_positive_rate_valid": 0.6031746031746031,
+      "f2_valid": 0.8,
+      "accuracy_attempted_errors_as_misses": 0.6075268817204301,
+      "positive_recall_attempted_errors_as_misses": 0.7154471544715447,
+      "latency_valid_p50_s": 5.563409042079002,
+      "latency_valid_p95_s": 10.707384216599165,
+      "latency_attempted_p95_s": 11.142476041801274,
+      "known_cost_usd": 0.318968735,
+      "cost_known_attempts": 185,
+      "cost_unknown_attempts": 1,
+      "cost_complete": false,
+      "cost_per_valid_decision_known_usd": null,
+      "aircraft_selection": {
+        "valid": 169,
+        "attempted": 186,
+        "exact_set_correct": 99,
+        "exact_set_accuracy_valid": 0.5857988165680473,
+        "exact_set_accuracy_attempted_errors_as_misses": 0.532258064516129,
+        "confusion_matrix_expected_rows_predicted_columns": {
+          "NONE": {
+            "NONE": 25,
+            "A1": 10,
+            "A2": 27,
+            "BOTH": 1
+          },
+          "A1": {
+            "NONE": 0,
+            "A1": 39,
+            "A2": 0,
+            "BOTH": 1
+          },
+          "A2": {
+            "NONE": 17,
+            "A1": 0,
+            "A2": 16,
+            "BOTH": 0
+          },
+          "BOTH": {
+            "NONE": 1,
+            "A1": 11,
+            "A2": 2,
+            "BOTH": 19
+          }
+        },
+        "per_aircraft": {
+          "A0100": {
+            "TP": 70,
+            "TN": 85,
+            "FP": 11,
+            "FN": 3,
+            "recall": 0.958904109589041,
+            "precision": 0.8641975308641975,
+            "false_negative_rate": 0.0410958904109589,
+            "recall_attempted_errors_as_misses": 0.7777777777777778
+          },
+          "A0200": {
+            "TP": 37,
+            "TN": 74,
+            "FP": 29,
+            "FN": 29,
+            "recall": 0.5606060606060606,
+            "precision": 0.5606060606060606,
+            "false_negative_rate": 0.4393939393939394,
+            "recall_attempted_errors_as_misses": 0.5138888888888888
+          }
+        }
+      },
+      "event_localization": {
+        "expected_event_window_occurrences": 141,
+        "predicted_event_window_occurrences": 158,
+        "matched": 88,
+        "exact_matched": 31,
+        "precision": 0.5569620253164557,
+        "recall": 0.624113475177305,
+        "exact_recall": 0.2198581560283688,
+        "mean_absolute_error_matched_steps": 0.6590909090909091
+      }
+    },
+    "decisions": {
+      "planned": 186,
+      "attempted": 186,
+      "valid": 186,
+      "pending": 0,
+      "errors_or_uncertain": 0,
+      "valid_fraction_of_attempts": 1.0,
+      "TP": 96,
+      "TN": 30,
+      "FP": 33,
+      "FN": 27,
+      "accuracy_valid": 0.6774193548387096,
+      "precision_valid": 0.7441860465116279,
+      "recall_valid": 0.7804878048780488,
+      "false_negative_rate_valid": 0.21951219512195122,
+      "false_positive_rate_valid": 0.5238095238095238,
+      "f2_valid": 0.7729468599033816,
+      "accuracy_attempted_errors_as_misses": 0.6774193548387096,
+      "positive_recall_attempted_errors_as_misses": 0.7804878048780488,
+      "latency_valid_p50_s": 1.7834618538618088,
+      "latency_valid_p95_s": 4.542780312243849,
+      "latency_attempted_p95_s": 4.542780312243849,
+      "known_cost_usd": 0.289029915,
+      "cost_known_attempts": 186,
+      "cost_unknown_attempts": 0,
+      "cost_complete": true,
+      "cost_per_valid_decision_known_usd": 0.0015539242741935484,
+      "aircraft_selection": {
+        "valid": 186,
+        "attempted": 186,
+        "exact_set_correct": 99,
+        "exact_set_accuracy_valid": 0.532258064516129,
+        "exact_set_accuracy_attempted_errors_as_misses": 0.532258064516129,
+        "confusion_matrix_expected_rows_predicted_columns": {
+          "NONE": {
+            "NONE": 30,
+            "A1": 0,
+            "A2": 33,
+            "BOTH": 0
+          },
+          "A1": {
+            "NONE": 3,
+            "A1": 36,
+            "A2": 3,
+            "BOTH": 9
+          },
+          "A2": {
+            "NONE": 21,
+            "A1": 0,
+            "A2": 12,
+            "BOTH": 0
+          },
+          "BOTH": {
+            "NONE": 3,
+            "A1": 6,
+            "A2": 9,
+            "BOTH": 21
+          }
+        },
+        "per_aircraft": {
+          "A0100": {
+            "TP": 72,
+            "TN": 96,
+            "FP": 0,
+            "FN": 18,
+            "recall": 0.8,
+            "precision": 1.0,
+            "false_negative_rate": 0.2,
+            "recall_attempted_errors_as_misses": 0.8
+          },
+          "A0200": {
+            "TP": 42,
+            "TN": 69,
+            "FP": 45,
+            "FN": 30,
+            "recall": 0.5833333333333334,
+            "precision": 0.4827586206896552,
+            "false_negative_rate": 0.4166666666666667,
+            "recall_attempted_errors_as_misses": 0.5833333333333334
+          }
+        }
+      },
+      "event_localization": null
+    }
+  },
+  "paired_comparisons": [
+    {
+      "a": "decisions",
+      "b": "responses_diagnostic",
+      "planned_pairs": 186,
+      "valid_pairs": 169,
+      "agreement": 0.7633136094674556,
+      "disagreements": [
+        {
+          "sample_id": "end_0119",
+          "repeat": 1,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0124",
+          "repeat": 1,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0149",
+          "repeat": 1,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0154",
+          "repeat": 1,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0174",
+          "repeat": 1,
+          "decisions": "YES",
+          "responses_diagnostic": "NO",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0189",
+          "repeat": 1,
+          "decisions": "YES",
+          "responses_diagnostic": "NO",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0194",
+          "repeat": 1,
+          "decisions": "YES",
+          "responses_diagnostic": "NO",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0199",
+          "repeat": 1,
+          "decisions": "YES",
+          "responses_diagnostic": "NO",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0239",
+          "repeat": 1,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0279",
+          "repeat": 1,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0284",
+          "repeat": 1,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0289",
+          "repeat": 1,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0294",
+          "repeat": 1,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0309",
+          "repeat": 1,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0119",
+          "repeat": 2,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0124",
+          "repeat": 2,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0149",
+          "repeat": 2,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0174",
+          "repeat": 2,
+          "decisions": "YES",
+          "responses_diagnostic": "NO",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0189",
+          "repeat": 2,
+          "decisions": "YES",
+          "responses_diagnostic": "NO",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0199",
+          "repeat": 2,
+          "decisions": "YES",
+          "responses_diagnostic": "NO",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0239",
+          "repeat": 2,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0279",
+          "repeat": 2,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0284",
+          "repeat": 2,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0294",
+          "repeat": 2,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0304",
+          "repeat": 2,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0309",
+          "repeat": 2,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0109",
+          "repeat": 3,
+          "decisions": "YES",
+          "responses_diagnostic": "NO",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0119",
+          "repeat": 3,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0129",
+          "repeat": 3,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0144",
+          "repeat": 3,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0149",
+          "repeat": 3,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0159",
+          "repeat": 3,
+          "decisions": "YES",
+          "responses_diagnostic": "NO",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0174",
+          "repeat": 3,
+          "decisions": "YES",
+          "responses_diagnostic": "NO",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0184",
+          "repeat": 3,
+          "decisions": "YES",
+          "responses_diagnostic": "NO",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0189",
+          "repeat": 3,
+          "decisions": "YES",
+          "responses_diagnostic": "NO",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0199",
+          "repeat": 3,
+          "decisions": "YES",
+          "responses_diagnostic": "NO",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0279",
+          "repeat": 3,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "YES"
+        },
+        {
+          "sample_id": "end_0284",
+          "repeat": 3,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0289",
+          "repeat": 3,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "NO"
+        },
+        {
+          "sample_id": "end_0309",
+          "repeat": 3,
+          "decisions": "NO",
+          "responses_diagnostic": "YES",
+          "expected": "NO"
+        }
+      ],
+      "aircraft_valid_pairs": 169,
+      "aircraft_set_agreement": 0.621301775147929,
+      "aircraft_disagreements": [
+        {
+          "sample_id": "end_0079",
+          "repeat": 1,
+          "decisions": "BOTH",
+          "responses_diagnostic": "A1",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0104",
+          "repeat": 1,
+          "decisions": "A2",
+          "responses_diagnostic": "BOTH",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0109",
+          "repeat": 1,
+          "decisions": "A2",
+          "responses_diagnostic": "BOTH",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0114",
+          "repeat": 1,
+          "decisions": "A2",
+          "responses_diagnostic": "BOTH",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0119",
+          "repeat": 1,
+          "decisions": "NONE",
+          "responses_diagnostic": "BOTH",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0124",
+          "repeat": 1,
+          "decisions": "NONE",
+          "responses_diagnostic": "A2",
+          "expected": "A2"
+        },
+        {
+          "sample_id": "end_0149",
+          "repeat": 1,
+          "decisions": "NONE",
+          "responses_diagnostic": "A2",
+          "expected": "A2"
+        },
+        {
+          "sample_id": "end_0154",
+          "repeat": 1,
+          "decisions": "NONE",
+          "responses_diagnostic": "A2",
+          "expected": "A2"
+        },
+        {
+          "sample_id": "end_0174",
+          "repeat": 1,
+          "decisions": "A2",
+          "responses_diagnostic": "NONE",
+          "expected": "A2"
+        },
+        {
+          "sample_id": "end_0189",
+          "repeat": 1,
+          "decisions": "A2",
+          "responses_diagnostic": "NONE",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0194",
+          "repeat": 1,
+          "decisions": "A2",
+          "responses_diagnostic": "NONE",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0199",
+          "repeat": 1,
+          "decisions": "A2",
+          "responses_diagnostic": "NONE",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0239",
+          "repeat": 1,
+          "decisions": "NONE",
+          "responses_diagnostic": "A2",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0244",
+          "repeat": 1,
+          "decisions": "A2",
+          "responses_diagnostic": "A1",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0249",
+          "repeat": 1,
+          "decisions": "BOTH",
+          "responses_diagnostic": "A1",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0254",
+          "repeat": 1,
+          "decisions": "BOTH",
+          "responses_diagnostic": "A1",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0264",
+          "repeat": 1,
+          "decisions": "BOTH",
+          "responses_diagnostic": "A1",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0279",
+          "repeat": 1,
+          "decisions": "NONE",
+          "responses_diagnostic": "A1",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0284",
+          "repeat": 1,
+          "decisions": "NONE",
+          "responses_diagnostic": "BOTH",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0289",
+          "repeat": 1,
+          "decisions": "NONE",
+          "responses_diagnostic": "A1",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0294",
+          "repeat": 1,
+          "decisions": "NONE",
+          "responses_diagnostic": "A1",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0309",
+          "repeat": 1,
+          "decisions": "NONE",
+          "responses_diagnostic": "A1",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0104",
+          "repeat": 2,
+          "decisions": "A2",
+          "responses_diagnostic": "A1",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0109",
+          "repeat": 2,
+          "decisions": "A2",
+          "responses_diagnostic": "BOTH",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0114",
+          "repeat": 2,
+          "decisions": "A2",
+          "responses_diagnostic": "BOTH",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0119",
+          "repeat": 2,
+          "decisions": "NONE",
+          "responses_diagnostic": "A2",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0124",
+          "repeat": 2,
+          "decisions": "NONE",
+          "responses_diagnostic": "A2",
+          "expected": "A2"
+        },
+        {
+          "sample_id": "end_0149",
+          "repeat": 2,
+          "decisions": "NONE",
+          "responses_diagnostic": "A2",
+          "expected": "A2"
+        },
+        {
+          "sample_id": "end_0174",
+          "repeat": 2,
+          "decisions": "A2",
+          "responses_diagnostic": "NONE",
+          "expected": "A2"
+        },
+        {
+          "sample_id": "end_0189",
+          "repeat": 2,
+          "decisions": "A2",
+          "responses_diagnostic": "NONE",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0199",
+          "repeat": 2,
+          "decisions": "A2",
+          "responses_diagnostic": "NONE",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0239",
+          "repeat": 2,
+          "decisions": "NONE",
+          "responses_diagnostic": "A2",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0244",
+          "repeat": 2,
+          "decisions": "A2",
+          "responses_diagnostic": "A1",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0249",
+          "repeat": 2,
+          "decisions": "BOTH",
+          "responses_diagnostic": "A1",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0254",
+          "repeat": 2,
+          "decisions": "BOTH",
+          "responses_diagnostic": "A1",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0264",
+          "repeat": 2,
+          "decisions": "BOTH",
+          "responses_diagnostic": "A1",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0279",
+          "repeat": 2,
+          "decisions": "NONE",
+          "responses_diagnostic": "A1",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0284",
+          "repeat": 2,
+          "decisions": "NONE",
+          "responses_diagnostic": "A1",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0294",
+          "repeat": 2,
+          "decisions": "NONE",
+          "responses_diagnostic": "A1",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0304",
+          "repeat": 2,
+          "decisions": "NONE",
+          "responses_diagnostic": "A1",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0309",
+          "repeat": 2,
+          "decisions": "NONE",
+          "responses_diagnostic": "A1",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0069",
+          "repeat": 3,
+          "decisions": "BOTH",
+          "responses_diagnostic": "A1",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0074",
+          "repeat": 3,
+          "decisions": "BOTH",
+          "responses_diagnostic": "A1",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0084",
+          "repeat": 3,
+          "decisions": "BOTH",
+          "responses_diagnostic": "A1",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0104",
+          "repeat": 3,
+          "decisions": "A2",
+          "responses_diagnostic": "A1",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0109",
+          "repeat": 3,
+          "decisions": "A2",
+          "responses_diagnostic": "NONE",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0114",
+          "repeat": 3,
+          "decisions": "A2",
+          "responses_diagnostic": "BOTH",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0119",
+          "repeat": 3,
+          "decisions": "NONE",
+          "responses_diagnostic": "A2",
+          "expected": "BOTH"
+        },
+        {
+          "sample_id": "end_0129",
+          "repeat": 3,
+          "decisions": "NONE",
+          "responses_diagnostic": "A2",
+          "expected": "A2"
+        },
+        {
+          "sample_id": "end_0144",
+          "repeat": 3,
+          "decisions": "NONE",
+          "responses_diagnostic": "A2",
+          "expected": "A2"
+        },
+        {
+          "sample_id": "end_0149",
+          "repeat": 3,
+          "decisions": "NONE",
+          "responses_diagnostic": "A2",
+          "expected": "A2"
+        },
+        {
+          "sample_id": "end_0159",
+          "repeat": 3,
+          "decisions": "A2",
+          "responses_diagnostic": "NONE",
+          "expected": "A2"
+        },
+        {
+          "sample_id": "end_0174",
+          "repeat": 3,
+          "decisions": "A2",
+          "responses_diagnostic": "NONE",
+          "expected": "A2"
+        },
+        {
+          "sample_id": "end_0184",
+          "repeat": 3,
+          "decisions": "A2",
+          "responses_diagnostic": "NONE",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0189",
+          "repeat": 3,
+          "decisions": "A2",
+          "responses_diagnostic": "NONE",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0199",
+          "repeat": 3,
+          "decisions": "A2",
+          "responses_diagnostic": "NONE",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0244",
+          "repeat": 3,
+          "decisions": "A2",
+          "responses_diagnostic": "A1",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0249",
+          "repeat": 3,
+          "decisions": "BOTH",
+          "responses_diagnostic": "A1",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0254",
+          "repeat": 3,
+          "decisions": "BOTH",
+          "responses_diagnostic": "A1",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0264",
+          "repeat": 3,
+          "decisions": "BOTH",
+          "responses_diagnostic": "A1",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0279",
+          "repeat": 3,
+          "decisions": "NONE",
+          "responses_diagnostic": "BOTH",
+          "expected": "A1"
+        },
+        {
+          "sample_id": "end_0284",
+          "repeat": 3,
+          "decisions": "NONE",
+          "responses_diagnostic": "A1",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0289",
+          "repeat": 3,
+          "decisions": "NONE",
+          "responses_diagnostic": "A1",
+          "expected": "NONE"
+        },
+        {
+          "sample_id": "end_0309",
+          "repeat": 3,
+          "decisions": "NONE",
+          "responses_diagnostic": "A1",
+          "expected": "NONE"
+        }
+      ],
+      "mean_paired_latency_a_minus_b_s": -3.330215530150388
+    }
+  ],
+  "streams": {
+    "responses_diagnostic": [
+      {
+        "repeat": 1,
+        "complete_valid_stream": false,
+        "yes_count": 42,
+        "events": [
+          {
+            "event_id": "e46",
+            "step": 46,
+            "first_opportunity_end": 49,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 3,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 3,
+            "localized": true,
+            "localized_first_delay_steps": 3,
+            "localized_excess_over_grid_steps": 0,
+            "localized_duplicate_windows": 2
+          },
+          {
+            "event_id": "e49",
+            "step": 49,
+            "first_opportunity_end": 49,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 0,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 20,
+            "localized": true,
+            "localized_first_delay_steps": 20,
+            "localized_excess_over_grid_steps": 20,
+            "localized_duplicate_windows": 1
+          },
+          {
+            "event_id": "e83",
+            "step": 83,
+            "first_opportunity_end": 84,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 6,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 6,
+            "localized": true,
+            "localized_first_delay_steps": 6,
+            "localized_excess_over_grid_steps": 5,
+            "localized_duplicate_windows": 5
+          },
+          {
+            "event_id": "e95",
+            "step": 95,
+            "first_opportunity_end": 99,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 4,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 9,
+            "localized": true,
+            "localized_first_delay_steps": 14,
+            "localized_excess_over_grid_steps": 10,
+            "localized_duplicate_windows": 0
+          },
+          {
+            "event_id": "e143",
+            "step": 143,
+            "first_opportunity_end": 144,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 6,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 6,
+            "localized": true,
+            "localized_first_delay_steps": 6,
+            "localized_excess_over_grid_steps": 5,
+            "localized_duplicate_windows": 4
+          },
+          {
+            "event_id": "e243",
+            "step": 243,
+            "first_opportunity_end": 244,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 1,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 1,
+            "localized": true,
+            "localized_first_delay_steps": 1,
+            "localized_excess_over_grid_steps": 0,
+            "localized_duplicate_windows": 7
+          },
+          {
+            "event_id": "e311",
+            "step": 311,
+            "first_opportunity_end": 314,
+            "opportunities": 7,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 8,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 8,
+            "localized": true,
+            "localized_first_delay_steps": 8,
+            "localized_excess_over_grid_steps": 5,
+            "localized_duplicate_windows": 3
+          }
+        ],
+        "cooldown_simulations": [
+          {
+            "cooldown_steps": 0,
+            "trigger_count": 42,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83",
+              "e95"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          },
+          {
+            "cooldown_steps": 10,
+            "trigger_count": 25,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83",
+              "e95"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          },
+          {
+            "cooldown_steps": 40,
+            "trigger_count": 7,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          }
+        ],
+        "localization_available": true
+      },
+      {
+        "repeat": 2,
+        "complete_valid_stream": false,
+        "yes_count": 43,
+        "events": [
+          {
+            "event_id": "e46",
+            "step": 46,
+            "first_opportunity_end": 49,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 8,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 8,
+            "localized": true,
+            "localized_first_delay_steps": 8,
+            "localized_excess_over_grid_steps": 5,
+            "localized_duplicate_windows": 4
+          },
+          {
+            "event_id": "e49",
+            "step": 49,
+            "first_opportunity_end": 49,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 5,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 5,
+            "localized": true,
+            "localized_first_delay_steps": 5,
+            "localized_excess_over_grid_steps": 5,
+            "localized_duplicate_windows": 5
+          },
+          {
+            "event_id": "e83",
+            "step": 83,
+            "first_opportunity_end": 84,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 1,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 1,
+            "localized": true,
+            "localized_first_delay_steps": 16,
+            "localized_excess_over_grid_steps": 15,
+            "localized_duplicate_windows": 3
+          },
+          {
+            "event_id": "e95",
+            "step": 95,
+            "first_opportunity_end": 99,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 4,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 14,
+            "localized": false,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": 0
+          },
+          {
+            "event_id": "e143",
+            "step": 143,
+            "first_opportunity_end": 144,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 6,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 6,
+            "localized": true,
+            "localized_first_delay_steps": 6,
+            "localized_excess_over_grid_steps": 5,
+            "localized_duplicate_windows": 2
+          },
+          {
+            "event_id": "e243",
+            "step": 243,
+            "first_opportunity_end": 244,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 1,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 1,
+            "localized": true,
+            "localized_first_delay_steps": 1,
+            "localized_excess_over_grid_steps": 0,
+            "localized_duplicate_windows": 7
+          },
+          {
+            "event_id": "e311",
+            "step": 311,
+            "first_opportunity_end": 314,
+            "opportunities": 7,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 8,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 8,
+            "localized": true,
+            "localized_first_delay_steps": 8,
+            "localized_excess_over_grid_steps": 5,
+            "localized_duplicate_windows": 2
+          }
+        ],
+        "cooldown_simulations": [
+          {
+            "cooldown_steps": 0,
+            "trigger_count": 43,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83",
+              "e95"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          },
+          {
+            "cooldown_steps": 10,
+            "trigger_count": 26,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83",
+              "e95"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          },
+          {
+            "cooldown_steps": 40,
+            "trigger_count": 7,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          }
+        ],
+        "localization_available": true
+      },
+      {
+        "repeat": 3,
+        "complete_valid_stream": false,
+        "yes_count": 41,
+        "events": [
+          {
+            "event_id": "e46",
+            "step": 46,
+            "first_opportunity_end": 49,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 3,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 3,
+            "localized": true,
+            "localized_first_delay_steps": 3,
+            "localized_excess_over_grid_steps": 0,
+            "localized_duplicate_windows": 4
+          },
+          {
+            "event_id": "e49",
+            "step": 49,
+            "first_opportunity_end": 49,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 0,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 5,
+            "localized": true,
+            "localized_first_delay_steps": 5,
+            "localized_excess_over_grid_steps": 5,
+            "localized_duplicate_windows": 3
+          },
+          {
+            "event_id": "e83",
+            "step": 83,
+            "first_opportunity_end": 84,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 1,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 1,
+            "localized": true,
+            "localized_first_delay_steps": 6,
+            "localized_excess_over_grid_steps": 5,
+            "localized_duplicate_windows": 4
+          },
+          {
+            "event_id": "e95",
+            "step": 95,
+            "first_opportunity_end": 99,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 4,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 19,
+            "localized": true,
+            "localized_first_delay_steps": 34,
+            "localized_excess_over_grid_steps": 30,
+            "localized_duplicate_windows": 0
+          },
+          {
+            "event_id": "e143",
+            "step": 143,
+            "first_opportunity_end": 144,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 1,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 1,
+            "localized": true,
+            "localized_first_delay_steps": 1,
+            "localized_excess_over_grid_steps": 0,
+            "localized_duplicate_windows": 3
+          },
+          {
+            "event_id": "e243",
+            "step": 243,
+            "first_opportunity_end": 244,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 1,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 1,
+            "localized": true,
+            "localized_first_delay_steps": 1,
+            "localized_excess_over_grid_steps": 0,
+            "localized_duplicate_windows": 7
+          },
+          {
+            "event_id": "e311",
+            "step": 311,
+            "first_opportunity_end": 314,
+            "opportunities": 7,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 13,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 13,
+            "localized": true,
+            "localized_first_delay_steps": 13,
+            "localized_excess_over_grid_steps": 10,
+            "localized_duplicate_windows": 2
+          }
+        ],
+        "cooldown_simulations": [
+          {
+            "cooldown_steps": 0,
+            "trigger_count": 41,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83",
+              "e95"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          },
+          {
+            "cooldown_steps": 10,
+            "trigger_count": 23,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83",
+              "e95"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          },
+          {
+            "cooldown_steps": 40,
+            "trigger_count": 8,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83",
+              "e95"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          }
+        ],
+        "localization_available": true
+      }
+    ],
+    "decisions": [
+      {
+        "repeat": 1,
+        "complete_valid_stream": true,
+        "yes_count": 43,
+        "events": [
+          {
+            "event_id": "e46",
+            "step": 46,
+            "first_opportunity_end": 49,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 3,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 3,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e49",
+            "step": 49,
+            "first_opportunity_end": 49,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 0,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 5,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e83",
+            "step": 83,
+            "first_opportunity_end": 84,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 1,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 1,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e95",
+            "step": 95,
+            "first_opportunity_end": 99,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 4,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 9,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e143",
+            "step": 143,
+            "first_opportunity_end": 144,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 16,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 16,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e243",
+            "step": 243,
+            "first_opportunity_end": 244,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 1,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 6,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e311",
+            "step": 311,
+            "first_opportunity_end": 314,
+            "opportunities": 7,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 3,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 3,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          }
+        ],
+        "cooldown_simulations": [
+          {
+            "cooldown_steps": 0,
+            "trigger_count": 43,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83",
+              "e95"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          },
+          {
+            "cooldown_steps": 10,
+            "trigger_count": 22,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83",
+              "e95"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          },
+          {
+            "cooldown_steps": 40,
+            "trigger_count": 6,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          }
+        ],
+        "localization_available": false
+      },
+      {
+        "repeat": 2,
+        "complete_valid_stream": true,
+        "yes_count": 43,
+        "events": [
+          {
+            "event_id": "e46",
+            "step": 46,
+            "first_opportunity_end": 49,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 3,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 3,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e49",
+            "step": 49,
+            "first_opportunity_end": 49,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 0,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 5,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e83",
+            "step": 83,
+            "first_opportunity_end": 84,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 1,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 1,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e95",
+            "step": 95,
+            "first_opportunity_end": 99,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 4,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 9,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e143",
+            "step": 143,
+            "first_opportunity_end": 144,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 16,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 16,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e243",
+            "step": 243,
+            "first_opportunity_end": 244,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 1,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 6,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e311",
+            "step": 311,
+            "first_opportunity_end": 314,
+            "opportunities": 7,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 3,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 3,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          }
+        ],
+        "cooldown_simulations": [
+          {
+            "cooldown_steps": 0,
+            "trigger_count": 43,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83",
+              "e95"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          },
+          {
+            "cooldown_steps": 10,
+            "trigger_count": 22,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83",
+              "e95"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          },
+          {
+            "cooldown_steps": 40,
+            "trigger_count": 6,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          }
+        ],
+        "localization_available": false
+      },
+      {
+        "repeat": 3,
+        "complete_valid_stream": true,
+        "yes_count": 43,
+        "events": [
+          {
+            "event_id": "e46",
+            "step": 46,
+            "first_opportunity_end": 49,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 3,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 3,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e49",
+            "step": 49,
+            "first_opportunity_end": 49,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 0,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 5,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e83",
+            "step": 83,
+            "first_opportunity_end": 84,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 1,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 1,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e95",
+            "step": 95,
+            "first_opportunity_end": 99,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 4,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 9,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e143",
+            "step": 143,
+            "first_opportunity_end": 144,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 16,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 16,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e243",
+            "step": 243,
+            "first_opportunity_end": 244,
+            "opportunities": 8,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 1,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 6,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          },
+          {
+            "event_id": "e311",
+            "step": 311,
+            "first_opportunity_end": 314,
+            "opportunities": 7,
+            "binary_coverage_proxy": true,
+            "binary_first_delay_steps": 3,
+            "aircraft_coverage_proxy": true,
+            "aircraft_first_delay_steps_proxy": 3,
+            "localized": null,
+            "localized_first_delay_steps": null,
+            "localized_excess_over_grid_steps": null,
+            "localized_duplicate_windows": null
+          }
+        ],
+        "cooldown_simulations": [
+          {
+            "cooldown_steps": 0,
+            "trigger_count": 43,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83",
+              "e95"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          },
+          {
+            "cooldown_steps": 10,
+            "trigger_count": 22,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83",
+              "e95"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          },
+          {
+            "cooldown_steps": 40,
+            "trigger_count": 6,
+            "covered_event_ids_proxy": [
+              "e143",
+              "e243",
+              "e311",
+              "e46",
+              "e49",
+              "e83"
+            ],
+            "warning": "Overlap proxy only; no proof that the downstream explanation covers each event."
+          }
+        ],
+        "localization_available": false
+      }
+    ]
+  }
+}

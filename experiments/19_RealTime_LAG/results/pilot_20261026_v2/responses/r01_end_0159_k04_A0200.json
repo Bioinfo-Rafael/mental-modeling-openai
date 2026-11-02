@@ -1,0 +1,74 @@
+{
+  "query_id": "r01_end_0159_k04_A0200",
+  "started_at": "2026-10-26T00:09:16.365271+00:00",
+  "api_status": "ok",
+  "choice": "B",
+  "dispatch_offset_s": 0.006418167147785425,
+  "latency_s": 0.4531264998950064,
+  "raw": {
+    "model": "gpt-6-luna",
+    "answers": [
+      {
+        "type": "choice",
+        "name": "primary_goal",
+        "choice": "B",
+        "probabilities": [
+          {
+            "value": "A",
+            "probability": 0.24
+          },
+          {
+            "value": "B",
+            "probability": 0.73
+          },
+          {
+            "value": "C",
+            "probability": 0.02
+          },
+          {
+            "value": "D",
+            "probability": 0.01
+          }
+        ],
+        "confidence": 0.64
+      }
+    ],
+    "usage": {
+      "input_tokens": 33724,
+      "input_tokens_details": {
+        "cached_tokens": 33303,
+        "cache_write_tokens": 0,
+        "cache_write_tokens_details": {
+          "ttl_30m_tokens": 0,
+          "ttl_12h_tokens": 0
+        }
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 33724
+    }
+  },
+  "probabilities": [
+    {
+      "value": "A",
+      "probability": 0.24
+    },
+    {
+      "value": "B",
+      "probability": 0.73
+    },
+    {
+      "value": "C",
+      "probability": 0.02
+    },
+    {
+      "value": "D",
+      "probability": 0.01
+    }
+  ],
+  "confidence": 0.64,
+  "finished_at": "2026-10-26T00:09:16.818426+00:00",
+  "deadline_status": "within"
+}

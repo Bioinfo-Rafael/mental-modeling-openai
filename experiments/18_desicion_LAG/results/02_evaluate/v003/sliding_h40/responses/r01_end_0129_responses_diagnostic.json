@@ -1,0 +1,179 @@
+{
+  "query_id": "r01_end_0129_responses_diagnostic",
+  "started_at": "2026-10-25T21:27:15.328655+00:00",
+  "status": "ok",
+  "latency_s": 7.978100374806672,
+  "raw": {
+    "id": "resp_0d6ce7a8343e36be016ade7434058c87d0aaea78d1941b981e",
+    "created_at": 1792963636.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "rs_0d6ce7a8343e36be016ade7435342887d0a9b568496603778e",
+        "summary": [],
+        "type": "reasoning",
+        "content": [],
+        "encrypted_content": "gAAAAABq3nQ6fV1lO55Jvcpz9Ulte70AvGOlWsmpXgQ0O0Zze7r4wDYlK6UtS54Ke9OP-VdDBA2ZJxgYctm4z7CSMRgVtmXVQ_arUymgh7JFBIxL2ZsfeQmf8f60-7uXJDaFHPEGwHCDaKUZsmMU8Gpqe4lbqiJ4x9OXdtxWajBeiA1BkMGyqTNiEJjyq2bfv96aYvr00alBXfVnsPzy8Qp-ylDq1uFtNqcJWG_LWjD3J6i3sFkJqvKg94Otg0WjqxcP5K2v0Hj6YNma1NTPdAlPfvkKhbbJN6M9uqWgE9KU9kMc6c9cWft9coE-rr4_mxlXjeJKM6Q9asvlZ2iobZg4SiNROSpPP5J5_yoA7Pyx5ZMwcFRFeM_z44wfNprmB2qNhWC4UiDEn5iwhaTA9VWPvZTJeilxygW2P321b9iiVHhuPkCxof_F_Dv6wF9Efq-r7vpVGYwLkHCvLnv6at0t4YJPWFB8rfccjidkXj_XC1NvV1p4V4aWTBakqgeu2jDa-XJ2bEGMsmronbspd30z1buoiCmrvhSpiiY3fnyBBmUQNwPnwyCFQWzdNhwMYJCfx88_UPpzWwkngvuKepq0hSH55r_QS3JsYIm-ywEFHMP0F7mjLuijhXkTXVP877W2h4WQaqLOpFhYfSyytmmYqj5V5RpdIR4ka2PiNYaVo6YZAJ17z6b9sBlC9UPr39QLFIC-yx_LPT2KmQmRZzcLMbads4e3UOsn9_wG4kiq9j5_N4YcOTVKIK3vCcZSBuiLXAWTZrw0nZAFXJCMbZU6z8W0PMSeoB_ySHfWDU_A4tAsiCx4P2mwdUlIFi2CENbIkrU14dBND1oqljWji0DX0L2Mj4a_oQL-STblzbL35jdRdNdz-fn0DkZXaDyCBdZJ3sPZNWlD4uedjvXuxX3rniP-NzBxI-pHZmWiWTQY95o02bTvAtJHnVQkUVHT0aab3BcQhM2GUOtX5IUJWlsLhP8Jr1iTvWvkPPPwi81u8eDDdAGKpz9jXCUzTQXmnEvZtcmZ9evuOnj6Kp8KjLZGC4Hk_d1a-R4-sPmEPSVHQXxbCI55dAw-jjy_3qYvXQ2rNrrqqvJjKyrw0xAfUyWk0P-fQA_lW0VdZHkdT7yIr6Tk0GHbrvPnRxAl1atOHJWSpiWZI2hbqI3aziBG6r3nCTGbP6FpFK2QZ0o1LxkryMV9CPM0zrKP65lyTNhkwHMATXaG58QGe2R4Id8ieIDCOrueDed1V3qpWqcihTl77hXrk7U2763VlosqMFtEH_46ffa4vBT2lES3CdaBe6bem4fqKbqVbB8DNzdgr1yFairBfhrQv2LOgpqF96J83qGvj1dRidYSCcUkM97eoRxGGJKTL59oTHxZwkgJgnm2As2fd2sz-yn_Zhh3O22BqwI9OmB0wSue-brviMNvBrH35ErO-T5TRE6eV3oBt7TijHaQm05Km68NYMQHHV3IT202Tin5yrjvALDhOwxJoEvkO1cecL1obcaqGXNebGsTVRVyiqVkjWjI11Gj6CsUxRzTeg--98l06DLXmXwb2cjNuKSjrLisRLQm73u40xGRvByo4y8LPqK4CshMU7XZtLxWBqiDLyyZ3XsHqI9krK0NAigcEfnR93fnQyi22NFkq0nhJY-gpp3Iwy5XvvDfP6Qcf6mwBiTagWaL3zHJBYWdXuy5U-1rVRDv59TmEpocg9tAipMtxiygvG-GqlYH25DJm5gfTOzTZqsCeVsp-x14-sCvX3prIOW8HJMz8BGCrSo6Ixj5uHSdDJ4Xn2acVYQKtt3iRbiEn3BOCK5q8ufcH0RCFhv82w99bD3eYPuSQEQEzIcl8bMsxrFS5Z_Pm5SxmQYo-PfX0Xcnr0d4SscrdZ-Epnx1alUzuKV0bfD6oBvGVWqnV_Ju344JlHq6ORIw-a68EYwux-509_JxXuZbqkaDwVDe4l0Fj5TvS_12ddPObX6GSDEu1e6qin39P7fQCH4Mkzcpsrund9cG3uoKtSgt3rRvgd4hiOH3Rw3NLqkYCrv-01hE0SJFZIC0NPv6prGsgEvMGp3o0WB5RlWsXwJqSV1IooxB9iLIENFzKJ02Wg-J9J5MVqFHX4ItZVhuJaJZaOzTG_igcSt85gD9ZRV0OrBLNSWCpsjoNtHSrlFxEvcF6t_-KPU1SZngmvWCOZW1jrt-k2x-tmBGUNLTkVG9TUfdYETE7GbwAF5XXlKc6V6zI_GkRySlVhd6JxtgQZrWXaU25221BkfgtpgLwjTW0A-PEFVp0jqmJS49V2rl-WKfRzAVI0TpklygkIyTWGv3QcPCJ1dC2cxgWbW4FAgAaxqySt9W0Yb_hHWnR0HhNYE7vNXM2X6Pq6SQo1RQIDoa_imEH48UJT2s0H70RqNu-VjpqqOoF4NzGmb0zmUyKcRssa7HQjllCeBUtkV5P-Q4g5477p2s2OJvb50D8ANa_2Gk2982TVG4cGoO-upfWy60EVQgexZ9Q4ztNaFS38EAJmcBL-m_KsQQjqlyf-c_PRoI4bPFiDq5CbyGr9J0LI4VwnWvLlXzaPi7AMH3hy3u2fo24CszZKl3L8nkolgsTALyE08SwDkShunnJnLWFp4A91-YnKFLbCWSSHbw-ngvnAYbS6SceRpuj6K0EyX51uRZCN2YxDfzTPfK16n4tic5TaLMoINoM74fcaD7VGCTN6i_I8uLmxv3ddfU694hE7jxjLxX08peO-ncInJ4bQlyniu7zJ5rJUtWbT8oy5yoiJNwo8bq4VIbSFpnKA60XWGDBhq6SJrgvHJwddp1ya_iX0dzWsbYP6FoxThkryFjABV00C8HicjYptL9sSy0BC7zjqdyLcYdFWIgb823vN9HxMyeb4Nr_BMSbhL6eHIV2y2dorymTxU-JToThOnkWrk2cpdvHULz3bSLphVqHWD2Cs8lvVvLM218ONNJg8jnt0nND5XRJLhV7olOdTgiemKANg9XCf0DD8a3A4lZlez-kCPo8UI3EDsTT9jEM7grNL3XDN3Nja2OZggG6OM9bpD92kuJhUzWf3Vy1b_Ryg8pQa9kWN6dmG7EC-wX3e3wb3cFMOFEygDsoijoqp3HfjcpkG0pEgydKhr2wuK4LX9NFMZtplLxOW_hVxyuDohks6rjc2qg17dtaC0Zuyn5o9r6TgYaaWa_ebKMIN5RQxRjme3u95Uj4WO9Am1biZApXNXUPACIQlwpkRLiCjushF_YyuR_kVlPwZpCL3zVfJ8cxYcZp3wiwnCsRFHsVTKt2Xcx-vPHLtvMlfkbmFmYgB75zMwNHXR9WvTsHHLrmAD27gq05qs-haw5oFsiVmVDs02eWN2xhZpbGul90cIHLbzOOj0Y6xlhTJ7Q9GPDv2_Uu6MMWr0kGm8Qhn73yVi7WuNBuCgtLvayom2_zMpoI1WY0kS2xtE46O9scb7diUgz0rCL6Wveqq5DXtLd6Taffjh_dRY2HzFNRJ4VBKmHiRflpguXbWySQ53h_9NHPiG14kluW_2eoz52qVWykARb4x16DrWR8Q0UXr1iE7twBTC5EQdSzwhNj3fHrFoX-3Ws4h6wdGzn74_w82zQ_-wiB4p9aON6pjWtebbHlTMnarCsFtft2DqArFvF5p1Udck-WuQ10jz4AaP6hvB1NSVrMoK3MA-PBrlFHEdsWudACkNQgwrQfo3vgA77UWkNixLcou3K0bi8jJsZedcQZPNfOHXT3CISOhe_wernNb6-5l4kdLrnGi9NRJ5a0xkiCQSN7hFPAAqVHcDmLLhk2iUwsHofwh9tpASUc0SB_vL9bng-76tnedN_Lde1bAKSGXBxNqQGRurIAE3bUhfH4ZV4COlE2-pNJBbaba7QCftWgIFuaMvuZ4EE7qrYPjob47Yp6weely0kSVezkcuIyxEX_iyKQsDV76sbUOVSw8wS-xotYHBZB_N7KAZHMhj4J7wFD8BTyHzjHsP1XSnjuRw5aPaME7pjP9s6G4EyWzAEvTxiQpSlqP9BMvrIbW6_cKNA1W9Mu6njwrPGQ8o7xGipMCU5q3alaQKKn_WwefooxQTCzWVoOMVMtbaEcIYXYXD2BdpJgGf09x6wMmL7bmok1Bd37KvATkQuIBBTBzczDim34t23xEudfRDMIED9ImIptPyBAI_Uj9Q27hlJYw8M_tnGe4NEC5anJPXZwZhjyDKC0K87vz2tcLLEbxkJgRizh5U6_JoVzpfM8zzgqEJU5tlpKMK-DWM05OH0z9_AcpACnbd1SORTr7FkeasscWc-uS0KrdHNOyRHcoZ58wU-GnAj9n-KcZpv41P5bFe_yimtWVjirwxbQKSpq2gTyiFBXoM-rP0gmDlcHWaZZNiRxXO642hy03cb9BkAl6AC2tZa9wGT0NWwT8wGvjCW6YRTir7UbHKj_F60hews7AlHDRi3lGutcPOUeN6Un2hXB6_XeacGWt3EMcmFY5rYrpWrTYgg_GM3GrKAx0aOlN1G3tTuSAjIRYaH0Sm9dr-ZdOoZtze31jxrm6TdKTZ8YIs3oJTb27wIZbw6_cku7UEJ_hAD5C6SdLHx3b24HEFtLJOMVsFzDJqYw3IRWpz3P1k08y0geKnb465JTs_StEfCT-T7fY9piHd5wch_UoL4KEfwupXCW3UhW9ueVNkKzq9E9pmERSHO7v_o4YVLpHcUJjnIlK0hafTOUS68f5bwcX8iUVVf7x8Uiqz7o49W7dFJsr1nI5qnFZ6Cdxq-gJm8VnL0UU9X3LSoOlwH4QYfgr_S5HoQVrRUylPFR9BH_qjLGug3F6Ja-p_-rE8-QrzXJzy91mbfeKQe_VPKOJo6oQBbF8ChGq4i4Qqwo4uJnNOOeuLb49UtlxlgotQHbEiZ_7pducVHsSbN30djo-1Skk2ixe9hrNG22winNTvdH299lX6VE_IjcS8jyV4CahmxoUvm0AuwUk8RuXuVPKU_H8CGykHS1kfwHJNvP98HAybZcdSuS4757RZrj8y2zxbs0WCRU0MgVzD0VjEaJ2rqJ33KehURL1nkzGFn2ZCZAR06schWpLeOmTe0d3fLdLZz-Yh7Ria5azqGjCUidSBdNZyBCYNNNYRuum3CrQTOO9K0VbqTCl_00yN08Ed-J0rLFApIDm7KH5AsMnKFvnu1cx6zLpDDZu5TVv0GSxZrlRvTlAlIQfGgmMZnNSy9Pglgu2sfo0kMPDgbzysFE3a8U7m8NKcEo8laItjvck00C8FyhirvLNlGUpqcZFrqSEga2vSbRkhdACZlOl86oc1vAzMq-TCxWyWOQICrpZTdrtlqgqCAZEzygw6O_Q2sUv614c3cmT7-5nuvJkQM0-CV1Rx4HmhOZpEQ-Ilbs9NYsTI8cMOxRWCvNlm8gG9vHZ4wZqowzZxRKlPkpXzNSQ7mOS4-mdS0wXqQBLLVbPm2grKCE0RyORBjzJ29kI7YfTWlCIVS0umfZu4mjYDRNvphN6Soj6xPB2MELeW9oZY5bq4rU-Run7NqteUG5oG_cjgkr6ytOdgj-atSrRO6n74lliICoUmCykCLFHiiOaaJ9-Q95yx6WMR3hDidFXJCxSQxHvd-x5wTRzFHk4OZN1VHxHaq-6JSOLxjDv99AmUW2_-G3HcyzGd3P1Ef2jrm9F9BGYfFjm5W00ASlR4PVdz6LA--3ggTqh5nV6XBNExsr65Wx3R_gu3moFSsTRpl5eUPFu9QfOkwqjM0UTN-3JJVPjTol3fVo23oYkBMX0PoTDaBMujTGU33W3Bl97z9evQAPSVXitdaQSfyoz4W9BT9NbcU0Y4x6SaDgvorgL2iejiv4_FgapjciBEgOfBLhhsQFaVczMrx134ccMRMvJm_KW_3TQS_9j3AYXgZcW9BEMiQdTFrOhtDY8mGwybHlRPvZ33l270e6yne4-OQvd8NbOKUyOgN6HnPEOOuRYwr_ET6xU5JG8qvm5xXlP5LJ3Op5vTK2k5LLMPs6h23Z0Hh2KmLiXRMxhjERNCcaYHQq8pWmm2fiWI5ftWAHuZR8aG6g0snn-9WMC6d07Ob3pkluiioI634JvhyApFLXamgn1rcgaxvuSCE9pYJOY2-8KiOD1vhRZYpd6T5USGZki069dF4Skt3wNBUH4F8xmiXuajAREjpFl6Q4ZliEp0ODzx1uYdpXYPCJfZmz1BIIiVBzC3X7WCmZtp_dLFJezHLeqx8FPJCeqgHEHAhBLTbK5tbkiDk",
+        "status": null
+      },
+      {
+        "id": "msg_0d6ce7a8343e36be016ade74397bd487d0a4d03fbc829ccc7b",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"NO\",\"events\":[],\"reason\":\"A0100 keeps the same eastbound, near-leveling movement with [1,2,0] throughout. A0200 is already in a sustained rightward turn across the window, mostly commanding [2,4,0]; its heading and eastward velocity develop consistently with that turn, with no supported in-window onset distinct from the ongoing pattern. Both A aircraft retain one missile, and their recorded missiles are present throughout, so new firing is not supported.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792963642.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 40728,
+      "input_tokens_details": {
+        "cache_write_tokens": 38929,
+        "cached_tokens": 1796
+      },
+      "output_tokens": 498,
+      "output_tokens_details": {
+        "reasoning_tokens": 383
+      },
+      "total_tokens": 41226
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "NO",
+    "events": [],
+    "reason": "A0100 keeps the same eastbound, near-leveling movement with [1,2,0] throughout. A0200 is already in a sustained rightward turn across the window, mostly commanding [2,4,0]; its heading and eastward velocity develop consistently with that turn, with no supported in-window onset distinct from the ongoing pattern. Both A aircraft retain one missile, and their recorded missiles are present throughout, so new firing is not supported.",
+    "selected_aircraft": [],
+    "aircraft_choice": "NONE"
+  },
+  "finished_at": "2026-10-25T21:27:23.306770+00:00"
+}

@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0169_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:29:48.369560+00:00",
+  "api_status": "ok",
+  "latency_s": 31.287401624955237,
+  "raw": {
+    "id": "chatcmpl-Ed7ZE7EnQtoXFaeEXIgP7tYIcmM3n",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reduce exposure while preserving energy after an earlier missile engagement by holding a fast, level eastward extension, which steadily increases lateral separation from the southeast-bound Team B missiles and continues unchanged after its recorded missile disappears as B0200 becomes inactive.\",\"A0200\":\"A0200 most plausibly seeks to reduce exposure after an earlier missile engagement by diving through a hard right turn toward the southeast, creating vertical and crossing separation from Team B missiles approaching from the north; it continues this defensive displacement after its missile is removed as B0200 becomes inactive and B0100 remains northward.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992588,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1940,
+      "prompt_tokens": 32862,
+      "total_tokens": 34802,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1784,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 29636,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to reduce exposure while preserving energy after an earlier missile engagement by holding a fast, level eastward extension, which steadily increases lateral separation from the southeast-bound Team B missiles and continues unchanged after its recorded missile disappears as B0200 becomes inactive.",
+    "A0200": "A0200 most plausibly seeks to reduce exposure after an earlier missile engagement by diving through a hard right turn toward the southeast, creating vertical and crossing separation from Team B missiles approaching from the north; it continues this defensive displacement after its missile is removed as B0200 becomes inactive and B0100 remains northward."
+  },
+  "finished_at": "2026-10-26T05:30:19.659071+00:00",
+  "over_3s": true
+}

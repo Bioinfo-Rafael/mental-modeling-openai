@@ -1,0 +1,26 @@
+Detect A0100/A0200 movement-pattern transitions or new missile-firing actions
+in the following LAG history, using the criteria in the system instructions.
+
+Episode: {episode_alias}
+Current step: {end_step}
+Window: steps {start_step} through {end_step}, inclusive
+Window times: {start_time_s:.1f} through {end_time_s:.1f} seconds
+Time points: {time_points}
+Elapsed time: {elapsed_s:.1f} seconds
+
+Previous window end step: {previous_end_step_text}
+TARGET INTERVAL: steps {target_start_step} through {target_end_step}, inclusive
+Target time points: {target_time_points}
+Earlier supplied steps are background; count new changes or firing only in the target interval.
+
+The records contain all aircraft and missiles recorded within this window,
+with available movement actions, ammunition counts, and metadata.
+State and action field orders are defined in the system instructions.
+Assess each A aircraft's overall movement across the entire window before
+locating any event. A recurring oscillation phase or small step within the
+same overall pattern is not a new event. Read actions and motion together
+under the same object_id; other entities provide supporting context only.
+
+BEGIN WINDOW DATA
+{window_data}
+END WINDOW DATA

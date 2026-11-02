@@ -1,0 +1,13 @@
+{
+  "run_id": "sol_tactical_short_v2_20261026",
+  "planned_queries": 43,
+  "recorded_queries": 43,
+  "ok_queries": 43,
+  "answer_count": 86,
+  "complete": true,
+  "all_successful": true,
+  "p50_s": 29.162268292158842,
+  "p95_s": 50.23889164561405,
+  "over_3s": 43,
+  "timing_policy": "measure_only_display_at_observation"
+}

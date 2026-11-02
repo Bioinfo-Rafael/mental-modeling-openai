@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0054_narrative",
+  "attempt": 2,
+  "started_at": "2026-10-26T05:23:52.340058+00:00",
+  "api_status": "ok",
+  "latency_s": 18.752951874863356,
+  "raw": {
+    "id": "chatcmpl-Ed7TVEjD0gSyKoEhUezDLaFTz5Ao4",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly sought firing geometry by accelerating and descending toward the closing, nearly reciprocal Team B formation, then shifted to reducing post-launch exposure through a sustained hard-right command after its ammunition count fell and its missile appeared, amid an opposing B0200 launch in the same exchange.\",\"A0200\":\"A0200 most plausibly sought to remain offensive long enough to obtain firing geometry by sustaining the accelerating, descending head-on closure after A0100 broke right; once its own ammunition decreased and missile appeared, it began commanding a right offset, consistent with reducing direct exposure after launch.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992233,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1082,
+      "prompt_tokens": 28566,
+      "total_tokens": 29648,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 943,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 28563,
+        "cached_tokens": 0
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly sought firing geometry by accelerating and descending toward the closing, nearly reciprocal Team B formation, then shifted to reducing post-launch exposure through a sustained hard-right command after its ammunition count fell and its missile appeared, amid an opposing B0200 launch in the same exchange.",
+    "A0200": "A0200 most plausibly sought to remain offensive long enough to obtain firing geometry by sustaining the accelerating, descending head-on closure after A0100 broke right; once its own ammunition decreased and missile appeared, it began commanding a right offset, consistent with reducing direct exposure after launch."
+  },
+  "finished_at": "2026-10-26T05:24:11.094556+00:00",
+  "over_3s": true
+}

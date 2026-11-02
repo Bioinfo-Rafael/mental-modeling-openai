@@ -1,0 +1,11 @@
+{
+  "history": 40,
+  "stride": 5,
+  "repeats": 1,
+  "conditions": ["responses_diagnostic"],
+  "reasoning_effort": "low",
+  "max_output_tokens": 4096,
+  "timeout_seconds": 180,
+  "step_tolerance": 2,
+  "order_seed": 18
+}

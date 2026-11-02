@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>20 LAG — 30stepの予測比較</title>
+<style>
+:root{--ink:#1c3340;--muted:#617481;--edge:#d6e1e7;--accent:#126d77}*{box-sizing:border-box}body{margin:0;background:#f1f5f7;color:var(--ink);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}header{background:#173c48;color:white;padding:30px max(22px,calc((100vw - 1300px)/2))}h1{margin:5px 0 10px;font-size:30px}h2{font-size:20px;margin:0 0 12px}h3{font-size:17px;margin:0}.eyebrow{font-size:11px;letter-spacing:.16em;color:#8cd3da}header p{margin:4px 0;color:#dbeaf0}main{max-width:1344px;padding:24px 22px 60px;margin:auto}.box{background:white;border:1px solid var(--edge);border-radius:12px;padding:22px;margin-bottom:20px}.filters{display:flex;gap:22px;flex-wrap:wrap}label{display:flex;gap:8px;align-items:center}select,button{font:inherit;border:1px solid #a7bcc7;background:white;color:var(--ink);border-radius:6px;padding:7px 10px}select{max-width:100%}select:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #cf9e35;outline-offset:3px}.comparison{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:16px 0}.condition{background:white;border:1px solid var(--edge);border-top:4px solid var(--accent);border-radius:10px;padding:20px;min-width:0}.condition.reference{border-top-color:#b58b40}.badge{display:inline-block;font-size:12px;background:#ecf3f5;border-radius:5px;padding:3px 7px;margin:9px 0}.reference .badge{background:#fbf3df}.sub{font-size:12px;color:var(--muted)}.narrative{font-size:16px;line-height:1.8;padding:15px 0;overflow-wrap:anywhere;min-height:100px}.pending{color:var(--muted)}.error{color:#a53226}.metric{font-size:12px;color:var(--muted)}.notice{border-left:3px solid #bf954e;padding:8px 14px;background:#fff9ec;font-size:13px;margin:15px 0}details{border-top:1px solid var(--edge);margin-top:14px;padding-top:10px}summary{cursor:pointer;color:var(--accent)}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;background:#f4f7f8;padding:14px;border-radius:6px;max-height:550px;overflow:auto}.pairs{display:grid;grid-template-columns:1fr 1fr;gap:16px;min-width:0}.pairs>div{min-width:0}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}a{color:var(--accent)}.exclusions{font-size:13px}.empty{padding:18px;color:var(--muted)}footer{color:var(--muted);font-size:12px;overflow-wrap:anywhere}@media(max-width:950px){.comparison,.pairs{grid-template-columns:1fr}.narrative{min-height:0}.filters{flex-direction:column;align-items:flex-start}h1{font-size:24px}}@media print{body{background:white}.filters{display:none}pre{max-height:none}header{background:white;color:#173c48}header p{color:#617481}}
+</style></head><body>
+<header><div class="eyebrow">EXPERIMENT 20 / FIXED TARGET</div><h1>次の30stepで、何のためにどう動くか</h1><p>n=−1・n=1の予測と、61時点を観測した参照回答を同じ対象区間で比較。</p><p id="counts"></p></header>
+<main><section class="box"><div class="toolbar"><h2>比較する注釈とモデル</h2><a href="review_template.csv" download>人手評価用CSV</a></div>
+<div class="filters"><label>注釈 <select id="event" aria-label="注釈"></select></label><label>モデル <select id="model" aria-label="モデル"></select></label><label>表示機体 <select id="aircraft" aria-label="表示機体"><option value="target">注釈対象機体</option><option>A0100</option><option>A0200</option><option>B0100</option><option>B0200</option></select></label></div>
+<p id="target"></p><p id="nearby" class="sub"></p>
+<div class="notice">対象は固定の[T,T+30]（31時点・30遷移・6秒）です。n=1では最初の1遷移を観測済み。61時点条件は後続情報込みの参照回答であり、正解や予測成功とは扱いません。</div>
+</section><div id="comparison" class="comparison" aria-live="polite"></div>
+<section class="box"><h2>実行状況と評価上の区別</h2><p id="status"></p><div id="excluded" class="exclusions"></div><p class="sub">反復なし。同一試合の重なる窓から得た回答です。Batchの所要時間は即時応答の遅延ではありません。語数・形式のみ自動確認し、内容の正しさは採点していません。文数は句読点による参考値です。</p><p class="sub">人手評価では、実際の後続記録との行動一致、目的の根拠、誤った断定、参照回答との一致、履歴要約・根拠説明の混入を別々に記録してください。CSVを編集する場合はコピーに記入してください。</p></section>
+<section class="box"><h2>今回のプロンプトとv2からの全差分</h2><p class="sub">3条件でsystem/userテンプレートは共通。userは区間とデータのみ。注釈ラベル、n、注釈対象機体はモデル入力に含みません。</p><div id="prompts"></div></section>
+<footer id="identity"></footer></main>
+<script id="dataset" type="application/json">__DATA__</script>
+<script>
+'use strict';
+const data=JSON.parse(document.getElementById('dataset').textContent);
+const $=id=>document.getElementById(id);
+function el(tag,text,cls){const x=document.createElement(tag);if(text!==undefined)x.textContent=text;if(cls)x.className=cls;return x;}
+function details(title,text){const d=el('details');d.append(el('summary',title),el('pre',text));return d;}
+const events=[...new Map(data.rows.map(r=>[r.event.id,r.event])).values()];
+const models=[...new Set(data.rows.map(r=>r.model))];
+for(const e of events){const o=el('option',`T=${e.step} · ${e.aircraft_id} · ${e.label}`);o.value=e.id;$('event').append(o);}
+for(const model of models)$('model').append(el('option',model));
+const stateLabels={valid:'回答取得済み',format_error:'出力形式エラー',api_error:'APIエラー',pending:'送信済み・回答待ち',unsubmitted:'未送信'};
+const count=data.summary.counts;
+$('counts').textContent=`${count.events}注釈 × 3入力条件 × ${count.models}モデル = ${count.requests}リクエスト / 反復なし`;
+$('status').textContent=Object.entries(data.summary.statuses).map(([k,v])=>`${stateLabels[k]||k}: ${v}件`).join(' ｜ ');
+for(const x of data.summary.excluded_events){$('excluded').append(el('p',`除外: ${x.event.id} / T=${x.event.step} / ${x.event.aircraft_id}。必要区間 ${x.required_start}–${x.required_end} のうち、完全な記録のないstep: ${x.missing_steps.join(', ')}。全3条件から除外。`));}
+$('identity').textContent=`plan_id: ${data.plan_id}`;
+for(const role of ['system','user']){const group=el('details');group.append(el('summary',role.toUpperCase()));const pair=el('div',undefined,'pairs');const before=el('div'),after=el('div');before.append(el('h3','元の tactical_short_batch_v2'),el('pre',data.prompt_spec.comparison.baseline_templates[role]));after.append(el('h3','今回の foresight_short_v1'),el('pre',data.prompt_spec.templates[role].content));pair.append(before,after);group.append(pair,details('Unified diff',data.prompt_spec.comparison.diffs[role]));$('prompts').append(group);}
+function render(){
+ const event=events.find(e=>e.id===$('event').value);if(!event)return;
+ const selected=data.rows.filter(r=>r.event.id===event.id&&r.model===$('model').value);
+ const aircraft=$('aircraft').value==='target'?event.aircraft_id:$('aircraft').value;
+ $('target').textContent=`説明対象: steps ${event.step}–${event.step+30} / ${(event.step*.2).toFixed(1)}–${((event.step+30)*.2).toFixed(1)}秒 / 表示: ${aircraft}`;
+ const nearby=selected[0]?.other_events_in_target||[];
+ $('nearby').textContent=nearby.length?`同じ対象区間内の別注釈: ${nearby.map(e=>`${e.step} ${e.aircraft_id} ${e.label}`).join('、')}。単一の局面として扱えるか確認してください。`:'対象区間内に別の保存済み注釈はありません（未注釈の変化がないことは保証しません）。';
+ $('comparison').replaceChildren();
+ for(const n of [-1,1,30]){
+  const row=selected.find(r=>r.offset===n);if(!row)continue;const s=data.samples[row.sample_id];
+  const card=el('article',undefined,'condition'+(n===30?' reference':''));
+  card.append(el('h2',n===30?'61時点の参照回答':`n=${n>0?'+':''}${n} の予測`));
+  card.append(el('div',`観測 ${row.observation_range[0]}–${row.observation_range[1]} · ${s.H}時点`,'sub'));
+  card.append(el('span',stateLabels[row.status]||row.status,'badge'));
+  const narrative=row.narratives?.[aircraft];
+  card.append(el('div',narrative||((row.status==='unsubmitted'||row.status==='pending')?'回答はまだありません。':row.error||'有効な回答がありません。'),'narrative'+(narrative?'':row.status.includes('error')?' error':' pending')));
+  if(narrative){const words=row.length_metrics.words_by_aircraft[aircraft],sentences=row.sentence_counts_heuristic?.[aircraft];card.append(el('div',`${words}語 / 上限55語 · 文数参考値 ${sentences}${words>55?' · 語数超過':''}${sentences>1?' · 1文指定を要確認':''}`,'metric'));}
+  if(row.narratives)card.append(details('全4機の回答',JSON.stringify(row.narratives,null,2)));
+  card.append(details('送信するuser全文（入力データを含む）',s.messages[1].content));
+  card.append(details('生の応答・エラー',JSON.stringify({raw_response:row.raw_response,error:row.error,usage:row.usage},null,2)));
+  card.append(el('div',`評価用ID: ${row.sample_id}`,'sub'));
+  $('comparison').append(card);
+ }
+}
+for(const id of ['event','model','aircraft'])$(id).addEventListener('change',render);
+render();
+</script></body></html>

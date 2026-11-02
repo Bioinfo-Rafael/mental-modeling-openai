@@ -1,0 +1,29 @@
+{
+  "source_run": "tactical_short_batch_v2",
+  "source_manifest_path": "experiments/17_commentary_LAG/results/tactical_short_batch_v2/manifest.json",
+  "source_manifest_sha256": "1f4a69b6171dab6dbadaa47f878cd526b5e52b1eac678e5ea74adae27d39037d",
+  "source_plan_id": "396035e042786286b54efafa14ff8b1e9b58b14db8aeb06065f800f127e66f49",
+  "baseline_sha256": {
+    "system": "9d447e95ce7e9b59d0abd11147cfd9df73324408300e60708283b5825b79346e",
+    "user": "c1d9ffb0c4f74444c7250e66b9dd2058d48d6e897da86c01cd7577867bdcd819"
+  },
+  "proposal_sha256": {
+    "system": "8f11e9e9423eeb1874b4d6086e5edb94edbdf3353df224d0d066f54223bd485e",
+    "user": "b4fd6373c4ee2b68388d639205f53a688e1359f11ebe4b09c847318456a6236d"
+  },
+  "verified_samples": [
+    "center_0045",
+    "center_0085",
+    "center_0145",
+    "center_0245",
+    "center_0310"
+  ],
+  "request_options": {
+    "reasoning_effort": "medium"
+  },
+  "models": [
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-5.6-luna"
+  ]
+}

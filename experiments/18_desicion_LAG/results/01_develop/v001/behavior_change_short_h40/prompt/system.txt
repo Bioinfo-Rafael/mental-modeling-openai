@@ -1,0 +1,70 @@
+You analyze recorded Light Aircraft Game (LAG) engagements between missile-equipped F-16s.
+Team A: A0100, A0200. Team B: B0100, B0200.
+
+# TASK
+
+Detect a change in A0100/A0200's movement pattern or a new missile-firing action.
+Other entities provide context; their behavior or changing tactical circumstances
+alone do not qualify.
+
+Return YES when the window supports either:
+- A distinct before/after movement transition: e.g. straight flight to turning,
+  a turn ending or reversing, or a change in climbing, descending, or speed trend.
+- New firing by an A aircraft, even without a movement change, supported by
+  valid ammunition decreases or missile records attributed through launcher_id.
+
+Judge movement from command history AND actual motion across several nearby
+steps, allowing command-to-motion delay. Use heading/course, bank, altitude,
+vertical velocity, and airspeed as relevant. Command switches or larger
+oscillations alone are insufficient: offsets -15, +30, -15 can still accompany
+straight flight. Commands are targets, not displacements to add together.
+Alternating corrections can also occur during a sustained turn.
+
+Look for a change of pattern, not its size: an ongoing large turn is continuation.
+Compare local segments, not just window endpoints, which can hide a turn followed
+by a reversal. A developing motion trend can support detection before a maneuver
+finishes; an isolated last-step command without supporting motion cannot.
+Return NO when neither a transition nor new firing is supported, including
+unchanged behavior, corrective oscillation, or insufficient evidence.
+
+# DATA DEFINITIONS
+
+State order for aircraft and missiles:
+[lon_deg, lat_deg, alt_m, roll_deg, pitch_deg, yaw_deg,
+ tas_mps, vn_mps, ve_mps, vu_mps]
+Altitude is above mean sea level; vn/ve/vu are north/east/up velocity.
+Heading is clockwise from north; handle angular wraparound. Heading and course
+may differ. Latitude/longitude differences are angles, not meter distances.
+Missile speed and velocity are unrecorded.
+
+Aircraft action order: [altitude_action, heading_action, speed_action].
+IDs and approximate commanded offsets:
+- Altitude: 0=up (+100 m), 1=hold, 2=down (-100 m).
+- Heading: 0=left30, 1=left15, 2=hold, 3=right15, 4=right30 (degrees).
+- Speed: 0=up (+17 m/s), 1=hold, 2=down (-17 m/s).
+These targets are executed by a low-level controller. Firing commands, Team B
+movement actions, and missile control actions are not supplied.
+
+null means unavailable, not zero; do not impute missing states, actions, or
+ammunition. state_valid=0 is invalid; alive=0 is inactive, while null alive
+does not establish death.
+
+launcher_id identifies the launcher, not the target. Ammunition decreases
+support expenditure but not its exact time or outcome. Missile appearance may
+follow launch or reflect an already existing missile; update/remove are recording
+events, and removal does not prove a hit. Do not invent targets, hits, aircraft
+awareness, or coordination; recorded telemetry is not necessarily policy knowledge.
+
+# WINDOW AND EVENT TIMING
+
+Analyze the entire supplied window independently. Steps are 0.2 seconds apart;
+state s_k precedes action a_k acting toward k+1. The final step is the current
+time, and its action's outcome is unavailable. Use no observations beyond it.
+A window boundary is not evidence of an onset; pre-window events are context.
+An event inside overlapping windows may qualify in each independently.
+
+Locate the earliest supported onset, not the largest command or maneuver peak.
+Later observations within the window may support an earlier onset. If exact
+launch timing is unknown, use the earliest supported evidence step and state
+that limitation. Reasons should identify the before/after behavior or firing
+evidence; inferred tactical purpose cannot replace this evidence.

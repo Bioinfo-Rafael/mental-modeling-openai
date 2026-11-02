@@ -1,0 +1,233 @@
+{
+  "query_id": "r03_end_0169_responses_diagnostic",
+  "started_at": "2026-10-25T21:44:06.335365+00:00",
+  "status": "ok",
+  "latency_s": 8.525449542328715,
+  "raw": {
+    "id": "resp_0f13cb72eba2030b016ade782a1d7c87d0a03d8ca93cfcb4e9",
+    "created_at": 1792964650.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_0f13cb72eba2030b016ade782ac9dc87d0b8c7e9a4fef4390c",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0200\",\"step\":143,\"evidence_steps\":[140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169],\"reason\":\"A0200’s earlier pattern is a steep descent with right30 commands at steps 140–142 ([2,4,0]); at step 143 it switches to left15 ([2,1,0]) and maintains that command through step 154, while its heading trends from about 107° toward 113° and its altitude continues falling. The left15 command resumes at 155–158 after a single right30 at 151–154, and later commands remain mostly left15, supporting a sustained change in the turning pattern rather than just another isolated correction.\"},{\"aircraft_id\":\"A0200\",\"step\":159,\"evidence_steps\":[155,156,157,158,159,160,161,162,163,164,165,166,167,168,169],\"reason\":\"After the left15-command phase, A0200 shifts to repeated right30 commands at steps 159–162 ([2,4,0]), with heading turning from roughly 113° to 105°; left15 then resumes at 163–167 ([2,1,0]), followed by another right30 at 168–169. This repeated, sizable command-and-heading alternation departs from the preceding sustained left15 pattern; the final rightward segment is still developing.\"}],\"reason\":\"A0100 continues level, nearly straight eastward flight with repeated [1,2,0] commands and no recorded ammunition decrease. A0200 is descending throughout, but its command pattern changes from repeated right30 to a sustained left15 phase at step 143, then to marked right30/left15 alternation beginning at step 159; these are coherent directional-pattern changes, not merely the continuing altitude loss.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792964654.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 31900,
+      "input_tokens_details": {
+        "cache_write_tokens": 0,
+        "cached_tokens": 31897
+      },
+      "output_tokens": 445,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 32345
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0200",
+        "step": 143,
+        "evidence_steps": [
+          140,
+          141,
+          142,
+          143,
+          144,
+          145,
+          146,
+          147,
+          148,
+          149,
+          150,
+          151,
+          152,
+          153,
+          154,
+          155,
+          156,
+          157,
+          158,
+          159,
+          160,
+          161,
+          162,
+          163,
+          164,
+          165,
+          166,
+          167,
+          168,
+          169
+        ],
+        "reason": "A0200’s earlier pattern is a steep descent with right30 commands at steps 140–142 ([2,4,0]); at step 143 it switches to left15 ([2,1,0]) and maintains that command through step 154, while its heading trends from about 107° toward 113° and its altitude continues falling. The left15 command resumes at 155–158 after a single right30 at 151–154, and later commands remain mostly left15, supporting a sustained change in the turning pattern rather than just another isolated correction."
+      },
+      {
+        "aircraft_id": "A0200",
+        "step": 159,
+        "evidence_steps": [
+          155,
+          156,
+          157,
+          158,
+          159,
+          160,
+          161,
+          162,
+          163,
+          164,
+          165,
+          166,
+          167,
+          168,
+          169
+        ],
+        "reason": "After the left15-command phase, A0200 shifts to repeated right30 commands at steps 159–162 ([2,4,0]), with heading turning from roughly 113° to 105°; left15 then resumes at 163–167 ([2,1,0]), followed by another right30 at 168–169. This repeated, sizable command-and-heading alternation departs from the preceding sustained left15 pattern; the final rightward segment is still developing."
+      }
+    ],
+    "reason": "A0100 continues level, nearly straight eastward flight with repeated [1,2,0] commands and no recorded ammunition decrease. A0200 is descending throughout, but its command pattern changes from repeated right30 to a sustained left15 phase at step 143, then to marked right30/left15 alternation beginning at step 159; these are coherent directional-pattern changes, not merely the continuing altitude loss.",
+    "selected_aircraft": [
+      "A0200"
+    ],
+    "aircraft_choice": "A2"
+  },
+  "finished_at": "2026-10-25T21:44:14.860902+00:00"
+}

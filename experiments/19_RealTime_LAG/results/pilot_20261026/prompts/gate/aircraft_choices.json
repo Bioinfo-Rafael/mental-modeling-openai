@@ -1,0 +1,6 @@
+[
+  {"value": "NONE", "description": "Neither A0100 nor A0200 has a supported qualifying event in this window. This corresponds to NO."},
+  {"value": "A1", "description": "A0100 has at least one supported qualifying event; A0200 does not. This corresponds to YES."},
+  {"value": "A2", "description": "A0200 has at least one supported qualifying event; A0100 does not. This corresponds to YES."},
+  {"value": "BOTH", "description": "Both A0100 and A0200 have at least one supported qualifying event in this window, at the same or different steps. This corresponds to YES."}
+]

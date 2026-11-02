@@ -1,0 +1,12 @@
+{
+  "version": "v001",
+  "parent": null,
+  "description": "Initial whole-window detection prompt adapted from Experiment 17 tactical_short_v1.",
+  "reference": "prompts/reference/tactical_short_v1",
+  "changes": [
+    "Replace four-aircraft retrospective commentary with A-team onset/change detection.",
+    "Keep environment, state/action definitions and missile caveats from tactical_short_v1.",
+    "Replace centered 61-point hindsight timing with a variable past-only window.",
+    "Keep concise WHAT/WHY evidence; separate shared question from diagnostic/choice output instructions."
+  ]
+}

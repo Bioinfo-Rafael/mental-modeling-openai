@@ -1,0 +1,555 @@
+[
+  {
+    "query_id": "r01_case01_responses_diagnostic",
+    "sample_id": "case01",
+    "condition": "responses_diagnostic",
+    "repeat": 1,
+    "start_step": 16,
+    "end_step": 55,
+    "expected_decision": "YES",
+    "expected_events": [
+      {
+        "id": "e46",
+        "step": 46,
+        "aircraft_id": "A0100",
+        "label": "ヒットアンドアウェー"
+      },
+      {
+        "id": "e49",
+        "step": 49,
+        "aircraft_id": "A0200",
+        "label": "攻撃"
+      }
+    ],
+    "label_basis": "annotation_present",
+    "status": "ok",
+    "decision": "YES",
+    "classification": "TP",
+    "predicted_events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 47,
+        "evidence_steps": [
+          46,
+          47,
+          48,
+          50,
+          55
+        ],
+        "reason": "A0100 had been descending in near-straight flight, with heading around 353–356° and commands mostly right15. At step 47 it began sustained right30 commands and bank increased markedly, followed by heading turning through north to about 14° by step 55; ammunition fell from 2 to 1 and a missile attributed to A0100 appeared at step 47, supporting firing by then but not the exact launch instant."
+      },
+      {
+        "aircraft_id": "A0200",
+        "step": 50,
+        "evidence_steps": [
+          49,
+          50
+        ],
+        "reason": "A0200’s recorded ammunition decreased from 2 to 1 between steps 49 and 50, and a missile attributed to A0200 first appears at step 50. This supports new firing by step 50, though the exact launch instant is not established."
+      }
+    ],
+    "reason": "A0100 shows a transition into a sustained right turn beginning around step 47, and ammunition plus launcher-attributed missile records support firing by both A0100 and A0200 within the window.",
+    "probability_yes": null,
+    "matches": [
+      {
+        "prediction_index": 0,
+        "event_id": "e46",
+        "absolute_error_steps": 1
+      },
+      {
+        "prediction_index": 1,
+        "event_id": "e49",
+        "absolute_error_steps": 1
+      }
+    ],
+    "exact_matches": [],
+    "latency_s": 5.5813744170591235,
+    "usage": {
+      "input_tokens": 27737,
+      "input_tokens_details": {
+        "cache_write_tokens": 27734,
+        "cached_tokens": 0
+      },
+      "output_tokens": 258,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 27995
+    },
+    "estimated_usd": 0.0035960500000000004,
+    "error": null
+  },
+  {
+    "query_id": "r01_case02_responses_diagnostic",
+    "sample_id": "case02",
+    "condition": "responses_diagnostic",
+    "repeat": 1,
+    "start_step": 1,
+    "end_step": 40,
+    "expected_decision": "NO",
+    "expected_events": [],
+    "label_basis": "annotation_absent_not_reviewed",
+    "status": "ok",
+    "decision": "YES",
+    "classification": "FP",
+    "predicted_events": [
+      {
+        "aircraft_id": "A0200",
+        "step": 25,
+        "evidence_steps": [
+          23,
+          24,
+          25,
+          26,
+          27,
+          28
+        ],
+        "reason": "A0200's descent continues, but its previously nearly northward heading/course begins a sustained left turn: yaw shifts from about 3–4° to near 0° and then wraps toward 359°/0°, while heading commands alternate between hold and right. The evolving heading/course and large alternating bank support a movement transition rather than treating command fluctuations alone as the onset."
+      }
+    ],
+    "reason": "A0200 shows a supported change in horizontal movement pattern around step 25. Neither aircraft has an ammunition decrease or launcher-attributed missile record supporting new firing.",
+    "probability_yes": null,
+    "matches": [],
+    "exact_matches": [],
+    "latency_s": 3.026656750123948,
+    "usage": {
+      "input_tokens": 25035,
+      "input_tokens_details": {
+        "cache_write_tokens": 23251,
+        "cached_tokens": 1781
+      },
+      "output_tokens": 160,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 25195
+    },
+    "estimated_usd": 0.0030044850000000003,
+    "error": null
+  },
+  {
+    "query_id": "r01_case03_responses_diagnostic",
+    "sample_id": "case03",
+    "condition": "responses_diagnostic",
+    "repeat": 1,
+    "start_step": 61,
+    "end_step": 100,
+    "expected_decision": "YES",
+    "expected_events": [
+      {
+        "id": "e83",
+        "step": 83,
+        "aircraft_id": "A0100",
+        "label": "回避行動"
+      },
+      {
+        "id": "e95",
+        "step": 95,
+        "aircraft_id": "A0200",
+        "label": "援護"
+      }
+    ],
+    "label_basis": "annotation_present",
+    "status": "ok",
+    "decision": "YES",
+    "classification": "TP",
+    "predicted_events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 61,
+        "evidence_steps": [
+          61,
+          69,
+          83,
+          88,
+          100
+        ],
+        "reason": "A0100’s existing right-turning, descending pattern continues at the start of this window, then levels into nearly straight eastbound flight: heading rises to about 89° by step 87 and remains near 85–88° through step 100, while the sustained large bank relaxes toward level and the descent slows. The hold-heading commands from step 82 onward and subsequent motion support this transition, rather than merely a correction within the earlier turn."
+      }
+    ],
+    "reason": "A0100 shows a supported transition from a sustained turning descent to nearly straight, level eastbound flight; no new firing is established because its ammunition remains unchanged and its attributed missile is already present.",
+    "probability_yes": null,
+    "matches": [],
+    "exact_matches": [],
+    "latency_s": 3.4278823328204453,
+    "usage": {
+      "input_tokens": 40406,
+      "input_tokens_details": {
+        "cache_write_tokens": 38622,
+        "cached_tokens": 1781
+      },
+      "output_tokens": 181,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 40587
+    },
+    "estimated_usd": 0.00493636,
+    "error": null
+  },
+  {
+    "query_id": "r01_case04_responses_diagnostic",
+    "sample_id": "case04",
+    "condition": "responses_diagnostic",
+    "repeat": 1,
+    "start_step": 100,
+    "end_step": 139,
+    "expected_decision": "NO",
+    "expected_events": [],
+    "label_basis": "annotation_absent_not_reviewed",
+    "status": "ok",
+    "decision": "YES",
+    "classification": "FP",
+    "predicted_events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 107,
+        "evidence_steps": [
+          100,
+          107,
+          113,
+          115,
+          139
+        ],
+        "reason": "A0100's descent progressively levels off: vertical velocity is about -4 m/s at step 100, near -1 m/s by step 107, and close to zero thereafter, with altitude nearly level from about step 113 onward. Its altitude command remains hold, so the change is supported by actual motion rather than a command change."
+      }
+    ],
+    "reason": "A0100 transitions from descending to approximately level flight. A0200's turn and descent continue an already-established pattern, and the A missiles are already present with no ammunition decrease or new launcher-attributed missile evidence.",
+    "probability_yes": null,
+    "matches": [],
+    "exact_matches": [],
+    "latency_s": 7.918357292190194,
+    "usage": {
+      "input_tokens": 39557,
+      "input_tokens_details": {
+        "cache_write_tokens": 37773,
+        "cached_tokens": 1781
+      },
+      "output_tokens": 589,
+      "output_tokens_details": {
+        "reasoning_tokens": 425
+      },
+      "total_tokens": 40146
+    },
+    "estimated_usd": 0.005034235,
+    "error": null
+  },
+  {
+    "query_id": "r01_case05_responses_diagnostic",
+    "sample_id": "case05",
+    "condition": "responses_diagnostic",
+    "repeat": 1,
+    "start_step": 111,
+    "end_step": 150,
+    "expected_decision": "YES",
+    "expected_events": [
+      {
+        "id": "e143",
+        "step": 143,
+        "aircraft_id": "A0200",
+        "label": "囮"
+      }
+    ],
+    "label_basis": "annotation_present",
+    "status": "ok",
+    "decision": "YES",
+    "classification": "TP",
+    "predicted_events": [
+      {
+        "aircraft_id": "A0200",
+        "step": 111,
+        "evidence_steps": [
+          111,
+          120,
+          130,
+          136,
+          150
+        ],
+        "reason": "A0200 is already in a sustained rightward turn and descent at the window start (heading about 39°), continuing to turn right to roughly 114° by step 150 while descending. The repeated right30/down commands and steadily changing heading/course and altitude indicate continuation, not a new transition in this window."
+      },
+      {
+        "aircraft_id": "A0100",
+        "step": 136,
+        "evidence_steps": [
+          135,
+          136
+        ],
+        "reason": "A0100’s valid ammunition count remains 1, and missiles attributed to A0100 were already present earlier in the window; their removal at step 136 does not establish a new firing."
+      }
+    ],
+    "reason": "NO supported new transition or firing is established. A0200’s turn and descent are ongoing from the first supplied step; both A aircraft retain one missile, and existing missile records or removals do not show a new launch.",
+    "probability_yes": null,
+    "matches": [],
+    "exact_matches": [],
+    "latency_s": 3.9768780833110213,
+    "usage": {
+      "input_tokens": 36661,
+      "input_tokens_details": {
+        "cache_write_tokens": 34877,
+        "cached_tokens": 1781
+      },
+      "output_tokens": 221,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 36882
+    },
+    "estimated_usd": 0.004488234999999999,
+    "error": null
+  },
+  {
+    "query_id": "r01_case06_responses_diagnostic",
+    "sample_id": "case06",
+    "condition": "responses_diagnostic",
+    "repeat": 1,
+    "start_step": 150,
+    "end_step": 189,
+    "expected_decision": "NO",
+    "expected_events": [],
+    "label_basis": "annotation_absent_not_reviewed",
+    "status": "ok",
+    "decision": "NO",
+    "classification": "TN",
+    "predicted_events": [],
+    "reason": "A0100 maintains nearly straight, level flight. A0200 continues an established descending turn throughout the window, with heading/course changes and bank consistent with that ongoing maneuver rather than a clear transition; neither A aircraft has a recorded ammunition decrease or launcher-attributed missile.",
+    "probability_yes": null,
+    "matches": [],
+    "exact_matches": [],
+    "latency_s": 6.008436167147011,
+    "usage": {
+      "input_tokens": 31193,
+      "input_tokens_details": {
+        "cache_write_tokens": 29409,
+        "cached_tokens": 1781
+      },
+      "output_tokens": 415,
+      "output_tokens_details": {
+        "reasoning_tokens": 340
+      },
+      "total_tokens": 31608
+    },
+    "estimated_usd": 0.003901735,
+    "error": null
+  },
+  {
+    "query_id": "r01_case07_responses_diagnostic",
+    "sample_id": "case07",
+    "condition": "responses_diagnostic",
+    "repeat": 1,
+    "start_step": 211,
+    "end_step": 250,
+    "expected_decision": "YES",
+    "expected_events": [
+      {
+        "id": "e243",
+        "step": 243,
+        "aircraft_id": "A0100",
+        "label": "追跡開始"
+      }
+    ],
+    "label_basis": "annotation_present",
+    "status": "ok",
+    "decision": "YES",
+    "classification": "TP",
+    "predicted_events": [
+      {
+        "aircraft_id": "A0200",
+        "step": 243,
+        "evidence_steps": [
+          242,
+          243,
+          244,
+          245,
+          246,
+          247,
+          248,
+          249,
+          250
+        ],
+        "reason": "A0200's earlier motion was a sustained descent (vertical velocity around −30 to −50 m/s), while from step 243 it transitions into a strong climb, with vertical velocity becoming less negative and then positive by steps 249–250. The recorded heading command changes to left30 at 243, and the subsequent bank and motion support a developing turn/climb rather than command oscillation alone."
+      }
+    ],
+    "reason": "A0200 shows a supported transition from descending to climbing during the window. A0100's movement is largely steady until its late turn begins, with no confirmed A-team ammunition decrease or launcher-attributed missile launch.",
+    "probability_yes": null,
+    "matches": [],
+    "exact_matches": [],
+    "latency_s": 3.977088666986674,
+    "usage": {
+      "input_tokens": 31889,
+      "input_tokens_details": {
+        "cache_write_tokens": 30105,
+        "cached_tokens": 1781
+      },
+      "output_tokens": 182,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 32071
+    },
+    "estimated_usd": 0.003872235,
+    "error": null
+  },
+  {
+    "query_id": "r01_case08_responses_diagnostic",
+    "sample_id": "case08",
+    "condition": "responses_diagnostic",
+    "repeat": 1,
+    "start_step": 250,
+    "end_step": 289,
+    "expected_decision": "NO",
+    "expected_events": [],
+    "label_basis": "annotation_absent_not_reviewed",
+    "status": "ok",
+    "decision": "YES",
+    "classification": "FP",
+    "predicted_events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 250,
+        "evidence_steps": [
+          250,
+          260,
+          270,
+          280,
+          289
+        ],
+        "reason": "A0100 is already in a sustained left turn at the window start: its recorded left-30 command accompanies yaw falling from about 67° to 338° and a continuing course change. No distinct onset within this window is established, so this is continuation rather than a supported transition."
+      },
+      {
+        "aircraft_id": "A0200",
+        "step": 250,
+        "evidence_steps": [
+          250,
+          260,
+          270,
+          280,
+          289
+        ],
+        "reason": "A0200 is already turning at the window start; its heading/course and velocity direction continue changing through the window while its heading commands alternate among right and left corrections. This supports ongoing turning, not a new movement-pattern transition. Ammunition remains at 1 and no A-launched missile is recorded."
+      }
+    ],
+    "reason": "Although both A aircraft continue turning, their patterns are already underway at step 250, and the window provides no supported onset or reversal. There is no evidence of new firing by Team A, so the correct decision is NO.",
+    "probability_yes": null,
+    "matches": [],
+    "exact_matches": [],
+    "latency_s": 3.6978290830738842,
+    "usage": {
+      "input_tokens": 26048,
+      "input_tokens_details": {
+        "cache_write_tokens": 24264,
+        "cached_tokens": 1781
+      },
+      "output_tokens": 243,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 26291
+    },
+    "estimated_usd": 0.00317261,
+    "error": null
+  },
+  {
+    "query_id": "r01_case09_responses_diagnostic",
+    "sample_id": "case09",
+    "condition": "responses_diagnostic",
+    "repeat": 1,
+    "start_step": 281,
+    "end_step": 320,
+    "expected_decision": "YES",
+    "expected_events": [
+      {
+        "id": "e311",
+        "step": 311,
+        "aircraft_id": "A0100",
+        "label": "攻撃"
+      }
+    ],
+    "label_basis": "annotation_present",
+    "status": "ok",
+    "decision": "YES",
+    "classification": "TP",
+    "predicted_events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 312,
+        "evidence_steps": [
+          311,
+          312
+        ],
+        "reason": "A0100’s recorded missiles_remaining decreases from 1 at step 311 to 0 at step 312, and a missile attributed to A0100 is recorded at step 312. The exact launch instant within that interval is not established."
+      }
+    ],
+    "reason": "New missile firing by A0100 is supported by the ammunition decrease and launcher-attributed missile record; no distinct movement-pattern transition is supported.",
+    "probability_yes": null,
+    "matches": [
+      {
+        "prediction_index": 0,
+        "event_id": "e311",
+        "absolute_error_steps": 1
+      }
+    ],
+    "exact_matches": [],
+    "latency_s": 5.040511957835406,
+    "usage": {
+      "input_tokens": 26903,
+      "input_tokens_details": {
+        "cache_write_tokens": 25119,
+        "cached_tokens": 1781
+      },
+      "output_tokens": 349,
+      "output_tokens_details": {
+        "reasoning_tokens": 226
+      },
+      "total_tokens": 27252
+    },
+    "estimated_usd": 0.003332485,
+    "error": null
+  },
+  {
+    "query_id": "r01_case10_responses_diagnostic",
+    "sample_id": "case10",
+    "condition": "responses_diagnostic",
+    "repeat": 1,
+    "start_step": 270,
+    "end_step": 309,
+    "expected_decision": "NO",
+    "expected_events": [],
+    "label_basis": "annotation_absent_not_reviewed",
+    "status": "ok",
+    "decision": "YES",
+    "classification": "FP",
+    "predicted_events": [
+      {
+        "aircraft_id": "A0200",
+        "step": 272,
+        "evidence_steps": [
+          271,
+          272,
+          275,
+          278,
+          282
+        ],
+        "reason": "A0200 shifts from a nearly steady heading/course to a sustained leftward turn: left-turn commands begin at step 272, followed by declining heading and course from about steps 275–278 onward. Later command corrections do not stop the overall leftward motion trend."
+      }
+    ],
+    "reason": "A0200 shows a supported transition from near-steady flight into a sustained left turn; no new A-team missile firing is supported.",
+    "probability_yes": null,
+    "matches": [],
+    "exact_matches": [],
+    "latency_s": 10.117458458058536,
+    "usage": {
+      "input_tokens": 26034,
+      "input_tokens_details": {
+        "cache_write_tokens": 24250,
+        "cached_tokens": 1781
+      },
+      "output_tokens": 701,
+      "output_tokens_details": {
+        "reasoning_tokens": 568
+      },
+      "total_tokens": 26735
+    },
+    "estimated_usd": 0.00339986,
+    "error": null
+  }
+]

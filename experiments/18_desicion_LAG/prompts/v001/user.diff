@@ -1,0 +1,39 @@
+--- 17/tactical_short_v1/user.txt
++++ 18/v001/user.txt
+@@ -1,25 +1,20 @@
+-Analyze the following LAG engagement recording.
++Detect A0100/A0200 movement-pattern transitions or new missile-firing actions
++in the following LAG history, using the criteria in the system instructions.
+ 
+ Episode: {episode_alias}
+-Center step t: {center_step}
+-Center time: {center_time_s:.1f} seconds
++Current step: {end_step}
+ Window: steps {start_step} through {end_step}, inclusive
+ Window times: {start_time_s:.1f} through {end_time_s:.1f} seconds
+-Time points: 61
+-Elapsed time: 12.0 seconds
++Time points: {time_points}
++Elapsed time: {elapsed_s:.1f} seconds
+ 
+-The records contain all aircraft and missiles recorded within this window, together with available movement actions, ammunition counts, and metadata.
+-
+-relative_step = step - t.
+-
+-State and action field orders, missing-value conventions, and evidence requirements are defined in the system message.
++The records contain all aircraft and missiles recorded within this window,
++with available movement actions, ammunition counts, and metadata.
++State and action field orders are defined in the system instructions.
++Focus detection on Team A's behavior. Use other entities only as supporting
++context. Judge command patterns together with actual motion; command changes
++or oscillation amplitude alone do not establish a movement transition.
+ 
+ BEGIN WINDOW DATA
+-
+ {window_data}
+-
+ END WINDOW DATA
+-
+-Analyze the supplied window and return the tactical intention
+-explanation for each aircraft, following the analysis and output
+-requirements in the system message.

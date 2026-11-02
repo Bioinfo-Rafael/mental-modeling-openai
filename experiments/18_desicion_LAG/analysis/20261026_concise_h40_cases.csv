@@ -1,0 +1,11 @@
+﻿case,window,reference_decision,returned_decision,reference_steps,returned_steps,manual_error_category,observed,interpretation_or_hypothesis
+case01,"[16, 55]",YES,YES,A0100@46; A0200@49,A0100@47; A0200@50,timing_convention,A0100@47 と A0200@50 は注釈46/49に対して各+1。両方とも±2step評価では一致。,発射指令を与えていないため、観測できたstepと発射行動の注釈stepの差を重大な局所化失敗と混同しない。
+case02,"[1, 40]",NO,YES,,A0200@25,oscillation_and_action_reading,予測A0200@25。理由のhold/rightという指令説明に対し、23–26はleft15、27–31はright15。courseは23で2.25°、25で2.37°、28で0.76°。,振動の一部分を新しい持続的旋回とみなした可能性。未注釈事象の可能性は参考ラベルだけでは排除できない。
+case03,"[61, 100]",YES,YES,A0100@83; A0200@95,A0100@61,left_boundary_and_omitted_aircraft,予測A0100@61。A0100のheading_actionは82の4から83の2へ変化し、100まで2。A0200は95から100まで4が続くが指摘なし。,全窓の始点を変化の始点と取り違え、A0100のイベントを見つけた後にA0200を十分検査しなかった可能性。95の運動応答は短い後半では弱く、完全な旋回を要求すると取り逃しやすい。
+case04,"[100, 139]",NO,YES,,A0100@107,settling_under_constant_commands,"予測A0100@107。100–139の全40点でactions=[1,2,0]。vuは100で-3.99、107で-2.33、113で-0.84 m/sで、以後も小さく変動。",同じ指令下の緩やかな収束を新しい開始点として拾った可能性。物理的変化がないとは断定しない。
+case05,"[111, 150]",YES,YES,A0200@143,A0200@111; A0100@136,contradictory_output_and_missed_command_shift,decisionはYESだがoverall reasonはNO supported new transition。eventsは継続とミサイル除去を否定的に説明。A0200のheading_actionは142の4から143の1へ変化し150まで継続。,候補や否定根拠をaccepted eventsに混入した可能性。単にdecisionをNOへ補正するとこの正例がFNになるため、143の取り逃しを直す必要がある。
+case06,"[150, 189]",NO,NO,,,reference_true_negative,NO・events=[]で参考負例と一致。,改善後もこの継続窓で不要なイベントを作らないか確認する。
+case07,"[211, 250]",YES,YES,A0100@243,A0200@243,wrong_aircraft_and_incorrect_evidence,"予測A0200@243。実際の243のactionsはA0100=[1,0,1]、A0200=[1,4,1]。250のvuはA0100=+4.58、A0200=-11.29 m/s。",モデルのleft30と上昇の説明は別機A0100の記録と整合し、機体の取り違えが疑われる。A0200の上昇という主張は入力値と矛盾する。
+case08,"[250, 289]",NO,YES,,A0100@250; A0200@250,contradictory_output_and_left_boundary,decisionはYESで2イベントともstep250。両event reasonとoverall reasonは既存旋回の継続、開始点なし、正しいdecisionはNOと説明。,否定根拠をeventsに混入した出力整合性の問題。分類基準を厳しくするだけではなく、accepted eventsとdecisionを一致させる。
+case09,"[281, 320]",YES,YES,A0100@311,A0100@312,timing_convention,A0100@312は注釈311に対して+1で、±2step評価では一致。,弾数変化とミサイル出現を利用した発射検出は維持する。
+case10,"[270, 309]",NO,YES,,A0200@272,oscillation_phase_or_unannotated_event,予測A0200@272。270–271はright15、272–277はleft15、278–281はright15。courseは56.67→59.30→51.10°と推移し、その後も振動を伴い全体では減少。,窓内の2点だけを前の定常パターンとみなし、振動の一相を新規開始とした可能性。ただし注釈なしだけで全ての変化を誤りとは断定できない。

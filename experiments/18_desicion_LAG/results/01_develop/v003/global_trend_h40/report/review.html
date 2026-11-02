@@ -1,0 +1,70 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>LAG decision review</title>
+<style>body{font:15px/1.6 system-ui;max-width:1100px;margin:32px auto;padding:0 20px;background:#f7f8fa;color:#17212b}article{background:white;padding:16px 24px;margin:16px 0;border:1px solid #d9dfe5;border-radius:8px}pre{white-space:pre-wrap;overflow-wrap:anywhere}select{padding:8px}a{color:#1766a7}</style>
+<h1>develop / v003 / global_trend_h40</h1>
+<p>model=gpt-6-luna · H=40 · prompt SHA=6b2e4c34489e</p>
+<p>未注釈窓は暫定負例。同一試合で調整・評価するため、未知試合への汎化性能ではありません。理由は人手で確認してください。</p>
+<p><a href="summary.md">集計</a> · <a href="predictions.csv">全応答CSV</a> · <a href="review_template.csv">レビュー用CSV</a> · <a href="../prompt/system.txt">保存プロンプト</a></p>
+<label>表示 <select id="filter"><option value="all">すべて</option><option>FN</option><option>FP</option><option>TP</option><option>TN</option><option>invalid_output</option><option>api_error</option><option>uncertain</option><option>pending</option></select></label>
+<article data-result="TP">
+<h3>case01 · 16–55 · responses_diagnostic · repeat 1</h3>
+<p><b>TP</b>　reference=YES　prediction=YES　6.8813 s</p>
+<p>参考注釈: A0100@46 (ヒットアンドアウェー), A0200@49 (攻撃)</p><pre>A0100@46 evidence=[43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55]: A0100’s earlier headings alternate between hold/left15 and right15/left15 corrections (steps 43–45: [2,3,0], [2,3,0], [2,3,0]), while its motion stays nearly northbound. At step 46 the action changes to [2,4,0], continues through step 55, and the aircraft’s observed heading and eastward velocity then rise (yaw 356.4° at 46 to 13.7° at 55; ve from about −18.9 to +28.4 m/s), supporting a developing right-turn pattern rather than another brief correction. A0100’s ammunition also drops from 2 at step 46 to 1 at step 47, with a launcher-attributed A0100 missile first recorded at 47; firing is supported by that decrease, but the exact launch time is not established.
+A0200@50 evidence=[47, 48, 49, 50, 51, 52, 53, 54, 55]: A0200’s prior heading corrections alternate between right15 and hold (steps 47–49: [2,1,0], [2,1,0], [2,3,0]); at step 50 it shifts to [2,3,0] and continues that command through step 55. The motion response is still developing, but the sustained right15 command with yaw moving from about 1.4° at step 48 to 359.9° at 54, alongside a continuing descent, supports a new turn away from the earlier correction pattern. A0200’s ammunition falls from 2 at step 49 to 1 at step 50, and its launcher-attributed missile appears at step 50; the exact launch instant is not established.</pre><p>Both aircraft show supported developing right-turn behavior near the end of the window, and both have recorded ammunition decreases with launcher-attributed missiles. Earlier alternating heading corrections and ordinary descent are not counted as separate events.</p>
+<p></p><a href="../inputs/case01.txt">入力</a> ·
+<a href="../responses/r01_case01_responses_diagnostic.json">応答</a></article>
+<article data-result="TN">
+<h3>case02 · 1–40 · responses_diagnostic · repeat 1</h3>
+<p><b>TN</b>　reference=NO　prediction=NO　2.2868 s</p>
+<p>参考注釈: なし（未注釈）</p><pre></pre><p>A0100 continues a gradual descent with small alternating heading commands and oscillatory roll; its late heading reversals repeat that pattern. A0200 likewise continues descending with recurring heading corrections and roll oscillations. Neither aircraft shows a supported underlying movement-pattern transition, and both retain two missiles throughout the window, with no recorded evidence of new firing.</p>
+<p></p><a href="../inputs/case02.txt">入力</a> ·
+<a href="../responses/r01_case02_responses_diagnostic.json">応答</a></article>
+<article data-result="TP">
+<h3>case03 · 61–100 · responses_diagnostic · repeat 1</h3>
+<p><b>TP</b>　reference=YES　prediction=YES　5.0663 s</p>
+<p>参考注釈: A0100@83 (回避行動), A0200@95 (援護)</p><pre>A0100@82 evidence=[70, 71, 74, 78, 81, 82, 85, 89, 94, 100]: A0100’s earlier pattern is a sustained right turn while descending: at steps 70–81 its triplet is [1,4,0] and heading advances from about 53° to 79°. At step 82 it changes to [1,2,0], with heading continuing toward east and then stabilizing near 85–89° through step 100; the persistent hold commands and reduced heading change distinguish this from a brief oscillatory correction.
+A0200@89 evidence=[85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100]: A0200’s preceding pattern is a sustained rightward turn with continued descent, chiefly under [2,1,0] through step 88. At step 89 the action becomes [2,4,0], followed by repeated right30 commands (with brief right15) and heading increasing from about 11° to 13° by step 100, supporting a stronger right-turn pattern rather than the prior turn’s small corrections.</pre><p>Both aircraft show supported movement-pattern transitions: A0100 shifts from right-turn commands to a sustained heading hold, and A0200 shifts from repeated right15 commands to a stronger right-turn command pattern. No new A missile firing is supported; ammunition remains at 1 and the A-launched missiles are already present at the window start.</p>
+<p></p><a href="../inputs/case03.txt">入力</a> ·
+<a href="../responses/r01_case03_responses_diagnostic.json">応答</a></article>
+<article data-result="TN">
+<h3>case04 · 100–139 · responses_diagnostic · repeat 1</h3>
+<p><b>TN</b>　reference=NO　prediction=NO　3.1074 s</p>
+<p>参考注釈: なし（未注釈）</p><pre></pre><p>A0100 continues nearly level eastbound flight with repeated hold-heading/up-speed commands [1,2,0] throughout; minor altitude and heading fluctuations do not establish a different pattern. A0200 continues the same commanded descending, right-turning acceleration pattern [2,4,0], with steadily changing heading and a steep descent; there is no distinct transition. Both A aircraft have one missile remaining throughout, and their launcher-attributed missiles were already present at step 100, so no new firing is supported.</p>
+<p></p><a href="../inputs/case04.txt">入力</a> ·
+<a href="../responses/r01_case04_responses_diagnostic.json">応答</a></article>
+<article data-result="TP">
+<h3>case05 · 111–150 · responses_diagnostic · repeat 1</h3>
+<p><b>TP</b>　reference=YES　prediction=YES　4.2545 s</p>
+<p>参考注釈: A0200@143 (囮)</p><pre>A0200@142 evidence=[140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150]: A0200’s earlier pattern is a sustained right turn with descent: its action is [2,4,0] through step 141, while heading increases from about 39° at step 111 to 110° at step 142. At step 142 the action changes to [2,1,0] (hold heading), then remains [2,1,0] through step 150; heading stops advancing and eases from about 112° to 114°, supporting a developing end to the commanded right-turn pattern rather than another instance of the preceding steady turn.</pre><p>A0200 shifts from repeated right-turn commands and steadily increasing heading to heading-hold commands from step 142, with the heading response beginning to flatten afterward. A0100 continues level, near-straight flight with [1,2,0] throughout; its small altitude and heading fluctuations do not establish a new pattern. No new A firing is supported: both A aircraft remain at one missile through the window, and their launcher-attributed missiles were already present at step 111.</p>
+<p></p><a href="../inputs/case05.txt">入力</a> ·
+<a href="../responses/r01_case05_responses_diagnostic.json">応答</a></article>
+<article data-result="TN">
+<h3>case06 · 150–189 · responses_diagnostic · repeat 1</h3>
+<p><b>TN</b>　reference=NO　prediction=NO　5.3922 s</p>
+<p>参考注釈: なし（未注釈）</p><pre></pre><p>A0100 continues level, nearly straight eastbound flight with steady hold-altitude/hold-heading and speed-up commands. A0200 continues its descent and turning pattern; its alternating right30 and left15 heading commands (for example, steps 150–154 versus 155–158 and recurring thereafter) and changing bank/heading are consistent with that ongoing pattern, not a supported transition. Neither A aircraft has a recorded ammunition decrease or launcher-attributed missile evidence of new firing.</p>
+<p></p><a href="../inputs/case06.txt">入力</a> ·
+<a href="../responses/r01_case06_responses_diagnostic.json">応答</a></article>
+<article data-result="TP">
+<h3>case07 · 211–250 · responses_diagnostic · repeat 1</h3>
+<p><b>TP</b>　reference=YES　prediction=YES　3.4152 s</p>
+<p>参考注釈: A0100@243 (追跡開始)</p><pre>A0100@242 evidence=[240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250]: A0100’s prior pattern was nearly level, straight travel: the actions at steps 240–241 were [1,2,0], with heading 2 (hold), and heading stayed near 82.7°. At step 242 the action changed to [1,0,1] and remained so through 250; the aircraft then banked progressively left and its heading fell to 66.8° by step 250, supporting a developing turn rather than the preceding small motion fluctuations.</pre><p>A0100 begins a sustained left-turn departure at step 242, supported by repeated left-turn commands and compatible emerging bank and heading change. A0200 continues its descending, turning trajectory with alternating heading commands and no distinct new pattern; neither aircraft has recorded evidence of new missile expenditure.</p>
+<p></p><a href="../inputs/case07.txt">入力</a> ·
+<a href="../responses/r01_case07_responses_diagnostic.json">応答</a></article>
+<article data-result="FP">
+<h3>case08 · 250–289 · responses_diagnostic · repeat 1</h3>
+<p><b>FP</b>　reference=NO　prediction=YES　4.1686 s</p>
+<p>参考注釈: なし（未注釈）</p><pre>A0200@282 evidence=[278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289]: A0200&#x27;s prior course is a generally east-northeast drift with small heading-command corrections: at steps 278–281 its triplets are [1,3,1], [1,3,1], [1,3,1], [1,3,1]. At step 282 it shifts to [1,1,1], then [1,0,1] at steps 283–284, with the northward velocity component falling from about 213 m/s at 282 to 208 m/s at 284 while eastward motion persists; this begins a sustained departure from the preceding correction pattern, not just another isolated command fluctuation.</pre><p>A0200 shows a supported emerging change beginning at step 282, from repeated right-heading corrections to hold and then left commands with compatible evolving motion. A0100 continues its sustained left-turn/descent pattern under [2,0,1]; neither aircraft has recorded ammunition decrease or launcher-attributed missile evidence of new firing.</p>
+<p></p><a href="../inputs/case08.txt">入力</a> ·
+<a href="../responses/r01_case08_responses_diagnostic.json">応答</a></article>
+<article data-result="TP">
+<h3>case09 · 281–320 · responses_diagnostic · repeat 1</h3>
+<p><b>TP</b>　reference=YES　prediction=YES　4.2194 s</p>
+<p>参考注釈: A0100@311 (攻撃)</p><pre>A0100@311 evidence=[308, 309, 310, 311, 312, 313, 314]: A0100 continues a sustained descending, left-turning path: its heading falls from about 289° at step 308 to 280° at 311 while altitude and northward velocity decrease. At step 312 its action changes from [2,0,0] (steps 308–311) to [2,1,0], and remains [2,1,0] through step 317; the developing heading change and continued turn support a shift from the preceding repeated left-command pattern, not just a momentary fluctuation.
+A0100@312 evidence=[311, 312]: A0100&#x27;s valid ammunition count drops from 1 at step 311 to 0 at step 312, and an A0100-launched missile is recorded at step 312. The exact launch instant is unavailable; step 312 is the earliest supported firing evidence.</pre><p>A0100 shows a supported shift in its sustained turning pattern and new firing: its ammunition decreases and a launcher-attributed missile appears at step 312. A0200 continues its broadly leftward, descending movement with recurring heading-command corrections; no separate pattern transition or firing is supported.</p>
+<p></p><a href="../inputs/case09.txt">入力</a> ·
+<a href="../responses/r01_case09_responses_diagnostic.json">応答</a></article>
+<article data-result="TN">
+<h3>case10 · 270–309 · responses_diagnostic · repeat 1</h3>
+<p><b>TN</b>　reference=NO　prediction=NO　2.6348 s</p>
+<p>参考注釈: なし（未注釈）</p><pre></pre><p>Neither aircraft shows a supported departure from its ongoing movement pattern, and neither has firing evidence. A0100 continues its gradual leftward turn and descent with steady left30 commands (triplet [2,0,1] changing to [2,0,2] at step 289, then [2,0,0] at 297); A0200 continues its descending, turning trajectory with recurring heading-command adjustments. Both retain one missile throughout.</p>
+<p></p><a href="../inputs/case10.txt">入力</a> ·
+<a href="../responses/r01_case10_responses_diagnostic.json">応答</a></article><script>document.querySelector('#filter').addEventListener('change',e=>{document.querySelectorAll('article').forEach(a=>a.hidden=e.target.value!=='all'&&a.dataset.result!==e.target.value)})</script></html>

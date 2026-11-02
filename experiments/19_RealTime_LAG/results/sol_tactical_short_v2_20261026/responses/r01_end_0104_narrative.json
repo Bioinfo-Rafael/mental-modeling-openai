@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0104_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:27:35.589502+00:00",
+  "api_status": "ok",
+  "latency_s": 25.039633125066757,
+  "raw": {
+    "id": "chatcmpl-Ed7X6MTV3xxwduD8xyaqmwdA2SKpQ",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reduce post-launch exposure and place the southbound Team B missiles off its nose by completing a hard right, descending turn into sustained eastbound separation, while its previously launched missile continues north and the opposing formation remains ahead.\",\"A0200\":\"A0200 most plausibly seeks initially to preserve offensive pressure by accelerating and descending northward behind its previously launched missile as the formations close, but late in the window it begins a hard right turn, consistent with seeking lateral separation from the approaching southbound missiles rather than continuing head-on.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792992456,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1484,
+      "prompt_tokens": 41621,
+      "total_tokens": 43105,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1346,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 38395,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to reduce post-launch exposure and place the southbound Team B missiles off its nose by completing a hard right, descending turn into sustained eastbound separation, while its previously launched missile continues north and the opposing formation remains ahead.",
+    "A0200": "A0200 most plausibly seeks initially to preserve offensive pressure by accelerating and descending northward behind its previously launched missile as the formations close, but late in the window it begins a hard right turn, consistent with seeking lateral separation from the approaching southbound missiles rather than continuing head-on."
+  },
+  "finished_at": "2026-10-26T05:28:00.630862+00:00",
+  "over_3s": true
+}

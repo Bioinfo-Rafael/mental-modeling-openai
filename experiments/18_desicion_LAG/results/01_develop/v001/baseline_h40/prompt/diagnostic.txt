@@ -1,0 +1,8 @@
+Return JSON with decision, events, and reason. Write brief reasons in English.
+For YES, list every distinct qualifying event you identify. Each event must
+have aircraft_id (A0100 or A0200), step (onset inside the supplied window),
+evidence_steps (nonempty list of supplied steps), and reason (one or two
+sentences explaining the observed change and why it warrants explanation).
+The top-level reason briefly explains the overall decision.
+For NO, return an empty events list and explain why the visible behavior
+does not warrant a new explanation. Do not emit prose outside the JSON.

@@ -1,0 +1,194 @@
+{
+  "query_id": "r01_case08_responses_diagnostic",
+  "started_at": "2026-10-25T16:17:15.604536+00:00",
+  "status": "ok",
+  "latency_s": 3.6978290830738842,
+  "raw": {
+    "id": "resp_047eb145e941805d016ade2b8c249087d0a7297557a07257ba",
+    "created_at": 1792945036.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "gpt-6-luna",
+    "object": "response",
+    "output": [
+      {
+        "id": "msg_047eb145e941805d016ade2b8cefe487d09e5c089bc3a0f591",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"decision\":\"YES\",\"events\":[{\"aircraft_id\":\"A0100\",\"step\":250,\"evidence_steps\":[250,260,270,280,289],\"reason\":\"A0100 is already in a sustained left turn at the window start: its recorded left-30 command accompanies yaw falling from about 67° to 338° and a continuing course change. No distinct onset within this window is established, so this is continuation rather than a supported transition.\"},{\"aircraft_id\":\"A0200\",\"step\":250,\"evidence_steps\":[250,260,270,280,289],\"reason\":\"A0200 is already turning at the window start; its heading/course and velocity direction continue changing through the window while its heading commands alternate among right and left corrections. This supports ongoing turning, not a new movement-pattern transition. Ammunition remains at 1 and no A-launched missile is recorded.\"}],\"reason\":\"Although both A aircraft continue turning, their patterns are already underway at step 250, and the window provides no supported onset or reversal. There is no evidence of new firing by Team A, so the correct decision is NO.\"}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 0.98,
+    "background": false,
+    "completed_at": 1792945039.0,
+    "conversation": null,
+    "max_output_tokens": 4096,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": "24h",
+    "reasoning": {
+      "context": "all_turns",
+      "effort": "low",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "explanation_detection",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "enum": [
+                "YES",
+                "NO"
+              ]
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "aircraft_id": {
+                    "type": "string",
+                    "enum": [
+                      "A0100",
+                      "A0200"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer"
+                  },
+                  "evidence_steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "aircraft_id",
+                  "step",
+                  "evidence_steps",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "decision",
+            "events",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 26048,
+      "input_tokens_details": {
+        "cache_write_tokens": 24264,
+        "cached_tokens": 1781
+      },
+      "output_tokens": 243,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 26291
+    },
+    "user": null,
+    "access_programs": null,
+    "billing": {
+      "payer": "developer"
+    },
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false,
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    }
+  },
+  "parsed": {
+    "decision": "YES",
+    "events": [
+      {
+        "aircraft_id": "A0100",
+        "step": 250,
+        "evidence_steps": [
+          250,
+          260,
+          270,
+          280,
+          289
+        ],
+        "reason": "A0100 is already in a sustained left turn at the window start: its recorded left-30 command accompanies yaw falling from about 67° to 338° and a continuing course change. No distinct onset within this window is established, so this is continuation rather than a supported transition."
+      },
+      {
+        "aircraft_id": "A0200",
+        "step": 250,
+        "evidence_steps": [
+          250,
+          260,
+          270,
+          280,
+          289
+        ],
+        "reason": "A0200 is already turning at the window start; its heading/course and velocity direction continue changing through the window while its heading commands alternate among right and left corrections. This supports ongoing turning, not a new movement-pattern transition. Ammunition remains at 1 and no A-launched missile is recorded."
+      }
+    ],
+    "reason": "Although both A aircraft continue turning, their patterns are already underway at step 250, and the window provides no supported onset or reversal. There is no evidence of new firing by Team A, so the correct decision is NO."
+  },
+  "finished_at": "2026-10-25T16:17:19.302401+00:00"
+}

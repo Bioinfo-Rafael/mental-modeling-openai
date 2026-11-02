@@ -1,0 +1,54 @@
+{
+  "query_id": "r01_end_0334_narrative",
+  "attempt": 1,
+  "started_at": "2026-10-26T05:44:18.246157+00:00",
+  "api_status": "ok",
+  "latency_s": 21.180176749825478,
+  "raw": {
+    "id": "chatcmpl-Ed7nGxvB7ZqLvY4OtbouZhSr4Y3km",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to defeat B0100 by closing through a descending left turn, firing as its ammunition count drops, then reversing right to maintain useful post-launch geometry while its missile converges closely on the climbing opponent.\",\"A0200\":\"A0200 most plausibly seeks to avoid the B0100-launched missile by sustaining a hard turn from northeast toward north while holding roughly level flight, given the missile’s matching course change at similar altitude and its persistent position behind and southwest of the aircraft.\"}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": [],
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null
+        }
+      }
+    ],
+    "created": 1792993458,
+    "model": "gpt-5.6-sol",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1148,
+      "prompt_tokens": 29457,
+      "total_tokens": 30605,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 26231,
+        "cached_tokens": 3223
+      }
+    }
+  },
+  "answers": {
+    "A0100": "A0100 most plausibly seeks to defeat B0100 by closing through a descending left turn, firing as its ammunition count drops, then reversing right to maintain useful post-launch geometry while its missile converges closely on the climbing opponent.",
+    "A0200": "A0200 most plausibly seeks to avoid the B0100-launched missile by sustaining a hard turn from northeast toward north while holding roughly level flight, given the missile’s matching course change at similar altitude and its persistent position behind and southwest of the aircraft."
+  },
+  "finished_at": "2026-10-26T05:44:39.427544+00:00",
+  "over_3s": true
+}

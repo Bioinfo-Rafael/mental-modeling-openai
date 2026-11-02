@@ -1,0 +1,729 @@
+{
+  "date_jst": "2026-10-26",
+  "source_run": "01_develop/v002/onset_localization_h40",
+  "source_manifest_sha256": "6a34fd7c459a92289134ddc5520f42ec9928a4512aa4d8c4c53af23d3c6c9f97",
+  "observed": [
+    {
+      "case": "case06",
+      "prediction": "A0200@151 and @155",
+      "finding": "Repeated heading-command cycles 1→4→1→4 occur within an ongoing descending trajectory with oscillation and gradual leftward drift. V002 reports separate local command phases."
+    },
+    {
+      "case": "case10",
+      "prediction": "A0200@282",
+      "finding": "The selected sign flip is one of several recurrent cycles in a generally leftward-moving trajectory. V002 describes the local phase as a new reversal."
+    },
+    {
+      "case": "case07",
+      "prediction": "A0200@242",
+      "finding": "The claimed sustained left30 command by A0200 is absent: heading IDs are 4 at 242–244, 1 at 245–249, 4 at 250. A0100 changes [1,2,0] at 242 to [1,0,1] at 243 and keeps the latter through 250. The answer mentions but rejects A0100 using an inconsistent persistence criterion."
+    },
+    {
+      "case": "case08",
+      "prediction": "A0100@253",
+      "finding": "This is not merely an invented oscillation: altitude command changes 1→2 at 253 and altitude falls from 5289.48 m at 253 to 5063.49 m at 289. Whether to count this within an existing turn as a separate annotated event remains a labeling/granularity issue."
+    },
+    {
+      "case": "case09",
+      "finding": "Output was rejected for a duplicate event. This is an invalid-output condition, not a valid NO prediction."
+    }
+  ],
+  "interpretation_not_proven_cause": "V002 gives local command-pattern onsets too much weight, allowing one oscillation phase to qualify without first establishing a different overall movement pattern. Case07 also shows incorrect ID/step attribution and command decoding. The model internal cause is not established by its generated reasons.",
+  "v003_changes": [
+    "Make whole-window pattern assessment precede local onset selection.",
+    "Treat recurrent oscillation phases and small steps within the same underlying pattern as continuation.",
+    "Keep short developing departures near the right edge eligible; do not require the new behavior to dominate the window.",
+    "Recheck same-object action/state rows and heading ID mapping; cite raw before/after action triplets in event reasons.",
+    "Merge duplicate mentions of one aircraft/onset."
+  ],
+  "preserved": [
+    "System introduction and sections 1–5/8",
+    "Model gpt-6-luna",
+    "H=40, same 10 examples and labels",
+    "Responses schema and API settings",
+    "Independent firing detection"
+  ],
+  "input_evidence": {
+    "case06": [
+      {
+        "step": 150,
+        "object_id": "A0200",
+        "action": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 113.7081124782436,
+        "course_deg_derived": 112.90204508702155,
+        "alt_m": 4803.810056117088,
+        "vu_mps": -27.925765185468727
+      },
+      {
+        "step": 151,
+        "object_id": "A0200",
+        "action": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 112.94277209549443,
+        "course_deg_derived": 112.29463099792139,
+        "alt_m": 4798.393021848106,
+        "vu_mps": -26.49965404350295
+      },
+      {
+        "step": 154,
+        "object_id": "A0200",
+        "action": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 113.6756996796334,
+        "course_deg_derived": 111.97076333986173,
+        "alt_m": 4781.5931533934,
+        "vu_mps": -31.47618300833119
+      },
+      {
+        "step": 155,
+        "object_id": "A0200",
+        "action": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 115.06401416381856,
+        "course_deg_derived": 112.43219022060349,
+        "alt_m": 4774.808120758912,
+        "vu_mps": -36.75203463902797
+      },
+      {
+        "step": 159,
+        "object_id": "A0200",
+        "action": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 113.32876416515047,
+        "course_deg_derived": 112.43500262110699,
+        "alt_m": 4740.374282376355,
+        "vu_mps": -42.72748736756272
+      },
+      {
+        "step": 160,
+        "object_id": "A0200",
+        "action": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 110.9731408805353,
+        "course_deg_derived": 111.576990043929,
+        "alt_m": 4731.926521724841,
+        "vu_mps": -41.60607126966655
+      },
+      {
+        "step": 165,
+        "object_id": "A0200",
+        "action": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 112.68172845981154,
+        "course_deg_derived": 110.00611060362084,
+        "alt_m": 4687.18494252525,
+        "vu_mps": -55.073383583224825
+      },
+      {
+        "step": 170,
+        "object_id": "A0200",
+        "action": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 102.5322027347522,
+        "course_deg_derived": 105.85394473316958,
+        "alt_m": 4632.536566670752,
+        "vu_mps": -51.87426165595048
+      },
+      {
+        "step": 175,
+        "object_id": "A0200",
+        "action": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 106.81139951845545,
+        "course_deg_derived": 105.2830055901227,
+        "alt_m": 4576.918066509345,
+        "vu_mps": -60.45640658334473
+      },
+      {
+        "step": 180,
+        "object_id": "A0200",
+        "action": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 102.96853446198206,
+        "course_deg_derived": 102.44045823448562,
+        "alt_m": 4521.679893069631,
+        "vu_mps": -50.53406065674739
+      },
+      {
+        "step": 185,
+        "object_id": "A0200",
+        "action": [
+          2,
+          4,
+          0
+        ],
+        "yaw_deg": 102.35938960789274,
+        "course_deg_derived": 101.70589159505748,
+        "alt_m": 4469.778856936786,
+        "vu_mps": -49.42643960348622
+      },
+      {
+        "step": 189,
+        "object_id": "A0200",
+        "action": [
+          2,
+          1,
+          0
+        ],
+        "yaw_deg": 103.67720325439142,
+        "course_deg_derived": 101.51404129519537,
+        "alt_m": 4428.3534528947,
+        "vu_mps": -57.66641476526575
+      }
+    ],
+    "case07": [
+      {
+        "step": 241,
+        "object_id": "A0100",
+        "action": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 82.68007938379166,
+        "course_deg_derived": 83.01400566138823,
+        "alt_m": 5280.585130200193,
+        "vu_mps": -2.4135532477424437
+      },
+      {
+        "step": 241,
+        "object_id": "A0200",
+        "action": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 77.06291732311007,
+        "course_deg_derived": 77.54223217931025,
+        "alt_m": 3941.996130265421,
+        "vu_mps": -21.169186713895773
+      },
+      {
+        "step": 242,
+        "object_id": "A0100",
+        "action": [
+          1,
+          2,
+          0
+        ],
+        "yaw_deg": 82.72192032413366,
+        "course_deg_derived": 82.98809938078213,
+        "alt_m": 5280.145753804529,
+        "vu_mps": -2.050611870801531
+      },
+      {
+        "step": 242,
+        "object_id": "A0200",
+        "action": [
+          1,
+          4,
+          1
+        ],
+        "yaw_deg": 72.76418499362751,
+        "course_deg_derived": 75.4573545051244,
+        "alt_m": 3938.4806229719193,
+        "vu_mps": -14.874772116069854
+      },
+      {
+        "step": 243,
+        "object_id": "A0100",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 82.58121137890105,
+        "course_deg_derived": 82.97007048940506,
+        "alt_m": 5279.863617636225,
+        "vu_mps": -0.5284800800490304
+      },
+      {
+        "step": 243,
+        "object_id": "A0200",
+        "action": [
+          1,
+          4,
+          1
+        ],
+        "yaw_deg": 70.72834528164046,
+        "course_deg_derived": 73.5940352179791,
+        "alt_m": 3935.6652785247,
+        "vu_mps": -13.81550416662078
+      },
+      {
+        "step": 244,
+        "object_id": "A0100",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 82.36617061013045,
+        "course_deg_derived": 82.8378370560736,
+        "alt_m": 5280.017085276362,
+        "vu_mps": 2.409269696612323
+      },
+      {
+        "step": 244,
+        "object_id": "A0200",
+        "action": [
+          1,
+          4,
+          1
+        ],
+        "yaw_deg": 74.33999025731009,
+        "course_deg_derived": 73.33642198138716,
+        "alt_m": 3932.8845408904463,
+        "vu_mps": -14.158964971849954
+      },
+      {
+        "step": 245,
+        "object_id": "A0100",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 82.13906533187777,
+        "course_deg_derived": 82.42758591141614,
+        "alt_m": 5280.790680891708,
+        "vu_mps": 5.0976116761367285
+      },
+      {
+        "step": 245,
+        "object_id": "A0200",
+        "action": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 77.03917374611964,
+        "course_deg_derived": 73.99690758206903,
+        "alt_m": 3929.8842552313777,
+        "vu_mps": -16.183166768425814
+      },
+      {
+        "step": 246,
+        "object_id": "A0100",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 80.15088331588095,
+        "course_deg_derived": 81.52015742298146,
+        "alt_m": 5282.0230098766215,
+        "vu_mps": 7.413603811045664
+      },
+      {
+        "step": 246,
+        "object_id": "A0200",
+        "action": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 78.81911296567253,
+        "course_deg_derived": 74.82267799014215,
+        "alt_m": 3926.266599682975,
+        "vu_mps": -20.266519296597053
+      },
+      {
+        "step": 247,
+        "object_id": "A0100",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 75.34359777138495,
+        "course_deg_derived": 79.54012808729118,
+        "alt_m": 5283.734206720456,
+        "vu_mps": 9.143969094479342
+      },
+      {
+        "step": 247,
+        "object_id": "A0200",
+        "action": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 79.03155846295387,
+        "course_deg_derived": 75.4216678618064,
+        "alt_m": 3921.728466480473,
+        "vu_mps": -24.73197439099729
+      },
+      {
+        "step": 248,
+        "object_id": "A0100",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 71.79974146211629,
+        "course_deg_derived": 77.30716369512311,
+        "alt_m": 5285.397955951721,
+        "vu_mps": 7.176482645761696
+      },
+      {
+        "step": 248,
+        "object_id": "A0200",
+        "action": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 77.96917625427727,
+        "course_deg_derived": 75.5488896809006,
+        "alt_m": 3916.638470811376,
+        "vu_mps": -25.029462692401076
+      },
+      {
+        "step": 249,
+        "object_id": "A0100",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 69.03137329614651,
+        "course_deg_derived": 75.19406519786406,
+        "alt_m": 5286.616250237337,
+        "vu_mps": 5.192794139795573
+      },
+      {
+        "step": 249,
+        "object_id": "A0200",
+        "action": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 73.09188359222654,
+        "course_deg_derived": 74.44142077823692,
+        "alt_m": 3912.361343025506,
+        "vu_mps": -16.87926624395245
+      },
+      {
+        "step": 250,
+        "object_id": "A0100",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 66.78439796955826,
+        "course_deg_derived": 73.01103082174268,
+        "alt_m": 5287.567794955212,
+        "vu_mps": 4.577951955295071
+      },
+      {
+        "step": 250,
+        "object_id": "A0200",
+        "action": [
+          1,
+          4,
+          1
+        ],
+        "yaw_deg": 70.43869198069926,
+        "course_deg_derived": 72.45600916580582,
+        "alt_m": 3909.651603570548,
+        "vu_mps": -11.293381979383636
+      }
+    ],
+    "case08": [
+      {
+        "step": 250,
+        "object_id": "A0100",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 66.78439796955826,
+        "course_deg_derived": 73.01103082174268,
+        "alt_m": 5287.567794955212,
+        "vu_mps": 4.577951955295071
+      },
+      {
+        "step": 252,
+        "object_id": "A0100",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 62.29992609030228,
+        "course_deg_derived": 68.03793736212184,
+        "alt_m": 5289.437392804482,
+        "vu_mps": 3.0348878833191435
+      },
+      {
+        "step": 253,
+        "object_id": "A0100",
+        "action": [
+          2,
+          0,
+          1
+        ],
+        "yaw_deg": 59.63326687648872,
+        "course_deg_derived": 65.889198579926,
+        "alt_m": 5289.483885531208,
+        "vu_mps": -2.804427111174411
+      },
+      {
+        "step": 254,
+        "object_id": "A0100",
+        "action": [
+          2,
+          0,
+          1
+        ],
+        "yaw_deg": 57.33273198197035,
+        "course_deg_derived": 63.96131734196606,
+        "alt_m": 5288.326575959972,
+        "vu_mps": -8.637847770543832
+      },
+      {
+        "step": 260,
+        "object_id": "A0100",
+        "action": [
+          2,
+          0,
+          1
+        ],
+        "yaw_deg": 44.57220373421132,
+        "course_deg_derived": 50.753611776953946,
+        "alt_m": 5266.603486191559,
+        "vu_mps": -23.097299380300228
+      },
+      {
+        "step": 270,
+        "object_id": "A0100",
+        "action": [
+          2,
+          0,
+          1
+        ],
+        "yaw_deg": 22.235126401847378,
+        "course_deg_derived": 28.603091213900484,
+        "alt_m": 5209.1884093221815,
+        "vu_mps": -40.16898273831289
+      },
+      {
+        "step": 289,
+        "object_id": "A0100",
+        "action": [
+          2,
+          0,
+          1
+        ],
+        "yaw_deg": 338.33790640022175,
+        "course_deg_derived": 344.42768533829,
+        "alt_m": 5063.487001990771,
+        "vu_mps": -36.075218214622645
+      }
+    ],
+    "case10": [
+      {
+        "step": 270,
+        "object_id": "A0200",
+        "action": [
+          1,
+          3,
+          1
+        ],
+        "yaw_deg": 58.00995850409137,
+        "course_deg_derived": 56.666455302296164,
+        "alt_m": 3864.5103768775016,
+        "vu_mps": -12.674355643451651
+      },
+      {
+        "step": 272,
+        "object_id": "A0200",
+        "action": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 61.397784676322,
+        "course_deg_derived": 57.91596202059471,
+        "alt_m": 3858.6252161327006,
+        "vu_mps": -18.060864810980156
+      },
+      {
+        "step": 275,
+        "object_id": "A0200",
+        "action": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 61.63208082109375,
+        "course_deg_derived": 59.30101522628699,
+        "alt_m": 3843.099353063885,
+        "vu_mps": -29.791146333357897
+      },
+      {
+        "step": 278,
+        "object_id": "A0200",
+        "action": [
+          1,
+          3,
+          1
+        ],
+        "yaw_deg": 51.43651174718236,
+        "course_deg_derived": 55.03895341234453,
+        "alt_m": 3831.9712114726785,
+        "vu_mps": -11.052557882948191
+      },
+      {
+        "step": 281,
+        "object_id": "A0200",
+        "action": [
+          1,
+          3,
+          1
+        ],
+        "yaw_deg": 52.78267014998622,
+        "course_deg_derived": 51.12932085311838,
+        "alt_m": 3823.7272065470697,
+        "vu_mps": -15.775939634786292
+      },
+      {
+        "step": 282,
+        "object_id": "A0200",
+        "action": [
+          1,
+          1,
+          1
+        ],
+        "yaw_deg": 54.399002102788614,
+        "course_deg_derived": 51.67675357033402,
+        "alt_m": 3820.3697182612896,
+        "vu_mps": -18.166521806334817
+      },
+      {
+        "step": 283,
+        "object_id": "A0200",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 56.137641410607245,
+        "course_deg_derived": 52.418420087268224,
+        "alt_m": 3816.306037696204,
+        "vu_mps": -22.795101415396807
+      },
+      {
+        "step": 285,
+        "object_id": "A0200",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 49.000662893802605,
+        "course_deg_derived": 51.41381894812123,
+        "alt_m": 3806.680050681514,
+        "vu_mps": -20.13942861709222
+      },
+      {
+        "step": 286,
+        "object_id": "A0200",
+        "action": [
+          1,
+          3,
+          1
+        ],
+        "yaw_deg": 46.873028222036915,
+        "course_deg_derived": 49.35489562696616,
+        "alt_m": 3802.976444861841,
+        "vu_mps": -17.899089236779812
+      },
+      {
+        "step": 290,
+        "object_id": "A0200",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 49.59125095262158,
+        "course_deg_derived": 46.58383143021609,
+        "alt_m": 3785.380052163166,
+        "vu_mps": -26.129543020948088
+      },
+      {
+        "step": 299,
+        "object_id": "A0200",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 37.15166353998091,
+        "course_deg_derived": 35.56428062309828,
+        "alt_m": 3744.3661933462504,
+        "vu_mps": -14.607909599189863
+      },
+      {
+        "step": 309,
+        "object_id": "A0200",
+        "action": [
+          1,
+          0,
+          1
+        ],
+        "yaw_deg": 22.643940211156032,
+        "course_deg_derived": 25.04808483787541,
+        "alt_m": 3728.8681955948714,
+        "vu_mps": 8.711282553144404
+      }
+    ]
+  },
+  "derived_field": "course_deg_derived = degrees(atan2(ve,vn)) mod 360; not yaw",
+  "not_changed": "No reference labels changed. No rule suppressing every altitude change. No paid API calls.",
+  "evaluation_priorities": [
+    "Recover A0100@243 with correct identity.",
+    "Reduce oscillation-phase detections in case06 and case10.",
+    "Maintain true-event recall, especially near-window-end events.",
+    "Keep firing outputs valid and unique.",
+    "Review case08 separately rather than assuming all unannotated physical changes are noise."
+  ],
+  "limitations": "Prompt improvement is untested; no guarantee of reduced FP or unchanged FN. One episode and one response per case do not establish causes or generalization."
+}

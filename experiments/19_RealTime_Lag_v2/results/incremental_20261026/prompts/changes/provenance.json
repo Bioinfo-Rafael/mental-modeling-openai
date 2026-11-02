@@ -1,0 +1,15 @@
+{
+  "source": "experiments/19_RealTime_LAG/results/pilot_20261026_v2/prompts/gate",
+  "source_sha256": {
+    "system.txt": "881506a602856a788576b92835478f9fb60580cc69ae86c7d90d1d40dcc55633",
+    "user.txt": "784d88adeef9546005ba7b60cb93261102660e9588bf2459908695302629f5e5",
+    "aircraft_question.txt": "9dd3ec85dffe449d03ed1b7783c8e24579ade805e1b2de03b9f4c47ea4d58d2d",
+    "aircraft_choices.json": "caf26f0b686f87b71f6e504f7a2ec3cd8cfabaa65c4a543fc40720e697a5a121"
+  },
+  "changed_sha256": {
+    "system.txt": "75f410b597d8609c66628fb03bba14d6ab86236c949ef6d2bd42d8c1a8ae561a",
+    "user.txt": "1702f900a1749a1dcfbccd6b143ccd0cfe707e699b053e00019ba5d48e90e336",
+    "aircraft_question.txt": "cf5948c91affd5d75f6436ccc043301676a7d7adec50fe0fdb4a9ec8dda87898",
+    "aircraft_choices.json": "c5196e0911adc1b927bbdceb6a49cf70eb611d8e2648f6a2726bea00c508a5b3"
+  }
+}

@@ -1,0 +1,1952 @@
+{
+  "created_at": "2026-10-26T08:06:48.359Z",
+  "source_file": "responses.json",
+  "source_sha256": "a9e475978bb6364bdd32dbc57e39a95567d89efd296259cf1179786b33ddc699",
+  "translation_method": "Japanese translations by assistant; original narrative uncertainty, aircraft identifiers and claims retained. No correction or validation of tactical claims.",
+  "records": [
+    {
+      "query_id": "4c6a9214d737bfa5a2569e5d290813334c40634be2f655d533825c45eff737ee",
+      "sample_id": "e46_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "acc8e418489476554d3a33806fe9d67ba305d27505dc3116fa2b846f3e37c6b0",
+      "english": "A0100 is likely to continue accelerating northward in descent with modest rightward alignment to improve a forward missile-engagement opportunity against Team B.",
+      "japanese": "A0100は、チームBに対する前方へのミサイル交戦機会を改善するため、機首をやや右に合わせながら、降下中の北向きの加速を続ける可能性が高い。"
+    },
+    {
+      "query_id": "4c6a9214d737bfa5a2569e5d290813334c40634be2f655d533825c45eff737ee",
+      "sample_id": "e46_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "f7f762d872f7d75f4864d4da4948521ed8ab24e04aff8e4e6ff5e33e2675cb23",
+      "english": "A0200 is likely to maintain its accelerating northbound descent and slight rightward correction to close on Team B under favorable forward-aspect geometry.",
+      "japanese": "A0200は、有利な正面交戦の位置関係でチームBに接近するため、加速しながらの北向きの降下と、わずかな右への針路修正を続ける可能性が高い。"
+    },
+    {
+      "query_id": "4c6a9214d737bfa5a2569e5d290813334c40634be2f655d533825c45eff737ee",
+      "sample_id": "e46_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "352d259f1ec536f6f4c0bb93db58b763dbc3ea6a0d666073d0f449a54a298ee6",
+      "english": "B0100 is likely to continue accelerating southward in descent, holding near head-on closure to develop a missile-engagement opportunity against Team A.",
+      "japanese": "B0100は、チームAに対するミサイル交戦機会を作るため、ほぼ正面からの接近を保ちつつ、降下中の南向きの加速を続ける可能性が高い。"
+    },
+    {
+      "query_id": "4c6a9214d737bfa5a2569e5d290813334c40634be2f655d533825c45eff737ee",
+      "sample_id": "e46_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "388c73ae8e07d5487ec8543eb1e45623f8a559e83dbc99aaf602cd34903b097a",
+      "english": "B0200 is likely to sustain its accelerating southbound descent and direct closure to preserve forward engagement geometry against Team A.",
+      "japanese": "B0200は、チームAに対する前方交戦の位置関係を維持するため、加速しながらの南向きの降下と、直進しての接近を続ける可能性が高い。"
+    },
+    {
+      "query_id": "6212d7385ae953ed266b59ba7eb122940f83c3aa064b381d78859db390bbf9c6",
+      "sample_id": "e46_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "798405f9a64616f565b66dd6ec7777ab419d9f3d170eec9cd7736d4aadcd45cb",
+      "english": "A0100 is likely to continue a fast descending, slightly right-steering northbound approach to close with the opposing formation for an engagement.",
+      "japanese": "A0100は、交戦のために敵編隊との距離を詰めるべく、わずかに右へ針路を取りながら、高速で降下する北向きの接近を続ける可能性が高い。"
+    },
+    {
+      "query_id": "6212d7385ae953ed266b59ba7eb122940f83c3aa064b381d78859db390bbf9c6",
+      "sample_id": "e46_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "7b7bff1e65edc16cbbeaa9aa309c1eb391869d9bf388811de334f0b66fe59594",
+      "english": "A0200 is likely to maintain its fast descent and northbound approach, with steering adjustments to help close on the opposing aircraft for an engagement.",
+      "japanese": "A0200は、交戦のために敵機との距離を詰めやすくする針路調整を行いつつ、高速の降下と北向きの接近を維持する可能性が高い。"
+    },
+    {
+      "query_id": "6212d7385ae953ed266b59ba7eb122940f83c3aa064b381d78859db390bbf9c6",
+      "sample_id": "e46_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "1f3d593a17e7f055a8a3b209724ec8a9f9a904de9d6790e3825da2a1b545fb6c",
+      "english": "B0100 is likely to continue southbound while descending and accelerating, preserving a direct closing geometry against the approaching Team A aircraft.",
+      "japanese": "B0100は、接近するチームA機に対して直接距離を詰める位置関係を維持し、降下・加速しながら南進を続ける可能性が高い。"
+    },
+    {
+      "query_id": "6212d7385ae953ed266b59ba7eb122940f83c3aa064b381d78859db390bbf9c6",
+      "sample_id": "e46_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "4c0af287be1dd61c889deebad969be614c994c70c7efef583478f4657ea846fb",
+      "english": "B0200 is likely to sustain its southbound descending approach alongside B0100, closing the distance to Team A while retaining formation proximity.",
+      "japanese": "B0200は、編隊内の近接を保ちながらチームAとの距離を詰めるため、B0100と並んで南向きの降下接近を続ける可能性が高い。"
+    },
+    {
+      "query_id": "78c722e2315af00c162db69441667685b23e9d78a233c81e2daa604cf50566fe",
+      "sample_id": "e46_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "d78e6c3dd6e80796613fa5da121a9bd261da1f7ce056eb964d3049953f720511",
+      "english": "A0100 is likely the forward interceptor, continuing a fast northbound descent with minor heading corrections to close the B formation and seek an attack position.",
+      "japanese": "A0100は前方の迎撃機である可能性が高く、B編隊との距離を詰めて攻撃位置を得るため、小さな針路修正を行いながら高速で北向きの降下を続けると考えられる。"
+    },
+    {
+      "query_id": "78c722e2315af00c162db69441667685b23e9d78a233c81e2daa604cf50566fe",
+      "sample_id": "e46_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "25da742d7978aef9ec0577443f3f5f0069041f7ac5ce9793a7c661db4490903d",
+      "english": "A0200 is likely supporting A0100's intercept, remaining nearby while accelerating northward and descending to preserve a useful formation position during the approach.",
+      "japanese": "A0200はA0100の迎撃を支援している可能性が高く、接近中に有用な編隊位置を保つため、近くにとどまりながら北向きに加速して降下すると考えられる。"
+    },
+    {
+      "query_id": "78c722e2315af00c162db69441667685b23e9d78a233c81e2daa604cf50566fe",
+      "sample_id": "e46_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "33a673913f3dfe985162ee2c6d1b958f59f6f7bb4ed02ea554a01f732fedad95",
+      "english": "B0100 is likely an attacking or intercepting lead, continuing southward at high speed with descent to close the approaching A formation.",
+      "japanese": "B0100は攻撃または迎撃を先導する機体である可能性が高く、接近するA編隊との距離を詰めるため、高速で降下しながら南進を続けると考えられる。"
+    },
+    {
+      "query_id": "78c722e2315af00c162db69441667685b23e9d78a233c81e2daa604cf50566fe",
+      "sample_id": "e46_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "c4c6257e92d9d1975578990cfc43e9fb95f58cae15b8ae273e5acef3c3351aa0",
+      "english": "B0200 is likely supporting B0100's southbound intercept, maintaining nearby spacing while descending and continuing toward the opposing formation.",
+      "japanese": "B0200はB0100の南向きの迎撃を支援している可能性が高く、近い間隔を保ちながら降下し、敵編隊へ向かい続けると考えられる。"
+    },
+    {
+      "query_id": "707ff6365395c67929b65fe1fec92d2f2da631ab2a394eaa41ad23ff8df788d5",
+      "sample_id": "e46_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "4fa711931dbc0f16d087d607bfa734bff9426dc872001e630ebf12b27550ec64",
+      "english": "A0100 is likely to expend a missile early, then accelerate through its descent and turn right to offset from the head-on approach while sustaining pressure on Team B.",
+      "japanese": "A0100は、序盤にミサイルを発射した後、降下しながら加速し、チームBへの圧力を維持しつつ正面接近の軸からずれるために右旋回する可能性が高い。"
+    },
+    {
+      "query_id": "707ff6365395c67929b65fe1fec92d2f2da631ab2a394eaa41ad23ff8df788d5",
+      "sample_id": "e46_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "44b73848cc42550eb509d20c44522224e891fd78a9de4477c3e5f4d6e5926d3b",
+      "english": "A0200 is likely to continue accelerating northward in a steep descent, making small heading corrections to close on Team B and seek a missile opportunity.",
+      "japanese": "A0200は、チームBに接近してミサイル発射の機会を得るため、小さく針路を修正しながら、急降下中の北向きの加速を続ける可能性が高い。"
+    },
+    {
+      "query_id": "707ff6365395c67929b65fe1fec92d2f2da631ab2a394eaa41ad23ff8df788d5",
+      "sample_id": "e46_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "343a2efe4ba58b3219ac04ef2d45a53ecee88fe3790a1ef9651f46e482c8ada7",
+      "english": "B0100 is likely to continue accelerating southward and descending toward Team A, maintaining the closing geometry to seek a missile engagement.",
+      "japanese": "B0100は、ミサイル交戦を狙って接近の位置関係を維持しつつ、チームAに向かって南向きに加速しながら降下を続ける可能性が高い。"
+    },
+    {
+      "query_id": "707ff6365395c67929b65fe1fec92d2f2da631ab2a394eaa41ad23ff8df788d5",
+      "sample_id": "e46_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "d59d75a3178f1b843a597aeb7a266191e59e30d98d76a1e6f9bbb03b63598a4c",
+      "english": "B0200 is likely to expend a missile early while continuing its accelerating southbound descent, preserving the head-on engagement geometry to pressure Team A.",
+      "japanese": "B0200は、チームAに圧力をかけるために正面交戦の位置関係を保ち、加速しながらの南向きの降下を続けつつ、序盤にミサイルを発射する可能性が高い。"
+    },
+    {
+      "query_id": "369ddad9f9d73c57db9a6a59e8e85338c65dff4ea49e7790ed3c0114f94a4918",
+      "sample_id": "e46_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "3720fb3cb2fabe6cc5f247934498531cba732a4cb82c5983688481a2be27a0d7",
+      "english": "A0100 is likely to descend and begin a rightward, accelerating turn to press the inbound engagement while improving survivability after its recorded missile expenditure.",
+      "japanese": "A0100は、記録されたミサイル発射後の生存性を高めながら接近してくる敵との交戦を押し進めるため、降下し、加速を伴う右旋回を始める可能性が高い。"
+    },
+    {
+      "query_id": "369ddad9f9d73c57db9a6a59e8e85338c65dff4ea49e7790ed3c0114f94a4918",
+      "sample_id": "e46_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "72806b5c66f1f6399a2f5781ee539212e97111736f2c31b86976e607f530df61",
+      "english": "A0200 is likely to continue descending and accelerate into a leftward turn, positioning for the approaching opposing formation while reducing vulnerability through the close pass.",
+      "japanese": "A0200は、接近する敵編隊に対して位置を取り、近距離でのすれ違いの際の脆弱性を減らすため、降下を続け、加速しながら左旋回に入る可能性が高い。"
+    },
+    {
+      "query_id": "369ddad9f9d73c57db9a6a59e8e85338c65dff4ea49e7790ed3c0114f94a4918",
+      "sample_id": "e46_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "2eb61cf2eb91dd4465283eeec2afc15c992ac6af5ddfcd97ee6201181fad4841",
+      "english": "B0100 is likely to continue its southbound descending approach with B0200, seeking to sustain pressure on the inbound Team A aircraft through the impending close engagement.",
+      "japanese": "B0100は、迫る近距離交戦を通じて接近するチームA機への圧力を維持するため、B0200とともに南向きの降下接近を続ける可能性が高い。"
+    },
+    {
+      "query_id": "369ddad9f9d73c57db9a6a59e8e85338c65dff4ea49e7790ed3c0114f94a4918",
+      "sample_id": "e46_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "e73c86d09adb3c3aadfa088a16b0218d4a3e16a794ab36c741bf847a7d1599b9",
+      "english": "B0200 is likely to maintain a southbound descent after its recorded missile expenditure, pressing the engagement while carrying its momentum through the approaching pass.",
+      "japanese": "B0200は、記録されたミサイル発射後、交戦を押し進め、迫るすれ違いの局面を勢いを保って通過するため、南向きの降下を維持する可能性が高い。"
+    },
+    {
+      "query_id": "6a06044b6368a38f6cfc9a045ba6bc3f9b27e1317920f5e2ef865898d4a69f57",
+      "sample_id": "e46_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "e7bcb6ee0b93c3002fdb9f36dcbd9ebfb33bcfb66c4e40145d331a898f4b763f",
+      "english": "A0100 is likely the lead attacker, continuing a fast northward descent and maneuvering to preserve an engagement geometry after expending a missile against the opposing formation.",
+      "japanese": "A0100は攻撃を先導する機体である可能性が高く、敵編隊に対してミサイルを発射した後、交戦の位置関係を維持するため、高速の北向きの降下を続けながら機動すると考えられる。"
+    },
+    {
+      "query_id": "6a06044b6368a38f6cfc9a045ba6bc3f9b27e1317920f5e2ef865898d4a69f57",
+      "sample_id": "e46_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "2f2f6de3517db7b0da55710517895fb4b1402a6e5d4a993fa3a92bd870292642",
+      "english": "A0200 is likely a supporting attacker, continuing the high-speed northward approach in a nearby parallel position while descending and seeking an opportunity to employ its remaining missiles.",
+      "japanese": "A0200は攻撃を支援する機体である可能性が高く、近くの平行した位置で高速の北向きの接近を続けながら降下し、残るミサイルを使用する機会を探ると考えられる。"
+    },
+    {
+      "query_id": "6a06044b6368a38f6cfc9a045ba6bc3f9b27e1317920f5e2ef865898d4a69f57",
+      "sample_id": "e46_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "2a7315344504f97819cc38586be0731b34fe70c08a2d143980d860c35551f183",
+      "english": "B0100 is likely closing to engage or support its formation, continuing southward at high speed with modest altitude loss while maneuvering to confront the approaching A aircraft.",
+      "japanese": "B0100は交戦または自編隊の支援のために接近している可能性が高く、接近するA機に対峙するために機動しながら、適度に高度を下げつつ高速で南進を続けると考えられる。"
+    },
+    {
+      "query_id": "6a06044b6368a38f6cfc9a045ba6bc3f9b27e1317920f5e2ef865898d4a69f57",
+      "sample_id": "e46_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "c0b6b64a23b6b54d1934bc42d432890b5d29498d738d24dadc2430272fa29b14",
+      "english": "B0200 is likely an attacking or responding shooter, continuing southward toward the A formation after expending a missile while maintaining speed and adjusting its flight path for further engagement.",
+      "japanese": "B0200は攻撃または応射を行う射手である可能性が高く、ミサイル発射後、速度を維持し、さらなる交戦に向けて飛行経路を調整しながらA編隊へ南進を続けると考えられる。"
+    },
+    {
+      "query_id": "be53bcf99450db29439fb90c45c36b48d3400b2ea6f11f5812df2e0f232b166d",
+      "sample_id": "e46_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "97406e764adf7835d088088bea0b59d9cae004cf33145b65dadac2ec4a4fcfff",
+      "english": "A0100 appears to expend one missile, then makes a sustained steep, descending right turn away from the head-on axis to offset the engagement and improve survivability.",
+      "japanese": "A0100は、ミサイルを1発発射した後、交戦軸から横にずれて生存性を高めるため、正面接近の軸から離れる急な降下右旋回を継続するように見える。"
+    },
+    {
+      "query_id": "be53bcf99450db29439fb90c45c36b48d3400b2ea6f11f5812df2e0f232b166d",
+      "sample_id": "e46_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "943fff2f0e02faf9719e6dc7df3e018cd13a9fb22386e84e4b97d2889fdc937d",
+      "english": "A0200 appears to expend one missile while continuing northward, accelerating and descending with only minor heading changes to maintain offensive pressure on the opposing formation.",
+      "japanese": "A0200は、敵編隊への攻撃圧力を維持するため、わずかな針路変更にとどめて北向きに加速・降下を続けながら、ミサイルを1発発射するように見える。"
+    },
+    {
+      "query_id": "be53bcf99450db29439fb90c45c36b48d3400b2ea6f11f5812df2e0f232b166d",
+      "sample_id": "e46_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "84f172b3927a358d9978ac783252d82d7bdddb3ee0f3e02d1069d143677ef48c",
+      "english": "B0100 appears to expend one missile while continuing nearly straight south, accelerating and descending to press the head-on engagement and sustain its attack.",
+      "japanese": "B0100は、正面交戦を押し進めて攻撃を継続するため、ほぼ真南に加速・降下を続けながら、ミサイルを1発発射するように見える。"
+    },
+    {
+      "query_id": "be53bcf99450db29439fb90c45c36b48d3400b2ea6f11f5812df2e0f232b166d",
+      "sample_id": "e46_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "08a21103b698ad812f9fc831002d0e62c333239bdec8ddef03d5b5ee9f4af00e",
+      "english": "B0200 appears to expend one missile early, then continues nearly straight south while accelerating and descending to maintain pressure on the approaching Team A aircraft.",
+      "japanese": "B0200は、序盤にミサイルを1発発射した後、接近するチームAの機体への圧力を維持するため、ほぼ真南に加速・降下を続けるように見える。"
+    },
+    {
+      "query_id": "d2d35c2235edefbd632639f1dfe57657a0a6c1cd8c05951885e4b4c95424d2ea",
+      "sample_id": "e46_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "375acb81bc8b50b6780609260643ef7d915053fded5b503d571ed55a0d772b47",
+      "english": "A0100 launches a missile, then makes a sustained rightward descending break toward the east, likely separating from the head-on engagement while its weapon continues toward the opposing formation.",
+      "japanese": "A0100は、ミサイルを発射してから東へ向かう右の降下ブレイクを継続しており、自機のミサイルが敵編隊へ向かい続ける間に正面交戦から離れようとしている可能性が高い。"
+    },
+    {
+      "query_id": "d2d35c2235edefbd632639f1dfe57657a0a6c1cd8c05951885e4b4c95424d2ea",
+      "sample_id": "e46_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "16bd8612cbb54dbb1272767bfdd513444a91e16186f749b9b827bc14bfa50d30",
+      "english": "A0200 launches a missile shortly after the exchange begins and continues descending through a rightward turn, likely combining an attack on the opposing formation with separation from incoming threat geometry.",
+      "japanese": "A0200は、撃ち合いの開始直後にミサイルを発射して右旋回しながら降下を続けており、敵編隊への攻撃と、接近する脅威との位置関係からの離脱を両立させようとしている可能性が高い。"
+    },
+    {
+      "query_id": "d2d35c2235edefbd632639f1dfe57657a0a6c1cd8c05951885e4b4c95424d2ea",
+      "sample_id": "e46_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "480f3c16309cb1f957bdf5762937fd8710cbb485cc10dece19ba04ed56caf7b0",
+      "english": "B0100 continues southward in descent and expends a missile during the exchange, likely pressing an attack while maintaining a generally straight withdrawal or defensive separation course.",
+      "japanese": "B0100は、降下しながら南進を続け、撃ち合いの間にミサイルを発射しており、おおむね直線的な撤退または防御的な距離確保の針路を維持しながら攻撃を押し進めている可能性が高い。"
+    },
+    {
+      "query_id": "d2d35c2235edefbd632639f1dfe57657a0a6c1cd8c05951885e4b4c95424d2ea",
+      "sample_id": "e46_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "6b41c83634c00948f1b5be393ba4c5692d294e8770cc48c40d378601a1fdfeb5",
+      "english": "B0200 launches a missile at the opening of the exchange and continues southward while descending, likely engaging the opposing formation while preserving separation from its reciprocal missile threat.",
+      "japanese": "B0200は、撃ち合いの開始時にミサイルを発射して降下しながら南進を続けており、敵からの応射ミサイルの脅威との距離を保ちながら敵編隊と交戦している可能性が高い。"
+    },
+    {
+      "query_id": "e74b4e464f0495a4c54d2ded16cf004906c2b3ae5fdfb6aa9d77379ff4f506ef",
+      "sample_id": "e46_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "aeaf218f95cee89744b82edf9163e7f0d650ed859ebe82768af3a0b5b6aec160",
+      "english": "A0100 is likely an initial shooter seeking to engage while preserving survivability, expending a missile and then turning sharply right to separate from the opposing formation.",
+      "japanese": "A0100は生存性を保ちながら交戦を図る初動の射手である可能性が高く、ミサイルを発射してから、敵編隊との距離を取るために急な右旋回を行うと考えられる。"
+    },
+    {
+      "query_id": "e74b4e464f0495a4c54d2ded16cf004906c2b3ae5fdfb6aa9d77379ff4f506ef",
+      "sample_id": "e46_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "dcf3b6d12d144ea44e95830a9e88b8887188f56da6ec794df798d5de31d6ea16",
+      "english": "A0200 is likely the supporting forward attacker, expending a missile while continuing northward toward the opposing aircraft to maintain pressure and approach.",
+      "japanese": "A0200は前方で攻撃を支援する機体である可能性が高く、圧力と接近を維持するため、敵機へ向けて北進を続けながらミサイルを発射すると考えられる。"
+    },
+    {
+      "query_id": "e74b4e464f0495a4c54d2ded16cf004906c2b3ae5fdfb6aa9d77379ff4f506ef",
+      "sample_id": "e46_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "bcdd8c079691fc96b38376ac1bc25b53a93efd14c03cc28fdb3bdd1aabed6f86",
+      "english": "B0100 is likely a follow-on attacker, launching a missile and continuing southward with the formation to sustain the engagement and close on Team A.",
+      "japanese": "B0100は後続の攻撃機である可能性が高く、交戦を継続してチームAとの距離を詰めるため、ミサイルを発射し、編隊とともに南進を続けると考えられる。"
+    },
+    {
+      "query_id": "e74b4e464f0495a4c54d2ded16cf004906c2b3ae5fdfb6aa9d77379ff4f506ef",
+      "sample_id": "e46_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "1aed09df6639597018763548aba94908b9221fe2576c4516ee878deb26246a0d",
+      "english": "B0200 is likely an early attacking shooter, expending a missile and maintaining a steady southward approach while supporting pressure against Team A.",
+      "japanese": "B0200は序盤に攻撃する射手である可能性が高く、チームAへの圧力を支えながら、ミサイルを発射し、安定した南向きの接近を維持すると考えられる。"
+    },
+    {
+      "query_id": "2ad9a943ec4becb551ad4359b97f8103ad6562d1158ecc4e4d3aabf6cfae056e",
+      "sample_id": "e49_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "3ec957fa9cc42890ca9c0a472d1b15f75eac8ee1b3ca62809d4e1f5e387163a2",
+      "english": "A0100 is likely to keep accelerating in descent while developing a right-hand offset, seeking to support its missile engagement while reducing direct head-on exposure.",
+      "japanese": "A0100は、正面から直接さらされる度合いを減らしつつミサイル交戦を支援するため、右への横ずれを強めながら、降下中の加速を続ける可能性が高い。"
+    },
+    {
+      "query_id": "2ad9a943ec4becb551ad4359b97f8103ad6562d1158ecc4e4d3aabf6cfae056e",
+      "sample_id": "e49_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "e8f85b069235b3f6aa9c1574ccb68272c68e24f59bc034f9f6002582df3b0100",
+      "english": "A0200 is likely to continue a fast descending northbound approach with small heading corrections, closing on Team B to obtain favorable missile geometry.",
+      "japanese": "A0200は、有利なミサイル交戦の位置関係を得るためにチームBへ接近し、小さく針路を修正しながら高速で降下する北向きの接近を続ける可能性が高い。"
+    },
+    {
+      "query_id": "2ad9a943ec4becb551ad4359b97f8103ad6562d1158ecc4e4d3aabf6cfae056e",
+      "sample_id": "e49_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "9978dff58655fd0a27479a38ce08a062db4d49f365e9d05cb9298084a4aed8d3",
+      "english": "B0100 is likely to maintain a fast descending southbound approach, closing broadly head-on to create a missile opportunity and sustain pressure on Team A.",
+      "japanese": "B0100は、ミサイル発射の機会を作り、チームAへの圧力を維持するため、おおむね正面から接近する、高速で降下する南向きの接近を続ける可能性が高い。"
+    },
+    {
+      "query_id": "2ad9a943ec4becb551ad4359b97f8103ad6562d1158ecc4e4d3aabf6cfae056e",
+      "sample_id": "e49_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "b6aedb954bc1ddd3e5e0336e8e91be44797971ca903dbb73ec8a38805cf7fb85",
+      "english": "B0200 is likely to continue its descending southbound closure while supporting its missile engagement, with an offset or defensive maneuver plausible as the formations converge.",
+      "japanese": "B0200は、ミサイル交戦を支援しながら降下を伴う南向きの接近を続ける可能性が高く、両編隊の距離が縮まるにつれて、横ずれや防御機動を行う可能性も考えられる。"
+    },
+    {
+      "query_id": "1e52547be7094fedb56c5d1cf1e52bae81721b414641ee28aee2a868e91b7bc7",
+      "sample_id": "e49_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "a117c3456e781e67fcce2f491b7a38661f593d9929dd0e3297741f4be1cd62aa",
+      "english": "A0100 is likely to continue descending and turn right while accelerating, combining separation from its wingman with a defensive post-launch maneuver as it presses the approaching opposition.",
+      "japanese": "A0100は、接近する敵へ圧力をかけながら、僚機との距離確保と発射後の防御機動を両立させるため、降下を続け、加速しながら右旋回する可能性が高い。"
+    },
+    {
+      "query_id": "1e52547be7094fedb56c5d1cf1e52bae81721b414641ee28aee2a868e91b7bc7",
+      "sample_id": "e49_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "e4ac31d4944c15db82bef357ed5e5b2d53c2fa904039fa42583c97aa6c6d2f5b",
+      "english": "A0200 is likely to keep descending and accelerating on a broadly northbound approach, with a slight leftward maneuver that helps widen Team A’s formation while retaining pressure on the opposing aircraft.",
+      "japanese": "A0200は、敵機への圧力を保ちながらチームAの編隊間隔を広げるため、わずかな左への機動を伴い、おおむね北向きの接近で降下・加速を続ける可能性が高い。"
+    },
+    {
+      "query_id": "1e52547be7094fedb56c5d1cf1e52bae81721b414641ee28aee2a868e91b7bc7",
+      "sample_id": "e49_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "804404f43a202884a89467d80e0437ffb68e495ffcbc55f03c02f6fbe207cc3a",
+      "english": "B0100 is likely to continue its fast southbound descent toward Team A, preserving the head-on closing geometry to support an attack while remaining with B0200.",
+      "japanese": "B0100は、B0200と行動をともにしつつ攻撃を支援するために正面接近の位置関係を保ち、チームAに向かって高速の南向きの降下を続ける可能性が高い。"
+    },
+    {
+      "query_id": "1e52547be7094fedb56c5d1cf1e52bae81721b414641ee28aee2a868e91b7bc7",
+      "sample_id": "e49_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "e760a1c84989e1cadcb48550a645e77243dd6d4caa566d5a8f16de78fbaa2b21",
+      "english": "B0200 is likely to continue descending southbound after expending a missile, maintaining the closing approach while attempting to survive any reciprocal threat.",
+      "japanese": "B0200は、ミサイルを発射した後、相手からの応射の脅威を生き残ろうとしながら接近を維持し、南向きに降下を続ける可能性が高い。"
+    },
+    {
+      "query_id": "0232cabd116cd3942d83b871a46a549c1c2c03fda1d46f536aeaced419b01478",
+      "sample_id": "e49_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "c60db6da0995dcfdd68476004518e6066ac1393927a13339aad6fa80566bd4a0",
+      "english": "A0100 is likely the forward shooter, continuing a fast northward descent toward the opposing formation while pressing the missile engagement and preparing to maneuver defensively.",
+      "japanese": "A0100は前方の射手である可能性が高く、ミサイル交戦を押し進めて防御機動に備えながら、敵編隊へ向けて高速の北向きの降下を続けると考えられる。"
+    },
+    {
+      "query_id": "0232cabd116cd3942d83b871a46a549c1c2c03fda1d46f536aeaced419b01478",
+      "sample_id": "e49_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "8cf79155c13895f1246158e74ef29f01a3bab6d3f64d726f0b9cf9daf81e4814",
+      "english": "A0200 is likely a supporting wingman, maintaining the northward intercept near A0100 while closing on the opposing formation and preserving a second attack opportunity.",
+      "japanese": "A0200は支援する僚機である可能性が高く、敵編隊との距離を詰め、2回目の攻撃機会を保ちながら、A0100の近くで北向きの迎撃を続けると考えられる。"
+    },
+    {
+      "query_id": "0232cabd116cd3942d83b871a46a549c1c2c03fda1d46f536aeaced419b01478",
+      "sample_id": "e49_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "284c61a963f8d624a1f41880097261415b267c74e0db7ef0e9384aa01347e2a9",
+      "english": "B0100 is likely a supporting interceptor, continuing southward toward the approaching Team A aircraft while maintaining formation separation and preparing to engage or defend.",
+      "japanese": "B0100は支援する迎撃機である可能性が高く、編隊間隔を維持して交戦または防御に備えながら、接近するチームA機へ向けて南進を続けると考えられる。"
+    },
+    {
+      "query_id": "0232cabd116cd3942d83b871a46a549c1c2c03fda1d46f536aeaced419b01478",
+      "sample_id": "e49_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "70478a6919e23eff8cb4add335448a9f1bc1d68dd24a17a7e312b5eea05fd782",
+      "english": "B0200 is likely Team B’s forward shooter, continuing the southward head-on engagement after launching a missile while maneuvering to preserve its attack position and survivability.",
+      "japanese": "B0200はチームBの前方の射手である可能性が高く、ミサイル発射後、攻撃位置と生存性を保つために機動しながら、南向きの正面交戦を続けると考えられる。"
+    },
+    {
+      "query_id": "da37d7c2e61a7dc9042bbf0828b8bbc061ce8e333af40d04008788a03b730384",
+      "sample_id": "e49_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "487461f2a7c799c65dc42a2a12828fc56ab11d2a3c1023597a0a5a435cdce933",
+      "english": "A0100 is likely to deepen its descending, accelerating rightward offset after missile expenditure to maintain pressure on Team B while reducing exposure during the head-on closure.",
+      "japanese": "A0100は、ミサイル発射後、正面接近中にさらされる度合いを減らしつつチームBへの圧力を維持するため、降下・加速を伴う右への横ずれを強める可能性が高い。"
+    },
+    {
+      "query_id": "da37d7c2e61a7dc9042bbf0828b8bbc061ce8e333af40d04008788a03b730384",
+      "sample_id": "e49_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "a9efdada224e47d64dedf43c008fa0f9ff31c1847c879f6cde5286c4a7e0dcea",
+      "english": "A0200 is likely to continue descending and accelerating northward while beginning a rightward offset, supporting its missile engagement without remaining directly nose-on.",
+      "japanese": "A0200は、真正面を向き続けずにミサイル交戦を支援するため、右への横ずれを始めながら、北向きに降下・加速を続ける可能性が高い。"
+    },
+    {
+      "query_id": "da37d7c2e61a7dc9042bbf0828b8bbc061ce8e333af40d04008788a03b730384",
+      "sample_id": "e49_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "2012b31524c1f9abf869ff1a458c1e39570d0fa721da8af813b31bf063961931",
+      "english": "B0100 is likely to continue its fast descending southbound closure toward Team A to improve offensive missile geometry and seek an engagement opportunity.",
+      "japanese": "B0100は、攻撃に有利なミサイル交戦の位置関係を改善して交戦機会を得るため、チームAに向かって高速で降下する南向きの接近を続ける可能性が高い。"
+    },
+    {
+      "query_id": "da37d7c2e61a7dc9042bbf0828b8bbc061ce8e333af40d04008788a03b730384",
+      "sample_id": "e49_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "59265daec7d486c75533c1c95d1f4d6ecdf4d0d6a27ce26efec61251e9aaf6f3",
+      "english": "B0200 is likely to maintain its descending, accelerating southbound approach after missile expenditure to support the engagement and sustain pressure on the approaching Team A formation.",
+      "japanese": "B0200は、ミサイル発射後、交戦を支援して接近するチームA編隊への圧力を維持するため、降下・加速を伴う南向きの接近を続ける可能性が高い。"
+    },
+    {
+      "query_id": "dae5388ae38d82873ea8d50b155bea26bbc5b76f4b209db4792e437aff6275c5",
+      "sample_id": "e49_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "fff66a904233683eababf829120b49028ce95d2b85371c8600665510707b4ad1",
+      "english": "A0100 is likely to continue descending into a right-hand maneuver while its missile engagement develops, seeking to press the approaching B formation while limiting exposure to return fire.",
+      "japanese": "A0100は、自機のミサイル交戦が進む間、反撃にさらされる度合いを抑えながら接近するB編隊に圧力をかけるため、降下を続けて右への機動に入る可能性が高い。"
+    },
+    {
+      "query_id": "dae5388ae38d82873ea8d50b155bea26bbc5b76f4b209db4792e437aff6275c5",
+      "sample_id": "e49_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "486f35990a33719c2ed8289353c27ccf5c16631c4ff14886dddac400cd8fa412",
+      "english": "A0200 is likely to descend and begin turning right after its apparent missile expenditure, maintaining the northbound attack with A0100 against the B aircraft.",
+      "japanese": "A0200は、ミサイルを発射したと見られる後、B機に対する北向きの攻撃をA0100とともに維持し、降下して右旋回を始める可能性が高い。"
+    },
+    {
+      "query_id": "dae5388ae38d82873ea8d50b155bea26bbc5b76f4b209db4792e437aff6275c5",
+      "sample_id": "e49_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "44154ae7d179e98e4d652878c73bac336a9780f7d45b837f02e98d8e4fc8e1e3",
+      "english": "B0100 is likely to continue its southbound descending approach, preserving pressure on the A pair and remaining positioned to support the ongoing reciprocal missile engagement.",
+      "japanese": "B0100は、Aの2機への圧力を保ち、進行中の相互のミサイル交戦を支援できる位置にとどまるため、南向きの降下接近を続ける可能性が高い。"
+    },
+    {
+      "query_id": "dae5388ae38d82873ea8d50b155bea26bbc5b76f4b209db4792e437aff6275c5",
+      "sample_id": "e49_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "3b0160b1edc0a5e394df7e5101d035f066a3049ae56e082c1782a36d068fe665",
+      "english": "B0200 is likely to continue descending south after apparent missile expenditure, maintaining closure on the A formation while its missile engagement develops.",
+      "japanese": "B0200は、ミサイルを発射したと見られる後、自機のミサイル交戦が進む間にA編隊との接近を維持し、南向きに降下を続ける可能性が高い。"
+    },
+    {
+      "query_id": "a42229b89d5818c706a57e681d241e08809800033e6de3a9940f9331c71d46c0",
+      "sample_id": "e49_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "6ecad14dbc00ff77b9b83cd755ae91cf62edd40dfd49d3975bc045d1a63e7f67",
+      "english": "A0100 is likely the lead attacker, continuing a fast descending turn toward the opposing formation while its missile remains in flight and seeking a favorable firing position.",
+      "japanese": "A0100は攻撃を先導する機体である可能性が高く、自機のミサイルが飛翔している間に有利な射撃位置を求め、敵編隊に向けて高速の降下旋回を続けると考えられる。"
+    },
+    {
+      "query_id": "a42229b89d5818c706a57e681d241e08809800033e6de3a9940f9331c71d46c0",
+      "sample_id": "e49_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "ca1bcfe4df11848438ae993dc10fef439c2d9722a189cdd0e810e42bf017d46a",
+      "english": "A0200 is likely a closely supporting attacker, continuing the high-speed descent and closure after launching a missile to pressure the opposing formation.",
+      "japanese": "A0200は近接して攻撃を支援する機体である可能性が高く、敵編隊に圧力をかけるため、ミサイル発射後も高速の降下と接近を続けると考えられる。"
+    },
+    {
+      "query_id": "a42229b89d5818c706a57e681d241e08809800033e6de3a9940f9331c71d46c0",
+      "sample_id": "e49_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "9f6a23f1b7e7879b948e70706e6fcf0ef97b84a4b9ba145451ef191dc264badf",
+      "english": "B0100 is likely an opposing interceptor, continuing southward high-speed closure and descent toward Team A while no specific weapon employment is observable.",
+      "japanese": "B0100は敵側の迎撃機である可能性が高く、具体的な兵器使用は観測されない中、チームAへ向けて南向きの高速接近と降下を続けると考えられる。"
+    },
+    {
+      "query_id": "a42229b89d5818c706a57e681d241e08809800033e6de3a9940f9331c71d46c0",
+      "sample_id": "e49_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "f86b5d9c11bb64c6dcb0359b3db7e42544678c060a3f0045756f137c00a80ea3",
+      "english": "B0200 is likely the opposing missile shooter, continuing southward closure and descent while its missile remains in flight and attempting to preserve an attacking position.",
+      "japanese": "B0200は敵側のミサイル射手である可能性が高く、自機のミサイルが飛翔している間、攻撃位置を保とうとしながら南向きの接近と降下を続けると考えられる。"
+    },
+    {
+      "query_id": "1e8123c56176bbba49f354bb0cc684f6b3b2d008f376852416cdc55a723a5ada",
+      "sample_id": "e49_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "404689ad2015bf6c469ada7d1ec16e79ebbe3e4bee75dd14145dfd2787f1d719",
+      "english": "A0100 likely performs a post-launch right crank, turning from north toward east while descending and accelerating to reduce head-on exposure while supporting its outbound missile.",
+      "japanese": "A0100は、飛翔中の自機のミサイルを支援しつつ正面からさらされる度合いを減らすため、降下・加速しながら北から東へ旋回する、発射後の右クランク機動を行う可能性が高い。"
+    },
+    {
+      "query_id": "1e8123c56176bbba49f354bb0cc684f6b3b2d008f376852416cdc55a723a5ada",
+      "sample_id": "e49_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "4cf2cec0cad3ae84262af936dc180061a85a83a468b4dcd4b2c1de74991b1376",
+      "english": "A0200 likely presses the head-on engagement, expending a missile and continuing rapidly northward in a sustained accelerating descent to support the shot and close on Team B.",
+      "japanese": "A0200は、発射したミサイルを支援してチームBとの距離を詰めるため、ミサイルを発射し、加速を伴う降下で高速の北進を続けて、正面交戦を押し進める可能性が高い。"
+    },
+    {
+      "query_id": "1e8123c56176bbba49f354bb0cc684f6b3b2d008f376852416cdc55a723a5ada",
+      "sample_id": "e49_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "6e86c33033067243a466f16e2ab129de24882edc9f3ac86332aaf08c6b74e4cc",
+      "english": "B0100 likely maintains offensive pressure, expending a missile early and continuing almost straight southward in an accelerating descent to support the engagement.",
+      "japanese": "B0100は、交戦を支援するため、序盤にミサイルを発射し、加速を伴う降下でほぼ真南へ進み続けて、攻撃圧力を維持する可能性が高い。"
+    },
+    {
+      "query_id": "1e8123c56176bbba49f354bb0cc684f6b3b2d008f376852416cdc55a723a5ada",
+      "sample_id": "e49_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "89e593eb45658bb0ab971b5afb2c98a8bb4e750a09c2582e2d46674e4acc2a2a",
+      "english": "B0200 likely supports its already-outbound missile while pressing the merge, continuing nearly straight southward in an accelerating descent without a substantial defensive turn.",
+      "japanese": "B0200は、大きな防御旋回をせず、加速を伴う降下でほぼ真南へ進み続け、近接交差へ向かって接近を進めながら、すでに飛翔中の自機のミサイルを支援する可能性が高い。"
+    },
+    {
+      "query_id": "018649f97dd771e7d1ad52f79fa229af94f12266b1c59bf12e029f561defd9b6",
+      "sample_id": "e49_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "bb5f1000e41bc0819302fa3b80f33528369d9b25411df3377eda335a2ae84752",
+      "english": "A0100 is likely to sustain its northbound missile attack while making a pronounced rightward, descending turn to reduce exposure during the engagement.",
+      "japanese": "A0100は、交戦中にさらされる度合いを減らすため、大きな右への降下旋回を行いながら、北向きのミサイル攻撃を継続する可能性が高い。"
+    },
+    {
+      "query_id": "018649f97dd771e7d1ad52f79fa229af94f12266b1c59bf12e029f561defd9b6",
+      "sample_id": "e49_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "b79706028bd5115248f3925bf5b7ac610a17b0e87d3f2fcf629382975229cad0",
+      "english": "A0200 is likely to continue northward and descending toward the opposing formation, expending a missile and maintaining pressure while maneuvering more gradually right.",
+      "japanese": "A0200は、ミサイルを発射し、より緩やかに右へ機動しながら圧力を維持し、敵編隊に向かって北進と降下を続ける可能性が高い。"
+    },
+    {
+      "query_id": "018649f97dd771e7d1ad52f79fa229af94f12266b1c59bf12e029f561defd9b6",
+      "sample_id": "e49_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "d93dddcec9a0da4437e485dd7feab39b92563500bcd1f0be267b53614c9a2a57",
+      "english": "B0100 is likely to press southward and downward toward Team A, launching a missile during the interval while largely maintaining its attack run.",
+      "japanese": "B0100は、攻撃進路をおおむね維持しながら区間中にミサイルを発射し、チームAに向かって南向きかつ下方へ進む可能性が高い。"
+    },
+    {
+      "query_id": "018649f97dd771e7d1ad52f79fa229af94f12266b1c59bf12e029f561defd9b6",
+      "sample_id": "e49_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "349bc99562a9bab467f6eac076275aa469ce8f635e5ee7d5908a6bce1bfbeedc",
+      "english": "B0200 is likely to continue a southbound descending attack course after its missile expenditure, maintaining separation from its wingman while closing on Team A.",
+      "japanese": "B0200は、ミサイル発射後、チームAとの距離を詰めながら僚機との間隔を保ち、南向きに降下する攻撃進路を維持する可能性が高い。"
+    },
+    {
+      "query_id": "c07e5821ca448603069d45c2b03a081f6f3b7e84dda481d346fad5979851fe0a",
+      "sample_id": "e49_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "4ab179add48e1e0e972f0752c44e34b511be2da1718a1edb66410316d3210450",
+      "english": "A0100 is likely trying to survive after missile employment, continuing a pronounced right-hand break toward the east while descending and opening lateral separation from the opposing approach.",
+      "japanese": "A0100はミサイル使用後の生存を図っている可能性が高く、降下し、敵の接近軸から横方向の距離を広げながら、東に向かう大きな右ブレイクを続けると考えられる。"
+    },
+    {
+      "query_id": "c07e5821ca448603069d45c2b03a081f6f3b7e84dda481d346fad5979851fe0a",
+      "sample_id": "e49_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "453f276083d669b2a4f809acf9b25a8e6251943e97baf8f8dfc0328bb6571396",
+      "english": "A0200 is likely pressing the forward intercept, maintaining a northward approach with a slight rightward trend and descending while employing its missile to threaten the opposing formation.",
+      "japanese": "A0200は前方での迎撃を押し進めている可能性が高く、敵編隊を脅かすためにミサイルを使用しながら、やや右に寄る北向きの接近と降下を維持すると考えられる。"
+    },
+    {
+      "query_id": "c07e5821ca448603069d45c2b03a081f6f3b7e84dda481d346fad5979851fe0a",
+      "sample_id": "e49_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "85f1fa2cf321816cb884721ccef1f68af28a91b00a4d389c09e36a2d0be6b436",
+      "english": "B0100 is likely pursuing a direct attack on Team A, continuing southward at high speed while descending with an opposing missile in flight.",
+      "japanese": "B0100はチームAへの直接攻撃を図っている可能性が高く、敵のミサイルが飛翔している中、降下しながら高速で南進を続けると考えられる。"
+    },
+    {
+      "query_id": "c07e5821ca448603069d45c2b03a081f6f3b7e84dda481d346fad5979851fe0a",
+      "sample_id": "e49_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "e042c7ebc3d793cb094b65c26e66426a38548b11ca7d8bc526cd0aed30abf614",
+      "english": "B0200 is likely supporting the direct attack, maintaining a southward high-speed descent toward Team A with its missile continuing ahead of the aircraft.",
+      "japanese": "B0200は直接攻撃を支援している可能性が高く、自機のミサイルが機体の前方へ進み続ける中、チームAに向けて高速の南向きの降下を維持すると考えられる。"
+    },
+    {
+      "query_id": "56f6cd60ff04d5c725facc83d086e5aec5a73dbac37d585a29f149c340c2cb14",
+      "sample_id": "e83_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "1e6fc1b4f5a63d28a6c8f11045ecb156866d8141486e287203eca8f4e8fac87c",
+      "english": "A0100 is likely to continue its hard right turn toward a southeasterly escape while leveling and maintaining speed, plausibly to beam the approaching Team B missile and reduce exposure.",
+      "japanese": "A0100は、水平飛行へ移りながら速度を維持し、南東への離脱に向けた急な右旋回を続ける可能性が高く、その目的として、接近するチームBのミサイルに対してビーム機動を行い、脅威にさらされる度合いを減らすことが考えられる。"
+    },
+    {
+      "query_id": "56f6cd60ff04d5c725facc83d086e5aec5a73dbac37d585a29f149c340c2cb14",
+      "sample_id": "e83_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "80251404a9945ddc630711d84b5f0707e620437b8c68d2a604f87b4716e60ec4",
+      "english": "A0200 is likely to continue accelerating northward in a shallow descending approach with modest heading corrections, pressing the engagement while its missile advances toward Team B.",
+      "japanese": "A0200は、自機のミサイルがチームBへ向かう間、交戦を押し進めるため、緩やかな降下で接近しつつ適度に針路を修正し、北向きの加速を続ける可能性が高い。"
+    },
+    {
+      "query_id": "56f6cd60ff04d5c725facc83d086e5aec5a73dbac37d585a29f149c340c2cb14",
+      "sample_id": "e83_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "d70e0546ce5ca5983c8a26d7dfd35ae639854b4801f740164a89991869a4849f",
+      "english": "B0100 is likely to continue its fast southbound descent with little lateral maneuvering, closing Team A while sustaining the geometry behind its outbound missile.",
+      "japanese": "B0100は、飛翔中の自機のミサイルの後方で位置関係を維持しながらチームAとの距離を詰めるため、横方向の機動をほとんど行わず、高速で南向きの降下を続ける可能性が高い。"
+    },
+    {
+      "query_id": "56f6cd60ff04d5c725facc83d086e5aec5a73dbac37d585a29f149c340c2cb14",
+      "sample_id": "e83_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "c2428b7d28b7d258141e9be1424856611a2f9aadfa81e30c58850fc7e17f8e00",
+      "english": "B0200 is likely to continue southbound, easing its descent and holding a nearly straight approach, maintaining pressure on Team A while its missile remains ahead.",
+      "japanese": "B0200は、自機のミサイルが前方にある間、チームAへの圧力を維持するため、降下を緩め、ほぼ直進での接近を保ちながら南進を続ける可能性が高い。"
+    },
+    {
+      "query_id": "2e19eac15ecc590c6996ef870943ae66af84fdc8af847b2f52e1ea42a78ddad7",
+      "sample_id": "e83_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "c96c2e800049de95394a9e5be03a2643473b76253c4db6b7ab27fa23d951894f",
+      "english": "A0100 is likely to continue a hard rightward turn while arresting its descent, seeking to evade the southbound threat from the opposing side while maintaining separation for its ongoing missile engagement.",
+      "japanese": "A0100は、進行中のミサイル交戦のための距離を維持しつつ、敵側から南進してくる脅威を回避するため、降下を止めながら急な右旋回を続ける可能性が高い。"
+    },
+    {
+      "query_id": "2e19eac15ecc590c6996ef870943ae66af84fdc8af847b2f52e1ea42a78ddad7",
+      "sample_id": "e83_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "44c68963bd5e1bc122962bdd51d33c403886ae6164bb9d414e577924eba3cc19",
+      "english": "A0200 is likely to keep descending and gradually turn right from its northbound track, likely combining continued pressure toward the opposing formation with defensive maneuvering against the approaching missile threat.",
+      "japanese": "A0200は、敵編隊への圧力の維持と接近するミサイルの脅威に対する防御機動を両立させるため、降下を続け、北向きの針路から徐々に右旋回する可能性が高い。"
+    },
+    {
+      "query_id": "2e19eac15ecc590c6996ef870943ae66af84fdc8af847b2f52e1ea42a78ddad7",
+      "sample_id": "e83_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "a775e90188e1f511501eafa83301abe6b7fa2b0c6fe02065f0fc87d924a06e78",
+      "english": "B0100 is likely to continue southbound, descending flight toward Team A’s side of the engagement, preserving a direct attack or missile-support geometry while closing the opposing aircraft.",
+      "japanese": "B0100は、敵機との距離を詰めながら直接攻撃またはミサイル支援の位置関係を保つため、交戦空域のチームA側へ向かう南向きの降下飛行を続ける可能性が高い。"
+    },
+    {
+      "query_id": "2e19eac15ecc590c6996ef870943ae66af84fdc8af847b2f52e1ea42a78ddad7",
+      "sample_id": "e83_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "62227cca5af65321274c3c4c6e251130180c82aa566ec20196182e80744bf148",
+      "english": "B0200 is likely to continue its southbound descent with only minor heading adjustment, seeking to sustain its attack geometry against Team A while remaining in the mutual missile engagement.",
+      "japanese": "B0200は、相互のミサイル交戦を継続しながらチームAへの攻撃の位置関係を維持するため、針路をわずかに調整するだけで南向きの降下を続ける可能性が高い。"
+    },
+    {
+      "query_id": "cae076395c91ffa80f174d1bfd64a609aaf4b9f7a0ed81f26656b20b32ebae71",
+      "sample_id": "e83_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "cc9a644943a15ae7eebbe5b9e6375b20eca0b3a4acfee97d526b2695dca91343",
+      "english": "A0100 is likely breaking east while descending to create lateral separation and improve survival or attack geometry against the approaching Team B formation.",
+      "japanese": "A0100は、横方向の距離を取り、接近するチームB編隊に対する生存性または攻撃の位置関係を改善するため、降下しながら東へブレイクしている可能性が高い。"
+    },
+    {
+      "query_id": "cae076395c91ffa80f174d1bfd64a609aaf4b9f7a0ed81f26656b20b32ebae71",
+      "sample_id": "e83_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "7181612311b62d986845b5a7548493d5b91d7a2c2afd96e1810839a16a3784d4",
+      "english": "A0200 is likely pressing northward at high speed while descending to close the opposing formation and maintain a direct engagement approach.",
+      "japanese": "A0200は、敵編隊との距離を詰め、直接交戦するための接近を維持するため、降下しながら高速で北へ進んでいる可能性が高い。"
+    },
+    {
+      "query_id": "cae076395c91ffa80f174d1bfd64a609aaf4b9f7a0ed81f26656b20b32ebae71",
+      "sample_id": "e83_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "6b86654602375f3863aaecaceff9fd78208e6ab86aa8365b151f4bc436b8b62b",
+      "english": "B0100 is likely continuing southward at high speed and descending to close the opposing aircraft while preserving its head-on engagement geometry.",
+      "japanese": "B0100は、正面交戦の位置関係を保ちながら敵機との距離を詰めるため、高速で南進し、降下を続けている可能性が高い。"
+    },
+    {
+      "query_id": "cae076395c91ffa80f174d1bfd64a609aaf4b9f7a0ed81f26656b20b32ebae71",
+      "sample_id": "e83_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "eaea029e76946a1d2acd96eee9749264ee5e5482d09441d01452b370fab48dab",
+      "english": "B0200 is likely advancing southward with its formation, descending toward an intercept while maintaining a separate approach against Team A.",
+      "japanese": "B0200は、チームAに対する別の接近経路を維持しながら迎撃に向けて降下し、編隊とともに南進している可能性が高い。"
+    },
+    {
+      "query_id": "d0a94a5feba80b55d34ccbcc4560e548c658d599bed4aac2b6d041accf399859",
+      "sample_id": "e83_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "80ad08471339c32a407d127b2396bd3e5d96f44868e5c3265066b90162b8b5fb",
+      "english": "A0100 is likely to continue its fast eastward beam turn while arresting the descent, seeking to reduce exposure to the approaching Team B missile and survive the closure.",
+      "japanese": "A0100は、接近するチームBのミサイルにさらされる度合いを減らし、接近局面を生き残るため、降下を止めつつ、高速で東向きのビーム旋回を続ける可能性が高い。"
+    },
+    {
+      "query_id": "d0a94a5feba80b55d34ccbcc4560e548c658d599bed4aac2b6d041accf399859",
+      "sample_id": "e83_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "9b7eb582b14394647fcbfef750d92430251c1d0c82495baed049cd531fc5ce01",
+      "english": "A0200 is likely to keep accelerating northward in a descending, shallow rightward offset, plausibly maintaining pressure and supporting its outbound missile while avoiding a purely head-on approach.",
+      "japanese": "A0200は、降下しながら緩やかに右へずれつつ北向きの加速を続ける可能性が高く、その目的として、真正面からの接近を避けながら圧力を維持し、飛翔中の自機のミサイルを支援することが考えられる。"
+    },
+    {
+      "query_id": "d0a94a5feba80b55d34ccbcc4560e548c658d599bed4aac2b6d041accf399859",
+      "sample_id": "e83_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "3a773e21e029487f86585e575f967873d24f6f75db41dc1621aef69019924f6b",
+      "english": "B0100 is likely to continue southward while gradually reducing its descent, preserving nose-on pressure and supporting the ongoing missile engagement as the formations close.",
+      "japanese": "B0100は、編隊間の距離が縮まる中、機首を敵に向けた圧力を保って進行中のミサイル交戦を支援するため、降下を徐々に緩めながら南進を続ける可能性が高い。"
+    },
+    {
+      "query_id": "d0a94a5feba80b55d34ccbcc4560e548c658d599bed4aac2b6d041accf399859",
+      "sample_id": "e83_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "00974e5d60b2d1137c4b4e0b52da4cf98b17d2212ebe7276d62129cfbd17d6c2",
+      "english": "B0200 is likely to continue its fast southward advance while pulling toward a shallower descent, maintaining offensive pressure and missile support despite the approaching Team A missile threat.",
+      "japanese": "B0200は、接近するチームAのミサイルの脅威がある中でも攻撃圧力とミサイル支援を維持するため、引き起こして降下を緩めながら、高速で南向きの前進を続ける可能性が高い。"
+    },
+    {
+      "query_id": "b69d6a6d70ebb569b5aa3dedde0d8072fdc8ae0e2189f9a45c97911e72c1f1d4",
+      "sample_id": "e83_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "1a1f8f4b83e82cea758e65e478baeaba250455c970b28ea0650c5f0db03fd22a",
+      "english": "A0100 is likely to continue its rightward turn toward an easterly beam while stabilizing its descent, seeking to reduce exposure to the southbound B0100-launched missile while remaining engaged.",
+      "japanese": "A0100は、交戦を続けながらB0100から発射されて南進するミサイルにさらされる度合いを減らすため、降下を安定させつつ東向きのビーム飛行に向けた右旋回を続ける可能性が高い。"
+    },
+    {
+      "query_id": "b69d6a6d70ebb569b5aa3dedde0d8072fdc8ae0e2189f9a45c97911e72c1f1d4",
+      "sample_id": "e83_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "4a045adde17328871fe2cff771d65606fb6b50da6771323d3a95471a58712e92",
+      "english": "A0200 is likely to complete its developing right turn from north toward the east while continuing downward, likely maneuvering defensively against the inbound B0200 missile rather than pressing directly north.",
+      "japanese": "A0200は、そのまま北へ進むよりも接近するB0200のミサイルに対して防御的に機動するため、降下を続けながら、進行中の北から東への右旋回を完了する可能性が高い。"
+    },
+    {
+      "query_id": "b69d6a6d70ebb569b5aa3dedde0d8072fdc8ae0e2189f9a45c97911e72c1f1d4",
+      "sample_id": "e83_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "9fda50492b58ab266160674fb7f28e80d352fc831499c53efa645bbd5fb344bf",
+      "english": "B0100 is likely to continue southward and recover from its dive, maintaining pressure on the approaching A aircraft and its already airborne missile engagement.",
+      "japanese": "B0100は、接近するA機への圧力と、すでに飛翔中の自機のミサイルによる交戦を維持するため、南進を続けながら急降下から回復する可能性が高い。"
+    },
+    {
+      "query_id": "b69d6a6d70ebb569b5aa3dedde0d8072fdc8ae0e2189f9a45c97911e72c1f1d4",
+      "sample_id": "e83_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "4ed1d0ca0a0d81cdd9ec63e1ae0518b6e836169b9d6b00748484183e883ada27",
+      "english": "B0200 is likely to continue southbound while leveling from its descent, sustaining the mutual engagement as its missile proceeds toward Team A.",
+      "japanese": "B0200は、自機のミサイルがチームAへ向かう間、相互の交戦を維持するため、降下から水平飛行に移りながら南進を続ける可能性が高い。"
+    },
+    {
+      "query_id": "d2ac450bbb4fbbd252de8ae7fc947b017b636912fdf10f5b5cf13a19f22646df",
+      "sample_id": "e83_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "0a5e642f40e8d250554232ddd30ecf029f479c57743787950f88b48dd1baed08",
+      "english": "A0100 is likely maneuvering to an offset firing position while closing, continuing eastward with roughly level altitude and increasing speed rather than turning directly toward the opposing pair.",
+      "japanese": "A0100は、接近しながら横にずれた射撃位置へ機動している可能性が高く、敵の2機へ直接旋回するのではなく、高度をほぼ一定に保って速度を上げながら東進を続けると考えられる。"
+    },
+    {
+      "query_id": "d2ac450bbb4fbbd252de8ae7fc947b017b636912fdf10f5b5cf13a19f22646df",
+      "sample_id": "e83_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "9b3966117378de7b330c50e4acbdac66993bb08df693aa03dd2c68d5828b4f93",
+      "english": "A0200 is likely acting as the primary interceptor, accelerating northward with a gradual descent and modest rightward turn to close the opposing aircraft.",
+      "japanese": "A0200は主な迎撃機として行動している可能性が高く、敵機との距離を詰めるため、緩やかな降下と適度な右旋回を伴って北向きに加速すると考えられる。"
+    },
+    {
+      "query_id": "d2ac450bbb4fbbd252de8ae7fc947b017b636912fdf10f5b5cf13a19f22646df",
+      "sample_id": "e83_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "3a5a454930d16826539a0fbe6e2d3b1cb19c631de54786e1ee1a278e974f4459",
+      "english": "B0100 is likely pressing a direct attack toward Team A, continuing southward at high speed with only minor heading variation while closing the engagement distance.",
+      "japanese": "B0100はチームAへの直接攻撃を押し進めている可能性が高く、交戦距離を詰めながら、わずかな針路変化だけで高速の南進を続けると考えられる。"
+    },
+    {
+      "query_id": "d2ac450bbb4fbbd252de8ae7fc947b017b636912fdf10f5b5cf13a19f22646df",
+      "sample_id": "e83_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "493550024164233eafd86e8d4ebe18d793dc9fd4db927cb701de770af04967ea",
+      "english": "B0200 is likely supporting the southbound attack, maintaining a near-southerly course at high speed while descending toward an intercept with Team A.",
+      "japanese": "B0200は南向きの攻撃を支援している可能性が高く、チームAとの迎撃に向けて降下しながら、高速でほぼ南向きの針路を維持すると考えられる。"
+    },
+    {
+      "query_id": "959d70fe01d8b02a8dceda3dc54222b7c74bbfc6150a17da07c93d1a7fd8b4b2",
+      "sample_id": "e83_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "e91ed6d4edd3a5dacc1887125e8546ad3254987d9650a2b31bf711b502eaae36",
+      "english": "A0100 likely settled into a fast, nearly level eastbound beam to reduce closure and complicate pursuit by the approaching Team B missiles.",
+      "japanese": "A0100は、接近率を下げ、接近するチームBのミサイルによる追尾を難しくするため、高速でほぼ水平な東向きのビーム飛行に移った可能性が高い。"
+    },
+    {
+      "query_id": "959d70fe01d8b02a8dceda3dc54222b7c74bbfc6150a17da07c93d1a7fd8b4b2",
+      "sample_id": "e83_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "4a5c9e859ec8db6d4a9eda81d3b16b396b1b3dc6525326a00a3af598e1fab1e1",
+      "english": "A0200 likely sustained a descending right turn toward the northeast to build lateral separation and make the approaching Team B missiles’ intercept more difficult.",
+      "japanese": "A0200は、横方向の距離を広げ、接近するチームBのミサイルによる迎撃を難しくするため、北東に向かう降下右旋回を継続した可能性が高い。"
+    },
+    {
+      "query_id": "959d70fe01d8b02a8dceda3dc54222b7c74bbfc6150a17da07c93d1a7fd8b4b2",
+      "sample_id": "e83_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "b194142e729c4252be3a13f1959e8a6f6aae7e0d0995ed73acd4d24e8e8a6a84",
+      "english": "B0100 likely pressed the engagement by continuing southward in an accelerating descent, closing on Team A while its missile advanced ahead.",
+      "japanese": "B0100は、自機のミサイルが前方へ進む間、チームAとの距離を詰め、加速を伴う降下で南進を続けることで交戦を押し進めた可能性が高い。"
+    },
+    {
+      "query_id": "959d70fe01d8b02a8dceda3dc54222b7c74bbfc6150a17da07c93d1a7fd8b4b2",
+      "sample_id": "e83_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "02c6fd71dfb980444c9990cfd5b1bb886cca51320a5c122b40fb8cc088ab70f9",
+      "english": "B0200 likely maintained a near-straight, accelerating southbound descent to preserve offensive closure on Team A while its missile continued ahead.",
+      "japanese": "B0200は、自機のミサイルが前方へ進み続ける間、チームAへの攻撃的な接近を維持するため、ほぼ直進で加速を伴う南向きの降下を続けた可能性が高い。"
+    },
+    {
+      "query_id": "a30063d4ff33170c6ff10c796c9b937719b3c0370c5c1c8e1ee3aa6965a39d83",
+      "sample_id": "e83_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "0103e14b35a14d75a0252dd09fbf327dc263c488dd5e0553a573c6a3487ed36e",
+      "english": "A0100 is likely to hold an easterly beam-like course and level its descent to survive the reciprocal missile exchange while keeping separation from the opposing southbound pair.",
+      "japanese": "A0100は、南進する敵の2機との距離を保ちながら相互のミサイルの撃ち合いを生き残るため、東向きのビーム機動に近い針路を維持し、降下から水平飛行へ移る可能性が高い。"
+    },
+    {
+      "query_id": "a30063d4ff33170c6ff10c796c9b937719b3c0370c5c1c8e1ee3aa6965a39d83",
+      "sample_id": "e83_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "54af9416d87c5ca313481e4ff38453fc7eb57d133a378d02faa105b66a2de13c",
+      "english": "A0200 is likely to continue a rightward, descending turn toward the east-northeast to evade the southbound missile threat while preserving offensive pressure from its northbound missile.",
+      "japanese": "A0200は、北進する自機のミサイルによる攻撃圧力を保ちながら南進するミサイルの脅威を回避するため、東北東に向かう右への降下旋回を続ける可能性が高い。"
+    },
+    {
+      "query_id": "a30063d4ff33170c6ff10c796c9b937719b3c0370c5c1c8e1ee3aa6965a39d83",
+      "sample_id": "e83_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "eb2f0f7ba9e8db1eef0988547afa8e42864a31019089ce166a4d84410dc636c6",
+      "english": "B0100 is likely to continue south on a relatively steady, descending attack run to press toward Team A while its previously launched missile proceeds ahead.",
+      "japanese": "B0100は、以前に発射したミサイルが前方へ進む間、チームAへ迫るため、比較的安定した降下攻撃進路で南進を続ける可能性が高い。"
+    },
+    {
+      "query_id": "a30063d4ff33170c6ff10c796c9b937719b3c0370c5c1c8e1ee3aa6965a39d83",
+      "sample_id": "e83_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "c10d52b21e5fcaf6087b3e3bc8d0b5260e1810d0307533e6b6195a84773026f9",
+      "english": "B0200 is likely to maintain a southward, descending approach alongside B0100 to sustain pressure on Team A during the ongoing reciprocal missile exchange.",
+      "japanese": "B0200は、進行中の相互のミサイルの撃ち合いでチームAへの圧力を維持するため、B0100と並んで南向きの降下接近を続ける可能性が高い。"
+    },
+    {
+      "query_id": "6e4bc34db3d2aac28cf951ed9e78ca93b3dfa5237a185c0fc8b4c1a14ec7b655",
+      "sample_id": "e83_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "74c86f25c9bfe74eb4984c958b3e798f145ae785caadf7a4406cff9e853c935b",
+      "english": "A0100 is likely seeking lateral separation or a flanking position while preserving its missile threat, turning east and then maintaining roughly level eastward flight at increasing speed.",
+      "japanese": "A0100は、自機のミサイルによる脅威を保ちながら横方向の距離または側面の位置を得ようとしている可能性が高く、東へ旋回した後、速度を上げながらほぼ水平の東向きの飛行を維持すると考えられる。"
+    },
+    {
+      "query_id": "6e4bc34db3d2aac28cf951ed9e78ca93b3dfa5237a185c0fc8b4c1a14ec7b655",
+      "sample_id": "e83_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "9baf0afe0d822c4aa2e281ca1dd6faa6707f75560587bcdee8232f2cad06015a",
+      "english": "A0200 is likely pursuing an intercept of the opposing formation, descending while accelerating and turning northeast toward the B aircraft.",
+      "japanese": "A0200は敵編隊の迎撃を図っている可能性が高く、降下しながら加速し、B機に向けて北東へ旋回すると考えられる。"
+    },
+    {
+      "query_id": "6e4bc34db3d2aac28cf951ed9e78ca93b3dfa5237a185c0fc8b4c1a14ec7b655",
+      "sample_id": "e83_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "21c92c9078d0f5522a7cc592d09a1a997f8716b1354a5c358d1bac7feb1b4396",
+      "english": "B0100 is likely maintaining an attacking or closure posture, continuing southward flight with a gradual descent and sustained speed toward the A formation.",
+      "japanese": "B0100は攻撃または接近の態勢を維持している可能性が高く、A編隊へ向けて、緩やかに降下しながら速度を維持して南向きの飛行を続けると考えられる。"
+    },
+    {
+      "query_id": "6e4bc34db3d2aac28cf951ed9e78ca93b3dfa5237a185c0fc8b4c1a14ec7b655",
+      "sample_id": "e83_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "d3032695f3e5814e97521ce7e23380d6e8a95516efcaedb90554b26b279af6b6",
+      "english": "B0200 is likely supporting the southbound engagement, continuing to close while descending and maintaining a slightly eastward track alongside B0100.",
+      "japanese": "B0200は南向きの交戦を支援している可能性が高く、B0100と並んでやや東寄りの針路を保ち、降下しながら接近を続けると考えられる。"
+    },
+    {
+      "query_id": "adf9d62862c56590556ab848508df4f83d87e8c06d226435c3116995c5f77bf1",
+      "sample_id": "e95_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "cf8a529296441ba3730ffc7fa7bcf315fa50ba237dfa07de13fa3f7a2e9fdaaf",
+      "english": "A0100 is likely to continue eastward near level flight while accelerating, maintaining a beam-like displacement from the southbound threat axis to improve survivability against opposing missiles.",
+      "japanese": "A0100は、敵ミサイルに対する生存性を高めるため、南向きの脅威軸に対してビーム機動に近い横方向の変位を保ちつつ、加速しながらほぼ水平に東進を続ける可能性が高い。"
+    },
+    {
+      "query_id": "adf9d62862c56590556ab848508df4f83d87e8c06d226435c3116995c5f77bf1",
+      "sample_id": "e95_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "de8605bf82892312ac7938b05472aa5b34890808eae96bc386121421f4fab600",
+      "english": "A0200 is likely to continue accelerating northward with a shallow descent and modest rightward maneuvering, closing the engagement while preserving an offset from the opposing formation.",
+      "japanese": "A0200は、敵編隊に対して横にずれた位置を保ちながら交戦距離を詰めるため、緩やかな降下と適度な右への機動を伴って北向きの加速を続ける可能性が高い。"
+    },
+    {
+      "query_id": "adf9d62862c56590556ab848508df4f83d87e8c06d226435c3116995c5f77bf1",
+      "sample_id": "e95_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "028cb0eb7d718fa41bbf18ab49cda3cd06216d1ca85185e3d03b620773dd63d4",
+      "english": "B0100 is likely to continue southward while reducing its descent, pressing toward Team A and supporting its existing missile engagement while retaining room for defensive maneuvering.",
+      "japanese": "B0100は、防御機動の余地を残しながらチームAへ迫り、既存のミサイル交戦を支援するため、降下を緩めながら南進を続ける可能性が高い。"
+    },
+    {
+      "query_id": "adf9d62862c56590556ab848508df4f83d87e8c06d226435c3116995c5f77bf1",
+      "sample_id": "e95_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "36da6ddd8fdb42bb4b569ff47bef7d89496bce10a6822e8e52b1231ab78d6977",
+      "english": "B0200 is likely to continue accelerating southward and gradually shallow its descent, closing toward A0200’s axis while supporting its missile and preparing to react to the approaching Team A missiles.",
+      "japanese": "B0200は、自機のミサイルを支援し、接近するチームAのミサイルへの対応に備えながらA0200の進行軸へ接近するため、南向きの加速を続け、徐々に降下を緩める可能性が高い。"
+    },
+    {
+      "query_id": "a34965acbc096d5840500134b90481843e41fb66e9d03cc48f09976e83ccecf6",
+      "sample_id": "e95_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "dd23a0adafe03a49631a7d13cf862a54b9c9132da6571afe7dbd60169fb40a3f",
+      "english": "A0100 is likely to continue eastward with a shallow descent, likely creating lateral separation from the opposing formation and associated missile threat while remaining in the engagement.",
+      "japanese": "A0100は、交戦を継続しながら敵編隊とそれに伴うミサイルの脅威から横方向の距離を取るため、緩やかに降下しつつ東進を続ける可能性が高い。"
+    },
+    {
+      "query_id": "a34965acbc096d5840500134b90481843e41fb66e9d03cc48f09976e83ccecf6",
+      "sample_id": "e95_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "e95da0947412a787b3ef8c05456ef3059a268b006a1614b8770a0a55c3e2bff4",
+      "english": "A0200 is likely to maintain its northward advance and descent toward the opposing formation, likely preserving offensive pressure while exposed to the southbound threat axis.",
+      "japanese": "A0200は、南向きの脅威軸にさらされながら攻撃圧力を保つため、敵編隊に向かう北進と降下を維持する可能性が高い。"
+    },
+    {
+      "query_id": "a34965acbc096d5840500134b90481843e41fb66e9d03cc48f09976e83ccecf6",
+      "sample_id": "e95_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "c4eedaec4b3715ccb4ee67cd838fbc0126d16d3d6df55e9da8129cfe8a60477a",
+      "english": "B0100 is likely to continue southward and descending toward Team A, likely sustaining an intercept or attack approach while its earlier missile continues ahead.",
+      "japanese": "B0100は、先に発射したミサイルが前方へ進み続ける間、迎撃または攻撃のための接近を維持するため、チームAへ向けて南進と降下を続ける可能性が高い。"
+    },
+    {
+      "query_id": "a34965acbc096d5840500134b90481843e41fb66e9d03cc48f09976e83ccecf6",
+      "sample_id": "e95_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "414744269616470e68335d23f5a04692f3c69400cfed003a80e86ce7a263893c",
+      "english": "B0200 is likely to continue southward on a parallel approach with B0100, likely closing the engagement while maintaining separation within the opposing pair.",
+      "japanese": "B0200は、敵側の2機の間隔を保ちながら交戦距離を詰めるため、B0100と平行に接近して南進を続ける可能性が高い。"
+    },
+    {
+      "query_id": "3aec2a9f53617d2223034db882c3d43497beb5ce72f885cc260a4e6302f1ce49",
+      "sample_id": "e95_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "17b362aa77265ab19980a6d1c51b7272fb99f3d52834891ede1330932c53eae3",
+      "english": "A0100 is likely trying to create an offset or flank position while preserving survival, continuing its eastward-turning, descending flight rather than pressing directly into the opposing formation.",
+      "japanese": "A0100は、生存性を保ちながら横にずれた位置または側面の位置を作ろうとしている可能性が高く、敵編隊へ直接突き進むのではなく、東へ旋回しながら降下する飛行を続けると考えられる。"
+    },
+    {
+      "query_id": "3aec2a9f53617d2223034db882c3d43497beb5ce72f885cc260a4e6302f1ce49",
+      "sample_id": "e95_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "62df2bf19ddb4349121445e3cfc8568b2e832ff8f95226eb0547a22c80742bde",
+      "english": "A0200 is likely serving as the forward interceptor, continuing a fast northward approach with gradual descent to close the engagement range against Team B.",
+      "japanese": "A0200は前方の迎撃機を務めている可能性が高く、チームBとの交戦距離を詰めるため、緩やかな降下を伴う高速の北向きの接近を続けると考えられる。"
+    },
+    {
+      "query_id": "3aec2a9f53617d2223034db882c3d43497beb5ce72f885cc260a4e6302f1ce49",
+      "sample_id": "e95_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "7e38858f5a541b3cae096aaed23771c09a4dea79190ab3500d3a1c72a622be14",
+      "english": "B0100 is likely maintaining a west-side attacking approach, continuing southward descent toward the Team A aircraft while preserving its existing converging course.",
+      "japanese": "B0100は西側からの攻撃接近を維持している可能性が高く、既存の収束する針路を保ちながら、チームA機へ向けて南向きの降下を続けると考えられる。"
+    },
+    {
+      "query_id": "3aec2a9f53617d2223034db882c3d43497beb5ce72f885cc260a4e6302f1ce49",
+      "sample_id": "e95_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "0c6aed1195938a1230d65aa0db409e167fd96f5969d7636f57d796aa16271e4e",
+      "english": "B0200 is likely the faster eastern attacker, continuing its southward descent and convergence toward Team A to reach an engagement position.",
+      "japanese": "B0200は東側のより高速な攻撃機である可能性が高く、交戦位置に到達するため、南向きの降下とチームAに向かう収束を続けると考えられる。"
+    },
+    {
+      "query_id": "2b6a6e5f750c7ac685fea39534619619c4ed5fb8b8ee87c2fb3d327369051ace",
+      "sample_id": "e95_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "c54ebd8e1c2de7e55e9895a7c312f91cea9ff40ed1a0aaeeed1aee8974cb7920",
+      "english": "A0100 is likely to maintain an accelerating eastward beam with a shallow descent to complicate the two southbound Team B missiles’ pursuit and preserve separation.",
+      "japanese": "A0100は、南進するチームBのミサイル2発による追尾を難しくし、距離を維持するため、緩やかな降下を伴って加速する東向きのビーム飛行を維持する可能性が高い。"
+    },
+    {
+      "query_id": "2b6a6e5f750c7ac685fea39534619619c4ed5fb8b8ee87c2fb3d327369051ace",
+      "sample_id": "e95_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "f21767cb0c9d334f50944940dade6136503c86334972f5a5784574791db60514",
+      "english": "A0200 is likely to accelerate northward while descending and developing a right-hand offset to sustain pressure on the approaching Team B formation without remaining purely head-on.",
+      "japanese": "A0200は、真正面を向き続けずに接近するチームB編隊への圧力を維持するため、降下しながら右への横ずれを強め、北向きに加速する可能性が高い。"
+    },
+    {
+      "query_id": "2b6a6e5f750c7ac685fea39534619619c4ed5fb8b8ee87c2fb3d327369051ace",
+      "sample_id": "e95_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "6139cc0c539181c9f99a879df15605500ac7c628512686ee8a9e830419c60162",
+      "english": "B0100 is likely to continue accelerating southward in a controlled descent to close on A0200 and maintain offensive pressure while its previously launched missile advances toward A0100.",
+      "japanese": "B0100は、以前に発射したミサイルがA0100へ向かう間、A0200との距離を詰めて攻撃圧力を維持するため、制御された降下を伴って南向きの加速を続ける可能性が高い。"
+    },
+    {
+      "query_id": "2b6a6e5f750c7ac685fea39534619619c4ed5fb8b8ee87c2fb3d327369051ace",
+      "sample_id": "e95_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "75a1bb7b906d80ed629587e2f5cbf08920f0708ce10a72e2d55abecbd2bf4e55",
+      "english": "B0200 is likely to continue its accelerating southward descent toward A0200, seeking offensive closure despite the two northbound Team A missiles approaching its sector.",
+      "japanese": "B0200は、北進するチームAのミサイル2発が自機のいる空域へ接近する中でも、攻撃のために距離を詰めようとし、A0200に向かって加速を伴う南向きの降下を続ける可能性が高い。"
+    },
+    {
+      "query_id": "6846629653f54091a873d97f81a20c3ec4d98183a2799ba022cb1c8e5bec86d7",
+      "sample_id": "e95_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "e16750a821cfd4d86b04257c32c5fe1aa88eaecdd950780e165fa97c9f5f3ff2",
+      "english": "A0100 is likely to continue eastward while accelerating and stabilizing its altitude, likely repositioning laterally from the opposing formation while preserving survivability.",
+      "japanese": "A0100は、生存性を保ちながら敵編隊に対して横方向に位置を取り直すため、加速して高度を安定させながら東進を続ける可能性が高い。"
+    },
+    {
+      "query_id": "6846629653f54091a873d97f81a20c3ec4d98183a2799ba022cb1c8e5bec86d7",
+      "sample_id": "e95_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "2f4ee5996b0ff52d308e20dbcd4c3a00cc9f2a7fc1f7aee78d0020216d23a42f",
+      "english": "A0200 is likely to keep descending and turning right from its northbound track while accelerating, likely repositioning toward a more favorable attack or separation geometry.",
+      "japanese": "A0200は、攻撃または距離確保により有利な位置関係へ移るため、加速しながら降下し、北向きの針路から右旋回を続ける可能性が高い。"
+    },
+    {
+      "query_id": "6846629653f54091a873d97f81a20c3ec4d98183a2799ba022cb1c8e5bec86d7",
+      "sample_id": "e95_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "fada0a640c7371b94c4fce77b09905d57686460ee37ee7ce107d37de8fb0fa70",
+      "english": "B0100 is likely to continue southbound toward Team A’s area while gradually recovering from its descent, likely sustaining pressure in the engagement.",
+      "japanese": "B0100は、交戦での圧力を維持するため、降下から徐々に回復しながらチームAのいる空域へ南進を続ける可能性が高い。"
+    },
+    {
+      "query_id": "6846629653f54091a873d97f81a20c3ec4d98183a2799ba022cb1c8e5bec86d7",
+      "sample_id": "e95_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "6331e770de54b12b40bdcae6f6f33facc9417d71531bc355d982cd12764a0ab3",
+      "english": "B0200 is likely to maintain a generally southbound approach while leveling its descent, likely remaining paired with B0100 to press the opposing aircraft.",
+      "japanese": "B0200は、B0100と組んだまま敵機へ迫るため、降下から水平飛行へ移りながら、おおむね南向きの接近を維持する可能性が高い。"
+    },
+    {
+      "query_id": "a91e409f5a43706590219e1af7d81ed55280d425b84aeed19527089788073e80",
+      "sample_id": "e95_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "b4ea142c1ffc57e739b038aa459689e4c964b6d7bca863721c54cd9078460d94",
+      "english": "A0100 is likely to offset eastward while stabilizing its descent, maintaining separation and supporting the already advancing missile engagement against Team B.",
+      "japanese": "A0100は、距離を保ち、すでに進行しているチームBに対するミサイル交戦を支援するため、降下を安定させながら東へ横にずれる可能性が高い。"
+    },
+    {
+      "query_id": "a91e409f5a43706590219e1af7d81ed55280d425b84aeed19527089788073e80",
+      "sample_id": "e95_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "7adeb8417195c88a02f1b4b18990ab10e3d68a08ea7ba8751cd70fec6930707e",
+      "english": "A0200 is likely to press northeast at high speed while descending, seeking a favorable approach toward the opposing formation as its missile continues forward.",
+      "japanese": "A0200は、自機のミサイルが前方へ進み続ける間、敵編隊に対する有利な接近を求め、降下しながら高速で北東へ進む可能性が高い。"
+    },
+    {
+      "query_id": "a91e409f5a43706590219e1af7d81ed55280d425b84aeed19527089788073e80",
+      "sample_id": "e95_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "4cbd238dc888edeef3af44882a287321efff19827064e021b03859806ca25ee8",
+      "english": "B0100 is likely to continue its southward, slightly westward approach while descending, seeking to close the head-on engagement with Team A under missile threat.",
+      "japanese": "B0100は、ミサイルの脅威の下でチームAとの正面交戦の距離を詰めるため、降下しながらやや西寄りの南向きの接近を続ける可能性が高い。"
+    },
+    {
+      "query_id": "a91e409f5a43706590219e1af7d81ed55280d425b84aeed19527089788073e80",
+      "sample_id": "e95_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "3e8712f281a1a296931ab2aa27f3325bc234ccee94d39b74ad81ba80eb4f3087",
+      "english": "B0200 is likely to maintain a fast southward course with limited lateral drift and continued descent, attempting to reach an attacking position against Team A.",
+      "japanese": "B0200は、チームAに対する攻撃位置へ到達するため、横方向のずれを抑え、降下を続けながら高速の南向きの針路を維持する可能性が高い。"
+    },
+    {
+      "query_id": "56c0000814c833940c0c66b24b289c18464ced0b55ff7e48e54d3254231413d6",
+      "sample_id": "e95_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "3a7399de3b8e1244c265ba5d72ccc080d05362a4673aeca6d6cfdb5234c17f3c",
+      "english": "A0100 likely maintains a fast, nearly level eastbound beam to complicate the approaching Team B missiles while preserving lateral separation and supporting its northbound weapon.",
+      "japanese": "A0100は、横方向の距離を保ち、北進する自機のミサイルを支援しながら、接近するチームBのミサイルによる攻撃を難しくするため、高速でほぼ水平な東向きのビーム飛行を維持する可能性が高い。"
+    },
+    {
+      "query_id": "56c0000814c833940c0c66b24b289c18464ced0b55ff7e48e54d3254231413d6",
+      "sample_id": "e95_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "b529fa5e628e5adc789b04898864a572aaf12634267a4eea5d66c18504c2d2e7",
+      "english": "A0200 likely sustains a hard descending right turn from north toward east to leave the head-on threat axis while its missile continues toward B0200.",
+      "japanese": "A0200は、自機のミサイルがB0200へ向かい続ける間、正面の脅威軸から離れるため、北から東に向かう急な降下右旋回を継続する可能性が高い。"
+    },
+    {
+      "query_id": "56c0000814c833940c0c66b24b289c18464ced0b55ff7e48e54d3254231413d6",
+      "sample_id": "e95_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "f39d4bbca258c5b8e2e5f81d04d7c37eefab1a57fb4e9930dc56bc2807cbfd62",
+      "english": "B0100 likely presses nearly straight south in an accelerating descent to maintain closure on Team A and support its advancing missile.",
+      "japanese": "B0100は、チームAとの接近を維持して前進する自機のミサイルを支援するため、加速を伴う降下でほぼ真南へ進み続ける可能性が高い。"
+    },
+    {
+      "query_id": "56c0000814c833940c0c66b24b289c18464ced0b55ff7e48e54d3254231413d6",
+      "sample_id": "e95_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "8c2facf4affeb425ece52982bec6e6fc7885d47cef131434305b9bdc1de5993c",
+      "english": "B0200 likely continues a fast southbound descent with only a late shallow turn, seeking lower defensive geometry against the converging Team A missiles while remaining engaged.",
+      "japanese": "B0200は、交戦を継続しながら収束してくるチームAのミサイルに対して低高度の防御的な位置関係を得るため、終盤の緩やかな旋回にとどめて高速の南向きの降下を続ける可能性が高い。"
+    },
+    {
+      "query_id": "74ec5f533006a1199e434a0383a7101de12020b14222439cf0861d60a7edc262",
+      "sample_id": "e95_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "0e8c3436eabd58d226d1dc1113fbbb942a901ba41cace0a79fb1261ae617a0e5",
+      "english": "A0100 is likely maintaining an eastbound, near-level defensive offset while remaining engaged, preserving separation as the earlier missile exchange develops.",
+      "japanese": "A0100は、先行するミサイルの撃ち合いが進む中、交戦を続けながら距離を保つため、東向きでほぼ水平な防御的な横ずれを維持している可能性が高い。"
+    },
+    {
+      "query_id": "74ec5f533006a1199e434a0383a7101de12020b14222439cf0861d60a7edc262",
+      "sample_id": "e95_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "25de2d682a0880bdaf4279e1128e683e0d7bb8b2b4ded0b22c8a505c1ab5c9ce",
+      "english": "A0200 is likely continuing a descending right turn toward an eastbound course to reposition defensively while remaining available to support Team A’s engagement.",
+      "japanese": "A0200は、チームAの交戦を支援できる状態を保ちながら防御的に位置を取り直すため、東向きの針路に向けた降下右旋回を続けている可能性が高い。"
+    },
+    {
+      "query_id": "74ec5f533006a1199e434a0383a7101de12020b14222439cf0861d60a7edc262",
+      "sample_id": "e95_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "ecaaada356781b34b8d8357b3244fc19e8f2627472804fdb95a7f6d2cdaec147",
+      "english": "B0100 is likely continuing southward and descending to press through the engagement geometry and sustain Team B’s attack while its earlier missile remains ahead.",
+      "japanese": "B0100は、先に発射したミサイルが前方にある間、交戦の位置関係の中を前進してチームBの攻撃を継続するため、南進と降下を続けている可能性が高い。"
+    },
+    {
+      "query_id": "74ec5f533006a1199e434a0383a7101de12020b14222439cf0861d60a7edc262",
+      "sample_id": "e95_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "b1e082a7fd6baf223e6c7a1c220ff2493295acea4c7578127208ceb9210354d4",
+      "english": "B0200 is likely maintaining a southbound descending run alongside B0100 to continue the opposing attack and preserve mutual support.",
+      "japanese": "B0200は、敵側の攻撃を継続し、相互支援を保つため、B0100と並んで南向きの降下進路を維持している可能性が高い。"
+    },
+    {
+      "query_id": "75a39fe1bac525b68d6085f10a5b0a6536fbbe7dd906b2977cf856565f789376",
+      "sample_id": "e95_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "94d273ace2e38120ad714ca67b12349b079c498a73e1cb45840aa8bde788a408",
+      "english": "A0100 is likely maintaining an offset flank while preserving a viable engagement position, continuing eastward at roughly steady altitude and speed as the opposing formation approaches.",
+      "japanese": "A0100は、有効な交戦位置を保ちながら横にずれた側面位置を維持している可能性が高く、敵編隊が接近する中、高度と速度をほぼ一定に保って東進を続けると考えられる。"
+    },
+    {
+      "query_id": "75a39fe1bac525b68d6085f10a5b0a6536fbbe7dd906b2977cf856565f789376",
+      "sample_id": "e95_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "a8819346e9e05c96b62f453f128695929a488f2f4977eb1e08237a54f5d61fe6",
+      "english": "A0200 is likely closing to attack the opposing formation, turning toward the engagement while descending and retaining speed to improve its approach geometry.",
+      "japanese": "A0200は敵編隊を攻撃するために接近している可能性が高く、接近の位置関係を改善するため、降下して速度を保ちながら交戦に向けて旋回すると考えられる。"
+    },
+    {
+      "query_id": "75a39fe1bac525b68d6085f10a5b0a6536fbbe7dd906b2977cf856565f789376",
+      "sample_id": "e95_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "88d273a33a219d6d9d00be858f154726aef397c83d5827ee09d7186596fd3d85",
+      "english": "B0100 is likely pressing southward to intercept or attack Team A, continuing its coordinated approach with a gradual descent while its launched missile remains in flight.",
+      "japanese": "B0100はチームAを迎撃または攻撃するために南進している可能性が高く、発射したミサイルが飛翔している間、緩やかな降下を伴う連携した接近を続けると考えられる。"
+    },
+    {
+      "query_id": "75a39fe1bac525b68d6085f10a5b0a6536fbbe7dd906b2977cf856565f789376",
+      "sample_id": "e95_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "b8a98ba735b293f15bc4df2a9265df2306c19696745f70f5072c10fca2e9c561",
+      "english": "B0200 is likely supporting the southbound attack approach, maintaining high speed and descending toward Team A while staying near B0100 and its missile's advance.",
+      "japanese": "B0200は南向きの攻撃接近を支援している可能性が高く、B0100とそのミサイルの進行の近くにとどまりながら、高速を維持してチームAへ向けて降下すると考えられる。"
+    },
+    {
+      "query_id": "c6e80cec690fe2b9ec97b297ef50b9b293a651ba4d9f0d160b5c5408c76e9a3c",
+      "sample_id": "e143_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "443404705f8ea89dbea1b793228afede83aa3d01bde5c98f7ab6280660590dd3",
+      "english": "A0100 is likely to continue accelerating east in near-level flight, extending from the engagement and possibly dragging the southeast-bound Team B missiles to improve survival.",
+      "japanese": "A0100は、交戦から離れて生存性を高めるため、ほぼ水平な飛行で東向きの加速を続ける可能性が高く、南東へ向かうチームBのミサイルを後方に引きつける意図もあり得る。"
+    },
+    {
+      "query_id": "c6e80cec690fe2b9ec97b297ef50b9b293a651ba4d9f0d160b5c5408c76e9a3c",
+      "sample_id": "e143_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "77dd0c436c094c58d1884aa7a8264c26a369884f84347a50a5bc108cd968ee2e",
+      "english": "A0200 is likely to sustain its accelerating descending right turn toward the south, opening distance from B0100 and reducing its exposure to further attack.",
+      "japanese": "A0200は、B0100から距離を取り、さらなる攻撃にさらされる度合いを減らすため、南に向かう、加速を伴う降下右旋回を継続する可能性が高い。"
+    },
+    {
+      "query_id": "c6e80cec690fe2b9ec97b297ef50b9b293a651ba4d9f0d160b5c5408c76e9a3c",
+      "sample_id": "e143_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "72755c3edac3f242cce583cdb58d454701321671fcde3a23a48f83715bd6d0a8",
+      "english": "B0100 is likely to continue its hard descending left turn toward the southeast or east, seeking lead pursuit on the withdrawing Team A aircraft while sustaining offensive pressure.",
+      "japanese": "B0100は、攻撃圧力を維持しながら離脱中のチームA機の進路前方を狙う追撃を行うため、南東または東に向かう急な降下左旋回を続ける可能性が高い。"
+    },
+    {
+      "query_id": "c6e80cec690fe2b9ec97b297ef50b9b293a651ba4d9f0d160b5c5408c76e9a3c",
+      "sample_id": "e143_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "35fdee1795d4fe72bca0f0a15fcf6c4c4aa6045855affe6430ad519ca57d50b6",
+      "english": "B0200 is inactive before the target interval and is not expected to resume tactical behavior.",
+      "japanese": "B0200は予測対象区間より前に非アクティブとなっており、戦術行動を再開するとは予想されない。"
+    },
+    {
+      "query_id": "ed9e58ca9a086d17a4d9bb3dd33df9861487e0c72ccf37f26a643ea0ec27acfd",
+      "sample_id": "e143_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "ece593381f6ce27118bca3f1ea0eaff1021ae42e2757f62da12fe45c324f7a8b",
+      "english": "A0100 is likely to maintain a fast eastbound withdrawal or repositioning track, preserving separation while remaining clear of the ongoing missile exchange.",
+      "japanese": "A0100は、進行中のミサイルの撃ち合いから離れた状態で距離を保つため、高速で東へ撤退または位置を取り直す針路を維持する可能性が高い。"
+    },
+    {
+      "query_id": "ed9e58ca9a086d17a4d9bb3dd33df9861487e0c72ccf37f26a643ea0ec27acfd",
+      "sample_id": "e143_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "b70a80a87405f6ddd1078922062ed81b9c27f0e7ee36daf40b1d8c2cc2dc7f63",
+      "english": "A0200 is likely to continue its descending right-hand turn toward the southeast to evade threats and open distance after the engagement.",
+      "japanese": "A0200は、交戦後に脅威を回避して距離を広げるため、南東に向かう降下右旋回を続ける可能性が高い。"
+    },
+    {
+      "query_id": "ed9e58ca9a086d17a4d9bb3dd33df9861487e0c72ccf37f26a643ea0ec27acfd",
+      "sample_id": "e143_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "856e708699c63e0bf9f86a9b423b50c0df4f4bc502c5aea77ee3eb77d874625a",
+      "english": "B0100 is likely to continue a hard descending turn toward the east or southeast to survive and evade the opposing aircraft’s missiles.",
+      "japanese": "B0100は、生存して敵機のミサイルを回避するため、東または南東に向かう急な降下旋回を続ける可能性が高い。"
+    },
+    {
+      "query_id": "ed9e58ca9a086d17a4d9bb3dd33df9861487e0c72ccf37f26a643ea0ec27acfd",
+      "sample_id": "e143_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "18fc7eabe736a7dd12e61bd82cbc22bad7462eb91d02d938c0ef847691658d4a",
+      "english": "B0200 is inactive throughout the target interval and has no subsequent active tactical behavior.",
+      "japanese": "B0200は対象区間全体を通じて非アクティブであり、それ以降の能動的な戦術行動はない。"
+    },
+    {
+      "query_id": "b093d4449f34152488a99fa7b766fc1cde80206b790ee02093892306331e70f2",
+      "sample_id": "e143_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "bffe810076cfa608fd2b05fa79c9adaaf70e0143d797c0f65f687fe2c9e22497",
+      "english": "A0100 is likely to provide high-altitude standoff coverage, continuing an accelerating, nearly level eastbound course while remaining separated from the close engagement.",
+      "japanese": "A0100は、高高度から距離を取って援護するため、近距離交戦から離れたまま、加速を伴うほぼ水平な東向きの針路を維持する可能性が高い。"
+    },
+    {
+      "query_id": "b093d4449f34152488a99fa7b766fc1cde80206b790ee02093892306331e70f2",
+      "sample_id": "e143_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "bb76b82b41ccde618dfcd49b38104c82989781094a234a704cdd0e33ad2d2153",
+      "english": "A0200 is likely to pursue the opposing formation, continuing its descending right turn and eastward repositioning to close or obtain a firing opportunity.",
+      "japanese": "A0200は、接近または射撃機会を得るため、降下右旋回と東への位置変更を続け、敵編隊を追撃する可能性が高い。"
+    },
+    {
+      "query_id": "b093d4449f34152488a99fa7b766fc1cde80206b790ee02093892306331e70f2",
+      "sample_id": "e143_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "0a100164080290781f07524cf8ec6200668e93c685b1662cd3958fff30fdc264",
+      "english": "B0100 is likely to survive and evade, continuing a hard turning, descending maneuver while departing southwest from the engagement area.",
+      "japanese": "B0100は、生存して回避するため、交戦空域から南西へ離脱しながら急な旋回と降下を伴う機動を続ける可能性が高い。"
+    },
+    {
+      "query_id": "b093d4449f34152488a99fa7b766fc1cde80206b790ee02093892306331e70f2",
+      "sample_id": "e143_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "3942af2d11131178bea4ef0750d3d269b175e0e32089765ca19e4ca43e92af91",
+      "english": "B0200 is inactive during the target interval and has no subsequent active tactical behavior.",
+      "japanese": "B0200は対象区間中に非アクティブであり、それ以降の能動的な戦術行動はない。"
+    },
+    {
+      "query_id": "38ac1bef3e1d8351fae2c6dd8f972a25e723bb855df49e64491e36944e195944",
+      "sample_id": "e143_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "89e114ab219cf456caed9969edee3426a9114205e7263d17f443dfa865c9118d",
+      "english": "A0100 is likely to accelerate eastward near level flight, extending laterally from B0100 and the apparent missile threat to preserve survivability and future engagement options.",
+      "japanese": "A0100は、生存性と将来の交戦の選択肢を保つため、B0100とミサイルによるものと見られる脅威から横方向に離れ、ほぼ水平な飛行で東向きに加速する可能性が高い。"
+    },
+    {
+      "query_id": "38ac1bef3e1d8351fae2c6dd8f972a25e723bb855df49e64491e36944e195944",
+      "sample_id": "e143_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "4d819c367f8a6c582635daa1df3d3ce0bc7875fed2fb6b1eb04e3428184bc43d",
+      "english": "A0200 is likely to continue descending while easing its hard turn onto an east-southeasterly track, seeking lateral separation from B0100 while remaining positioned to re-engage.",
+      "japanese": "A0200は、再交戦できる位置を保ちながらB0100との横方向の距離を取るため、急旋回を緩めて東南東の針路に乗りつつ降下を続ける可能性が高い。"
+    },
+    {
+      "query_id": "38ac1bef3e1d8351fae2c6dd8f972a25e723bb855df49e64491e36944e195944",
+      "sample_id": "e143_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "3b7a3d41019fa60653a785efc4a1134de0daa07c26e4e71cb3b6fadf9c977dfc",
+      "english": "B0100 is likely to continue its descending turn toward the south-southeast, aligning with A0200’s path to close the engagement while maintaining pressure on Team A.",
+      "japanese": "B0100は、チームAへの圧力を維持しながら交戦距離を詰めるため、A0200の進路に合わせて南南東に向かう降下旋回を続ける可能性が高い。"
+    },
+    {
+      "query_id": "38ac1bef3e1d8351fae2c6dd8f972a25e723bb855df49e64491e36944e195944",
+      "sample_id": "e143_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "be4e8e65e68e0dda09dd2d7a0ec86210ce14d63aa616b04208846c661e610de3",
+      "english": "B0200 remains inactive throughout the interval and has no further tactical behavior.",
+      "japanese": "B0200は区間全体を通じて非アクティブのままであり、それ以降の戦術行動はない。"
+    },
+    {
+      "query_id": "4fc795be8545e3b494d2011f61ff21049dcd402d440c1d24b35dc3406ecfd055",
+      "sample_id": "e143_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "346242bf9b03d7815effaee88f507b632d8e7d32b898f967a7a1786ce1b0f5dd",
+      "english": "A0100 is likely to maintain its fast eastward separation, preserving altitude while accelerating to reduce exposure to the approaching Team B missiles.",
+      "japanese": "A0100は、接近するチームBのミサイルにさらされる度合いを減らすため、高度を維持して加速しながら、高速で東へ離れ続ける可能性が高い。"
+    },
+    {
+      "query_id": "4fc795be8545e3b494d2011f61ff21049dcd402d440c1d24b35dc3406ecfd055",
+      "sample_id": "e143_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "028d3d970a12c266b411ee98ce9fe0ec9ba766951e251cad0a032472c5487b39",
+      "english": "A0200 is likely to continue descending and begin easing its turn left while accelerating, seeking a safer repositioning against the remaining Team B threat.",
+      "japanese": "A0200は、残存するチームBの脅威に対してより安全な位置を取り直すため、降下を続け、加速しながら旋回を左へ緩め始める可能性が高い。"
+    },
+    {
+      "query_id": "4fc795be8545e3b494d2011f61ff21049dcd402d440c1d24b35dc3406ecfd055",
+      "sample_id": "e143_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "30ead1a35f30231dba1a802e2dd8e11b42db1721cabd4f5684fd6eef7270e015",
+      "english": "B0100 is likely to continue its descending turn toward the Team A aircraft, attempting to regain an attacking geometry while its previously launched missile remains in flight.",
+      "japanese": "B0100は、以前に発射したミサイルが飛翔している間に攻撃の位置関係を取り戻すため、チームA機に向かう降下旋回を続ける可能性が高い。"
+    },
+    {
+      "query_id": "4fc795be8545e3b494d2011f61ff21049dcd402d440c1d24b35dc3406ecfd055",
+      "sample_id": "e143_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "18fc7eabe736a7dd12e61bd82cbc22bad7462eb91d02d938c0ef847691658d4a",
+      "english": "B0200 is inactive throughout the target interval and has no subsequent active tactical behavior.",
+      "japanese": "B0200は対象区間全体を通じて非アクティブであり、それ以降の能動的な戦術行動はない。"
+    },
+    {
+      "query_id": "66c6c40cb599424d41cbf3da68594574b9ea25016bf3e537b3dca86d9ee33aaa",
+      "sample_id": "e143_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "0d8180d0e061bdc73588afb94fcb437aaaa75f1b07be686cd1dff989d571d39d",
+      "english": "A0100 is likely maintaining a high-altitude attack or overwatch position, continuing eastward at increasing speed with altitude held while preserving separation from the opposing formation.",
+      "japanese": "A0100は高高度の攻撃または監視援護の位置を維持している可能性が高く、敵編隊との距離を保ちながら、高度を維持して速度を上げつつ東進を続けると考えられる。"
+    },
+    {
+      "query_id": "66c6c40cb599424d41cbf3da68594574b9ea25016bf3e537b3dca86d9ee33aaa",
+      "sample_id": "e143_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "62088e22dc231563e52e7b703b1e8f6155ceece85fd6f233f6f8bd0fa4f0629c",
+      "english": "A0200 is likely maneuvering to reposition for an engagement, continuing a high-speed descent through a broad turn and beginning to adjust its turn direction near the interval boundary.",
+      "japanese": "A0200は交戦のために位置を取り直す機動を行っている可能性が高く、大きな旋回を通じて高速の降下を続け、区間の境界付近で旋回方向の調整を始めると考えられる。"
+    },
+    {
+      "query_id": "66c6c40cb599424d41cbf3da68594574b9ea25016bf3e537b3dca86d9ee33aaa",
+      "sample_id": "e143_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "1dd115272804b78a7ebc86f1b983ac771c2463cb15ea167b3c9d865f47407698",
+      "english": "B0100 is likely trying to survive and improve its engagement geometry, continuing southward while executing a pronounced banking turn that carries it toward the opposing aircraft.",
+      "japanese": "B0100は生存して交戦の位置関係を改善しようとしている可能性が高く、敵機に向かう大きなバンク旋回を行いながら南進を続けると考えられる。"
+    },
+    {
+      "query_id": "66c6c40cb599424d41cbf3da68594574b9ea25016bf3e537b3dca86d9ee33aaa",
+      "sample_id": "e143_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "3feea6074083d803320a784005d042113edfe6bac06896a707ccbc49fe0c8ca6",
+      "english": "B0200 is inactive throughout the target interval and therefore has no subsequent tactical behavior to infer.",
+      "japanese": "B0200は対象区間全体を通じて非アクティブであるため、それ以降に推測できる戦術行動はない。"
+    },
+    {
+      "query_id": "340fb59f30d8db7c0cdfee5df28218da6ccc69a6d9367f86b5b87c64b4ec9148",
+      "sample_id": "e143_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "caf0cea5e82c008e3bea037e84685de1c32d55e5fab0511a3f62a6baedb91049",
+      "english": "A0100 likely accelerates steadily east at near-level altitude to extend from the engagement and improve survivability.",
+      "japanese": "A0100は、交戦から離れて生存性を高めるため、高度をほぼ一定に保ちながら東向きに着実に加速する可能性が高い。"
+    },
+    {
+      "query_id": "340fb59f30d8db7c0cdfee5df28218da6ccc69a6d9367f86b5b87c64b4ec9148",
+      "sample_id": "e143_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "14d100fbedc4b08834ceb60e025178832f2970672182c5562cca0cebe857551f",
+      "english": "A0200 likely continues an accelerating, steep descending east-southeast weave to complicate interception by nearby Team B missiles and gain separation.",
+      "japanese": "A0200は、近くのチームBのミサイルによる迎撃を難しくし、距離を取るため、加速と急降下を伴う東南東への蛇行を続ける可能性が高い。"
+    },
+    {
+      "query_id": "340fb59f30d8db7c0cdfee5df28218da6ccc69a6d9367f86b5b87c64b4ec9148",
+      "sample_id": "e143_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "7329d1204327611d976d0f0cdd3c39637f3eb71388e6bb1747ff9df4e9428c52",
+      "english": "B0100 likely continues a descending, banked south-southeast pursuit to maintain pressure on A0200 and preserve favorable engagement geometry.",
+      "japanese": "B0100は、A0200への圧力を維持し、有利な交戦の位置関係を保つため、バンクを伴って降下しながら南南東への追撃を続ける可能性が高い。"
+    },
+    {
+      "query_id": "340fb59f30d8db7c0cdfee5df28218da6ccc69a6d9367f86b5b87c64b4ec9148",
+      "sample_id": "e143_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "34ef52a87e1d6ea07699a3be1bd7e23ea58dc6018aef1f9603e0ad354ef96780",
+      "english": "B0200 remains inactive throughout the interval and undertakes no further tactical behavior.",
+      "japanese": "B0200は区間全体を通じて非アクティブのままであり、それ以降の戦術行動は行わない。"
+    },
+    {
+      "query_id": "91afc80af2ac9d9004b0a1451ada95b04fc637b90312d14e07fa64964f70e91b",
+      "sample_id": "e143_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "5b651215ba093834ee4c50c5253035e2bb6280224f4e2ef8d6b86dd7e4007330",
+      "english": "A0100 is likely to accelerate eastward at roughly level altitude to extend separation from the opposing formation and apparent B-missile pressure.",
+      "japanese": "A0100は、敵編隊とBのミサイルによるものと見られる圧力からの距離を広げるため、高度をほぼ一定に保って東向きに加速する可能性が高い。"
+    },
+    {
+      "query_id": "91afc80af2ac9d9004b0a1451ada95b04fc637b90312d14e07fa64964f70e91b",
+      "sample_id": "e143_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "a9a3ec019fbb8e1c5faae4a65fcdd4d5d03e134475eadd78993584439c8c74bb",
+      "english": "A0200 is likely to continue a low, descending eastward turn to evade threat and open distance from B0100 while remaining with A0100's withdrawal.",
+      "japanese": "A0200は、A0100の撤退に同行しつつ、脅威を回避してB0100との距離を広げるため、低高度で降下を伴う東向きの旋回を続ける可能性が高い。"
+    },
+    {
+      "query_id": "91afc80af2ac9d9004b0a1451ada95b04fc637b90312d14e07fa64964f70e91b",
+      "sample_id": "e143_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "b084b7260a91944b3e51add4bc9d1a13f3dfb64674ef959057d3ccaf2552ca1f",
+      "english": "B0100 is likely to keep descending and maneuvering southeast to preserve a pursuit or engagement position against the departing A aircraft, particularly A0200.",
+      "japanese": "B0100は、離脱するA機、特にA0200に対する追撃または交戦の位置を保つため、降下と南東への機動を続ける可能性が高い。"
+    },
+    {
+      "query_id": "91afc80af2ac9d9004b0a1451ada95b04fc637b90312d14e07fa64964f70e91b",
+      "sample_id": "e143_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "2f5171116381cc5185e429178a7c32f164ec25fad70a642e3bb7f1d31e6e8ec9",
+      "english": "B0200 is inactive throughout the target interval and has no subsequent active tactical behavior recorded.",
+      "japanese": "B0200は対象区間全体を通じて非アクティブであり、それ以降の能動的な戦術行動は記録されていない。"
+    },
+    {
+      "query_id": "d1fa250fe2de2c5a2de2a9d1c2eb2482be0312e616c48e537cb34c76e5de4fbc",
+      "sample_id": "e143_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "be4f5dd3b493bf88af1cfe0cf01e9522cab2fdb1d106639f280e66f618b8687a",
+      "english": "A0100 is likely maintaining a high-speed standoff or flanking position, continuing nearly level eastward flight while accelerating rather than turning into the lower engagement.",
+      "japanese": "A0100は高速で距離を取った位置または側面位置を維持している可能性が高く、低高度の交戦へ旋回するのではなく、加速しながらほぼ水平の東向きの飛行を続けると考えられる。"
+    },
+    {
+      "query_id": "d1fa250fe2de2c5a2de2a9d1c2eb2482be0312e616c48e537cb34c76e5de4fbc",
+      "sample_id": "e143_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "5e848f17068365bb74dc8e82dfb2280fb4b89321bedf08717e525705d0f56e4b",
+      "english": "A0200 is likely repositioning aggressively toward the opposing formation, descending and turning while accelerating to create a lower-angle attack or evasive geometry.",
+      "japanese": "A0200は敵編隊に向けて積極的に位置を取り直している可能性が高く、より低い角度から攻撃または回避できる位置関係を作るため、加速しながら降下して旋回すると考えられる。"
+    },
+    {
+      "query_id": "d1fa250fe2de2c5a2de2a9d1c2eb2482be0312e616c48e537cb34c76e5de4fbc",
+      "sample_id": "e143_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "a22b73ab6ef5adc248749d5e3d02fa62e4febe11994fa3b4f928f3480f013e14",
+      "english": "B0100 is likely pursuing an engagement with Team A, continuing a descending southward turn that brings it toward the opposing aircraft while its missile remains in flight.",
+      "japanese": "B0100はチームAとの交戦を図っている可能性が高く、自機のミサイルが飛翔している間、敵機に向かう、降下を伴う南向きの旋回を続けると考えられる。"
+    },
+    {
+      "query_id": "d1fa250fe2de2c5a2de2a9d1c2eb2482be0312e616c48e537cb34c76e5de4fbc",
+      "sample_id": "e143_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "3feea6074083d803320a784005d042113edfe6bac06896a707ccbc49fe0c8ca6",
+      "english": "B0200 is inactive throughout the target interval and therefore has no subsequent tactical behavior to infer.",
+      "japanese": "B0200は対象区間全体を通じて非アクティブであるため、それ以降に推測できる戦術行動はない。"
+    },
+    {
+      "query_id": "1f39b6b489478d894a1f1304312bb5625e746f11848600740c85c8056d2b57b6",
+      "sample_id": "e243_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "8cee574e52691a9db05ed7eac01c50b435d6bff048f6e0752fb773554d7a9c40",
+      "english": "A0100 is likely to continue a fast, nearly level eastward extension to preserve separation from B0100 and create safer re-engagement spacing.",
+      "japanese": "A0100は、B0100との距離を維持し、より安全に再交戦できる間隔を作るため、高速でほぼ水平に東へ離脱を続ける可能性が高い。"
+    },
+    {
+      "query_id": "1f39b6b489478d894a1f1304312bb5625e746f11848600740c85c8056d2b57b6",
+      "sample_id": "e243_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "29db2058e5732eec40b7ad920f0bbf7679480b9e6ddbf10485cc52a08e2a4ef3",
+      "english": "A0200 is likely to continue a hard, weaving low-altitude turn while extending east to complicate the trailing missile’s intercept and survive the engagement.",
+      "japanese": "A0200は、後方から追うミサイルによる迎撃を難しくし、交戦を生き残るため、東へ離れながら、低高度で急な蛇行旋回を続ける可能性が高い。"
+    },
+    {
+      "query_id": "1f39b6b489478d894a1f1304312bb5625e746f11848600740c85c8056d2b57b6",
+      "sample_id": "e243_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "445ffb2d04217068fad6f4c5e4632962031f26ddd44c9438de25aa003f626472",
+      "english": "B0100 is likely to continue east-southeast pursuit with a gradual descent, trying to maintain pressure on A0200 and close despite having no recorded missiles remaining.",
+      "japanese": "B0100は、記録上はミサイルが残っていないにもかかわらず、A0200への圧力を維持して距離を詰めようとし、緩やかな降下を伴う東南東への追撃を続ける可能性が高い。"
+    },
+    {
+      "query_id": "1f39b6b489478d894a1f1304312bb5625e746f11848600740c85c8056d2b57b6",
+      "sample_id": "e243_n-01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "d6ff3633db9179f8ffcacb094e4bd12174f77e8d7a8212d69ac5ce9217e0ad39",
+      "english": "B0200 remains inactive throughout the interval and has no plausible active tactical purpose or behavior.",
+      "japanese": "B0200は区間全体を通じて非アクティブのままであり、能動的な戦術目的や行動は考えにくい。"
+    },
+    {
+      "query_id": "ee56abf6d3e3d0ef3fe84ba79fbabf951e5cb089f2b66e5916f2ee7cd825d816",
+      "sample_id": "e243_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "2951843e354bc403c52ff8e1a1a99768c01bd5906fd1125c362912ca0b8745c4",
+      "english": "A0100 is likely to continue fast, nearly level eastbound flight to preserve separation and survivability while remaining available to re-engage.",
+      "japanese": "A0100は、再交戦できる状態を保ちながら距離と生存性を維持するため、高速でほぼ水平な東向きの飛行を続ける可能性が高い。"
+    },
+    {
+      "query_id": "ee56abf6d3e3d0ef3fe84ba79fbabf951e5cb089f2b66e5916f2ee7cd825d816",
+      "sample_id": "e243_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "2b05ee762fac2d2d28559ed26cfdc8117be45c9873076ac88a0e47ce8a497b3c",
+      "english": "A0200 is likely to sustain its accelerating turning maneuver toward an easterly escape or repositioning path, likely prioritizing separation from the nearby opposing aircraft and missile threat.",
+      "japanese": "A0200は、近くの敵機とミサイルの脅威から距離を取ることを優先し、東向きの離脱または位置を取り直す進路に向けて、加速を伴う旋回機動を継続する可能性が高い。"
+    },
+    {
+      "query_id": "ee56abf6d3e3d0ef3fe84ba79fbabf951e5cb089f2b66e5916f2ee7cd825d816",
+      "sample_id": "e243_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "f36b0131eab67c9a34c1dc86de2fbb568ae0bb198fe65eda0b807d017248e547",
+      "english": "B0100 is likely to continue its southeasterly descending pursuit geometry toward the Team A formation, seeking to close despite having no recorded missiles remaining.",
+      "japanese": "B0100は、記録上はミサイルが残っていないにもかかわらず距離を詰めようとし、チームA編隊に対する南東向きの降下追撃の位置関係を維持する可能性が高い。"
+    },
+    {
+      "query_id": "ee56abf6d3e3d0ef3fe84ba79fbabf951e5cb089f2b66e5916f2ee7cd825d816",
+      "sample_id": "e243_n-01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "d861204b5e8f985e676c61b0d45bd60b6ec6a3563ed112e48cfa2f1e68da609c",
+      "english": "B0200 is inactive throughout the target interval and has no subsequent tactical behavior to assign.",
+      "japanese": "B0200は対象区間全体を通じて非アクティブであり、それ以降に割り当てられる戦術行動はない。"
+    },
+    {
+      "query_id": "6e868c3db4b4b1b27e38f936789d9be3811ad99b4ef857eb7375312739a9ab2a",
+      "sample_id": "e243_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "369c9d6b272136d0dce806f211fcd54651bccd588269060a8512a6e999d0a6b2",
+      "english": "A0100 is likely maintaining a high-altitude, high-speed eastward attack or transit while preserving separation from B0100, continuing essentially straight with a slight climb or level profile.",
+      "japanese": "A0100は、B0100との距離を保ちながら高高度・高速で東向きの攻撃または移動を維持している可能性が高く、わずかな上昇または水平飛行でほぼ直進を続けると考えられる。"
+    },
+    {
+      "query_id": "6e868c3db4b4b1b27e38f936789d9be3811ad99b4ef857eb7375312739a9ab2a",
+      "sample_id": "e243_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "219a27a2f659110b58493b0dcef665c92c18469805706a151cae70c94571acb6",
+      "english": "A0200 is likely repositioning defensively at lower altitude, continuing its fast east-northeast turn and controlled descent to create separation from B0100 and nearby missile threats.",
+      "japanese": "A0200は低高度で防御的に位置を取り直している可能性が高く、B0100と近くのミサイルの脅威から距離を取るため、高速の東北東への旋回と制御された降下を続けると考えられる。"
+    },
+    {
+      "query_id": "6e868c3db4b4b1b27e38f936789d9be3811ad99b4ef857eb7375312739a9ab2a",
+      "sample_id": "e243_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "eca3a2fb098772454fd0157fdf0ecd0561062f1ce3a1f52f1941e55a46a838de",
+      "english": "B0100 is likely pursuing an intercept of the Team A formation, continuing southeastward at roughly 4 km altitude while descending and closing toward A0100's track.",
+      "japanese": "B0100はチームA編隊の迎撃を図っている可能性が高く、高度約4kmで南東へ進みながら降下し、A0100の進路へ接近すると考えられる。"
+    },
+    {
+      "query_id": "6e868c3db4b4b1b27e38f936789d9be3811ad99b4ef857eb7375312739a9ab2a",
+      "sample_id": "e243_n-01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "5a73608f0c6d4ac18e00545de7bd3144c29e8002773fcbd50a2e5ae7332e0c50",
+      "english": "B0200 is inactive, so no further tactical behavior can be inferred during the target interval.",
+      "japanese": "B0200は非アクティブであるため、対象区間中のそれ以上の戦術行動は推測できない。"
+    },
+    {
+      "query_id": "176af27f3813e8fdf51af16c1aec23d3158a43528620926a3a91729c1226ace3",
+      "sample_id": "e243_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "f4162d70a51cfdc38aeab7d9c85f4cbe53b06b71b2141412966c8c78893feb6c",
+      "english": "A0100 is likely to continue a strong left turn from its eastbound course, seeking a safer reversal that can also bring the remaining opponent back toward engagement geometry.",
+      "japanese": "A0100は、残る敵を再び交戦に適した位置関係に捉えることもできる、より安全な反転を目指し、東向きの針路から強い左旋回を続ける可能性が高い。"
+    },
+    {
+      "query_id": "176af27f3813e8fdf51af16c1aec23d3158a43528620926a3a91729c1226ace3",
+      "sample_id": "e243_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "b4fd4519ca117a5268099fa01dc7f8c9cfe08614a9e30186586bbb6ef5d53004",
+      "english": "A0200 is likely to sustain a hard right defensive turn near its current altitude, attempting to spoil the approaching B01001 missile and complicate B0100’s pursuit.",
+      "japanese": "A0200は、接近するB01001ミサイルの迎撃を妨げ、B0100による追撃を難しくするため、現在の高度付近で急な防御右旋回を継続する可能性が高い。"
+    },
+    {
+      "query_id": "176af27f3813e8fdf51af16c1aec23d3158a43528620926a3a91729c1226ace3",
+      "sample_id": "e243_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "55567584948beae7f5f6031f967269e3be134809e77b46db5328417213bce47e",
+      "english": "B0100 is likely to continue east-southeast while descending toward A0200’s altitude, trying to maintain pursuit geometry despite having no recorded missiles remaining.",
+      "japanese": "B0100は、記録上はミサイルが残っていないにもかかわらず、追撃の位置関係を維持しようとし、A0200の高度へ向けて降下しながら東南東へ進み続ける可能性が高い。"
+    },
+    {
+      "query_id": "176af27f3813e8fdf51af16c1aec23d3158a43528620926a3a91729c1226ace3",
+      "sample_id": "e243_n+01",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "d6b27a903f29d7b34a1df5cebf08f191e8d1620e63b902cd37f125aaf0260210",
+      "english": "B0200 remains inactive throughout the interval and has no plausible active tactical purpose or course of behavior.",
+      "japanese": "B0200は区間全体を通じて非アクティブのままであり、能動的な戦術目的や一連の行動は考えにくい。"
+    },
+    {
+      "query_id": "cd70fa56fde4fe6500678c9251fbf5e90264a1afe99cf28e6b3d43022fe53b5e",
+      "sample_id": "e243_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "b5848f1bcfcfdecf60cf8fa8181668b92c6e0d7bc189a7e7ba7e3b371979250b",
+      "english": "A0100 is likely to begin a leftward, accelerating turn toward the northeast to maintain separation from B0100 and remain positioned to support A0200.",
+      "japanese": "A0100は、B0100との距離を保ち、A0200を支援できる位置にとどまるため、北東に向かう、加速を伴う左旋回を始める可能性が高い。"
+    },
+    {
+      "query_id": "cd70fa56fde4fe6500678c9251fbf5e90264a1afe99cf28e6b3d43022fe53b5e",
+      "sample_id": "e243_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "003e336b4602746220ebbebe3258521e55874101126567d832e96547d3062e46",
+      "english": "A0200 is likely to continue its fast northeastward turn and acceleration, plausibly attempting to evade the nearby B0100 missile while opening distance from B0100.",
+      "japanese": "A0200は、高速で北東への旋回と加速を続ける可能性が高く、その目的として、B0100との距離を広げながら近くのB0100のミサイルを回避することが考えられる。"
+    },
+    {
+      "query_id": "cd70fa56fde4fe6500678c9251fbf5e90264a1afe99cf28e6b3d43022fe53b5e",
+      "sample_id": "e243_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "3d78586828a3dd2a3307f150db2f109693715aa91b6dd66d2bb5aa5237c87119",
+      "english": "B0100 is likely to continue east-southeast while descending and separating from the A aircraft, with its remaining recorded missile plausibly continuing pursuit of A0200.",
+      "japanese": "B0100は、降下してA機から離れながら東南東へ進み続ける可能性が高く、記録上残っている自機のミサイルがA0200への追尾を続けることも考えられる。"
+    },
+    {
+      "query_id": "cd70fa56fde4fe6500678c9251fbf5e90264a1afe99cf28e6b3d43022fe53b5e",
+      "sample_id": "e243_n+01",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "52b53acd9f6ca783863a68ce549f3a3163cc338b3d801ac9a8c213a68141dc33",
+      "english": "B0200 is inactive throughout the target interval and has no subsequent tactical behavior recorded.",
+      "japanese": "B0200は対象区間全体を通じて非アクティブであり、それ以降の戦術行動は記録されていない。"
+    },
+    {
+      "query_id": "5e6b840b39520aef2d288ba61b5913f2126160afb9aaad1a59a94e7e0ead7ac6",
+      "sample_id": "e243_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "ed200eb1d8b76f5c087506881874b1aecce43a9a2da96bf5803d90de77f3aabc",
+      "english": "A0100 is likely providing high-altitude cover while avoiding a close engagement, continuing an eastward flight with a leftward turn and modest speed reduction.",
+      "japanese": "A0100は、近距離交戦を避けながら高高度から援護している可能性が高く、左旋回と適度な減速を伴って東向きの飛行を続けると考えられる。"
+    },
+    {
+      "query_id": "5e6b840b39520aef2d288ba61b5913f2126160afb9aaad1a59a94e7e0ead7ac6",
+      "sample_id": "e243_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "2e7acf8c1de1cd55f993a67a1ee7e8326c6165d82cfccb57ad4d7e1496a4364b",
+      "english": "A0200 is likely seeking an attack position on B0100, continuing a low-altitude rightward repositioning across its path while reducing speed.",
+      "japanese": "A0200はB0100に対する攻撃位置を求めている可能性が高く、速度を落としながら、その進路を横切る低高度での右への位置変更を続けると考えられる。"
+    },
+    {
+      "query_id": "5e6b840b39520aef2d288ba61b5913f2126160afb9aaad1a59a94e7e0ead7ac6",
+      "sample_id": "e243_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "612284eb3a87ebae8967db5117c35e8988781becd8fa39902e9857808db2d5c1",
+      "english": "B0100 is likely trying to survive and disengage, continuing southeast at roughly constant speed with a gradual descent while its remaining missile proceeds independently.",
+      "japanese": "B0100は生存して交戦を離脱しようとしている可能性が高く、残る自機のミサイルが独立して進む間、速度をほぼ一定に保ち、緩やかに降下しながら南東へ進み続けると考えられる。"
+    },
+    {
+      "query_id": "5e6b840b39520aef2d288ba61b5913f2126160afb9aaad1a59a94e7e0ead7ac6",
+      "sample_id": "e243_n+01",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "4d02457bfa81aea59318a18de195287e7f8a835368806af963d214344c9a7afc",
+      "english": "B0200 is inactive throughout the target interval, so no subsequent tactical behavior can be inferred.",
+      "japanese": "B0200は対象区間全体を通じて非アクティブであるため、それ以降の戦術行動は推測できない。"
+    },
+    {
+      "query_id": "f2f1a630a1b6725a757a5bf336757564fff19ef3f6d1300275fd081145446218",
+      "sample_id": "e243_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0100",
+      "source_sha256": "53294aca850adcd7c5e7c4a43c6212af81cb852dcd88aade8f6d97c93b4fd78e",
+      "english": "A0100 likely made a sustained left-hand reversal with a modest descent, arcing from east toward north to reposition against the remaining opponent while preserving separation and altitude advantage.",
+      "japanese": "A0100は、距離と高度優位を保ちながら残る敵に対して位置を取り直すため、東から北へ弧を描く、緩やかな降下を伴う左反転を継続した可能性が高い。"
+    },
+    {
+      "query_id": "f2f1a630a1b6725a757a5bf336757564fff19ef3f6d1300275fd081145446218",
+      "sample_id": "e243_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "A0200",
+      "source_sha256": "2b5068bcbbf627ac763fe0353cd73255c96b2d4e45575f5ca6d26f60eccb007e",
+      "english": "A0200 likely extended rapidly east-northeast with repeated banking corrections and a gradual descent, seeking to stay ahead of B0100 and complicate the likely approach of B01001.",
+      "japanese": "A0200は、B0100の前方にとどまり、B01001が接近してくると見られる進路を取りにくくするため、バンクの修正を繰り返しながら緩やかに降下し、高速で東北東へ離脱した可能性が高い。"
+    },
+    {
+      "query_id": "f2f1a630a1b6725a757a5bf336757564fff19ef3f6d1300275fd081145446218",
+      "sample_id": "e243_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0100",
+      "source_sha256": "5b81f8516a920cd3abb00992b8bf2678bed9509c271bd19f8ade34afe0c7d952",
+      "english": "B0100 likely pursued A0200 eastward, turning toward an easterly course and reducing its descent to improve lateral and altitude alignment while maintaining pressure.",
+      "japanese": "B0100は、圧力を維持しながら横方向と高度のずれを小さくするため、東向きの針路へ旋回して降下を緩め、A0200を東へ追撃した可能性が高い。"
+    },
+    {
+      "query_id": "f2f1a630a1b6725a757a5bf336757564fff19ef3f6d1300275fd081145446218",
+      "sample_id": "e243_n+30",
+      "model": "gpt-5.6-sol",
+      "aircraft_id": "B0200",
+      "source_sha256": "0e9c54e76ff4dfaf940e4089f3d3872f056c5ea03d846140026a5fe226ec937d",
+      "english": "B0200 remained inactive throughout the interval and therefore had no active tactical purpose or course of behavior.",
+      "japanese": "B0200は区間全体を通じて非アクティブのままであったため、能動的な戦術目的や一連の行動はなかった。"
+    },
+    {
+      "query_id": "23dd9a52814760b232d0ff6e9cb70668449df53f8ab60b89500559d37e9253ca",
+      "sample_id": "e243_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0100",
+      "source_sha256": "73b2c0539500ec5d107b2a1f77ad44e61e52117e3b87c4a60a23e22b9fc2a6df",
+      "english": "A0100 is likely executing a hard left, descending turn to reverse toward the surviving opponent and regain a more favorable engagement position.",
+      "japanese": "A0100は、生き残った敵に向けて反転し、より有利な交戦位置を取り戻すため、急な左への降下旋回を行っている可能性が高い。"
+    },
+    {
+      "query_id": "23dd9a52814760b232d0ff6e9cb70668449df53f8ab60b89500559d37e9253ca",
+      "sample_id": "e243_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "A0200",
+      "source_sha256": "f472e0f7096b8702c590fa8c87f82f532cf4c06504861c4bbbb63557ec97cd63",
+      "english": "A0200 is likely maintaining a maneuvering northeastward descent to evade pressure from B0100’s likely pursuing missile while preserving separation.",
+      "japanese": "A0200は、距離を維持しながら、追尾していると見られるB0100のミサイルからの圧力を回避するため、機動を伴う北東向きの降下を続けている可能性が高い。"
+    },
+    {
+      "query_id": "23dd9a52814760b232d0ff6e9cb70668449df53f8ab60b89500559d37e9253ca",
+      "sample_id": "e243_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0100",
+      "source_sha256": "9e74c12fc43a7c62a65c5c0ed6d7a8f3a6949a1a3dcad32f7e3a15dd9b08625c",
+      "english": "B0100 is likely continuing an eastward, descending pursuit of A0200 while its outbound missile pressures that aircraft and B0100 seeks an attack opportunity.",
+      "japanese": "B0100は、飛翔中の自機のミサイルがA0200に圧力をかける中、攻撃機会を求めて、東向きに降下しながらA0200への追撃を続けている可能性が高い。"
+    },
+    {
+      "query_id": "23dd9a52814760b232d0ff6e9cb70668449df53f8ab60b89500559d37e9253ca",
+      "sample_id": "e243_n+30",
+      "model": "gpt-5.6-terra",
+      "aircraft_id": "B0200",
+      "source_sha256": "52b53acd9f6ca783863a68ce549f3a3163cc338b3d801ac9a8c213a68141dc33",
+      "english": "B0200 is inactive throughout the target interval and has no subsequent tactical behavior recorded.",
+      "japanese": "B0200は対象区間全体を通じて非アクティブであり、それ以降の戦術行動は記録されていない。"
+    },
+    {
+      "query_id": "883fd142ac84fb19c35eff58954a7f73b7ae8336438beb5260ce7990e6d5a811",
+      "sample_id": "e243_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0100",
+      "source_sha256": "8ea72b06deffba682d0cd908a81ae04033fce6bfb71e0a3da56a5dd1e8c9ef69",
+      "english": "A0100 is likely trying to evade the approaching missile threat while preserving altitude, executing a sustained hard left break and descent away from the engagement geometry.",
+      "japanese": "A0100は、高度を保ちながら接近するミサイルの脅威を回避しようとしている可能性が高く、交戦の位置関係から離れる急な左ブレイクと降下を継続すると考えられる。"
+    },
+    {
+      "query_id": "883fd142ac84fb19c35eff58954a7f73b7ae8336438beb5260ce7990e6d5a811",
+      "sample_id": "e243_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "A0200",
+      "source_sha256": "e175a4e80ed6688fa2895d8eb7be43fde64a42fb671f70aeb5f86ff9628ba7ab",
+      "english": "A0200 is likely closing on B0100 for an intercept, maintaining speed while continuing an eastward pursuit with modest heading adjustments and descent.",
+      "japanese": "A0200は迎撃のためにB0100へ接近している可能性が高く、速度を維持し、小さな針路調整と降下を伴って東向きの追撃を続けると考えられる。"
+    },
+    {
+      "query_id": "883fd142ac84fb19c35eff58954a7f73b7ae8336438beb5260ce7990e6d5a811",
+      "sample_id": "e243_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0100",
+      "source_sha256": "91f0300ffc0bd36708fec97d4c5a9a748f0a96f6471e22d987510a6f7c7c937f",
+      "english": "B0100 is likely maneuvering to survive and retain an attack opportunity, turning from a southeast approach toward eastward flight as the opposing aircraft close.",
+      "japanese": "B0100は生存して攻撃機会を残すために機動している可能性が高く、敵機が接近する中、南東向きの接近から東向きの飛行へ旋回すると考えられる。"
+    },
+    {
+      "query_id": "883fd142ac84fb19c35eff58954a7f73b7ae8336438beb5260ce7990e6d5a811",
+      "sample_id": "e243_n+30",
+      "model": "gpt-5.6-luna",
+      "aircraft_id": "B0200",
+      "source_sha256": "bd7a2239e4bef3483c801a921280dcdafb3c2e76829ce5e6dc7e974fa565776a",
+      "english": "B0200 is inactive throughout the target interval and therefore has no active tactical behavior to assign.",
+      "japanese": "B0200は対象区間全体を通じて非アクティブであるため、割り当てられる能動的な戦術行動はない。"
+    }
+  ]
+}

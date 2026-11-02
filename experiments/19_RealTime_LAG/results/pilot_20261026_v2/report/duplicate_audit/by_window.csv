@@ -1,0 +1,63 @@
+repeat,step,time_s,gate,A0100_k4,A0100_k8,A0100_k32,A0200_k4,A0200_k8,A0200_k32
+1,39,7.800000000000001,NONE,,,,,,
+1,44,8.8,NONE,,,,,,
+1,49,9.8,A1,A | 自機の攻撃を成立させる | displayed,A2 | 自機の攻撃を継続・完遂する | displayed,A1a | 敵を自機の攻撃可能な距離に収める | displayed,A | 自機の攻撃を成立させる | displayed,A1 | 自機の攻撃機会を作る | displayed,A1a | 敵を自機の攻撃可能な距離に収める | displayed
+1,54,10.8,BOTH,A | 自機の攻撃を成立させる | same_goal,B1 | 自機に迫る攻撃を回避する | displayed,A2b | 攻撃後も次の射撃機会を維持する | displayed,A | 自機の攻撃を成立させる | same_goal,A2 | 自機の攻撃を継続・完遂する | displayed,A2a | 現在の射撃機会を使って敵に損害を与える | displayed
+1,59,11.8,BOTH,B | 自機の被弾を防ぐ | displayed,B1 | 自機に迫る攻撃を回避する | same_goal,A2b | 攻撃後も次の射撃機会を維持する | same_goal,A | 自機の攻撃を成立させる | same_goal,A2 | 自機の攻撃を継続・完遂する | same_goal,A2a | 現在の射撃機会を使って敵に損害を与える | same_goal
+1,64,12.8,BOTH,A | 自機の攻撃を成立させる | displayed,A2 | 自機の攻撃を継続・完遂する | displayed,A2b | 攻撃後も次の射撃機会を維持する | same_goal,A | 自機の攻撃を成立させる | same_goal,A2 | 自機の攻撃を継続・完遂する | same_goal,A2a | 現在の射撃機会を使って敵に損害を与える | same_goal
+1,69,13.8,BOTH,A | 自機の攻撃を成立させる | same_goal,B1 | 自機に迫る攻撃を回避する | displayed,A2b | 攻撃後も次の射撃機会を維持する | same_goal,A | 自機の攻撃を成立させる | same_goal,A2 | 自機の攻撃を継続・完遂する | same_goal,A2a | 現在の射撃機会を使って敵に損害を与える | same_goal
+1,74,14.8,BOTH,A | 自機の攻撃を成立させる | same_goal,A2 | 自機の攻撃を継続・完遂する | displayed,A2b | 攻撃後も次の射撃機会を維持する | same_goal,A | 自機の攻撃を成立させる | same_goal,A2 | 自機の攻撃を継続・完遂する | same_goal,A2a | 現在の射撃機会を使って敵に損害を与える | same_goal
+1,79,15.8,BOTH,A | 自機の攻撃を成立させる | same_goal,A2 | 自機の攻撃を継続・完遂する | same_goal,A2b | 攻撃後も次の射撃機会を維持する | same_goal,A | 自機の攻撃を成立させる | same_goal,A2 | 自機の攻撃を継続・完遂する | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | displayed
+1,84,16.8,BOTH,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | stale,A1b | 敵を自機の攻撃可能な方向に捉える | stale,A | 自機の攻撃を成立させる | stale,A2 | 自機の攻撃を継続・完遂する | stale,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,89,17.8,A1,B | 自機の被弾を防ぐ | displayed,A1 | 自機の攻撃機会を作る | displayed,A2b | 攻撃後も次の射撃機会を維持する | same_goal,A | 自機の攻撃を成立させる | same_goal,A2 | 自機の攻撃を継続・完遂する | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,94,18.8,A1,B | 自機の被弾を防ぐ | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1b | 敵を自機の攻撃可能な方向に捉える | displayed,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | displayed,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,99,19.8,A1,A | 自機の攻撃を成立させる | displayed,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | displayed,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,104,20.8,A2,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | same_goal,A | 自機の攻撃を成立させる | same_goal,A2 | 自機の攻撃を継続・完遂する | displayed,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,109,21.8,A2,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1b | 敵を自機の攻撃可能な方向に捉える | displayed,B | 自機の被弾を防ぐ | displayed,B1 | 自機に迫る攻撃を回避する | displayed,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,114,22.8,A2,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | displayed,B | 自機の被弾を防ぐ | same_goal,A1 | 自機の攻撃機会を作る | displayed,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,119,23.8,NONE,,,,,,
+1,124,24.8,NONE,,,,,,
+1,129,25.8,NONE,,,,,,
+1,134,26.8,NONE,,,,,,
+1,139,27.8,NONE,,,,,,
+1,144,28.8,NONE,,,,,,
+1,149,29.8,NONE,,,,,,
+1,154,30.8,NONE,,,,,,
+1,159,31.8,A2,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,B2d | 不利な交戦から離れ、敵との接触を断つ | displayed,B | 自機の被弾を防ぐ | same_goal,B1 | 自機に迫る攻撃を回避する | displayed,B2d | 不利な交戦から離れ、敵との接触を断つ | displayed
+1,164,32.800000000000004,A2,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A2b | 攻撃後も次の射撃機会を維持する | displayed,B | 自機の被弾を防ぐ | same_goal,B1 | 自機に迫る攻撃を回避する | same_goal,B2d | 不利な交戦から離れ、敵との接触を断つ | same_goal
+1,169,33.800000000000004,A2,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | displayed,B | 自機の被弾を防ぐ | same_goal,B1 | 自機に迫る攻撃を回避する | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | displayed
+1,174,34.800000000000004,A2,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1c | 攻撃に有利な高度・速度条件を得る | displayed,B | 自機の被弾を防ぐ | same_goal,B1 | 自機に迫る攻撃を回避する | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,179,35.800000000000004,NONE,,,,,,
+1,184,36.800000000000004,A2,B | 自機の被弾を防ぐ | displayed,B2 | 自機が次に攻撃される危険を減らす | displayed,B2b | 敵の攻撃圏へ不用意に入ることを避ける | displayed,B | 自機の被弾を防ぐ | same_goal,A1 | 自機の攻撃機会を作る | displayed,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,189,37.800000000000004,A2,B | 自機の被弾を防ぐ | same_goal,A1 | 自機の攻撃機会を作る | displayed,A1c | 攻撃に有利な高度・速度条件を得る | displayed,B | 自機の被弾を防ぐ | same_goal,B1 | 自機に迫る攻撃を回避する | displayed,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,194,38.800000000000004,A2,A | 自機の攻撃を成立させる | displayed,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | displayed,B | 自機の被弾を防ぐ | same_goal,A1 | 自機の攻撃機会を作る | displayed,A2c | 離脱する敵を逃さず攻撃を続ける | displayed
+1,199,39.800000000000004,A2,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,B2b | 敵の攻撃圏へ不用意に入ることを避ける | displayed,A | 自機の攻撃を成立させる | displayed,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | displayed
+1,204,40.800000000000004,A2,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,B2b | 敵の攻撃圏へ不用意に入ることを避ける | same_goal,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,209,41.800000000000004,A2,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | displayed,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,214,42.800000000000004,A2,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1c | 攻撃に有利な高度・速度条件を得る | displayed,B | 自機の被弾を防ぐ | displayed,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,219,43.800000000000004,A2,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | displayed,A | 自機の攻撃を成立させる | displayed,A1 | 自機の攻撃機会を作る | same_goal,A2c | 離脱する敵を逃さず攻撃を続ける | displayed
+1,224,44.800000000000004,A2,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | same_goal,B | 自機の被弾を防ぐ | displayed,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | displayed
+1,229,45.800000000000004,A2,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1c | 攻撃に有利な高度・速度条件を得る | displayed,A | 自機の攻撃を成立させる | displayed,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,234,46.800000000000004,A2,B | 自機の被弾を防ぐ | displayed,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | displayed,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,239,47.800000000000004,NONE,,,,,,
+1,244,48.800000000000004,A2,A | 自機の攻撃を成立させる | displayed,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | same_goal,A | 自機の攻撃を成立させる | same_goal,B1 | 自機に迫る攻撃を回避する | displayed,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,249,49.800000000000004,BOTH,B | 自機の被弾を防ぐ | displayed,B2 | 自機が次に攻撃される危険を減らす | displayed,B1a | 接近する敵ミサイルによる被弾を避ける | displayed,B | 自機の被弾を防ぐ | displayed,B1 | 自機に迫る攻撃を回避する | same_goal,B2d | 不利な交戦から離れ、敵との接触を断つ | displayed
+1,254,50.800000000000004,BOTH,B | 自機の被弾を防ぐ | same_goal,B2 | 自機が次に攻撃される危険を減らす | same_goal,B2d | 不利な交戦から離れ、敵との接触を断つ | displayed,B | 自機の被弾を防ぐ | same_goal,A1 | 自機の攻撃機会を作る | displayed,A1a | 敵を自機の攻撃可能な距離に収める | displayed
+1,259,51.800000000000004,A1,B | 自機の被弾を防ぐ | same_goal,B2 | 自機が次に攻撃される危険を減らす | same_goal,B2d | 不利な交戦から離れ、敵との接触を断つ | same_goal,B | 自機の被弾を防ぐ | same_goal,B1 | 自機に迫る攻撃を回避する | displayed,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,264,52.800000000000004,BOTH,B | 自機の被弾を防ぐ | same_goal,B2 | 自機が次に攻撃される危険を減らす | same_goal,B2d | 不利な交戦から離れ、敵との接触を断つ | same_goal,B | 自機の被弾を防ぐ | same_goal,A1 | 自機の攻撃機会を作る | displayed,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,269,53.800000000000004,A1,B | 自機の被弾を防ぐ | same_goal,B2 | 自機が次に攻撃される危険を減らす | same_goal,B2d | 不利な交戦から離れ、敵との接触を断つ | same_goal,B | 自機の被弾を防ぐ | same_goal,B1 | 自機に迫る攻撃を回避する | displayed,B1a | 接近する敵ミサイルによる被弾を避ける | displayed
+1,274,54.800000000000004,A1,B | 自機の被弾を防ぐ | same_goal,B1 | 自機に迫る攻撃を回避する | displayed,B2d | 不利な交戦から離れ、敵との接触を断つ | same_goal,A | 自機の攻撃を成立させる | displayed,A1 | 自機の攻撃機会を作る | displayed,A1a | 敵を自機の攻撃可能な距離に収める | displayed
+1,279,55.800000000000004,NONE,,,,,,
+1,284,56.800000000000004,NONE,,,,,,
+1,289,57.800000000000004,NONE,,,,,,
+1,294,58.800000000000004,NONE,,,,,,
+1,299,59.800000000000004,NONE,,,,,,
+1,304,60.800000000000004,NONE,,,,,,
+1,309,61.800000000000004,NONE,,,,,,
+1,314,62.800000000000004,A1,B | 自機の被弾を防ぐ | stale,A2 | 自機の攻撃を継続・完遂する | stale,A2b | 攻撃後も次の射撃機会を維持する | stale,A | 自機の攻撃を成立させる | same_goal,A2 | 自機の攻撃を継続・完遂する | displayed,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,319,63.800000000000004,A1,B | 自機の被弾を防ぐ | same_goal,B1 | 自機に迫る攻撃を回避する | same_goal,B1a | 接近する敵ミサイルによる被弾を避ける | displayed,A | 自機の攻撃を成立させる | same_goal,A2 | 自機の攻撃を継続・完遂する | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,324,64.8,A1,B | 自機の被弾を防ぐ | same_goal,A2 | 自機の攻撃を継続・完遂する | displayed,A2b | 攻撃後も次の射撃機会を維持する | displayed,A | 自機の攻撃を成立させる | same_goal,A2 | 自機の攻撃を継続・完遂する | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,329,65.8,A1,B | 自機の被弾を防ぐ | same_goal,A2 | 自機の攻撃を継続・完遂する | same_goal,A2b | 攻撃後も次の射撃機会を維持する | same_goal,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | displayed,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,334,66.8,A1,B | 自機の被弾を防ぐ | same_goal,A2 | 自機の攻撃を継続・完遂する | same_goal,A2b | 攻撃後も次の射撃機会を維持する | same_goal,A | 自機の攻撃を成立させる | same_goal,B1 | 自機に迫る攻撃を回避する | displayed,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
+1,339,67.8,A1,B | 自機の被弾を防ぐ | same_goal,A2 | 自機の攻撃を継続・完遂する | same_goal,A2b | 攻撃後も次の射撃機会を維持する | stale,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | displayed,A2c | 離脱する敵を逃さず攻撃を続ける | stale
+1,340,68.0,A1,B | 自機の被弾を防ぐ | same_goal,A2 | 自機の攻撃を継続・完遂する | same_goal,A2a | 現在の射撃機会を使って敵に損害を与える | displayed,A | 自機の攻撃を成立させる | same_goal,A1 | 自機の攻撃機会を作る | same_goal,A1a | 敵を自機の攻撃可能な距離に収める | same_goal
