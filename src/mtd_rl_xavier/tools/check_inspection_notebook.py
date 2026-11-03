@@ -14,11 +14,12 @@ from nbclient import NotebookClient
 from mtd_rl_xavier import paths
 
 ROOT = paths.ROOT
-from mtd_rl_xavier.tools.output_safety import derived_path
+from mtd_rl_xavier.tools.output_safety import PROTECTED_DIRS, derived_path
 
-GUARD = '''import sys, socket, os
+# Absolute paths from mtd_rl_xavier.paths, so the kernel guard and derived_path protect the same dirs.
+GUARD = f'''import sys, socket, os
 from pathlib import Path
-protected = [Path.cwd() / 'data', Path.cwd() / 'mentalmodeling']
+protected = [Path(p) for p in {[str(p) for p in PROTECTED_DIRS]!r}]
 def audit_raw_writes(event, args):
     if event == 'open' and isinstance(args[0], (str, bytes, os.PathLike)):
         path = Path(os.fsdecode(args[0])).resolve()

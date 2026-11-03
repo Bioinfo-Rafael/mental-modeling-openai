@@ -63,7 +63,7 @@ questionの対応は [../joint_questions.py](../../src/mtd_rl_xavier/experiment/
 | next-state | next_state_prediction_more_options_joint | DEC/INC/UNCH、absolute state、forward delta、説明 |
 | last-state | last_state_prediction_more_options_joint | DEC/INC/UNCH、absolute state、forward delta、説明 |
 
-質問文の本体は [feedback.py](../../mentalmodeling/llm_x/feedback.py)。今回、文章の再実装・変更はしていない。
+質問文の本体は [feedback.py](../../src/mentalmodeling/llm_x/feedback.py)。今回、文章の再実装・変更はしていない。
 03_1の回答を新モデルの回答として流用することもない。
 
 ## 3. 出力先・見るべきファイル

@@ -6,7 +6,7 @@
 - ./experimentsが実験に用いたコードです。
 - upstreamがgit cloneしたmental modelingのコード
 - notebooksは最初のデータ可視化用。それ以外はcodexの作成したコード置き場です
-- ./experimentsでの実行も./mentalmodeling/README.mdの実行方法や関数を利用して送信するようになってます。
+- ./experimentsでの実行も./src/mentalmodeling/README.mdの実行方法や関数を利用して送信するようになってます。
 # Mental Modeling / LLM-Xavier 再評価環境
 
 作業先: `/Users/cls-lab/Git/Matsuo/mental-modeling-openai`。raw readerと前処理を分離済み。**local token countは実行済み、OpenAI API request=0**。LLM精度評価・RL学習・simulation・paid pilotは実行していません。
@@ -133,7 +133,7 @@ python -m mtd_rl_xavier.tools.count_input_tokens --everything --history-sizes 0 
 mental-modeling-openai/
 ├── README.md
 ├── pyproject.toml
-├── mentalmodeling/          # 原典checkout、変更なし
+├── src/mentalmodeling/      # 原典checkout、変更なし
 ├── data/
 │   ├── README.md                 # 全20 task・全key・実step例・dimension意味
 │   ├── llmx_data/                # 固定revisionの公式snapshot
@@ -163,7 +163,7 @@ mental-modeling-openai/
     └── pilot/                    # 過去dry-run計画。paid結果ではない
 ```
 
-downloadデータ・仮想環境・生成CSV/JSONはgitignore対象。`mentalmodeling`は公式コードをコピーした通常ディレクトリとして、このリポジトリで直接管理する。コードの編集・commit・pushは本体と同じ手順で行える。旧 `outputs/dataset_inventory.{json,csv}` も互換出力する。過去smoke出力はsynthetic fixtureで実データ評価ではない。
+downloadデータ・仮想環境・生成CSV/JSONはgitignore対象。`src/mentalmodeling`は公式コードをコピーした通常ディレクトリとして、このリポジトリで直接管理する。コードの編集・commit・pushは本体と同じ手順で行える。旧 `outputs/dataset_inventory.{json,csv}` も互換出力する。過去smoke出力はsynthetic fixtureで実データ評価ではない。
 
 通常の`git clone`で原典コードも取得できる。submoduleの初期化は不要。取得元・元commitは`configs/sources.json`の`llm_xavier`に記録し、原典の`LICENSE`・`NOTICE`・`CITATION.cff`を保持する。公式コードの更新を取り込む際は、こちら側の変更を確認してから差分を統合する。
 
@@ -173,7 +173,7 @@ token見積もりのスクリプトは`workspace/notebooks/01_token_estimation.p
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install -e 'mentalmodeling[openai,test]' -e '.[data,test]'
+.venv/bin/python -m pip install -e 'src/mentalmodeling[openai,test]' -e '.[data,test]'
 ```
 
 移動に伴う仮想環境の旧workspace参照は更新済み。明示的に `.venv/bin/python` を使うと解釈器が明確になる。
@@ -329,7 +329,7 @@ token countとpilotが揃った後、単価を実行時点で確認して明示�
 外部34,036ファイル、公式と合わせ34,219ファイルを走査。support/archive/textも含む外部分類82群、構造化data/empty schemaのみ54群。公式はtask別20群（T可変）、task間の同型を重複除外すると13群。
 
 ```bash
-.venv/bin/python -m pytest tests mentalmodeling/tests -q
+.venv/bin/python -m pytest tests src/mentalmodeling/tests -q
 ```
 
 inventory testsはNPZ/CSV/MAT extraction、dtype/shape、grouping、chunk、欠損、empty、track分割、ZIP、script、source不変性を確認。既存prompt/token工具はsyntheticデータ・fake clientでregression testし、新規testは実raw reader、前処理設定、元prompt一致、ネットワーク禁止下のlocal countも検証します。LLM評価は実行しません。学習とsimulationも実行対象外。

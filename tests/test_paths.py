@@ -9,7 +9,7 @@ from mtd_rl_xavier.experiment import common
 @pytest.mark.parametrize(
     ("old", "current"),
     [
-        ("upstream/LLM-Xavier/llm_x/task.py", "mentalmodeling/llm_x/task.py"),
+        ("upstream/LLM-Xavier/llm_x/task.py", "src/mentalmodeling/llm_x/task.py"),
         ("experiments/06_new_models_n10/results/runs/x", "workspace/06_new_models_n10/results/runs/x"),
         ("experiments/common.py", "src/mtd_rl_xavier/experiment/common.py"),
         ("experiments/common_analysis/runner.py", "src/mtd_rl_xavier/experiment/common_analysis/runner.py"),
@@ -35,13 +35,34 @@ def test_resolve_recorded_prefers_existing_path(tmp_path: Path) -> None:
 def test_resolve_recorded_maps_old_layout_when_missing(tmp_path: Path) -> None:
     resolved = paths.resolve_recorded(tmp_path, "upstream/LLM-Xavier/llm_x/task.py")
 
-    assert resolved == tmp_path / "mentalmodeling/llm_x/task.py"
+    assert resolved == tmp_path / "src/mentalmodeling/llm_x/task.py"
 
 
-def test_same_semantics_accepts_only_the_recorded_restructure() -> None:
-    ((old, new),) = common.RESTRUCTURED_SEMANTICS.items()
+def test_pre_move_mentalmodeling_paths_map_to_src() -> None:
+    assert paths.current_relpath("mentalmodeling/llm_x/task.py") == "src/mentalmodeling/llm_x/task.py"
+    assert paths.legacy_relpaths("src/mentalmodeling/llm_x/task.py") == (
+        "upstream/LLM-Xavier/llm_x/task.py",
+        "mentalmodeling/llm_x/task.py",
+    )
+    assert paths.legacy_relpaths("data/llmx_data/a.npz") == ()
 
-    assert common.same_semantics(new, new)
-    assert common.same_semantics(old, new)
-    assert not common.same_semantics(new, old)
-    assert not common.same_semantics(old, "0" * 64)
+
+def test_resolve_recorded_maps_pre_move_path_when_missing(tmp_path: Path) -> None:
+    resolved = paths.resolve_recorded(tmp_path, "mentalmodeling/llm_x/task.py")
+
+    assert resolved == tmp_path / "src/mentalmodeling/llm_x/task.py"
+
+
+def test_same_semantics_accepts_only_the_recorded_layout_moves() -> None:
+    current = common.CURRENT_SEMANTICS
+    olds = set(common.RESTRUCTURED_SEMANTICS)
+
+    assert len(olds) == 2 and set(common.RESTRUCTURED_SEMANTICS.values()) == {current}
+    assert common.same_semantics(current, current)
+    for old in olds:
+        assert common.same_semantics(old, current)
+        assert not common.same_semantics(current, old)
+        assert not common.same_semantics(old, "0" * 64)
+    first, second = sorted(olds)
+    assert not common.same_semantics(first, second)
+    assert not common.same_semantics(second, first)

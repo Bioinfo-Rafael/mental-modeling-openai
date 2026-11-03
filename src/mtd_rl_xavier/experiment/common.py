@@ -118,18 +118,22 @@ def json_text(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True, allow_nan=False)
 
 
-# Manifests saved on rafael/mental-modeling-openai hash the semantics files under their old
-# paths. The restructure moved those files and changed only import/path lines (verified by
-# regenerating identical query identities), so the old hash maps to the current one here.
-# Any later edit to a semantics file changes the current hash and ends this equivalence.
+# semantics_sha256 hashes the semantics files keyed by repo-relative path, so a layout move
+# changes it even when no file changes. Saved hash -> current hash, one entry per past layout:
+# - 2048668f: rafael/mental-modeling-openai (upstream/LLM-Xavier/...). The restructure changed
+#   only import/path lines (verified by regenerating identical query identities).
+# - 830a5841: mentalmodeling/... before the move to src/mentalmodeling/; every file is
+#   byte-identical, only the path keys changed.
+# Any later edit to a semantics file changes the current hash and ends these equivalences.
+CURRENT_SEMANTICS = "27e601e9511e3a9dd54a1998bc632d63d1052c890b3fb7033e3d761ab10ac712"
 RESTRUCTURED_SEMANTICS = {
-    "2048668f650e5b3c4ee59ad220c483f1f8067f4ce72582d95800d6f5d414445e":
-        "830a5841e1bde42d45272d461f477ba2ea3280094d100437ca0d9864c9a4345b",
+    "2048668f650e5b3c4ee59ad220c483f1f8067f4ce72582d95800d6f5d414445e": CURRENT_SEMANTICS,
+    "830a5841e1bde42d45272d461f477ba2ea3280094d100437ca0d9864c9a4345b": CURRENT_SEMANTICS,
 }
 
 
 def same_semantics(saved, current):
-    """Whether a saved semantics_sha256 matches the current code, across the restructure."""
+    """Whether a saved semantics_sha256 matches the current code, across layout moves."""
     return saved == current or RESTRUCTURED_SEMANTICS.get(saved) == current
 
 
@@ -224,7 +228,7 @@ def read_jsonl(path):
 
 
 def provenance():
-    upstream = ROOT / "mentalmodeling"
+    upstream = paths.MENTALMODELING
     files = sorted((upstream / "llm_x").glob("*.py"))
     files += [ROOT / "src/mtd_rl_xavier/preprocessing/llmx_original.py", ROOT / "src/mtd_rl_xavier/datasets/llmx.py"]
     hashes = {str(path.relative_to(ROOT)): file_sha256(path) for path in files}
@@ -594,7 +598,7 @@ def quiet_sdk_logging():
         for logger, disabled, level in saved:
             logger.disabled, logger.level = disabled, level
 
-# @Rafa: 元論文の実装(../mentalmodeling)の実行を行う部分。
+# @Rafa: 元論文の実装(src/mentalmodeling)の実行を行う部分。
 def invoke_cli(session, output, retries):
     """Use the upstream CLI; optionally select exact planned indices, not a prefix.
 

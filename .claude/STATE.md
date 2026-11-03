@@ -8,7 +8,7 @@ Claude Code
 
 <!-- Managed by /init. Re-run /init to refresh. -->
 
-mtd-rl-xavier is research code that evaluates how language models build mental models of RL agents, with prior-work LLM-Xavier vendored in mentalmodeling/, a shared library in src/mtd_rl_xavier/, and exploratory experiments in workspace/.
+mtd-rl-xavier is research code that evaluates how language models build mental models of RL agents, with prior-work LLM-Xavier vendored in src/mentalmodeling/ (separate distribution llm-x-evaluator), a shared library in src/mtd_rl_xavier/, and exploratory experiments in workspace/.
 
 Macro requirements and design live in [docs/DESIGN.md](docs/DESIGN.md).
 

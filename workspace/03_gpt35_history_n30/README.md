@@ -120,7 +120,7 @@ manifestは計画時の記録です。実API件数・完了状態は `summary.js
 
 ### Accuracyの読み方
 
-出典：[`src/mtd_rl_xavier/experiment/common.py`](../../src/mtd_rl_xavier/experiment/common.py) の `summarize_scored()` と [`llm_x/evaluation.py`](../../mentalmodeling/llm_x/evaluation.py) の `_summarize()`。
+出典：[`src/mtd_rl_xavier/experiment/common.py`](../../src/mtd_rl_xavier/experiment/common.py) の `summarize_scored()` と [`llm_x/evaluation.py`](../../src/mentalmodeling/llm_x/evaluation.py) の `_summarize()`。
 
 | 項目 | 定義 |
 | --- | --- |
@@ -220,4 +220,4 @@ return _summarize(scores, metric) if scores else {}
       └─ summarize_scored() → 公式_summarize() → 条件全体のsummary
 ```
 
-CLI・評価・送信の出典はそれぞれ [`llm_x/cli.py`](../../mentalmodeling/llm_x/cli.py)、[`llm_x/evaluation.py`](../../mentalmodeling/llm_x/evaluation.py)、[`llm_x/backends.py`](../../mentalmodeling/llm_x/backends.py)。ログの細かい項目は [Exp.2の出力説明](../02_gpt35_single/README.md)、N別の再解析は [Exp.4](../04_sample_size_analysis/README.md) を参照してください。
+CLI・評価・送信の出典はそれぞれ [`llm_x/cli.py`](../../src/mentalmodeling/llm_x/cli.py)、[`llm_x/evaluation.py`](../../src/mentalmodeling/llm_x/evaluation.py)、[`llm_x/backends.py`](../../src/mentalmodeling/llm_x/backends.py)。ログの細かい項目は [Exp.2の出力説明](../02_gpt35_single/README.md)、N別の再解析は [Exp.4](../04_sample_size_analysis/README.md) を参照してください。

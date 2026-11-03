@@ -43,7 +43,7 @@ README、RESULTS、元の実験結果、他の解析を削除・上書きしな�
 | `../results/manifest.json` | 条件・query ID・episode・index・threshold・action bin設定 |
 | `../results/summary.json` | 完了状態の確認 |
 | `data/llmx_data/.../episodes/*.npz`（repository root基準） | 元trajectoryから正解のstate/actionを取得。記録済みSHA-256を確認 |
-| `mentalmodeling/llm_x/task.py` | 正規化範囲を確認したtask定義 |
+| `src/mentalmodeling/llm_x/task.py` | 正規化範囲を確認したtask定義 |
 
 `runs/.../predictions.jsonl`には生の回答全体がないため、対応する`records.jsonl`の回答を正本にする。
 `assistant_text`と`raw_response.choices[0].message.content`の一致も全件確認する。
@@ -146,7 +146,7 @@ Directionの次元別AccuracyはCSVのみ。Confusion MatrixはGT行・予測列
 
 `NRMSE_d = sqrt(mean((prediction_d - GT_d)^2)) / range_width_d`。
 deltaも対応する元stateの幅で割る。サンプルの観測min/maxや、deltaの倍の幅で割らない。
-範囲は既存 [task.py](../../../mentalmodeling/llm_x/task.py) のMountainCar/Pendulum定義で確認済み。
+範囲は既存 [task.py](../../../src/mentalmodeling/llm_x/task.py) のMountainCar/Pendulum定義で確認済み。
 
 | task | 次元 | 理論範囲 | 正規化幅 |
 |---|---|---|---:|

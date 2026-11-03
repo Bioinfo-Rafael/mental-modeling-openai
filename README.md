@@ -10,7 +10,8 @@ The code was ported from the `rafael/mental-modeling-openai` branch; see
 ## Layout
 
 ```
-mentalmodeling/        Prior work: vendored LLM-Xavier (`llm_x` package). Treat as read-only.
+src/mentalmodeling/    Prior work: vendored LLM-Xavier (`llm_x` package, own distribution
+                       `llm-x-evaluator` with its LICENSE/NOTICE). Treat as read-only.
 src/mtd_rl_xavier/     Shared library: tested, reused by more than one experiment.
   paths.py             Repository layout (ROOT, WORKSPACE, DATA, ...) and old-layout path resolution.
   datasets/            Raw dataset readers (llmx_data NPZ, external candidate datasets).
@@ -18,7 +19,7 @@ src/mtd_rl_xavier/     Shared library: tested, reused by more than one experimen
   experiment/          Planning, guarded OpenAI execution, split batches, Joint-question analysis.
   tools/               CLI utilities: inventories, token counting, schema docs.
 src/weightreading/     LLM reads an RL policy's raw weights (no forward pass); see its README.md.
-tests/                 Tests for src/ (mentalmodeling/tests is collected too).
+tests/                 Tests for src/ (src/mentalmodeling/tests is collected too).
 workspace/             Exploratory experiments, one directory per experiment (NN_name/).
   notebooks/           Ad-hoc data and token inspection notebooks.
 configs/               Dataset sources (pinned revisions) and preprocessing configs.
@@ -35,13 +36,15 @@ Where new code goes:
 - Weight-reading code (LLM explains a policy from its weights) goes in `src/weightreading/`,
   with tests in `tests/weightreading/`, specs and run config in `configs/weightreading/`, and
   outputs in `outputs/weightreading/`. See [src/weightreading/README.md](src/weightreading/README.md).
-- `mentalmodeling/` changes only to track upstream LLM-Xavier. Its files are hashed into
+- `src/mentalmodeling/` changes only to track upstream LLM-Xavier. Its files are hashed into
   experiment provenance (see below), so an edit there invalidates comparisons with saved results.
+  It is not part of the `mtd-rl-xavier` wheel. Import it only as `llm_x`: the editable install
+  also exposes `mentalmodeling.llm_x`, a second module identity that a test rejects.
 
 ## Setup
 
 ```bash
-uv sync --all-extras          # Python 3.12 venv in .venv; installs mentalmodeling/ as editable `llm_x`
+uv sync --all-extras          # Python 3.12 venv in .venv; installs src/mentalmodeling/ as editable `llm_x`
 uv run hf download lerrhoo/llmx_data --repo-type dataset \
   --revision dc2b798f72bc02f7285949ccfcdcb42e5ff326fd --local-dir data/llmx_data
 uv run python -m mtd_rl_xavier.tools.inventory_llmx_data     # outputs/dataset_inventory/ (dataset registry)
@@ -58,7 +61,7 @@ Paid API calls read `OPENAI_API_KEY` (or a hidden prompt, depending on the exper
 ## Commands
 
 ```bash
-uv run poe test                                   # tests/ + mentalmodeling/tests
+uv run poe test                                   # tests/ + src/mentalmodeling/tests
 uv run poe test-workspace                         # every workspace experiment, one pytest run each
 uv run poe lint                                   # ruff on src/ and tests/
 uv run python -m weightreading --help             # weight reading: inspect/preview/run (paid only with flags)
@@ -80,10 +83,12 @@ their saved inputs.
   `__file__` in library code.
 - **Results are immutable and tracked in git** (`workspace/*/results/`). Analyses write to new
   directories and refuse to overwrite.
-- **Provenance**: plans record SHA-256 of the prompt/scoring code (`mentalmodeling/llm_x/*.py`,
+- **Provenance**: plans record SHA-256 of the prompt/scoring code (`src/mentalmodeling/llm_x/*.py`,
   `preprocessing/llmx_original.py`, `datasets/llmx.py`) and refuse to reuse, resume or merge
-  results produced under different code. Editing those files is a semantic change.
-- **Saved results use old-layout paths** (`experiments/...`, `upstream/LLM-Xavier/...`).
+  results produced under different code. Editing those files is a semantic change. The hash is
+  keyed by path, so layout moves are listed in `experiment.common.RESTRUCTURED_SEMANTICS`.
+- **Saved results use old-layout paths** (`experiments/...`, `upstream/LLM-Xavier/...`,
+  `mentalmodeling/...`).
   Read them through `paths.resolve_recorded(root, relative)`; never rewrite result files.
 - **Paid API safety**: most entry points default to a local preview, but `workspace/09`–`12`
   send requests when run without arguments. Check the experiment README before running `run.py`.

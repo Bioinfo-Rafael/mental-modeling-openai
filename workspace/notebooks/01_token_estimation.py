@@ -60,6 +60,7 @@ from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 
 from mtd_rl_xavier.datasets.base import inventory_context
+from mtd_rl_xavier.paths import MENTALMODELING
 from mtd_rl_xavier.datasets.registry import dataset_ids, get_adapter, EXTERNAL
 from mtd_rl_xavier.datasets.llmx import discover_episodes
 from mtd_rl_xavier.preprocessing.llmx_original import Episode, _history_range, _query_indices, file_sha256
@@ -329,8 +330,8 @@ def estimate(h_values, n_samples, seed):
     # upstream commit separately from local source content and project revision.
     audit["upstream_revision"] = json.loads((ROOT/'configs/sources.json').read_text())['llm_xavier']['commit']
     audit["upstream_source_sha256"] = {
-        str(p.relative_to(ROOT/'mentalmodeling')): file_sha256(p)
-        for p in sorted((ROOT/'mentalmodeling/llm_x').glob('*.py'))
+        str(p.relative_to(MENTALMODELING)): file_sha256(p)
+        for p in sorted((MENTALMODELING/'llm_x').glob('*.py'))
     }
     return audit
 

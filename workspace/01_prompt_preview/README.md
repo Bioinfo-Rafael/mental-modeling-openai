@@ -252,7 +252,7 @@ question = QUESTIONS[task][metric]
 | `next-state` | `next_state_prediction` | `next_state_prediction` |
 | `last-state` | `last_state_prediction` | `last_state_prediction` |
 
-この質問名の対応表は `src/mtd_rl_xavier/experiment/common.py` の `QUESTIONS` に基づきます。episodeは同ファイルの `make_plan()` 内で `s.task == task` のものだけ選びます。MountainCarとPendulumではactionの質問が異なりますが、質問文自体は [`mentalmodeling/llm_x/questions.py`](../../mentalmodeling/llm_x/questions.py) の公式 `render_question()` が生成します。
+この質問名の対応表は `src/mtd_rl_xavier/experiment/common.py` の `QUESTIONS` に基づきます。episodeは同ファイルの `make_plan()` 内で `s.task == task` のものだけ選びます。MountainCarとPendulumではactionの質問が異なりますが、質問文自体は [`src/mentalmodeling/llm_x/questions.py`](../../src/mentalmodeling/llm_x/questions.py) の公式 `render_question()` が生成します。
 
 ### `histories`：Hは実際の履歴step数
 
@@ -264,7 +264,7 @@ question = QUESTIONS[task][metric]
 upstream_h = history_size(H)
 ```
 
-[`mentalmodeling/llm_x/evaluation.py`](../../mentalmodeling/llm_x/evaluation.py) の `_history_range()` が作る履歴長はパラメータに対して1つ多くなるため、[`src/mtd_rl_xavier/experiment/common.py`](../../src/mtd_rl_xavier/experiment/common.py) の `history_size()` が `H - 1` に変換します。次はこの関係を説明した図で、コードの引用ではありません。
+[`src/mentalmodeling/llm_x/evaluation.py`](../../src/mentalmodeling/llm_x/evaluation.py) の `_history_range()` が作る履歴長はパラメータに対して1つ多くなるため、[`src/mtd_rl_xavier/experiment/common.py`](../../src/mtd_rl_xavier/experiment/common.py) の `history_size()` が `H - 1` に変換します。次はこの関係を説明した図で、コードの引用ではありません。
 
 ```text
 指定H=5 → upstream history_size=4 → 実際の履歴5 steps

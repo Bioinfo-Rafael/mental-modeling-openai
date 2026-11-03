@@ -605,7 +605,7 @@ def test_modern_load_and_export_end_to_end_with_offline_fixtures(plans, tmp_path
     real_root = common.ROOT
     original = common.read_jsonl(real_root / "workspace/03_1_gpt35_history_n30_joint/results/records.jsonl")
     by_key = {(r["task"], r["metric"], r["H"], r["ordinal"]): r for r in original}
-    for relative in {r["episode_path"] for r in original} | {"mentalmodeling/llm_x/task.py"}:
+    for relative in {r["episode_path"] for r in original} | {runner.RANGE_SOURCE.as_posix()}:
         destination = tmp_path / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(real_root / relative, destination)

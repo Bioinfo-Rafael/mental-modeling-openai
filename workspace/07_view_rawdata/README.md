@@ -24,7 +24,7 @@ HTMLには03_1のGPT-3.5全960件と、05を含む06統合版のSol / Terra / Lu
 各実験のrun.py（06はsplit_execution.py経由）
   → src/mtd_rl_xavier/experiment/common.py の execute_plan()
   → invoke_cli()
-  → mentalmodeling/llm_x/cli.py の _evaluate()
+  → src/mentalmodeling/llm_x/cli.py の _evaluate()
   → evaluation.py の evaluate_episode()
       → backend.complete()   ← モデルの回答全文を取得
       → _score_response()    ← 旧parserでその回答を採点
@@ -34,7 +34,7 @@ HTMLには03_1のGPT-3.5全960件と、05を含む06統合版のSol / Terra / Lu
       → 入出力と採点結果を結合してrecords.jsonlに保存
 ```
 
-直接の呼び出し元は [evaluation.py の evaluate_episode()](../../mentalmodeling/llm_x/evaluation.py#L68) です。
+直接の呼び出し元は [evaluation.py の evaluate_episode()](../../src/mentalmodeling/llm_x/evaluation.py#L68) です。
 
 ```python
 response = backend.complete(system_prompt=scene, user_prompt=prompt)
@@ -55,7 +55,7 @@ record = _score_response(
 
 ## 2. _score_response()への入力とassistant_textの関係
 
-[_score_response()](../../mentalmodeling/llm_x/evaluation.py#L155) の入力は以下です。
+[_score_response()](../../src/mentalmodeling/llm_x/evaluation.py#L155) の入力は以下です。
 
 | 引数 | 内容 |
 | --- | --- |

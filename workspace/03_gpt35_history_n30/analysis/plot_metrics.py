@@ -74,6 +74,12 @@ def semantics_drift(manifest: dict) -> dict[str, dict[str, str]]:
     return drift
 
 
+def scoring_semantics_drift(manifest: dict) -> set[str]:
+    """Drifted scoring files, compared in the current layout whatever layout the keys use."""
+    scoring = {paths.current_relpath(relative) for relative in SCORING_SEMANTICS}
+    return scoring & {paths.current_relpath(relative) for relative in semantics_drift(manifest)}
+
+
 def load_results() -> tuple[Path, dict, list[dict]]:
     """Require one complete, unique grid; read H from its manifest, not constants."""
     source = common.latest_results(HERE.parent / "results")
@@ -101,7 +107,7 @@ def load_results() -> tuple[Path, dict, list[dict]]:
             raise ValueError("Unscored result")
         if record["raw_response"]["choices"][0]["message"]["content"] != record["assistant_text"]:
             raise ValueError("Raw response and assistant text differ")
-    blocking_drift = SCORING_SEMANTICS & {paths.legacy_relpath(k) for k in semantics_drift(manifest)}
+    blocking_drift = scoring_semantics_drift(manifest)
     if blocking_drift:
         raise ValueError(f"Official scoring semantics changed: {sorted(blocking_drift)}")
     return source, manifest, records

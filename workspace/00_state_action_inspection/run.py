@@ -20,9 +20,10 @@ from typing import Iterable
 
 import numpy as np
 
+from mtd_rl_xavier.paths import MENTALMODELING
 
 ROOT = Path(__file__).resolve().parents[2]
-UPSTREAM_ROOT = ROOT / "mentalmodeling"
+UPSTREAM_ROOT = MENTALMODELING
 for import_root in (ROOT, UPSTREAM_ROOT):
     if str(import_root) not in sys.path:
         sys.path.insert(0, str(import_root))
@@ -38,7 +39,7 @@ UNCHANGED_THRESHOLD = 1e-4
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
 
 # These names and finite ranges are transcribed from the corresponding
-# observation_space/action_space strings in mentalmodeling/llm_x/task.py.
+# observation_space/action_space strings in src/mentalmodeling/llm_x/task.py.
 TASK_METADATA = {
     "MountainCar-v0": {
         "short_name": "MountainCar",
@@ -618,7 +619,7 @@ def save_recommendation(
             "See `state_delta_summary.csv` and the delta histograms before fixing this threshold in a prompt.",
             "",
             "Source for names and theoretical ranges: "
-            "`mentalmodeling/llm_x/task.py` (`MountainCarTask`, `PendulumTask`).",
+            "`src/mentalmodeling/llm_x/task.py` (`MountainCarTask`, `PendulumTask`).",
             "",
         )
     )

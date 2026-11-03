@@ -166,7 +166,7 @@ API成功を意味する `ignored` recordも内容が整合していれば再利
 ## 3. Joint questionと評価の分離
 
 対応表は [joint_questions.py](../../src/mtd_rl_xavier/experiment/joint_questions.py) の `JOINT_QUESTIONS` を03_1/05/06で共有。
-question本体は既存 [feedback.py](../../mentalmodeling/llm_x/feedback.py) にある。
+question本体は既存 [feedback.py](../../src/mentalmodeling/llm_x/feedback.py) にある。
 
 | 対象 | 呼ぶquestion |
 |---|---|

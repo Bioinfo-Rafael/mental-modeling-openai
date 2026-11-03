@@ -6,7 +6,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.dont_write_bytecode = True
 # All nonstandard import paths are configured once, at the entry point.
-sys.path[:0] = [str(HERE.parent / "13_LAG"), str(ROOT / "mentalmodeling")]
+from mtd_rl_xavier.paths import MENTALMODELING  # noqa: E402
+sys.path[:0] = [str(HERE.parent / "13_LAG"), str(MENTALMODELING)]
 
 from lag_experiment.config import Experiment
 from lag_experiment.runner import run

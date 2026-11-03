@@ -59,3 +59,13 @@ def test_official_pendulum_bin_boundaries():
     # Actual official scoring uses right=True, unlike left-closed bins in the prompt.
     from llm_x.metrics import bin_actions
     assert bin_actions([-3, -2, -1.6, -1.59, 0, 2, 3], start=-2, stop=2) == [0, 0, 0, 1, 4, 9, 9]
+
+
+@pytest.mark.parametrize("prefix", ["upstream/LLM-Xavier/", "mentalmodeling/", "src/mentalmodeling/"])
+def test_scoring_drift_is_detected_under_every_recorded_layout(prefix):
+    task = analysis.paths.MENTALMODELING / "llm_x/task.py"
+    manifest = {"provenance": {"semantics_files_sha256": {
+        prefix + "llm_x/metrics.py": "0" * 64,  # drifted scoring file
+        prefix + "llm_x/task.py": analysis.common.file_sha256(task),  # unchanged
+    }}}
+    assert analysis.scoring_semantics_drift(manifest) == {"src/mentalmodeling/llm_x/metrics.py"}

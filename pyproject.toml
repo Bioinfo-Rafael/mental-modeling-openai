@@ -9,7 +9,7 @@ description = "Language-model mental modelling of RL agents: shared library and 
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-  "llm-x-evaluator",  # mentalmodeling/ (vendored LLM-Xavier, installed editable)
+  "llm-x-evaluator",  # src/mentalmodeling/ (vendored LLM-Xavier, installed editable)
   "numpy>=1.24,<3",
   "openai>=1,<3",
   "PyYAML>=6",
@@ -32,18 +32,19 @@ estimation = ["openpyxl>=3.1,<4", "pandas>=2", "scipy>=1.11", "tiktoken==0.14.0"
 dev = ["pytest>=7,<9", "ruff>=0.8", "poethepoet>=0.29"]
 
 [tool.uv.sources]
-llm-x-evaluator = { path = "mentalmodeling", editable = true }
+llm-x-evaluator = { path = "src/mentalmodeling", editable = true }
 
 [tool.setuptools.packages.find]
 where = ["src"]
 # Two top-level packages: the shared library and weightreading (src/weightreading/).
+# src/mentalmodeling/ is the separate `llm-x-evaluator` distribution and must not ship here.
 include = ["mtd_rl_xavier*", "weightreading*"]
 
 [tool.pytest.ini_options]
 addopts = "-ra -p no:cacheprovider"
 # Library and prior-work tests. Workspace experiments are collected per directory
 # (`poe test-workspace`) because several experiments reuse the same test file names.
-testpaths = ["tests", "mentalmodeling/tests"]
+testpaths = ["tests", "src/mentalmodeling/tests"]
 # The repository root makes `workspace.<experiment>` importable for tests and analysis code.
 pythonpath = ["."]
 python_files = ["test_*.py"]
@@ -55,7 +56,7 @@ line-length = 120
 # Prior-work code and exploratory experiments are not linted or formatted,
 # even when a file path is passed explicitly (e.g. by editor hooks).
 force-exclude = true
-extend-exclude = ["mentalmodeling", "workspace"]
+extend-exclude = ["src/mentalmodeling", "workspace"]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "UP"]
@@ -73,6 +74,6 @@ ignore = ["E501"]
 "tests/{test_candidate_inventory,test_comparison_plots,test_exp06_cost_estimate,test_exp06_single_probe,test_joint_modern_experiments,test_live_inventory,test_notebook_inspection,test_raw_preprocessing,test_token_tools}.py" = ["B905", "E701", "E702", "F401", "I001"]
 
 [tool.poe.tasks]
-test = { cmd = "pytest", help = "Library tests and mentalmodeling/ (LLM-Xavier) tests" }
+test = { cmd = "pytest", help = "Library tests and src/mentalmodeling/ (LLM-Xavier) tests" }
 test-workspace = { shell = "status=0; for d in workspace/[0-9]*/; do echo \"== $d\"; pytest -q \"$d\" || [ $? -eq 5 ] || status=1; done; exit $status", help = "Each workspace experiment's tests, one pytest run per experiment" }
 lint = { cmd = "ruff check src tests", help = "Lint the library and its tests" }
