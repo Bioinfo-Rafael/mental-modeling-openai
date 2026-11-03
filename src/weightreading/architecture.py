@@ -93,7 +93,7 @@ def equations(block: Block) -> str:
         return _gru_equations(block, source)
     if block.block_type == "layernorm":
         return (
-            f"Block `{block.block_id}` (LayerNorm, size {block.sizes[0]}), input: {source}.\n"
+            f"Block `{block.block_id}` (LayerNorm, size {block.sizes[0]}), input v: {source}.\n"
             f"  y = LN(v) with g = W['{block.prefix}weight'], beta = W['{block.prefix}bias'];\n"
             f"  {_layer_norm_text(block.eps)}"
         )
@@ -101,8 +101,9 @@ def equations(block: Block) -> str:
 
 
 def _mlp_equations(block: Block, source: str) -> str:
-    lines = [f"Block `{block.block_id}` (MLP, {len(block.sizes)} layers), input: {source}."]
     previous = "x" if block.input == "observation" else "u"
+    named = "input" if block.input == "observation" else "input u"
+    lines = [f"Block `{block.block_id}` (MLP, {len(block.sizes)} layers), {named}: {source}."]
     for layer, hidden in enumerate(block.sizes):
         linear = f"{block.prefix}{MLP_STRIDE * layer}"
         norm = f"{block.prefix}{MLP_STRIDE * layer + MLP_NORM_OFFSET}"

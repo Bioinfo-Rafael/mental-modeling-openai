@@ -7,6 +7,7 @@ prompt. ``provenance`` and ``notes`` stay on the harness side (they name the sou
 from __future__ import annotations
 
 import json
+import math
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -50,11 +51,27 @@ class InputSpec:
 
 @dataclass(frozen=True)
 class OutputSpec:
+    """One categorical head. ``values[k]`` is what bin k stands for; ``labels`` may be empty.
+
+    ``explicit`` is False for ``bin_value.linspace`` heads (evenly spaced values, rendered as a
+    formula) and True for ``bin_value.values`` heads (one listed value per bin).
+    """
+
     head: int
     name: str
     bins: int
-    low: float
-    high: float
+    values: tuple[float, ...]
+    labels: tuple[str, ...] = ()
+    unit: str = ""
+    explicit: bool = False
+
+    @property
+    def low(self) -> float:
+        return self.values[0]
+
+    @property
+    def high(self) -> float:
+        return self.values[-1]
 
 
 @dataclass(frozen=True)
@@ -99,17 +116,66 @@ def _parse_inputs(raw: list) -> tuple[InputSpec, ...]:
     return tuple(inputs)
 
 
+def _is_number(value: object) -> bool:
+    return isinstance(value, int | float) and not isinstance(value, bool) and math.isfinite(value)
+
+
+def _linspace(low: float, high: float, bins: int) -> tuple[float, ...]:
+    if bins == 1:
+        return (low,)
+    interior = tuple(low + k * (high - low) / (bins - 1) for k in range(bins - 1))
+    return (*interior, high)  # the end points are exactly the spec's numbers
+
+
+def _is_strictly_monotonic(values: list) -> bool:
+    steps = [b - a for a, b in zip(values, values[1:], strict=False)]
+    return all(step > 0 for step in steps) or all(step < 0 for step in steps)
+
+
+def _bin_values(bin_value: dict, bins: int, position: int) -> tuple[tuple[float, ...], bool]:
+    """(value per bin, explicit) from ``{"linspace": [low, high]}`` or ``{"values": [...]}``."""
+    if set(bin_value) not in ({"linspace"}, {"values"}):
+        raise SpecError([f"outputs[{position}].bin_value needs exactly one of linspace or values"])
+    if "linspace" in bin_value:
+        ends = bin_value["linspace"]
+        if bins < 1 or not isinstance(ends, list) or len(ends) != LINSPACE_ENDS or not all(map(_is_number, ends)):
+            raise SpecError([f"outputs[{position}] needs bins >= 1 and bin_value.linspace [low, high]"])
+        return _linspace(float(ends[0]), float(ends[1]), bins), False
+    values = bin_value["values"]
+    if bins < 1 or not isinstance(values, list) or len(values) != bins or not all(map(_is_number, values)):
+        raise SpecError([f"outputs[{position}] needs bins >= 1 and bin_value.values with one number per bin"])
+    if not _is_strictly_monotonic(values):
+        raise SpecError([f"outputs[{position}].bin_value.values must be strictly monotonic (bins are ordinal)"])
+    return tuple(float(v) for v in values), True
+
+
+def _labels(item: dict, bins: int, position: int) -> tuple[str, ...]:
+    labels = item.get("labels", [])
+    if not isinstance(labels, list) or not all(isinstance(label, str) and label for label in labels):
+        raise SpecError([f"outputs[{position}].labels must be a list of non-empty strings"])
+    if labels and (len(labels) != bins or len(set(labels)) != bins):
+        raise SpecError([f"outputs[{position}].labels must have {bins} distinct entries (one per bin)"])
+    return tuple(labels)
+
+
 def _parse_outputs(raw: list) -> tuple[OutputSpec, ...]:
     outputs = []
     for position, item in enumerate(raw):
         if not isinstance(item, dict) or _require(item, "head", int) != position:
             raise SpecError([f"outputs[{position}] must be an object with head == {position}"])
         bins = _require(item, "bins", int)
-        linspace = _require(_require(item, "bin_value", dict), "linspace", list)
-        if bins < 1 or len(linspace) != LINSPACE_ENDS or not all(isinstance(v, int | float) for v in linspace):
-            raise SpecError([f"outputs[{position}] needs bins >= 1 and bin_value.linspace [low, high]"])
-        name = str(_require(item, "name", str))
-        outputs.append(OutputSpec(position, name, bins, float(linspace[0]), float(linspace[1])))
+        values, explicit = _bin_values(_require(item, "bin_value", dict), bins, position)
+        outputs.append(
+            OutputSpec(
+                head=position,
+                name=str(_require(item, "name", str)),
+                bins=bins,
+                values=values,
+                labels=_labels(item, bins, position),
+                unit=str(item.get("unit", "")),
+                explicit=explicit,
+            )
+        )
     if not outputs:
         raise SpecError(["outputs must not be empty"])
     return tuple(outputs)

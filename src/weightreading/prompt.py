@@ -11,7 +11,7 @@ from dataclasses import dataclass
 
 from weightreading.architecture import equations
 from weightreading.protocol import FINAL_SECTIONS, HYPOTHESIS_SECTION
-from weightreading.spec import Spec
+from weightreading.spec import OutputSpec, Spec
 from weightreading.tensors import Tensor
 
 
@@ -87,13 +87,33 @@ def _inputs_section(spec: Spec, task_mode: str) -> str:
     return "\n".join(lines)
 
 
+def _linspace_line(item: OutputSpec, label: str) -> str:
+    return (
+        f"- head {item.head} `{label}`: {item.bins} bins; bin k (0..{item.bins - 1}) means value "
+        f"{item.low:g} + k * {item.high - item.low:g} / {item.bins - 1}  (from {item.low:g} to {item.high:g})"
+    )
+
+
+def _values_line(item: OutputSpec, label: str, task_mode: str) -> str:
+    """Explicit per-bin values; bin labels and the unit are semantics, so ``blind`` drops them."""
+    shown = task_mode == "shown"
+    bins = [
+        f"bin {k} = {value:g}" + (f" ({item.labels[k]})" if shown and item.labels else "")
+        for k, value in enumerate(item.values)
+    ]
+    unit = f" [{item.unit}]" if shown and item.unit else ""
+    return f"- head {item.head} `{label}`: {item.bins} bins; " + ", ".join(bins) + unit
+
+
 def _outputs_section(spec: Spec, task_mode: str) -> str:
     lines = ["# Outputs (one categorical head per output; bins are ordinal)"]
     for item in spec.outputs:
         label = head_label(spec, item.head, task_mode)
+        lines.append(_values_line(item, label, task_mode) if item.explicit else _linspace_line(item, label))
+    if any(item.explicit for item in spec.outputs):
         lines.append(
-            f"- head {item.head} `{label}`: {item.bins} bins; bin k (0..{item.bins - 1}) means value "
-            f"{item.low:g} + k * {item.high - item.low:g} / {item.bins - 1}  (from {item.low:g} to {item.high:g})"
+            "A head's value is the number its chosen bin stands for (listed above), not the bin index; "
+            "for some heads the value decreases as the bin index increases."
         )
     return "\n".join(lines)
 

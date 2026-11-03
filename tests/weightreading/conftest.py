@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from .wr_helpers import LAG_MODEL_DIR, SMALL_SPEC, checkpoint_bytes, small_arrays
+from .wr_helpers import LAG_MODEL_DIR, MHI_ACTORS, MHI_MODEL_DIR, SMALL_SPEC, checkpoint_bytes, small_arrays
 
 
 @pytest.fixture
@@ -30,3 +30,10 @@ def lag_model_dir() -> Path:
     if not (LAG_MODEL_DIR / "baseline_model.pt").exists():
         pytest.skip("mtd-rl-lag checkpoints not available (set WEIGHTREADING_LAG_MODEL_DIR)")
     return LAG_MODEL_DIR
+
+
+@pytest.fixture
+def mhi_model_dir() -> Path:
+    if not all((MHI_MODEL_DIR / actor).exists() for actor in MHI_ACTORS):
+        pytest.skip("delivered 2v2 actors not available (set WEIGHTREADING_MHI_MODEL_DIR)")
+    return MHI_MODEL_DIR

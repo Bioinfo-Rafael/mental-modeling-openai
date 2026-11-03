@@ -78,6 +78,19 @@ def test_parse_checkpoint_with_big_endian_storage_returns_little_endian_bytes() 
     np.testing.assert_array_equal(tensors[0].to_numpy(), [1.0, -2.5, 3.25])
 
 
+def test_parse_checkpoint_with_torch_2_4_metadata_members_is_accepted() -> None:
+    # torch 2.4 adds byteorder and .data/serialization_id (seen in the delivered 2v2 actors).
+    extra = {
+        f"{PREFIX}/byteorder": b"little",
+        f"{PREFIX}/.data/serialization_id": b"1234567890",
+        f"{PREFIX}/version": b"3\n",
+    }
+
+    tensors = parse_checkpoint_bytes(_single(_float_entry(), extra=extra))
+
+    np.testing.assert_array_equal(tensors[0].to_numpy(), np.arange(6, dtype=np.float32).reshape(2, 3))
+
+
 def test_parse_checkpoint_with_metadata_build_and_parameter_wrapper_is_accepted() -> None:
     entry = _float_entry()
     wrapped = op_global("torch._utils", "_rebuild_parameter") + op_tuple([op_tensor(entry), pickle.NEWTRUE])

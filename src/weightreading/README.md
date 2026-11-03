@@ -24,6 +24,34 @@ uv run python -m weightreading run ... --execute --confirm-paid-api          # P
 uv run python -m weightreading audit outputs/weightreading/runs/<run>        # forward-pass flags
 ```
 
+### 2v2 MAPPO high-level actors (MHI v1.3)
+
+`configs/weightreading/lag_mappo_2v2_33.spec.json` describes the delivered actors
+(`mtd-rl-lag/models/{v1.3,v1.3-1}/files/actor_latest.pt`, 30 tensors, 155,917 params): 33-D
+`mhi_multiplecombat_shoot_33_v1` observation, MLP -> GRU -> LN -> ACT MLP -> 4 heads
+(altitude/heading/speed command, shoot). The checkpoints are client files: read them in place,
+never copy them into this repository.
+
+```bash
+A=/home/user151005/workspace/mtd-rl-lag/models/v1.3/files/actor_latest.pt
+uv run python -m weightreading validate-spec --checkpoint $A --spec configs/weightreading/lag_mappo_2v2_33.spec.json
+unshare -rn .venv/bin/python -m weightreading preview --checkpoint $A \
+  --spec configs/weightreading/lag_mappo_2v2_33.spec.json                    # provably offline
+mkdir -p outputs/weightreading/slurm
+SPEC=lag_mappo_2v2_33 CHECKPOINT=$A sbatch --export=ALL scripts/weightreading_run.sbatch   # self-test + preview
+SPEC=lag_mappo_2v2_33 CHECKPOINT=$A WEIGHTREADING_CONFIRM_PAID=yes OPENAI_API_KEY=... \
+  sbatch --export=ALL scripts/weightreading_run.sbatch                       # PAID
+```
+
+The spec has one alias (`net-6a3a494d`), and the bundle directory is named after it, so after a v1.3
+run a v1.3-1 run with the same spec refuses with "existing bundle ... differs" (before any API call).
+For v1.3-1, copy the spec under a new name with a fresh `network_alias` (`net-` + 8 hex digits), e.g.
+`lag_mappo_2v2_33_v1_3_1.spec.json`, and pass `SPEC=lag_mappo_2v2_33_v1_3_1`.
+
+Heads use `bin_value.values` (one listed value per bin, strictly monotonic) with optional `labels`
+and `unit`; `blind` mode shows the values but withholds labels and unit. Tests that read the actors
+skip unless they exist under `WEIGHTREADING_MHI_MODEL_DIR` (default `mtd-rl-lag/models`).
+
 `run` without both paid flags writes the same local preview as `preview`; one flag alone is an
 argparse error. The API key is read from the environment only after both flags and the sandbox
 preflight pass. The SDK client uses `max_retries=0`. Paid runs belong on compute nodes (see
@@ -36,6 +64,7 @@ preflight pass. The SDK client uses `max_retries=0`. Paid runs belong on compute
 | `configs/weightreading/run.yaml` | model id (no default in code), reasoning effort, `task_mode`, limits, sandbox limits, prices |
 | `configs/weightreading/lag_baseline_12.spec.json` | `baseline_model.pt`: 12-D obs, MLP -> GRU -> LN -> 4 heads |
 | `configs/weightreading/lag_dodge_21.spec.json` | `dodge_missile_model.pt`: 21-D obs, ... -> LN -> MLP -> 4 heads |
+| `configs/weightreading/lag_mappo_2v2_33.spec.json` | 2v2 MAPPO `actor_latest.pt` (MHI v1.3, v1.3-1): 33-D obs, ... -> LN -> MLP -> heads [3, 5, 3, 2] |
 | `outputs/weightreading/bundles/<alias>/` | `weights/<key>.npy` + `weights/index.json` (mounted read-only), `manifest.json` |
 | `outputs/weightreading/previews/<UTC>_<alias>_<mode>/` | `message.txt`, `preview.json` (offline token/cost bound) |
 | `outputs/weightreading/runs/<UTC>_<alias>_<mode>/` | `message.txt`, `run.json` (provenance, preflight), `transcript.jsonl`, `tool_calls.jsonl`, `state.json`, `final_answer.md`, `audit.json`, `work/` |
