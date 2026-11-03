@@ -36,6 +36,8 @@ llm-x-evaluator = { path = "mentalmodeling", editable = true }
 
 [tool.setuptools.packages.find]
 where = ["src"]
+# Two top-level packages: the shared library and weightreading (src/weightreading/).
+include = ["mtd_rl_xavier*", "weightreading*"]
 
 [tool.pytest.ini_options]
 addopts = "-ra -p no:cacheprovider"

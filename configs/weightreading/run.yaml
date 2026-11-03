@@ -1,0 +1,33 @@
+# weightreading run configuration (python -m weightreading preview|run --config <this file>).
+# Every value here is explicit: the code has no default model id. Edit or copy this file to change
+# the model; paid calls still need `run --execute --confirm-paid-api`.
+
+backend: openai-responses        # OpenAI Responses API, no tools passed to the model
+model: gpt-5.6-sol               # model id sent to the API; must have a pricing entry below
+reasoning_effort: high           # Responses API reasoning.effort
+task_mode: shown                 # shown: task + I/O semantics; blind: I/O layout only, no task/domain
+
+limits:
+  max_runs: 30                   # code executions per session (blog Exp 3 allowed 100, used <= 11)
+  max_output_tokens: 32000       # per model turn
+  max_total_tokens: 3000000      # billed input + output across the session; the loop stops when exceeded
+  max_protocol_errors: 3         # consecutive malformed replies before the session stops
+
+sandbox:
+  python: .venv/bin/python       # interpreter for the executor (relative to the repo root); needs numpy
+  timeout_s: 600                 # wall clock per code run
+  memory_bytes: 8589934592       # RLIMIT_AS per code run (8 GiB)
+  file_size_bytes: 1073741824    # RLIMIT_FSIZE per file written in /work (1 GiB)
+  stdout_cap_chars: 20000        # stdout shown to the model per run
+  stderr_tail_chars: 6000        # tail of stderr shown to the model per run
+  tmp_size_mb: 512               # tmpfs size of /tmp inside the sandbox
+  threads: 4                     # OMP/OPENBLAS threads inside the sandbox (RLIMIT_NPROC = threads + 16)
+  work_max_bytes: 2147483648     # /work size checked after every run; the session stops above it (2 GiB)
+
+# USD per 1M tokens, used only for the local cost preview.
+# Source: workspace/notebooks/01_token_estimation.py MODELS (PRICE_CHECKED 2026-09-09). Re-check before paid runs.
+pricing:
+  gpt-5.6-sol: {input: 4.00, cached_input: 0.40, output: 20.00}
+  gpt-5.6-terra: {input: 2.00, cached_input: 0.20, output: 12.00}
+  gpt-5.6-luna: {input: 0.20, cached_input: 0.02, output: 1.20}
+  gpt-6-astra: {input: 10.00, cached_input: 1.00, output: 50.00}

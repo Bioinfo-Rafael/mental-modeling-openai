@@ -17,6 +17,7 @@ src/mtd_rl_xavier/     Shared library: tested, reused by more than one experimen
   preprocessing/       Raw data -> prompts (original LLM-Xavier semantics, external configs).
   experiment/          Planning, guarded OpenAI execution, split batches, Joint-question analysis.
   tools/               CLI utilities: inventories, token counting, schema docs.
+src/weightreading/     LLM reads an RL policy's raw weights (no forward pass); see its README.md.
 tests/                 Tests for src/ (mentalmodeling/tests is collected too).
 workspace/             Exploratory experiments, one directory per experiment (NN_name/).
   notebooks/           Ad-hoc data and token inspection notebooks.
@@ -31,6 +32,9 @@ Where new code goes:
 - One-off or still-changing experiment code goes in `workspace/NN_name/` (see
   [workspace/README.md](workspace/README.md)).
 - Once a second experiment needs it, promote it to `src/mtd_rl_xavier/` and add tests in `tests/`.
+- Weight-reading code (LLM explains a policy from its weights) goes in `src/weightreading/`,
+  with tests in `tests/weightreading/`, specs and run config in `configs/weightreading/`, and
+  outputs in `outputs/weightreading/`. See [src/weightreading/README.md](src/weightreading/README.md).
 - `mentalmodeling/` changes only to track upstream LLM-Xavier. Its files are hashed into
   experiment provenance (see below), so an edit there invalidates comparisons with saved results.
 
@@ -57,6 +61,7 @@ Paid API calls read `OPENAI_API_KEY` (or a hidden prompt, depending on the exper
 uv run poe test                                   # tests/ + mentalmodeling/tests
 uv run poe test-workspace                         # every workspace experiment, one pytest run each
 uv run poe lint                                   # ruff on src/ and tests/
+uv run python -m weightreading --help             # weight reading: inspect/preview/run (paid only with flags)
 uv run pytest tests/test_token_tools.py::test_prompt_generation_reuses_upstream   # one test
 uv run pytest workspace/14_mental-modeling_LAG    # one experiment's tests
 uv run python -m mtd_rl_xavier.tools.show_data --dataset MountainCar-v0 --episode 0 --index 25
