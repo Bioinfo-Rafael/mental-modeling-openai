@@ -58,9 +58,24 @@ def test_llm_x_resolves_to_vendored_source(tmp_path: Path) -> None:
     assert Path(result.stdout.strip()) == paths.MENTALMODELING / "llm_x/__init__.py"
 
 
+def test_mentalmodeling_is_not_an_importable_name(tmp_path: Path) -> None:
+    """The editable install must expose `llm_x`, not `src/` as a whole: a `mentalmodeling`
+    import name would be a second module identity for the vendored code."""
+    probe = (
+        "import importlib.util as u; "
+        "print(u.find_spec('mentalmodeling')); "
+        "print(u.find_spec('llm_x') is not None)"
+    )
+
+    result = subprocess.run(
+        [sys.executable, "-I", "-c", probe], cwd=tmp_path, capture_output=True, text=True, check=True
+    )
+
+    assert result.stdout.split() == ["None", "True"]
+
+
 def test_no_code_imports_vendored_code_by_directory_name() -> None:
-    """The src-layout editable install puts src/ on sys.path, so `mentalmodeling.llm_x` would
-    import (a second module identity for `llm_x`). Nothing may rely on that name."""
+    """Defence in depth next to the test above: nothing may even spell the second name."""
     tracked = subprocess.run(
         ["git", "ls-files", "*.py", "*.ipynb"], cwd=paths.ROOT, capture_output=True, text=True, check=True
     ).stdout.split()
@@ -73,6 +88,20 @@ def test_no_code_imports_vendored_code_by_directory_name() -> None:
     ]
 
     assert offenders == []
+
+
+def test_setuptools_package_list_covers_every_package_directory() -> None:
+    """The list is explicit (see pyproject.toml), so a new subpackage must be added by hand."""
+    tomllib = pytest.importorskip("tomllib")
+    declared = set(tomllib.loads((paths.ROOT / "pyproject.toml").read_text())["tool"]["setuptools"]["packages"])
+    src = paths.ROOT / "src"
+    on_disk = {
+        ".".join(init.parent.relative_to(src).parts)
+        for top in ("mtd_rl_xavier", "weightreading")
+        for init in (src / top).rglob("__init__.py")
+    }
+
+    assert declared == on_disk
 
 
 @pytest.mark.parametrize("relative", ["", "derived.json", "llm_x/derived.json", "new_dir/out.csv"])

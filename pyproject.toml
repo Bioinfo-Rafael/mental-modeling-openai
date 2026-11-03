@@ -34,11 +34,26 @@ dev = ["pytest>=7,<9", "ruff>=0.8", "poethepoet>=0.29"]
 [tool.uv.sources]
 llm-x-evaluator = { path = "src/mentalmodeling", editable = true }
 
-[tool.setuptools.packages.find]
-where = ["src"]
 # Two top-level packages: the shared library and weightreading (src/weightreading/).
 # src/mentalmodeling/ is the separate `llm-x-evaluator` distribution and must not ship here.
-include = ["mtd_rl_xavier*", "weightreading*"]
+# The explicit package-dir keeps the editable install from putting all of src/ on sys.path
+# (a .pth entry), which would also expose `src/mentalmodeling/` as importable `mentalmodeling`.
+[tool.setuptools]
+# Subpackages are listed explicitly because `find` would map "" -> src and bring the .pth back;
+# tests/test_mentalmodeling_layout.py fails when this list misses a package directory.
+packages = [
+  "mtd_rl_xavier",
+  "mtd_rl_xavier.datasets",
+  "mtd_rl_xavier.experiment",
+  "mtd_rl_xavier.experiment.common_analysis",
+  "mtd_rl_xavier.preprocessing",
+  "mtd_rl_xavier.tools",
+  "weightreading",
+]
+
+[tool.setuptools.package-dir]
+mtd_rl_xavier = "src/mtd_rl_xavier"
+weightreading = "src/weightreading"
 
 [tool.pytest.ini_options]
 addopts = "-ra -p no:cacheprovider"

@@ -9,7 +9,6 @@ import time
 from pathlib import Path
 
 import pytest
-from wr_helpers import small_arrays
 
 from mtd_rl_xavier import paths
 from weightreading.bundle import verify_bundle, write_bundle
@@ -27,6 +26,8 @@ from weightreading.sandbox import (
     wrap_code,
 )
 from weightreading.tensors import Tensor
+
+from .wr_helpers import small_arrays
 
 VENV_PYTHON = paths.ROOT / ".venv" / "bin" / "python"
 LIMITS = SandboxLimits(

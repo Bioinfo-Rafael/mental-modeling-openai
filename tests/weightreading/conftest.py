@@ -6,7 +6,8 @@ import json
 from pathlib import Path
 
 import pytest
-from wr_helpers import LAG_MODEL_DIR, SMALL_SPEC, checkpoint_bytes, small_arrays
+
+from .wr_helpers import LAG_MODEL_DIR, SMALL_SPEC, checkpoint_bytes, small_arrays
 
 
 @pytest.fixture

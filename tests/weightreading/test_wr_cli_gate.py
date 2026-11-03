@@ -6,12 +6,13 @@ import json
 from pathlib import Path
 
 import pytest
-from test_wr_session import CODE, FINAL, FakeExecutor
 
 from weightreading import cli, commands
 from weightreading.backends import make_openai_client
 from weightreading.preflight import PreflightResult
 from weightreading.sandbox import Interpreter
+
+from .test_wr_session import CODE, FINAL, FakeExecutor
 
 DUMMY_INTERPRETER = Interpreter("/opt/python", "bin/python3", "/opt/site/numpy", "", "2.0", "3.12.0")
 

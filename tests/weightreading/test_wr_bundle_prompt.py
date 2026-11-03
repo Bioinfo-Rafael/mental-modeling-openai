@@ -8,7 +8,6 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from wr_helpers import small_arrays
 
 from mtd_rl_xavier import paths
 from weightreading.bundle import BundleError, verify_bundle, write_bundle
@@ -18,6 +17,8 @@ from weightreading.prompt import ExecutorLimits, first_message, run_result_messa
 from weightreading.protocol import KIND_CODE, KIND_ERROR, KIND_FINAL, parse_reply
 from weightreading.spec import parse_spec
 from weightreading.tensors import Tensor
+
+from .wr_helpers import small_arrays
 
 RUN_CONFIG = paths.CONFIGS / "weightreading" / "run.yaml"
 LIMITS = ExecutorLimits(max_runs=7, timeout_s=60, stdout_cap_chars=1000, stderr_tail_chars=200)

@@ -9,7 +9,11 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from wr_helpers import (
+
+from weightreading import torch_reader
+from weightreading.torch_reader import CheckpointError, parse_checkpoint_bytes, read_checkpoint
+
+from .wr_helpers import (
     PREFIX,
     Entry,
     build_zip,
@@ -22,9 +26,6 @@ from wr_helpers import (
     op_tuple,
     state_dict_pickle,
 )
-
-from weightreading import torch_reader
-from weightreading.torch_reader import CheckpointError, parse_checkpoint_bytes, read_checkpoint
 
 DATA_PKL = f"{PREFIX}/data.pkl"
 

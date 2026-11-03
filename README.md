@@ -38,8 +38,10 @@ Where new code goes:
   outputs in `outputs/weightreading/`. See [src/weightreading/README.md](src/weightreading/README.md).
 - `src/mentalmodeling/` changes only to track upstream LLM-Xavier. Its files are hashed into
   experiment provenance (see below), so an edit there invalidates comparisons with saved results.
-  It is not part of the `mtd-rl-xavier` wheel. Import it only as `llm_x`: the editable install
-  also exposes `mentalmodeling.llm_x`, a second module identity that a test rejects.
+  It is not part of the `mtd-rl-xavier` wheel. Import it only as `llm_x`: `mentalmodeling` is
+  deliberately not an importable name (`pyproject.toml` maps only `mtd_rl_xavier` and
+  `weightreading`, so `src/` is not put on `sys.path`), and a test checks that.
+  A new subpackage under those two needs an entry in `[tool.setuptools] packages`.
 
 ## Setup
 

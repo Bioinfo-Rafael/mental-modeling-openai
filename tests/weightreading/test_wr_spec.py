@@ -6,10 +6,11 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from wr_helpers import small_arrays
 
 from weightreading.spec import SpecError, check_against_tensors, load_spec, parse_spec
 from weightreading.tensors import Tensor
+
+from .wr_helpers import small_arrays
 
 SPEC_DIR = Path(__file__).resolve().parents[2] / "configs" / "weightreading"
 
