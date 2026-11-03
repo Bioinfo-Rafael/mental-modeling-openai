@@ -43,10 +43,13 @@ SPEC=lag_mappo_2v2_33 CHECKPOINT=$A WEIGHTREADING_CONFIRM_PAID=yes OPENAI_API_KE
   sbatch --export=ALL scripts/weightreading_run.sbatch                       # PAID
 ```
 
-The spec has one alias (`net-6a3a494d`), and the bundle directory is named after it, so after a v1.3
-run a v1.3-1 run with the same spec refuses with "existing bundle ... differs" (before any API call).
-For v1.3-1, copy the spec under a new name with a fresh `network_alias` (`net-` + 8 hex digits), e.g.
-`lag_mappo_2v2_33_v1_3_1.spec.json`, and pass `SPEC=lag_mappo_2v2_33_v1_3_1`.
+The bundle, preview and run directories are keyed by the spec alias (`net-6a3a494d`) plus the first 12
+hex digits of the checkpoint sha256 (`net-6a3a494d-<sha12>`), so one spec can be used with several
+checkpoints: after a v1.3 run, the v1.3-1 run with the same spec writes its own bundle and run
+directory. Re-bundling the same checkpoint and spec reuses the bundle; a bundle at the same key whose
+bytes differ is still refused ("existing bundle ... differs"). Only the alias reaches the prompt; the
+checkpoint hash lives in the directory names and in `run.json` (`inputs.checkpoint_sha256`, full).
+Directories from the older alias-only layout are left untouched and ignored.
 
 Heads use `bin_value.values` (one listed value per bin, strictly monotonic) with optional `labels`
 and `unit`; `blind` mode shows the values but withholds labels and unit. Tests that read the actors
@@ -65,12 +68,12 @@ preflight pass. The SDK client uses `max_retries=0`. Paid runs belong on compute
 | `configs/weightreading/lag_baseline_12.spec.json` | `baseline_model.pt`: 12-D obs, MLP -> GRU -> LN -> 4 heads |
 | `configs/weightreading/lag_dodge_21.spec.json` | `dodge_missile_model.pt`: 21-D obs, ... -> LN -> MLP -> 4 heads |
 | `configs/weightreading/lag_mappo_2v2_33.spec.json` | 2v2 MAPPO `actor_latest.pt` (MHI v1.3, v1.3-1): 33-D obs, ... -> LN -> MLP -> heads [3, 5, 3, 2] |
-| `outputs/weightreading/bundles/<alias>/` | `weights/<key>.npy` + `weights/index.json` (mounted read-only), `manifest.json` |
-| `outputs/weightreading/previews/<UTC>_<alias>_<mode>/` | `message.txt`, `preview.json` (offline token/cost bound) |
-| `outputs/weightreading/runs/<UTC>_<alias>_<mode>/` | `message.txt`, `run.json` (provenance, preflight), `transcript.jsonl`, `tool_calls.jsonl`, `state.json`, `final_answer.md`, `audit.json`, `work/` |
+| `outputs/weightreading/bundles/<alias>-<sha12>/` | `weights/<key>.npy` + `weights/index.json` (mounted read-only), `manifest.json` |
+| `outputs/weightreading/previews/<UTC>_<alias>-<sha12>_<mode>/` | `message.txt`, `preview.json` (offline token/cost bound) |
+| `outputs/weightreading/runs/<UTC>_<alias>-<sha12>_<mode>/` | `message.txt`, `run.json` (provenance, preflight), `transcript.jsonl`, `tool_calls.jsonl`, `state.json`, `final_answer.md`, `audit.json`, `work/` |
 
 Specs carry `provenance` and `notes` that never reach the prompt; the random `network_alias` is
-the only name the model, the bundle and the run directory use.
+the only name the model sees.
 
 ## Safety properties
 

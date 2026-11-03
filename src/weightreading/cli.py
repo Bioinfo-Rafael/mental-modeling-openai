@@ -79,7 +79,7 @@ def build_parser() -> argparse.ArgumentParser:
 def _preview(args: argparse.Namespace) -> int:
     config = commands.with_task_mode(load_config(args.config, paths.ROOT), args.task_mode)
     prepared = commands.prepare(args.checkpoint, args.spec, args.output_root)
-    name = f"{commands.utc_stamp()}_{prepared.spec.alias}_{config.task_mode}"
+    name = commands.output_name(prepared, config)
     directory = args.output_root / "previews" / name
     payload = commands.write_preview(prepared, config, directory)
     _print({"preview_dir": str(directory), **payload})
@@ -92,7 +92,7 @@ def _run(args: argparse.Namespace, client_factory: Callable[[], Any]) -> int:
         return _preview(args)
     config = commands.with_task_mode(load_config(args.config, paths.ROOT), args.task_mode)
     prepared = commands.prepare(args.checkpoint, args.spec, args.output_root)
-    name = f"{commands.utc_stamp()}_{prepared.spec.alias}_{config.task_mode}"
+    name = commands.output_name(prepared, config)
     run_dir = args.output_root / "runs" / name
     code, record = commands.execute_run(prepared, config, run_dir, client_factory)
     if code != EXIT_OK:

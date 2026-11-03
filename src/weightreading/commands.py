@@ -16,7 +16,7 @@ from mtd_rl_xavier import paths
 from mtd_rl_xavier.tools.output_safety import derived_path
 from weightreading import provenance
 from weightreading.backends import OpenAIResponsesBackend
-from weightreading.bundle import Bundle, verify_bundle, write_bundle
+from weightreading.bundle import Bundle, checkpoint_prefix, verify_bundle, write_bundle
 from weightreading.config import RunConfig
 from weightreading.estimate import preview_estimate
 from weightreading.preflight import PreflightResult, run_preflight
@@ -72,6 +72,12 @@ def prepare(checkpoint_path: Path, spec_path: Path, output_root: Path) -> Prepar
     checkpoint, spec = load_checked(checkpoint_path, spec_path)
     bundle = write_bundle(checkpoint.tensors, spec.alias, checkpoint.sha256, output_root / "bundles")
     return Prepared(checkpoint, spec, spec_path, bundle)
+
+
+def output_name(prepared: Prepared, config: RunConfig) -> str:
+    """Run/preview directory name: ``<UTC>_<alias>-<checkpoint sha12>_<task_mode>``."""
+    prefix = checkpoint_prefix(prepared.checkpoint.sha256)
+    return f"{utc_stamp()}_{prepared.spec.alias}-{prefix}_{config.task_mode}"
 
 
 def executor_limits(config: RunConfig) -> ExecutorLimits:

@@ -76,7 +76,9 @@ def test_run_without_flags_writes_preview_and_builds_no_client(small_files, tmp_
     preview_dir = next((tmp_path / "out" / "previews").iterdir())
     assert (preview_dir / "message.txt").exists()
     assert json.loads((preview_dir / "preview.json").read_text())["api_requests_made"] == 0
-    assert len(list((tmp_path / "out" / "bundles" / "net-0123abcd" / "weights").glob("*.npy"))) == 18
+    (bundle_dir,) = (tmp_path / "out" / "bundles").iterdir()
+    assert bundle_dir.name.startswith("net-0123abcd-")
+    assert len(list((bundle_dir / "weights").glob("*.npy"))) == 18
     assert not (tmp_path / "out" / "runs").exists()
 
 
@@ -108,7 +110,7 @@ def test_run_execute_with_fakes_produces_complete_run_dir(small_files, tmp_path,
 
     assert code == 0 and factory.calls == 1
     run_dir = next((tmp_path / "out" / "runs").iterdir())
-    assert run_dir.name.endswith("_net-0123abcd_blind")
+    assert run_dir.name.endswith("_blind") and "_net-0123abcd-" in run_dir.name
     for name in ["message.txt", "transcript.jsonl", "tool_calls.jsonl", "state.json", "final_answer.md", "audit.json"]:
         assert (run_dir / name).exists(), name
     record = json.loads((run_dir / "run.json").read_text())

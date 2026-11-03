@@ -21,6 +21,7 @@ from weightreading.tensors import Tensor
 WEIGHTS_DIR = "weights"
 INDEX_FILE = "index.json"
 MANIFEST_FILE = "manifest.json"
+CHECKPOINT_PREFIX_CHARS = 12
 
 
 class BundleError(ValueError):
@@ -35,6 +36,16 @@ class Bundle:
     @property
     def weights(self) -> Path:
         return self.path / WEIGHTS_DIR
+
+
+def checkpoint_prefix(checkpoint_sha256: str) -> str:
+    """Short checkpoint sha256 used in on-disk names only (never shown to the LLM)."""
+    return checkpoint_sha256[:CHECKPOINT_PREFIX_CHARS]
+
+
+def bundle_key(alias: str, checkpoint_sha256: str) -> str:
+    """Directory name of a bundle: the same spec on two checkpoints gets two keys."""
+    return f"{alias}-{checkpoint_prefix(checkpoint_sha256)}"
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -66,15 +77,16 @@ def _render(tensors: tuple[Tensor, ...], alias: str, checkpoint_sha256: str) -> 
 
 
 def write_bundle(tensors: tuple[Tensor, ...], alias: str, checkpoint_sha256: str, root: Path) -> Bundle:
-    """Write ``root/<alias>/`` atomically. An identical existing bundle is reused; a different one is refused."""
-    target = derived_path(root / alias)
+    """Write ``root/<alias>-<checkpoint sha12>/`` atomically. An identical existing bundle is reused; a different one is refused."""
+    key = bundle_key(alias, checkpoint_sha256)
+    target = derived_path(root / key)
     files = _render(tensors, alias, checkpoint_sha256)
     manifest_sha = sha256_bytes(files[MANIFEST_FILE])
     if target.exists():
         verify_bundle(target, expected_manifest_sha256=manifest_sha)
         return Bundle(target, manifest_sha)
     target.parent.mkdir(parents=True, exist_ok=True)
-    staging = Path(tempfile.mkdtemp(prefix=f".{alias}.partial-", dir=target.parent))
+    staging = Path(tempfile.mkdtemp(prefix=f".{key}.partial-", dir=target.parent))
     try:
         (staging / WEIGHTS_DIR).mkdir()
         for relative, data in files.items():

@@ -34,7 +34,7 @@ def test_write_bundle_twice_gives_identical_manifest(tmp_path: Path) -> None:
     second = write_bundle(_tensors(), "net-0123abcd", "abc", tmp_path)
 
     assert first.manifest_sha256 == second.manifest_sha256
-    assert sorted(p.name for p in tmp_path.iterdir()) == ["net-0123abcd"]
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["net-0123abcd-abc"]
 
 
 def test_write_bundle_npy_files_round_trip(tmp_path: Path) -> None:
