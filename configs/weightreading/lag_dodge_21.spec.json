@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "network_alias": "net-70c4f334",
-  "hidden_from_prompt": ["provenance", "notes"],
+  "hidden_from_prompt": ["provenance", "notes", "evaluation"],
   "provenance": {
     "checkpoint_sha256": "b43200c82b083d63f9cec4c8d911130425c7d0b21bdd3ebf7d864741546c83e1",
     "origin": "mtd-rl-lag envs/JSBSim/model/dodge_missile_model.pt",
@@ -51,5 +51,38 @@
     "Layout from DodgeMissileAgent.get_observation (inference). Positions/velocities are NEU; AO/TA/R/side use get2d_AO_TA_R with side_flag_mode='legacy' (sign of the 2-D cross product velocity x displacement; +1 = right).",
     "Assumption: the training task used the same 21-D layout; the training observation clip is not verified, so input_clip is null.",
     "Missile features 15-20 are all 0 when no live missile targets this aircraft (first live entry of sim.under_missiles)."
-  ]
+  ],
+  "evaluation": {
+    "notes": [
+      "Own state (assumption, from the LAG/MHI scenario configs: start 20000 ft, u 800 ft/s = 244 m/s, altitude_limit 2500 m): altitude 3-8 km, roll +-60 deg, pitch +-30 deg (sampled as angles, written as sin/cos), u 170-306 m/s, v +-10 m/s, w -17..34 m/s, calibrated airspeed 119-272 m/s. Inputs are sampled independently and uniformly, so physically coupled inputs (u vs airspeed, AO vs side) can form off-manifold combinations.",
+      "Opponent: delta speed +-102 m/s, delta altitude +-2 km, AO/TA over [0, pi], horizontal distance 1-20 km, side in {-1, +1} (0 = exactly ahead/behind has measure zero).",
+      "Missile: present with p = 0.5 (else all six entries 0, as in the source); when present delta speed +102..+850 m/s, delta altitude +-2 km, AO/TA over [0, pi], distance 0.5-15 km, side in {-1, +1}."
+    ],
+    "inputs": {
+      "altitude": {"range": [0.6, 1.6]},
+      "v_body_x": {"range": [0.5, 0.9]},
+      "v_body_y": {"range": [-0.03, 0.03]},
+      "v_body_z": {"range": [-0.05, 0.1]},
+      "airspeed": {"range": [0.35, 0.8]},
+      "opp_delta_speed": {"range": [-0.3, 0.3]},
+      "opp_delta_altitude": {"range": [-2.0, 2.0]},
+      "opp_aspect_off": {"range": [0.0, 3.141592653589793]},
+      "opp_target_aspect": {"range": [0.0, 3.141592653589793]},
+      "opp_distance": {"range": [0.1, 2.0]},
+      "opp_side": {"values": [-1, 1]},
+      "msl_delta_speed": {"range": [0.3, 2.5]},
+      "msl_delta_altitude": {"range": [-2.0, 2.0]},
+      "msl_aspect_off": {"range": [0.0, 3.141592653589793]},
+      "msl_target_aspect": {"range": [0.0, 3.141592653589793]},
+      "msl_distance": {"range": [0.05, 1.5]},
+      "msl_side": {"values": [-1, 1]}
+    },
+    "angles": [
+      {"sin": "roll_sin", "cos": "roll_cos", "range": [-1.0472, 1.0472]},
+      {"sin": "pitch_sin", "cos": "pitch_cos", "range": [-0.5236, 0.5236]}
+    ],
+    "presence": [
+      {"inputs": ["msl_delta_speed", "msl_delta_altitude", "msl_aspect_off", "msl_target_aspect", "msl_distance", "msl_side"], "p_present": 0.5}
+    ]
+  }
 }

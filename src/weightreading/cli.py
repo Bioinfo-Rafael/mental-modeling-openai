@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from mtd_rl_xavier import paths
-from weightreading import commands
+from weightreading import commands, eval_cli
 from weightreading.audit import write_audit
 from weightreading.backends import make_openai_client
 from weightreading.bundle import BundleError
@@ -73,6 +73,7 @@ def build_parser() -> argparse.ArgumentParser:
     selftest = sub.add_parser("sandbox-selftest", help="run the fail-closed sandbox preflight")
     selftest.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     selftest.add_argument("--bundle", type=Path, help="existing bundle dir (default: a tiny throwaway bundle)")
+    eval_cli.add_parser(sub)
     return parser
 
 
@@ -124,6 +125,8 @@ def _dispatch(args: argparse.Namespace, client_factory: Callable[[], Any]) -> in
     if args.command == "audit":
         _print({"audit": str(write_audit(args.run_dir))})
         return EXIT_OK
+    if args.command == "evaluate":
+        return eval_cli.run(args, _print)
     result = commands.sandbox_selftest(load_config(args.config, paths.ROOT), args.bundle)
     _print(result.to_dict())
     return EXIT_OK if result.ok else EXIT_REFUSED

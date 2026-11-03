@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "network_alias": "net-35cbb0ab",
-  "hidden_from_prompt": ["provenance", "notes"],
+  "hidden_from_prompt": ["provenance", "notes", "evaluation"],
   "provenance": {
     "checkpoint_sha256": "54e9c996d981aa1fa82c51664a1758afd04fee0b5539dd6ccb128795149dcf69",
     "origin": "mtd-rl-lag envs/JSBSim/model/baseline_model.pt",
@@ -41,5 +41,25 @@
     "Indices 8-10 are body-frame u/v/w (catalog velocities_u/v/w_mps); heading_task.py comments that call them v_north/v_east/v_down are stale.",
     "input_clip [-10, 10] is the training observation_space clip in heading_task.py; BaselineAgent does not clip at inference (values stay well inside the range).",
     "Assumption: baseline_model.pt was trained with the upstream LAG heading_task observation; not verifiable from the repository."
-  ]
+  ],
+  "evaluation": {
+    "notes": [
+      "Commands (heading_task / unreach_heading.py: increments up to 7000 ft, 180 deg, 100 m/s; the hierarchical deployment uses +-100 m, +-30 deg, +-17 m/s): delta_altitude +-1 km, delta_heading +-1.5 rad, delta_speed +-68 m/s.",
+      "Own state (assumption, from the LAG/MHI scenario configs: start 20000 ft, u 800 ft/s = 244 m/s, altitude_limit 2500 m): altitude 3-8 km, roll +-60 deg, pitch +-30 deg (sampled as angles, written as sin/cos), u 170-306 m/s, v +-10 m/s, w -17..34 m/s, calibrated airspeed 119-272 m/s. Inputs are sampled independently and uniformly, so physically coupled inputs (u vs airspeed, AO vs side) can form off-manifold combinations."
+    ],
+    "inputs": {
+      "delta_altitude": {"range": [-1.0, 1.0]},
+      "delta_heading": {"range": [-1.5, 1.5]},
+      "delta_speed": {"range": [-0.2, 0.2]},
+      "altitude": {"range": [0.6, 1.6]},
+      "v_body_x": {"range": [0.5, 0.9]},
+      "v_body_y": {"range": [-0.03, 0.03]},
+      "v_body_z": {"range": [-0.05, 0.1]},
+      "airspeed": {"range": [0.35, 0.8]}
+    },
+    "angles": [
+      {"sin": "roll_sin", "cos": "roll_cos", "range": [-1.0472, 1.0472]},
+      {"sin": "pitch_sin", "cos": "pitch_cos", "range": [-0.5236, 0.5236]}
+    ]
+  }
 }

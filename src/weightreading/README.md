@@ -91,3 +91,36 @@ the only name the model sees.
   (`preflight.py`) must pass every check, or no request is sent. There is no unsandboxed fallback.
 - **Audit** (`audit.py`): flags nonlinearities, LayerNorm-like expressions, recurrence loops and
   torch imports. `human_verdict` stays null until a reviewer sets it.
+
+## Evaluation (offline, after a run)
+
+`evaluate` scores a run's `claims` against the policy's measured behaviour. It never touches the
+run directory, makes no API call and writes `evaluation.json` + `evaluation.md` into a NEW
+directory `outputs/weightreading/evaluations/<run name>/` (it refuses if that directory exists).
+
+```bash
+uv run python -m weightreading evaluate --run-dir outputs/weightreading/runs/<run> \
+  --checkpoint <the .pt the run read> --spec configs/weightreading/<spec>.spec.json [--config eval.yaml]
+```
+
+- **Reference forward** (`reference.py`): numpy float64, mirrors mtd-rl-lag (`mlp.py`, `gru.py`,
+  `act.py`, `baseline_actor.py`): Linear -> ReLU -> LayerNorm(eps 1e-5, biased variance), GRU gates
+  `[r; z; n]` with `b_hn` inside `r * (...)`, carried state = pre-LayerNorm `h'`. Torch parity:
+  `sbatch scripts/weightreading_forward_parity.sbatch` (throwaway CPU torch via `uv run --isolated`;
+  reports under `outputs/weightreading/parity/forward-<job>/`).
+- **Base states** (`eval_ranges.py`, `sampling.py`): no recorded observations exist, so N states
+  (default 512, seed 0) are sampled from the spec's harness-only `evaluation` section (uniform
+  `range`, discrete `values`, sin/cos `angles` sampled as one angle, `presence` groups that are
+  all-zero when absent). Inputs are independent: results describe a synthetic state distribution.
+- **Effect** (`effects.py`): per state, the clamped central difference of the head's expected
+  value `E[v] = sum_k p_k v_k` (shoot: p(yes)), step 5% of the input range, scaled to "change over
+  the whole range / head value span". sin input = increase the angle; cos input = move |angle|
+  towards 0; discrete = lowest vs highest value; presence members only where present. Conditions:
+  `h0` (primary), `warm` (30 steps of the repeated base observation, then one perturbed step),
+  `sustained` (perturbed observation for all 31 steps). Secondary: argmax chosen-value flips.
+- **Truth and scores** (`scoring.py`, `bootstrap.py`): '+'/'-' if >= 70% of states agree in sign
+  and |mean effect| >= 0.02, else 'none'; accuracy overall / signed / by confidence, outcomes
+  (wrong_sign, overclaim, missed), Brier, recall of signed truths over ALL pairs, top-3 coverage per
+  head, a 4x4 threshold grid and a state-level bootstrap (95% CI, per-claim label stability).
+  Settings (`--config` YAML): `samples, seed, warmup_steps, step_fraction, agree, min_effect,
+  top_k, angle_mode (angle|raw), bootstrap_resamples`.

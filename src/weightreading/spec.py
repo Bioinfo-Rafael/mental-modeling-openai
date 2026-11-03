@@ -1,7 +1,8 @@
 """Network spec (``configs/weightreading/*.spec.json``): load, validate, cross-check against tensors.
 
 Only ``description``, ``inputs``, ``input_clip``, ``architecture`` and ``outputs`` ever reach the
-prompt. ``provenance`` and ``notes`` stay on the harness side (they name the source checkpoint).
+prompt. ``provenance`` and ``notes`` stay on the harness side (they name the source checkpoint), and
+so does the optional ``evaluation`` section (base-state ranges for claim evaluation).
 """
 
 from __future__ import annotations
@@ -14,6 +15,7 @@ from pathlib import Path
 
 from weightreading import SCHEMA_VERSION
 from weightreading.architecture import BLOCK_TYPES, Block, expected_params
+from weightreading.eval_ranges import EvalRanges, parse_eval_ranges
 from weightreading.tensors import Tensor
 
 ALIAS_RE = re.compile(r"^net-[0-9a-f]{8}$")
@@ -28,6 +30,7 @@ TOP_LEVEL_KEYS = {
     "architecture",
     "outputs",
     "notes",
+    "evaluation",
 }
 CLIP_BOUNDS = 2
 LINSPACE_ENDS = 2
@@ -84,6 +87,7 @@ class Spec:
     outputs: tuple[OutputSpec, ...]
     provenance: tuple[tuple[str, str], ...]
     notes: tuple[str, ...]
+    evaluation: EvalRanges | None = None  # harness-only sampling ranges (eval_ranges.py)
 
 
 def _require(raw: dict, key: str, kind: type | tuple[type, ...]) -> object:
@@ -248,6 +252,9 @@ def parse_spec(raw: object) -> Spec:
     clip = raw.get("input_clip")
     if clip is not None and (not isinstance(clip, list) or len(clip) != CLIP_BOUNDS):
         raise SpecError(["input_clip must be null or [low, high]"])
+    evaluation, eval_problems = parse_eval_ranges(raw.get("evaluation"), tuple(item.name for item in inputs))
+    if eval_problems:
+        raise SpecError(eval_problems)
     provenance = raw.get("provenance", {})
     return Spec(
         alias=alias,
@@ -258,6 +265,7 @@ def parse_spec(raw: object) -> Spec:
         outputs=outputs,
         provenance=tuple((str(k), str(v)) for k, v in provenance.items()),
         notes=tuple(str(note) for note in raw.get("notes", [])),
+        evaluation=evaluation,
     )
 
 
