@@ -19,16 +19,19 @@ from mtd_rl_xavier.translator.cli import build_system_one_client
 from mtd_rl_xavier.translator.detector import (
     DetectionContext,
     DetectorLayer,
+    DetectorMessage,
     SystemOneDetectionModel,
+    choice_question,
     detector_state_bound,
-    noul_question,
     render_detector_state,
 )
 from mtd_rl_xavier.translator.schema import (
+    Alarm,
     Instruction,
     IntentTranslation,
     ModelCallError,
     PreviousTranslation,
+    RequestPoint,
     TargetRef,
 )
 from mtd_rl_xavier.translator.translation import (
@@ -44,6 +47,7 @@ from tests.llm.llm_fakes import (
     DumpableResponse,
     ScriptedResponsesClient,
     SystemOneServer,
+    choice_answer,
     json_response,
     message_item,
     noul_answer,
@@ -65,9 +69,16 @@ KEY_ENV = "TEST_TRANSLATOR_DETECTOR_KEY"
 TEAM_A = TargetRef("team", "A")
 AIRCRAFT_A1 = TargetRef("aircraft", "A0100")
 PREVIOUS = PreviousTranslation("s:team:A:000000", 0, IntentTranslation("[FAKE] hold formation", ("[FAKE] e1",)))
+TEAM_INSTRUCTION = Instruction("ta", 0, TEAM_A, "[PLACEHOLDER] team task")
+MESSAGES = (
+    DetectorMessage("question", "r1", 4, "[PLACEHOLDER] what now?"),
+    DetectorMessage("alarm", "w1", 9, "[PLACEHOLDER] warning"),
+)
 
 
-def _context(previous: PreviousTranslation = PREVIOUS) -> DetectionContext:
+def _context(
+    previous: PreviousTranslation = PREVIOUS, messages: tuple[DetectorMessage, ...] = MESSAGES
+) -> DetectionContext:
     trajectory = fake_detector_renderer(
         None,
         start_step=1,
@@ -77,16 +88,25 @@ def _context(previous: PreviousTranslation = PREVIOUS) -> DetectionContext:
         fields=("alive", "lon_deg"),
         float_precision=5,
     )
-    return DetectionContext(TEAM_A, 10, ("A0100", "A0200"), ("B0100", "B0200"), previous, trajectory)
+    return DetectionContext(
+        TEAM_A, 10, ("A0100", "A0200"), ("B0100", "B0200"), previous, (TEAM_INSTRUCTION,), messages, trajectory
+    )
 
 
-def test_detector_state_is_target_previous_intent_and_compact_window_only() -> None:
+def test_detector_state_is_target_previous_intent_instructions_messages_and_compact_window_only() -> None:
     state = render_detector_state(_context())
 
     assert state == (
         "Target: team A (aircraft A0100, A0200). Opponents: B0100, B0200.\n"
         "Previous intent translation for this target (from step 0):\n"
         "[FAKE] hold formation\n"
+        "\n"
+        "Instructions in effect for this target:\n"
+        "- team A, issued at step 0: [PLACEHOLDER] team task\n"
+        "\n"
+        "Recent messages (alarms and human questions up to this step, most recent last):\n"
+        "- question at step 4: [PLACEHOLDER] what now?\n"
+        "- alarm at step 9: [PLACEHOLDER] warning\n"
         "\n"
         "Trajectory window: steps 1-10, 0.2 s per step, one JSON line per step, newest last; "
         "relative_step = step - 10. Fields: alive, lon_deg. null = unavailable.\n"
@@ -95,17 +115,42 @@ def test_detector_state_is_target_previous_intent_and_compact_window_only() -> N
     assert "[FAKE] e1" not in state  # evidence is not part of the detector input
 
 
-@pytest.mark.parametrize(("probability", "changed"), [(0.64, False), (0.65, True), (0.66, True)])
-def test_threshold_below_at_and_above(probability: float, changed: bool) -> None:
-    layer = DetectorLayer(FakeDetectionModel(probability), threshold=0.65)
+def test_detector_state_without_messages_says_none() -> None:
+    state = render_detector_state(_context(messages=()))
+
+    assert "most recent last):\n- none\n\nTrajectory window:" in state
+
+
+@pytest.mark.parametrize(
+    ("label", "probability", "triggered"),
+    [
+        ("start", 0.64, False),
+        ("start", 0.65, True),
+        ("start", 0.66, True),
+        ("change", 0.64, False),
+        ("change", 0.65, True),
+        ("change", 0.66, True),
+        ("none", 0.65, False),
+        ("none", 1.0, False),
+    ],
+)
+def test_threshold_below_at_and_above(label: str, probability: float, triggered: bool) -> None:
+    layer = DetectorLayer(FakeDetectionModel((label, probability)), threshold=0.65)
 
     result = layer.detect("state")
 
-    assert (result.changed, result.probability, result.threshold) == (changed, probability, 0.65)
+    assert (result.label, result.triggered, result.probability, result.threshold) == (
+        label,
+        triggered,
+        probability,
+        0.65,
+    )
+    assert result.output_json()["probabilities"][label] == probability
+    assert set(result.output_json()) == {"label", "probabilities", "threshold", "triggered"}
 
 
 def test_detector_state_bound_covers_any_intent_up_to_the_limit() -> None:
-    questions = (noul_question(make_config().detector.question),)
+    questions = (choice_question(make_config().detector.question),)
     worst_intent = "\U0001f600" * 25  # 4 UTF-8 bytes per character
     context = _context(PreviousTranslation("e", 0, IntentTranslation(worst_intent, ("x",))))
 
@@ -126,7 +171,7 @@ def test_committed_config_writes_japanese_and_the_prompt_asks_for_it() -> None:
 
 def test_detector_state_bound_holds_for_a_longest_japanese_intent_at_the_default_limit() -> None:
     config = make_config()
-    questions = (noul_question(config.detector.question),)
+    questions = (choice_question(config.detector.question),)
     limit = config.translation.max_intent_chars
     japanese = "航空機は編隊を維持して北へ向かう。" * limit  # 3 UTF-8 bytes per character
     intent = japanese[:limit]
@@ -152,25 +197,43 @@ def _system_one_client(monkeypatch: pytest.MonkeyPatch, outcomes: list[Any]) -> 
 
 
 def test_system_one_adapter_sends_exactly_the_logged_payload(monkeypatch: pytest.MonkeyPatch) -> None:
-    body = systemone_body({"unexplained_change": noul_answer(0.72, vllm_extras=True)}, vllm_extras=True)
+    probabilities = {"change": 0.72, "none": 0.2, "start": 0.08}  # server order differs from the option order
+    body = systemone_body({"point_kind": choice_answer("change", probabilities)}, vllm_extras=True)
     client, server = _system_one_client(monkeypatch, [json_response(200, body)])
-    model = SystemOneDetectionModel(client, question_id="unexplained_change")
+    model = SystemOneDetectionModel(client, question_id="point_kind")
     state = render_detector_state(_context())
 
     reply = model.decide(state)
 
     assert server.requests[0].body == model.request_payload(state)
     assert server.requests[0].body["state"] == state
+    assert list(server.requests[0].body["questions"]["point_kind"]["criteria"]) == ["none", "start", "change"]
     assert model.question == {**make_config().detector.question.to_json()}
-    assert (reply.probability, reply.model, reply.raw) == (0.72, "clef-flash", body)
+    assert (reply.label, reply.model, reply.raw) == ("change", "clef-flash", body)
+    assert reply.probabilities == (("none", 0.2), ("start", 0.08), ("change", 0.72))
     assert reply.usage == {"input_tokens": 500, "output_tokens": 0}
+
+
+def test_system_one_noul_answer_to_the_choice_question_is_a_protocol_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+    body = systemone_body({"point_kind": noul_answer(0.9)})
+    client, _ = _system_one_client(monkeypatch, [json_response(200, body)])
+    model = SystemOneDetectionModel(client, question_id="point_kind")
+
+    with pytest.raises(ModelCallError) as failed:
+        model.decide("state")
+
+    assert (failed.value.error_type, failed.value.uncertain, failed.value.raw) == (
+        "SystemOneProtocolError",
+        False,
+        body,
+    )
 
 
 def test_system_one_timeout_is_uncertain_and_server_error_keeps_raw(monkeypatch: pytest.MonkeyPatch) -> None:
     client, _ = _system_one_client(
         monkeypatch, [raise_transport(httpx.ReadTimeout), json_response(500, {"error": "boom"})]
     )
-    model = SystemOneDetectionModel(client, question_id="unexplained_change")
+    model = SystemOneDetectionModel(client, question_id="point_kind")
 
     with pytest.raises(ModelCallError) as timeout:
         model.decide("state")
@@ -183,7 +246,36 @@ def test_system_one_timeout_is_uncertain_and_server_error_keeps_raw(monkeypatch:
     assert "local-test-key" not in str(timeout.value) + str(server_error.value)
 
 
-def test_system_one_adapter_requires_one_noul_question(monkeypatch: pytest.MonkeyPatch) -> None:
+@pytest.mark.parametrize(
+    ("index", "match"),
+    [(0, "exactly one choice"), (1, "exactly one choice"), (2, "exactly the options"), (3, "question_id")],
+)
+def test_system_one_adapter_requires_one_choice_question_with_the_three_options(
+    monkeypatch: pytest.MonkeyPatch, index: int, match: str
+) -> None:
+    monkeypatch.setenv(KEY_ENV, "local-test-key")
+    labels = (("none", "n"), ("start", "s"), ("change", "c"))
+    choice = ChoiceQuestion("point_kind", "Pick one.", labels)
+    wrong_options = ChoiceQuestion("point_kind", "Pick one.", (("none", "n"), ("start", "s"), ("other", "o")))
+    other_id = ChoiceQuestion("other_id", "Pick one.", labels)
+    noul = NoulQuestion("point_kind", "Q", "yes", "no")
+    question_sets = ((noul,), (choice, NoulQuestion("extra", "Q", "yes", "no")), (wrong_options,), (other_id,))
+    client = SystemOneClient(
+        base_url="http://127.0.0.1:8000",
+        uds_path=None,
+        model="clef-flash",
+        questions=question_sets[index],
+        input_token_budget=16384,
+        timeout_s=5,
+        api_key_env=KEY_ENV,
+        transport=SystemOneServer([]).transport,
+    )
+
+    with pytest.raises(ValueError, match=match):
+        SystemOneDetectionModel(client, question_id="point_kind")
+
+
+def test_system_one_adapter_rejects_the_v1_noul_question(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(KEY_ENV, "local-test-key")
     choice = ChoiceQuestion("pick", "Pick one.", (("a", None), ("b", None)))
     noul = NoulQuestion("unexplained_change", "Q", "yes", "no")
@@ -201,22 +293,33 @@ def test_system_one_adapter_requires_one_noul_question(monkeypatch: pytest.Monke
         for questions in ((choice,), (noul, choice))
     ]
 
-    for client in clients:
-        with pytest.raises(ValueError, match="exactly one noul"):
+    for client, match in zip(clients, ("exactly the options", "exactly one choice"), strict=True):
+        with pytest.raises(ValueError, match=match):
             SystemOneDetectionModel(client, question_id="unexplained_change")
 
 
 # --- translation layer ----------------------------------------------------------------------------
 
 
-def _translation_request(previous: PreviousTranslation | None = PREVIOUS) -> TranslationModelRequest:
+ALARMS = (
+    Alarm("w1", 7, (AIRCRAFT_A1,), "[PLACEHOLDER] first warning"),
+    Alarm("w2", 22, (TEAM_A, TargetRef("team", "B")), "[PLACEHOLDER] second warning"),
+)
+QUESTION = RequestPoint("r1", 25, (TEAM_A,), "human", "[PLACEHOLDER] what is team A doing?")
+
+
+def _translation_request(
+    previous: PreviousTranslation | None = PREVIOUS,
+    alarms: tuple[Alarm, ...] = ALARMS,
+    question: RequestPoint | None = QUESTION,
+) -> TranslationModelRequest:
     instructions = (
         Instruction("ia", 0, AIRCRAFT_A1, "[PLACEHOLDER] aircraft task"),
         Instruction("ta", 20, TEAM_A, "[PLACEHOLDER] revised team task"),
     )
     trajectory = fake_translation_renderer(None, start_step=0, end_step=25, anchor_step=25, episode_alias="episode_x")
     return TranslationModelRequest(
-        TEAM_A, ("A0100", "A0200"), 25, "episode_x", instructions, "ta", trajectory, previous
+        TEAM_A, ("A0100", "A0200"), 25, "episode_x", instructions, "ta", trajectory, previous, alarms, question
     )
 
 
@@ -236,6 +339,26 @@ def test_translation_prompt_carries_all_instructions_primary_trajectory_previous
     assert "Write both in Japanese." in prompt.instructions and "at most 321 characters" in prompt.instructions
     assert prompt.schema["required"] == ["intent", "evidence"] and prompt.schema["additionalProperties"] is False
     assert "s:team:A" not in prompt.user_text  # no event / scenario ids reach the model
+    assert (
+        "Alarms for this target:\n"
+        "- issued at step 7 for aircraft A0100:\n  [PLACEHOLDER] first warning\n"
+        "- issued at step 22 for team A, team B:\n  [PLACEHOLDER] second warning\n"
+        "\nPrevious translation for this target:" in prompt.user_text
+    )
+    assert prompt.user_text.endswith(
+        "END WINDOW DATA\n\nQuestion from a human (step 25):\n  [PLACEHOLDER] what is team A doing?"
+    )
+    assert "w1" not in prompt.user_text and "r1" not in prompt.user_text  # alarm and request ids stay in the log
+
+
+def test_system_prompt_v2_adds_the_question_sentence() -> None:
+    prompt = system_prompt(output_language="Japanese", max_intent_chars=600)
+
+    assert (
+        "When the user message contains a question, answer it at the granularity it asks for, using only\n"
+        "the recorded data up to the current step; if the data cannot answer it, say so instead of guessing."
+    ) in prompt
+    assert '- "intent": the target\'s current intent in at most 600 characters.' in prompt  # output unchanged
 
 
 def test_first_translation_prompt_says_there_is_no_previous_translation() -> None:
@@ -244,6 +367,16 @@ def test_first_translation_prompt_says_there_is_no_previous_translation() -> Non
     prompt = layer.build_prompt(_translation_request(previous=None))
 
     assert "(none: this is the first translation for this target)" in prompt.user_text
+
+
+def test_prompt_without_alarms_or_question_says_none_and_has_no_question_section() -> None:
+    layer = TranslationLayer(FakeIntentModel(), output_language="English", max_intent_chars=100)
+
+    prompt = layer.build_prompt(_translation_request(alarms=(), question=None))
+
+    assert "Alarms for this target:\n(none)\n" in prompt.user_text
+    assert "Question from a human" not in prompt.user_text
+    assert prompt.user_text.endswith("END WINDOW DATA")
 
 
 def test_parse_accepts_exactly_one_valid_object_and_keeps_text_unchanged() -> None:

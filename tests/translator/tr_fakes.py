@@ -13,6 +13,7 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
+import httpx
 import pandas as pd
 import yaml
 
@@ -27,8 +28,9 @@ from mtd_rl_xavier.translator.config import (
 )
 from mtd_rl_xavier.translator.detector import DetectionModelReply, DetectorLayer
 from mtd_rl_xavier.translator.pipeline import Translator
-from mtd_rl_xavier.translator.schema import Scenario, sha256_text
+from mtd_rl_xavier.translator.schema import DETECTOR_LABELS, Scenario, sha256_text
 from mtd_rl_xavier.translator.translation import IntentModelOutput, TranslationLayer, TranslationPrompt
+from tests.llm.llm_fakes import choice_answer, json_response, systemone_body
 
 PROCESSED = paths.WORKSPACE / "13_LAG" / "data" / "processed"
 EPISODE_CSV = {
@@ -42,7 +44,9 @@ EXAMPLE_SCENARIO = paths.CONFIGS / "translator" / "scenario.example.yaml"
 SHORT_LAST_STEP = 30
 FAKE_DETECTOR_MODEL = "fake-detector"
 FAKE_INTENT_MODEL = "fake-intent"
-ANCHOR_PATTERN = re.compile(r"anchor=(\d+)")
+QUESTION_ID = "point_kind"  # the committed run.yaml's detector question
+# The state's trajectory framing line names the tick (anchor) step for any renderer.
+ANCHOR_PATTERN = re.compile(r"relative_step = step - (\d+)\. Fields: ")
 TARGET_PATTERN = re.compile(r"^Target: (\w+ \w+) ")
 # The committed run.yaml uses a Unix socket (D39); tests that build the real client over
 # httpx.MockTransport use this loopback TCP endpoint instead, whose checks need no directory.
@@ -87,23 +91,33 @@ def instruction(instruction_id: str, step: int, kind: str, target_id: str, text:
     return {"instruction_id": instruction_id, "issue_step": step, "target": target(kind, target_id), "text": text}
 
 
-def request(request_id: str, step: int, *targets: tuple[str, str], source: str = "human") -> dict[str, Any]:
-    return {"request_id": request_id, "step": step, "targets": [target(*t) for t in targets], "source": source}
+def request(
+    request_id: str, step: int, *targets: tuple[str, str], source: str = "human", question: str = ""
+) -> dict[str, Any]:
+    question = question or f"[PLACEHOLDER] question {request_id}"
+    return {
+        "request_id": request_id,
+        "step": step,
+        "targets": [target(*t) for t in targets],
+        "source": source,
+        "question": question,
+    }
 
 
-def change(change_id: str, step: int, kind: str, target_id: str, source: str = "annotation") -> dict[str, Any]:
-    return {"change_id": change_id, "step": step, "target": target(kind, target_id), "source": source}
+def alarm(alarm_id: str, step: int, *targets: tuple[str, str], text: str = "") -> dict[str, Any]:
+    text = text or f"[PLACEHOLDER] alarm {alarm_id}"
+    return {"alarm_id": alarm_id, "step": step, "targets": [target(*t) for t in targets], "text": text}
 
 
 def scenario_raw(
     instructions: list[dict[str, Any]],
     requests: list[dict[str, Any]] | None = None,
-    changes: list[dict[str, Any]] | None = None,
+    alarms: list[dict[str, Any]] | None = None,
     *,
     episode_id: str = WIN01,
 ) -> dict[str, Any]:
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "scenario_id": "test-scenario",
         "episode": {
             "episode_id": episode_id,
@@ -112,13 +126,14 @@ def scenario_raw(
             "video_path": None,
         },
         "instructions": instructions,
+        "alarms": alarms or [],
         "requests": requests or [],
-        "external_change_points": changes or [],
     }
 
 
 def make_scenario(*args: Any, **kwargs: Any) -> Scenario:
-    return parse_scenario(scenario_raw(*args, **kwargs), base=paths.ROOT)
+    """A scenario checked against the committed run.yaml's ``scenario_limits``."""
+    return parse_scenario(scenario_raw(*args, **kwargs), base=paths.ROOT, limits=make_config().scenario_limits)
 
 
 def write_yaml(path: Path, raw: object) -> Path:
@@ -169,46 +184,82 @@ def fake_translation_renderer(
 
 # --- layer models ---------------------------------------------------------------------------------
 
+Answer = tuple[str, float]  # a scripted detector answer: (label, p(label))
+NONE: Answer = ("none", 1.0)
+START: Answer = ("start", 0.9)
+CHANGE: Answer = ("change", 0.9)
+
 
 def state_key(state: str) -> tuple[str, int]:
-    """(target label, tick step) of a detector state built over ``fake_detector_renderer`` text."""
+    """(target label, tick step) of a detector state (any renderer)."""
     target_match, anchor_match = TARGET_PATTERN.search(state), ANCHOR_PATTERN.search(state)
     if target_match is None or anchor_match is None:
-        raise AssertionError("not a fake detector state")
+        raise AssertionError("not a detector state")
     return target_match.group(1), int(anchor_match.group(1))
 
 
+def answer_probabilities(answer: Answer) -> dict[str, float]:
+    """``p(label)`` for the label; the rest is split evenly over the other two options."""
+    label, probability = answer
+    rest = (1.0 - probability) / (len(DETECTOR_LABELS) - 1)
+    return {name: probability if name == label else rest for name in DETECTOR_LABELS}
+
+
+def answers_at(answers: dict[tuple[str, int], Answer], default: Answer = NONE) -> Callable[[str], Answer]:
+    """A state -> answer function: ``answers[(target label, tick step)]``, else ``default``."""
+    return lambda state: answers.get(state_key(state), default)
+
+
+def systemone_responder(
+    answers: dict[tuple[str, int], Answer], *, question_id: str = QUESTION_ID
+) -> Callable[[httpx.Request], httpx.Response]:
+    """A ``SystemOneServer`` outcome that answers a real ``/v1/systemone`` request from its state."""
+    answer_of = answers_at(answers)
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        answer = answer_of(json.loads(request.content)["state"])
+        body = systemone_body({question_id: choice_answer(answer[0], answer_probabilities(answer))})
+        return json_response(200, body)
+
+    return respond
+
+
 class FakeDetectionModel:
-    """Scripted p(yes): a constant, or a function of the state. ``fail`` raises on a chosen call."""
+    """Scripted choice answers: a constant, or a function of the state. ``fail`` raises on a chosen call."""
 
     def __init__(
         self,
-        probability: float | Callable[[str], float] = 0.0,
+        answer: Answer | Callable[[str], Answer] = NONE,
         *,
         log: list[tuple[str, str]] | None = None,
         fail: tuple[int, Exception] | None = None,
     ) -> None:
-        self._probability = probability
+        self._answer = answer
         self._log = log if log is not None else []
         self._fail = fail
         self.states: list[str] = []
 
     @property
     def question(self) -> dict[str, Any]:
-        criteria = {"true": "[FAKE] changed", "false": "[FAKE] explained"}
-        return {"id": "unexplained_change", "type": "noul", "instructions": "[FAKE] question", "criteria": criteria}
+        criteria = {label: f"[FAKE] {label}" for label in DETECTOR_LABELS}
+        return {"id": QUESTION_ID, "type": "choice", "instructions": "[FAKE] question", "criteria": criteria}
 
     def request_payload(self, state: str) -> dict[str, Any]:
-        return {"model": FAKE_DETECTOR_MODEL, "state": state, "questions": {"unexplained_change": self.question}}
+        return {"model": FAKE_DETECTOR_MODEL, "state": state, "questions": {QUESTION_ID: self.question}}
 
     def decide(self, state: str) -> DetectionModelReply:
         self.states.append(state)
         self._log.append(("send", "detector"))
         if self._fail is not None and len(self.states) == self._fail[0]:
             raise self._fail[1]
-        probability = self._probability(state) if callable(self._probability) else self._probability
-        raw = {"model": FAKE_DETECTOR_MODEL, "answers": {"unexplained_change": {"type": "noul", "noul": probability}}}
-        return DetectionModelReply(FAKE_DETECTOR_MODEL, probability, {"input_tokens": 1, "output_tokens": 0}, raw)
+        answer = self._answer(state) if callable(self._answer) else self._answer
+        probabilities = answer_probabilities(answer)
+        raw = {
+            "model": FAKE_DETECTOR_MODEL,
+            "answers": {QUESTION_ID: {"type": "choice", "choice": answer[0], "probabilities": probabilities}},
+        }
+        usage = {"input_tokens": 1, "output_tokens": 0}
+        return DetectionModelReply(FAKE_DETECTOR_MODEL, answer[0], tuple(probabilities.items()), usage, raw)
 
 
 class FakeIntentModel:

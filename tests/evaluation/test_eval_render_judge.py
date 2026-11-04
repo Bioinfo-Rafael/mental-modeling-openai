@@ -53,7 +53,7 @@ from .eval_fakes import (
     A1_REQUEST,
     A1_START,
     SCENARIO_ID,
-    TEAM_INSTRUCTION,
+    TEAM_CHANGE,
     LoggingResponsesClient,
     MemoryJudgeSink,
     judge_response,
@@ -167,17 +167,17 @@ def test_request_body_uses_the_config_and_never_sends_temperature(events: tuple[
 
 
 def test_header_names_the_target_and_its_aircraft(events: tuple[dict[str, Any], ...]) -> None:
-    body = _request_body(events, TEAM_INSTRUCTION, make_judge_config())
+    body = _request_body(events, TEAM_CHANGE, make_judge_config())
 
     assert body["input"][0]["content"][0]["text"] == "Judged translation target: team A (aircraft A0100, A0200)."
 
 
 def test_instructions_mark_the_primary_and_follow_display_options(events: tuple[dict[str, Any], ...]) -> None:
-    full = _user_text(_request_body(events, TEAM_INSTRUCTION, make_judge_config()))
+    full = _user_text(_request_body(events, TEAM_CHANGE, make_judge_config()))
     bare = _user_text(
         _request_body(
             events,
-            TEAM_INSTRUCTION,
+            TEAM_CHANGE,
             make_judge_config(
                 inputs__instructions__show_ids=False,
                 inputs__instructions__show_targets=False,
@@ -200,9 +200,9 @@ def test_timestamps_cover_only_this_targets_earlier_translations(events: tuple[d
     text = _user_text(_request_body(events, A1_CHANGE, make_judge_config()))
 
     block = text[text.index(HEADING_TIMESTAMPS) : text.index(HEADING_TRAJECTORY)]
-    assert "- step 0 (0.0 s): start\n- step 10 (2.0 s): request\n" in block
+    assert "- step 0 (0.0 s): initial\n- step 10 (2.0 s): request\n" in block
     assert "This translation: step 15 (3.0 s)." in block
-    assert "- external_change (source placeholder-annotation)" in block
+    assert "- change (source detector, probability 0.9)" in block
     assert "step 20" not in block  # the team's later event and anything after this one are never shown
 
 
@@ -213,7 +213,7 @@ def test_timestamp_options_hide_seconds_and_sources(events: tuple[dict[str, Any]
 
     block = text[text.index(HEADING_TIMESTAMPS) : text.index(HEADING_TRAJECTORY)]
     assert " s)" not in block and "source" not in block
-    assert "- external_change\n" in block + "\n"
+    assert "- change\n" in block + "\n"
 
 
 def test_unknown_trajectory_renderer_and_foreign_key_points_are_rejected(events: tuple[dict[str, Any], ...]) -> None:

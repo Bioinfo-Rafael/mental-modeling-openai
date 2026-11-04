@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Sequence
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -23,10 +24,12 @@ from mtd_rl_xavier.translator.config import load_scenario
 from mtd_rl_xavier.translator.pipeline import TranslatorSummary
 from tests.llm.llm_fakes import DumpableResponse, ScriptedResponsesClient, message_item, responses_body
 from tests.translator.tr_fakes import (
+    CHANGE,
     EXAMPLE_SCENARIO,
     WIN01,
     FakeDetectionModel,
     FakeIntentModel,
+    answers_at,
     make_config,
     make_translator,
     with_value,
@@ -36,13 +39,14 @@ JUDGE_CONFIG = paths.ROOT / "evaluation" / "config" / "judge-text.yaml"
 VIDEO_CONFIG = paths.ROOT / "evaluation" / "config" / "judge-text-video.yaml"
 EXAMPLE_KEY_POINTS = paths.ROOT / "evaluation" / "examples" / "key-points.example.yaml"
 SCENARIO_ID = "placeholder-episode-01"
-A1_START = f"{SCENARIO_ID}:aircraft:A0100:000000"
-TEAM_START = f"{SCENARIO_ID}:team:A:000000"
-A1_REQUEST = f"{SCENARIO_ID}:aircraft:A0100:000010"
-A1_CHANGE = f"{SCENARIO_ID}:aircraft:A0100:000015"
-TEAM_INSTRUCTION = f"{SCENARIO_ID}:team:A:000020"
-# The example scenario's translation events with fake layers that never report a change.
-EVENT_IDS = (A1_START, TEAM_START, A1_REQUEST, A1_CHANGE, TEAM_INSTRUCTION)
+A1_START = f"{SCENARIO_ID}:aircraft:A0100:000000"  # trigger "initial" (the start-point bootstrap)
+TEAM_START = f"{SCENARIO_ID}:team:A:000000"  # trigger "initial"
+A1_REQUEST = f"{SCENARIO_ID}:aircraft:A0100:000010"  # trigger "request" (with the example question)
+A1_CHANGE = f"{SCENARIO_ID}:aircraft:A0100:000015"  # detector "change" (after the alarm at 12)
+TEAM_CHANGE = f"{SCENARIO_ID}:team:A:000020"  # detector "change" at the team's new instruction
+# The example scenario's translation events with fake layers whose detector reports exactly these changes.
+EXAMPLE_DETECTOR_ANSWERS = {("aircraft A0100", 15): CHANGE, ("team A", 20): CHANGE}
+EVENT_IDS = (A1_START, TEAM_START, A1_REQUEST, A1_CHANGE, TEAM_CHANGE)
 EXAMPLE_JUDGED = (A1_START, A1_REQUEST)  # the event ids in key-points.example.yaml
 
 
@@ -142,19 +146,31 @@ def write_translator_run(
 ) -> TranslatorSummary:
     """Run the example scenario with fake layers and the real renderers into a run directory.
 
-    The files are the ones the Translator CLI writes (``JsonlRunSink``) plus a minimal ``run.json``.
+    The default detector reports ``EXAMPLE_DETECTOR_ANSWERS``, so the run has the five ``EVENT_IDS``.
+    The files are the ones the Translator CLI writes (``JsonlRunSink``) plus a minimal ``run.json`` that
+    carries the resolved config like the CLI's (``config.pipeline.visibility`` = online, 0 future steps).
     """
     run_dir.mkdir(parents=True)
+    config = make_config()
     translator = make_translator(
-        detection or FakeDetectionModel(0.0),
+        detection or FakeDetectionModel(answers_at(EXAMPLE_DETECTOR_ANSWERS)),
         intent,
+        config=config,
         detector_renderer=render_detector_compact,
         translation_renderer=render_lag17_jsonl,
     )
+    scenario = load_scenario(EXAMPLE_SCENARIO, limits=config.scenario_limits)
     with JsonlRunSink(run_dir) as sink:
-        summary = translator.run(frame=frame, scenario=load_scenario(EXAMPLE_SCENARIO), config=make_config(), sink=sink)
+        summary = translator.run(frame=frame, scenario=scenario, config=config, sink=sink)
     episode = {"episode_id": WIN01, "last_complete_step": last_complete_step(frame)}  # what the video block reads
-    run_json = {"schema_version": 1, "mode": "execute", "status": summary.status, "inputs": {"episode": episode}}
+    resolved = json.loads(json.dumps(asdict(config), default=str))  # as the CLI writes it: visibility online
+    run_json = {
+        "schema_version": 1,
+        "mode": "execute",
+        "status": summary.status,
+        "inputs": {"episode": episode},
+        "config": resolved,
+    }
     (run_dir / "run.json").write_text(json.dumps(run_json), encoding="utf-8")
     return summary
 

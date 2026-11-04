@@ -6,7 +6,8 @@ resolve from the repository root; scenario paths resolve relative to the scenari
 The detector endpoint goes through the System One client's own validators (``checked_tcp_url``,
 ``checked_env_name``), so a preview rejects exactly what an execute would, before anything is
 written. ``uds_path`` may contain the one placeholder ``{user}`` (the current user name).
-Checks that need the episode itself (last step, aircraft and team ids) run in
+Scenario texts are bounded by the run config's ``scenario_limits``, so a scenario is always loaded
+against a config. Checks that need the episode itself (last step, aircraft and team ids) run in
 ``pipeline.validate_scenario``.
 """
 
@@ -28,10 +29,11 @@ from mtd_rl_xavier.llm.openai_responses import REASONING_EFFORTS
 from mtd_rl_xavier.llm.system_one import SystemOneConfigError, checked_env_name, checked_tcp_url
 
 from .schema import (
+    DETECTOR_LABELS,
     SAFE_ID_PATTERN,
     TARGET_KINDS,
+    Alarm,
     EpisodeRef,
-    ExternalChangePoint,
     Instruction,
     RequestPoint,
     Scenario,
@@ -39,7 +41,7 @@ from .schema import (
 )
 
 CONFIG_SCHEMA_VERSION = 1
-SCENARIO_SCHEMA_VERSION = 1
+SCENARIO_SCHEMA_VERSION = 2
 VISIBILITY_ONLINE = "online"
 VISIBILITY_RETROSPECTIVE = "retrospective"  # LATER (L2); rejected in this phase
 DETECTOR_BACKENDS = ("system_one",)
@@ -48,7 +50,7 @@ TRANSLATION_VLLM_CHAT = "vllm_chat"  # LATER (L2); rejected in this phase
 TRANSLATION_BACKENDS = (TRANSLATION_OPENAI,)
 PAID_BACKENDS = frozenset({TRANSLATION_OPENAI})
 ENTITY_SCOPES = ("target_and_opponents",)
-QUESTION_TYPES = ("noul",)  # the detector reads p(yes) of one noul question
+QUESTION_TYPES = ("choice",)  # one choice question over DETECTOR_LABELS (none / start / change)
 TRANSLATION_RENDERERS = (LAG17_RENDERER,)
 # clef-flash serves at most 16384 tokens; the budget must equal min(16384, --max-model-len).
 MAX_DETECTOR_INPUT_TOKEN_BUDGET = 16384
@@ -56,11 +58,16 @@ NOT_IN_THIS_PHASE = "is not implemented in this phase (P2)"
 USER_PLACEHOLDER = "{user}"  # the only placeholder in uds_path; no environment variable is expanded
 USER_NAME_PATTERN = re.compile(r"[A-Za-z0-9_][A-Za-z0-9._-]{0,63}")  # used with fullmatch only
 UNEXPANDED_MARKERS = ("{", "}", "$")
+# D58 alias outcome check on lowercase alphanumeric tokens: the alias shares no token with
+# episode_id (outcome, seed or IC component) and no token is an outcome word.
+ALIAS_TOKEN_SEPARATORS = re.compile(r"[^a-z0-9]+")
+OUTCOME_WORDS = ("win", "loss", "lose", "won", "lost")
 
-TOP_KEYS = {"schema_version", "pipeline", "limits", "detector", "translation", "output", "pricing"}
+TOP_KEYS = {"schema_version", "pipeline", "limits", "scenario_limits", "detector", "translation", "output", "pricing"}
 PIPELINE_KEYS = {"tick_interval_steps", "visibility"}
 VISIBILITY_KEYS = {"mode", "future_steps"}
 LIMIT_KEYS = {"max_detector_calls", "max_translation_calls"}
+SCENARIO_LIMIT_KEYS = {"max_instruction_chars", "max_alarm_chars", "max_question_chars"}
 DETECTOR_KEYS = {
     "backend",
     "model",
@@ -70,12 +77,13 @@ DETECTOR_KEYS = {
     "timeout_s",
     "threshold",
     "input_token_budget",
+    "messages_lookback_steps",
     "question",
     "window",
 }
 CONNECTION_KEYS = {"base_url", "uds_path", "api_key_env"}
 QUESTION_KEYS = {"id", "type", "instructions", "criteria"}
-CRITERIA_KEYS = {"true", "false"}
+CRITERIA_KEYS = set(DETECTOR_LABELS)
 DETECTOR_WINDOW_KEYS = {"past_steps", "entity_scope", "fields", "float_precision"}
 TRANSLATION_KEYS = {
     "backend",
@@ -91,11 +99,11 @@ TRANSLATION_KEYS = {
 TRANSLATION_WINDOW_KEYS = {"past_steps", "renderer"}
 OUTPUT_KEYS = {"root"}
 PRICE_KEYS = {"input", "cached_input", "output"}
-SCENARIO_KEYS = {"schema_version", "scenario_id", "episode", "instructions", "requests", "external_change_points"}
+SCENARIO_KEYS = {"schema_version", "scenario_id", "episode", "instructions", "alarms", "requests"}
 EPISODE_KEYS = {"episode_id", "alias", "csv_path", "video_path"}
 INSTRUCTION_KEYS = {"instruction_id", "issue_step", "target", "text"}
-REQUEST_KEYS = {"request_id", "step", "targets", "source"}
-CHANGE_KEYS = {"change_id", "step", "target", "source"}
+ALARM_KEYS = {"alarm_id", "step", "targets", "text"}
+REQUEST_KEYS = {"request_id", "step", "targets", "source", "question"}
 TARGET_KEYS = {"kind", "id"}
 
 
@@ -126,6 +134,15 @@ class LimitsConfig:
 
 
 @dataclass(frozen=True)
+class ScenarioLimitsConfig:
+    """Character limits of the scenario texts; they bound every text that reaches a model."""
+
+    max_instruction_chars: int
+    max_alarm_chars: int
+    max_question_chars: int
+
+
+@dataclass(frozen=True)
 class ConnectionConfig:
     base_url: str | None
     uds_path: Path | None
@@ -137,17 +154,15 @@ class DetectorQuestionConfig:
     question_id: str
     question_type: str
     instructions: str
-    true_criterion: str
-    false_criterion: str
+    criteria: tuple[tuple[str, str], ...]  # (label, description) in DETECTOR_LABELS order
 
     def to_json(self) -> dict[str, Any]:
         """The full question object, as logged in every ``detector_call`` record."""
-        criteria = {"true": self.true_criterion, "false": self.false_criterion}
         return {
             "id": self.question_id,
             "type": self.question_type,
             "instructions": self.instructions,
-            "criteria": criteria,
+            "criteria": dict(self.criteria),
         }
 
 
@@ -169,6 +184,7 @@ class DetectorConfig:
     timeout_s: float
     threshold: float
     input_token_budget: int
+    messages_lookback_steps: int  # alarms and questions in [t - N + 1, t] go into the state
     question: DetectorQuestionConfig
     window: DetectorWindowConfig
 
@@ -203,6 +219,7 @@ class TranslatorConfig:
     schema_version: int
     pipeline: PipelineConfig
     limits: LimitsConfig
+    scenario_limits: ScenarioLimitsConfig
     detector: DetectorConfig
     translation: TranslationConfig
     output_root: Path
@@ -331,6 +348,16 @@ def _limits(raw: object) -> LimitsConfig:
     )
 
 
+def _scenario_limits(raw: object) -> ScenarioLimitsConfig:
+    section = _mapping(raw, SCENARIO_LIMIT_KEYS, "scenario_limits", TranslatorConfigError)
+    return ScenarioLimitsConfig(
+        **{
+            key: _positive_int(section[key], f"scenario_limits.{key}", TranslatorConfigError)
+            for key in SCENARIO_LIMIT_KEYS
+        }
+    )
+
+
 def _current_user() -> str:
     try:
         user = getpass.getuser()
@@ -383,8 +410,10 @@ def _question(raw: object) -> DetectorQuestionConfig:
         question_id=_safe_id(section["id"], "detector.question.id", TranslatorConfigError),
         question_type=question_type,
         instructions=_text(section["instructions"], "detector.question.instructions", TranslatorConfigError),
-        true_criterion=_text(criteria["true"], "detector.question.criteria.true", TranslatorConfigError),
-        false_criterion=_text(criteria["false"], "detector.question.criteria.false", TranslatorConfigError),
+        criteria=tuple(
+            (label, _text(criteria[label], f"detector.question.criteria.{label}", TranslatorConfigError))
+            for label in DETECTOR_LABELS
+        ),
     )
 
 
@@ -434,6 +463,9 @@ def _detector(raw: object) -> DetectorConfig:
         timeout_s=timeout_s,
         threshold=threshold,
         input_token_budget=budget,
+        messages_lookback_steps=_positive_int(
+            section["messages_lookback_steps"], "detector.messages_lookback_steps", TranslatorConfigError
+        ),
         question=_question(section["question"]),
         window=_detector_window(section["window"]),
     )
@@ -512,11 +544,17 @@ def parse_config(raw: object, *, root: Path = paths.ROOT) -> TranslatorConfig:
         schema_version=CONFIG_SCHEMA_VERSION,
         pipeline=_pipeline(section["pipeline"]),
         limits=_limits(section["limits"]),
+        scenario_limits=_scenario_limits(section["scenario_limits"]),
         detector=_detector(section["detector"]),
         translation=_translation(section["translation"]),
         output_root=_output_root(section["output"], root),
         pricing=_pricing(section["pricing"]),
     )
+    if config.detector.messages_lookback_steps < config.pipeline.tick_interval_steps:
+        raise TranslatorConfigError(
+            "detector.messages_lookback_steps must be >= pipeline.tick_interval_steps, "
+            "so every alarm and question reaches a detector call"
+        )
     if config.translation.backend in PAID_BACKENDS and config.price(config.translation.model) is None:
         raise TranslatorConfigError(f"pricing has no entry for translation.model {config.translation.model!r}")
     return config
@@ -542,12 +580,25 @@ def _list(raw: object, name: str) -> list[Any]:
     return raw
 
 
+def _alias_tokens(value: str) -> set[str]:
+    """Lowercase alphanumeric tokens: ``mhi_v1.3_ic100601_win`` -> {mhi, v1, 3, ic100601, win}."""
+    return {token for token in ALIAS_TOKEN_SEPARATORS.split(value.lower()) if token}
+
+
+def _checked_alias(alias: str, episode_id: str) -> str:
+    """D58: the alias shares no token with the episode id, and none of its tokens is an outcome word."""
+    tokens = _alias_tokens(alias)
+    if tokens & _alias_tokens(episode_id):
+        raise ScenarioError("episode.alias must differ from episode_id and share no token with it")
+    if tokens.intersection(OUTCOME_WORDS):
+        raise ScenarioError(f"episode.alias must not have an outcome word {list(OUTCOME_WORDS)} as a token")
+    return alias
+
+
 def _episode(raw: object, base: Path) -> EpisodeRef:
     section = _mapping(raw, EPISODE_KEYS, "episode", ScenarioError)
     episode_id = _text(section["episode_id"], "episode.episode_id", ScenarioError)
-    alias = _safe_id(section["alias"], "episode.alias", ScenarioError)
-    if alias == episode_id:
-        raise ScenarioError("episode.alias must differ from episode_id (the id never reaches a model)")
+    alias = _checked_alias(_safe_id(section["alias"], "episode.alias", ScenarioError), episode_id)
     video = section["video_path"]
     return EpisodeRef(
         episode_id=episode_id,
@@ -568,34 +619,51 @@ def _instruction(raw: object, index: int) -> Instruction:
     )
 
 
-def _request(raw: object, index: int) -> RequestPoint:
-    name = f"requests[{index}]"
-    section = _mapping(raw, REQUEST_KEYS, name, ScenarioError)
-    items = _list(section["targets"], f"{name}.targets")
+def _targets(raw: object, name: str) -> tuple[TargetRef, ...]:
+    items = _list(raw, f"{name}.targets")
     targets = tuple(_target(item, f"{name}.targets[{i}]") for i, item in enumerate(items))
     if not targets or len(set(targets)) != len(targets):
         raise ScenarioError(f"{name}.targets must be a non-empty list of distinct targets")
+    return targets
+
+
+def _alarm(raw: object, index: int) -> Alarm:
+    name = f"alarms[{index}]"
+    section = _mapping(raw, ALARM_KEYS, name, ScenarioError)
+    return Alarm(
+        alarm_id=_safe_id(section["alarm_id"], f"{name}.alarm_id", ScenarioError),
+        step=_nonnegative_int(section["step"], f"{name}.step", ScenarioError),
+        targets=_targets(section["targets"], name),
+        text=_text(section["text"], f"{name}.text", ScenarioError),
+    )
+
+
+def _request(raw: object, index: int) -> RequestPoint:
+    name = f"requests[{index}]"
+    section = _mapping(raw, REQUEST_KEYS, name, ScenarioError)
     return RequestPoint(
         request_id=_safe_id(section["request_id"], f"{name}.request_id", ScenarioError),
         step=_nonnegative_int(section["step"], f"{name}.step", ScenarioError),
-        targets=targets,
+        targets=_targets(section["targets"], name),
         source=_safe_id(section["source"], f"{name}.source", ScenarioError),
+        question=_text(section["question"], f"{name}.question", ScenarioError),
     )
 
 
-def _change(raw: object, index: int) -> ExternalChangePoint:
-    name = f"external_change_points[{index}]"
-    section = _mapping(raw, CHANGE_KEYS, name, ScenarioError)
-    return ExternalChangePoint(
-        change_id=_safe_id(section["change_id"], f"{name}.change_id", ScenarioError),
-        step=_nonnegative_int(section["step"], f"{name}.step", ScenarioError),
-        target=_target(section["target"], f"{name}.target"),
-        source=_safe_id(section["source"], f"{name}.source", ScenarioError),
-    )
+def _check_text_limits(scenario: Scenario, limits: ScenarioLimitsConfig) -> None:
+    """Every scenario text within its configured length; nothing is ever truncated."""
+    texts = [
+        *((item.instruction_id, item.text, limits.max_instruction_chars) for item in scenario.instructions),
+        *((item.alarm_id, item.text, limits.max_alarm_chars) for item in scenario.alarms),
+        *((item.request_id, item.question, limits.max_question_chars) for item in scenario.requests),
+    ]
+    for item_id, text, limit in texts:
+        if len(text) > limit:
+            raise ScenarioError(f"{item_id} text has {len(text)} characters; the limit is {limit} (scenario_limits)")
 
 
-def check_scenario_rules(scenario: Scenario) -> None:
-    """Rules that need no episode: ids, step-0 start, one instruction per target per step, references.
+def check_scenario_rules(scenario: Scenario, limits: ScenarioLimitsConfig) -> None:
+    """Rules that need no episode: ids, step-0 instruction, per-step uniqueness, references, text limits.
 
     ``parse_scenario`` and ``pipeline.validate_scenario`` both run it, so a ``Scenario`` built in
     code obeys the same rules as a loaded one (and ``plan_schedule`` matches the run).
@@ -604,28 +672,32 @@ def check_scenario_rules(scenario: Scenario) -> None:
         raise ScenarioError("instructions must not be empty")
     ids = [
         *(item.instruction_id for item in scenario.instructions),
+        *(item.alarm_id for item in scenario.alarms),
         *(item.request_id for item in scenario.requests),
-        *(item.change_id for item in scenario.external_change_points),
     ]
     if len(set(ids)) != len(ids):
-        raise ScenarioError("instruction, request and change ids must be unique across the scenario")
+        raise ScenarioError("instruction, alarm and request ids must be unique across the scenario")
     if not any(item.issue_step == 0 for item in scenario.instructions):
-        raise ScenarioError("at least one instruction must be issued at step 0 (the start point)")
+        raise ScenarioError("at least one instruction must be issued at step 0")
     keys = [(item.target, item.issue_step) for item in scenario.instructions]
     if len(set(keys)) != len(keys):
         raise ScenarioError("at most one instruction per exact target per step")
+    request_keys = [(target, item.step) for item in scenario.requests for target in item.targets]
+    if len(set(request_keys)) != len(request_keys):
+        raise ScenarioError("at most one request per exact target per step")
     targets = {item.target for item in scenario.instructions}
     first_step = {t: min(i.issue_step for i in scenario.instructions if i.target == t) for t in targets}
-    references = [*((r.request_id, t, r.step) for r in scenario.requests for t in r.targets)]
-    references += [(c.change_id, c.target, c.step) for c in scenario.external_change_points]
+    references = [(item.request_id, t, item.step) for item in scenario.requests for t in item.targets]
+    references += [(item.alarm_id, t, item.step) for item in scenario.alarms for t in item.targets]
     for reference_id, target, step in references:
         if target not in first_step or first_step[target] > step:
             raise ScenarioError(
                 f"{reference_id} references {target.label}, which has no instruction at or before {step}"
             )
+    _check_text_limits(scenario, limits)
 
 
-def parse_scenario(raw: object, *, base: Path) -> Scenario:
+def parse_scenario(raw: object, *, base: Path, limits: ScenarioLimitsConfig) -> Scenario:
     section = _mapping(raw, SCENARIO_KEYS, "scenario", ScenarioError)
     if section["schema_version"] != SCENARIO_SCHEMA_VERSION or isinstance(section["schema_version"], bool):
         raise ScenarioError(f"scenario schema_version must be {SCENARIO_SCHEMA_VERSION}")
@@ -637,17 +709,14 @@ def parse_scenario(raw: object, *, base: Path) -> Scenario:
         scenario_id=_safe_id(section["scenario_id"], "scenario_id", ScenarioError),
         episode=_episode(section["episode"], base),
         instructions=tuple(_instruction(item, i) for i, item in enumerate(instructions)),
+        alarms=tuple(_alarm(item, i) for i, item in enumerate(_list(section["alarms"], "alarms"))),
         requests=tuple(_request(item, i) for i, item in enumerate(_list(section["requests"], "requests"))),
-        external_change_points=tuple(
-            _change(item, i)
-            for i, item in enumerate(_list(section["external_change_points"], "external_change_points"))
-        ),
     )
-    check_scenario_rules(scenario)
+    check_scenario_rules(scenario, limits)
     return scenario
 
 
-def load_scenario(path: Path) -> Scenario:
+def load_scenario(path: Path, *, limits: ScenarioLimitsConfig) -> Scenario:
     """Load a scenario; ``csv_path`` / ``video_path`` resolve relative to the scenario file."""
     path = Path(path)
-    return parse_scenario(_read_yaml(path, ScenarioError), base=path.resolve().parent)
+    return parse_scenario(_read_yaml(path, ScenarioError), base=path.resolve().parent, limits=limits)

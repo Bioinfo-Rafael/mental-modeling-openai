@@ -1,22 +1,28 @@
-"""Chronological per-target Translator pipeline (online mode, D7/D9/D16-D17/D21/D24/D28/D35/D37).
+"""Chronological per-target Translator pipeline (online mode, D7/D9/D17/D21/D28/D35/D37/D50/D51).
 
 For every step ``0 .. last_complete_step``:
 
 1. apply the instructions issued at this step (a later one replaces the target's current one);
 2. close every instructed target that is down (aircraft: ``alive == 0``; team: all its aircraft);
-3. for each instructed target in canonical (kind, id) order: collect scenario triggers; a closed
+3. for each instructed target in canonical (kind, id) order: collect the forced triggers
+   (``initial`` at the target's first instruction, ``request`` at a scenario request); a closed
    target only logs them as ``trigger_suppressed``; on a tick (``step > 0``, ``step % T == 0``) a
-   target that already has a translation gets one detector call; if any trigger remains, the
-   target gets exactly one translation, whose primary trigger follows ``TRIGGER_PRECEDENCE``.
+   target that already has a translation gets one detector call, which may add ``start`` or
+   ``change``; if any trigger remains, the target gets exactly one translation, whose primary
+   trigger follows ``TRIGGER_PRECEDENCE``. A later instruction triggers nothing by itself: it only
+   reaches the detector state (D50).
 
-Every call is written to the sink before it is sent. Caps stop the run before call cap+1.
-Ctrl-C ends the run like any other failure: a call in flight is journaled as ``uncertain``.
+Every model input holds only data issued at or before the step: the trajectory window ends at it,
+and instructions, alarms and questions are filtered to ``step <= t``. Every call is written to the
+sink before it is sent; its response line records ``latency_s``. Caps stop the run before call
+cap+1. Ctrl-C ends the run like any other failure: a call in flight is journaled as ``uncertain``.
 """
 
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, replace
+from time import perf_counter
 from typing import Any, Protocol
 
 import pandas as pd
@@ -25,28 +31,36 @@ from mtd_rl_xavier.lag.dataset import last_complete_step
 from mtd_rl_xavier.lag.rendering import RenderedTrajectory
 from mtd_rl_xavier.llm.system_one import SystemOneQuestion
 
-from .config import TranslatorConfig, check_scenario_rules
-from .detector import MAX_UTF8_BYTES_PER_CHAR, DetectionContext, DetectorLayer, detector_state_bound
+from .config import ScenarioLimitsConfig, TranslatorConfig, check_scenario_rules
+from .detector import (
+    MAX_UTF8_BYTES_PER_CHAR,
+    MESSAGE_ALARM,
+    MESSAGE_QUESTION,
+    DetectionContext,
+    DetectorLayer,
+    DetectorMessage,
+    detector_state_bound,
+)
 from .schema import (
     DETECTOR_SOURCE,
     DOWN_REASON,
     EVENT_SCHEMA_VERSION,
+    INITIAL_SOURCE,
     RECORD_DETECTOR_CALL,
     RECORD_TARGET_CLOSED,
     RECORD_TRANSLATION_EVENT,
     RECORD_TRIGGER_SUPPRESSED,
-    SCENARIO_SOURCE,
     TARGET_AIRCRAFT,
-    TRIGGER_DETECTOR_CHANGE,
-    TRIGGER_EXTERNAL_CHANGE,
-    TRIGGER_INSTRUCTION,
+    TARGET_TEAM,
+    TRIGGER_INITIAL,
     TRIGGER_REQUEST,
-    TRIGGER_START,
     UNEXPECTED_ERROR_MESSAGE,
+    Alarm,
     Instruction,
     IntentTranslation,
     ModelCallError,
     PreviousTranslation,
+    RequestPoint,
     Scenario,
     TargetRef,
     TargetState,
@@ -79,6 +93,7 @@ RESPONSE_OK = "ok"
 RESPONSE_ERROR = "error"
 RESPONSE_UNCERTAIN = "uncertain"
 UNEXPECTED_ERROR_TYPE_PREFIX = "unexpected:"
+TIMING_DECIMALS = 3  # latency_s and processing_s: monotonic seconds, rounded to milliseconds
 # What ends a run with accurate counts. Ctrl-C during a call makes that call uncertain (exit 3).
 INTERRUPTIONS = (Exception, KeyboardInterrupt)
 
@@ -132,17 +147,17 @@ def episode_facts(frame: pd.DataFrame) -> EpisodeFacts:
     return EpisodeFacts(str(frame["episode_id"].iloc[0]), last_step, teams, down_steps)
 
 
-def validate_scenario(scenario: Scenario, facts: EpisodeFacts) -> None:
+def validate_scenario(scenario: Scenario, facts: EpisodeFacts, limits: ScenarioLimitsConfig) -> None:
     """The loader's scenario rules, then episode id, steps within ``[0, last_step]``, known aircraft and teams."""
-    check_scenario_rules(scenario)  # e.g. no request or change before its target's first instruction
+    check_scenario_rules(scenario, limits)  # e.g. no request or alarm before its target's first instruction
     if scenario.episode.episode_id != facts.episode_id:
         raise PipelineError("scenario episode_id does not match the loaded episode")
     steps = [item.issue_step for item in scenario.instructions]
-    steps += [item.step for item in (*scenario.requests, *scenario.external_change_points)]
+    steps += [item.step for item in (*scenario.alarms, *scenario.requests)]
     if max(steps) > facts.last_step:
         raise PipelineError(f"scenario steps must lie in [0, {facts.last_step}] (last complete step)")
-    targets = {item.target for item in (*scenario.instructions, *scenario.external_change_points)}
-    targets |= {target for request in scenario.requests for target in request.targets}
+    targets = {item.target for item in scenario.instructions}
+    targets |= {target for item in (*scenario.alarms, *scenario.requests) for target in item.targets}
     for target in targets:
         known = facts.down_steps if target.kind == TARGET_AIRCRAFT else facts.teams
         if target.target_id not in known:
@@ -150,18 +165,16 @@ def validate_scenario(scenario: Scenario, facts: EpisodeFacts) -> None:
 
 
 def scenario_triggers(scenario: Scenario) -> dict[tuple[int, TargetRef], tuple[TriggerReason, ...]]:
-    """Scenario trigger reasons per (step, target): start / instruction / external_change / request."""
+    """Forced trigger reasons per (step, target): ``initial`` at each target's first instruction, ``request``."""
     found: dict[tuple[int, TargetRef], tuple[TriggerReason, ...]] = {}
 
     def add(step: int, target: TargetRef, reason: TriggerReason) -> None:
         nonlocal found
         found = {**found, (step, target): (*found.get((step, target), ()), reason)}
 
-    for item in scenario.instructions:
-        kind = TRIGGER_START if item.issue_step == 0 else TRIGGER_INSTRUCTION
-        add(item.issue_step, item.target, TriggerReason(kind, SCENARIO_SOURCE, item.instruction_id, None))
-    for change in scenario.external_change_points:
-        add(change.step, change.target, TriggerReason(TRIGGER_EXTERNAL_CHANGE, change.source, change.change_id, None))
+    for target in sorted({item.target for item in scenario.instructions}):
+        first = min((item for item in scenario.instructions if item.target == target), key=lambda i: i.issue_step)
+        add(first.issue_step, target, TriggerReason(TRIGGER_INITIAL, INITIAL_SOURCE, first.instruction_id, None))
     for request in scenario.requests:
         for target in request.targets:
             add(request.step, target, TriggerReason(TRIGGER_REQUEST, request.source, request.request_id, None))
@@ -175,6 +188,51 @@ def instructions_in_effect(scenario: Scenario, step: int) -> tuple[Instruction, 
         if item.issue_step <= step:
             current = {**current, item.target: item}
     return tuple(current[target] for target in sorted(current))
+
+
+def target_instructions(
+    scenario: Scenario, facts: EpisodeFacts, target: TargetRef, step: int
+) -> tuple[Instruction, ...]:
+    """The target's own instruction in effect and, for an aircraft, its team's (canonical order)."""
+    own = {target}
+    if target.kind == TARGET_AIRCRAFT:
+        own = {target, TargetRef(TARGET_TEAM, facts.team_of(target.target_id))}
+    return tuple(item for item in instructions_in_effect(scenario, step) if item.target in own)
+
+
+def _reaches(alarm: Alarm, target: TargetRef, facts: EpisodeFacts) -> bool:
+    """An alarm reaches every target that shares an aircraft with one of its targets."""
+    alarm_aircraft = {aircraft for item in alarm.targets for aircraft in facts.target_aircraft(item)}
+    return bool(alarm_aircraft & set(facts.target_aircraft(target)))
+
+
+def target_alarms(scenario: Scenario, facts: EpisodeFacts, target: TargetRef, step: int) -> tuple[Alarm, ...]:
+    """Every alarm for ``target`` issued at or before ``step``, oldest first."""
+    found = (item for item in scenario.alarms if item.step <= step and _reaches(item, target, facts))
+    return tuple(sorted(found, key=lambda item: (item.step, item.alarm_id)))
+
+
+def target_request(scenario: Scenario, target: TargetRef, step: int) -> RequestPoint | None:
+    """The request for ``target`` at exactly ``step`` (at most one, a scenario rule)."""
+    return next((item for item in scenario.requests if item.step == step and target in item.targets), None)
+
+
+def detector_messages(
+    scenario: Scenario, facts: EpisodeFacts, target: TargetRef, step: int, lookback_steps: int
+) -> tuple[DetectorMessage, ...]:
+    """All alarms and questions for ``target`` issued in ``[step - lookback + 1, step]``, most recent last."""
+    first = step - lookback_steps + 1
+    alarms = [
+        DetectorMessage(MESSAGE_ALARM, item.alarm_id, item.step, item.text)
+        for item in target_alarms(scenario, facts, target, step)
+        if item.step >= first
+    ]
+    questions = [
+        DetectorMessage(MESSAGE_QUESTION, item.request_id, item.step, item.question)
+        for item in scenario.requests
+        if first <= item.step <= step and target in item.targets
+    ]
+    return tuple(sorted((*alarms, *questions), key=lambda item: (item.step, item.kind, item.message_id)))
 
 
 def is_tick(step: int, tick_interval_steps: int) -> bool:
@@ -261,6 +319,7 @@ class BudgetFit:
 def detector_context(
     frame: pd.DataFrame,
     *,
+    scenario: Scenario,
     target: TargetRef,
     step: int,
     previous: PreviousTranslation,
@@ -268,7 +327,8 @@ def detector_context(
     config: TranslatorConfig,
     renderer: Renderer,
 ) -> DetectionContext:
-    """The compact window ``[max(0, step-W+1), step]`` of the target aircraft, then its opponents."""
+    """The compact window ``[max(0, step-W+1), step]`` of the target aircraft, then its opponents,
+    plus the target's instructions in effect and its alarms and questions within the lookback."""
     window = config.detector.window
     own, opponents = facts.target_aircraft(target), facts.opponents(target)
     trajectory = renderer(
@@ -280,25 +340,36 @@ def detector_context(
         fields=window.fields,
         float_precision=window.float_precision,
     )
-    return DetectionContext(target, step, own, opponents, previous, trajectory)
+    instructions = target_instructions(scenario, facts, target, step)
+    messages = detector_messages(scenario, facts, target, step, config.detector.messages_lookback_steps)
+    return DetectionContext(target, step, own, opponents, previous, instructions, messages, trajectory)
 
 
 def check_detector_budget(
     frame: pd.DataFrame,
     *,
     ticks: tuple[tuple[TargetRef, int], ...],
+    scenario: Scenario,
     facts: EpisodeFacts,
     config: TranslatorConfig,
     questions: tuple[SystemOneQuestion, ...],
     renderer: Renderer,
 ) -> BudgetFit:
-    """Worst conservative bound over the given (target, tick) states, with a worst-case intent."""
+    """Worst conservative bound over the given (target, tick) states: the exact state (instruction,
+    alarm and question texts included) with a worst-case intent. Nothing is ever truncated."""
     budget, max_chars = config.detector.input_token_budget, config.translation.max_intent_chars
     worst: tuple[int, TargetRef | None, int | None] = (0, None, None)
     for target, step in ticks:
         placeholder = PreviousTranslation("", step, IntentTranslation("", ()))
         context = detector_context(
-            frame, target=target, step=step, previous=placeholder, facts=facts, config=config, renderer=renderer
+            frame,
+            scenario=scenario,
+            target=target,
+            step=step,
+            previous=placeholder,
+            facts=facts,
+            config=config,
+            renderer=renderer,
         )
         bound = detector_state_bound(context, questions=questions, max_intent_chars=max_chars)
         worst = max(worst, (bound, target, step), key=lambda item: item[0])
@@ -346,7 +417,7 @@ class _Run:
     def __init__(self, frame: pd.DataFrame, scenario: Scenario, config: TranslatorConfig, sink: EventSink) -> None:
         self.frame, self.scenario, self.config, self.sink = frame, scenario, config, sink
         self.facts = episode_facts(frame)
-        validate_scenario(scenario, self.facts)
+        validate_scenario(scenario, self.facts, config.scenario_limits)
         self.triggers = scenario_triggers(scenario)
         self.instructions_at = _instructions_by_step(scenario)
         self.states: dict[TargetRef, TargetState] = {}
@@ -358,8 +429,14 @@ class _Run:
         counts = self.counts[layer]
         self.counts = {**self.counts, layer: replace(counts, **{field: getattr(counts, field) + 1})}
 
-    def emit(self, record_type: str, step: int, target: TargetRef, body: dict[str, Any]) -> None:
-        """Write one event; ``sequence`` advances only once the record is written (``events_written``)."""
+    def emit(
+        self, record_type: str, step: int, target: TargetRef, body: dict[str, Any], *, started: float | None = None
+    ) -> None:
+        """Write one event; ``sequence`` advances only once the record is written (``events_written``).
+
+        With ``started`` (translation events), ``processing_s`` is taken once the whole record is
+        built, immediately before its own write.
+        """
         sequence = self.sequence + 1
         common = {
             "schema_version": EVENT_SCHEMA_VERSION,
@@ -371,7 +448,10 @@ class _Run:
             "time_s": step_time_s(step),
             "target": target.to_json(),
         }
-        self.sink.write_event({**common, **body})
+        record = {**common, **body}
+        if started is not None:
+            record = {**record, "processing_s": _elapsed_s(started)}
+        self.sink.write_event(record)
         self.sequence = sequence
 
     def check_cap(self, layer: str, target: TargetRef, step: int) -> None:
@@ -451,6 +531,7 @@ class Translator:
         run.emit(RECORD_TARGET_CLOSED, step, target, body)
 
     def _process_target(self, run: _Run, step: int, target: TargetRef) -> None:
+        started = perf_counter()  # processing_s: from here (before any detector call) to the event record
         reasons = run.triggers.get((step, target), ())
         state = run.states[target]
         if state.closed:
@@ -467,31 +548,47 @@ class Translator:
             detected = self._detect(run, step, state)
             reasons = sort_reasons((*reasons, detected)) if detected else reasons
         if reasons:
-            self._translate(run, step, state, reasons)
+            self._translate(run, step, state, reasons, started)
 
-    def _send(self, run: _Run, layer: str, call_id: str, call: Callable[[], Any]) -> Any:
-        """Count and make one call. Any failure is logged and stops the run (never retried)."""
+    def _send(self, run: _Run, layer: str, call_id: str, call: Callable[[], Any]) -> tuple[Any, float]:
+        """Count and make one call; returns its result and ``latency_s``. A failure is logged and stops the run."""
         run.bump(layer, "attempted")
         run.in_flight = (layer, call_id)
+        sent = perf_counter()
         try:
-            return call()
+            result = call()
         except ModelCallError as exc:
-            raise self._stopped(run, layer, call_id, exc.error_type, str(exc), exc.uncertain, exc.raw) from exc
+            latency_s = _elapsed_s(sent)
+            raise self._stopped(
+                run, layer, call_id, latency_s, exc.error_type, str(exc), exc.uncertain, exc.raw
+            ) from exc
         except INTERRUPTIONS as exc:  # anything else or Ctrl-C: the request may have reached the server
+            latency_s = _elapsed_s(sent)
             error_type = UNEXPECTED_ERROR_TYPE_PREFIX + type(exc).__name__
-            raise self._stopped(run, layer, call_id, error_type, UNEXPECTED_ERROR_MESSAGE, True, None) from exc
+            raise self._stopped(
+                run, layer, call_id, latency_s, error_type, UNEXPECTED_ERROR_MESSAGE, True, None
+            ) from exc
+        return result, _elapsed_s(sent)
 
-    def _answered(self, run: _Run, layer: str, call_id: str, raw: Any) -> None:
-        run.sink.write_response(_response_record(call_id, layer, RESPONSE_OK, raw, None))
+    def _answered(self, run: _Run, layer: str, call_id: str, latency_s: float, raw: Any) -> None:
+        run.sink.write_response(_response_record(call_id, layer, RESPONSE_OK, latency_s, raw, None))
         run.in_flight = None
         run.bump(layer, "completed")
 
     def _stopped(
-        self, run: _Run, layer: str, call_id: str, error_type: str, message: str, uncertain: bool, raw: Any
+        self,
+        run: _Run,
+        layer: str,
+        call_id: str,
+        latency_s: float,
+        error_type: str,
+        message: str,
+        uncertain: bool,
+        raw: Any,
     ) -> _Stop:
         error = {"type": error_type, "message": message}
         status = RESPONSE_UNCERTAIN if uncertain else RESPONSE_ERROR
-        run.sink.write_response(_response_record(call_id, layer, status, raw, error))
+        run.sink.write_response(_response_record(call_id, layer, status, latency_s, raw, error))
         run.in_flight = None
         run.bump(layer, "uncertain" if uncertain else "failed")
         details = {"layer": layer, "call_id": call_id, **error, "uncertain": uncertain}
@@ -519,6 +616,7 @@ class Translator:
         call_id = detector_call_id(run.scenario.scenario_id, target, step)
         context = detector_context(
             run.frame,
+            scenario=run.scenario,
             target=target,
             step=step,
             previous=previous,
@@ -529,8 +627,8 @@ class Translator:
         state_text = self._detector.state_text(context)
         payload = self._detector.request_payload(state_text)
         request_sha256 = self._write_request(run, call_id, LAYER_DETECTOR, step, target, payload)
-        result = self._send(run, LAYER_DETECTOR, call_id, lambda: self._detector.detect(state_text))
-        self._answered(run, LAYER_DETECTOR, call_id, result.reply.raw)
+        result, latency_s = self._send(run, LAYER_DETECTOR, call_id, lambda: self._detector.detect(state_text))
+        self._answered(run, LAYER_DETECTOR, call_id, latency_s, result.reply.raw)
         detector = run.config.detector
         body = {
             "call_id": call_id,
@@ -542,10 +640,12 @@ class Translator:
                     "step": previous.step,
                     "intent": previous.translation.intent,
                 },
+                "instructions_in_effect": [instruction.to_json() for instruction in context.instructions],
+                "messages": [message.to_json() for message in context.messages],
                 "state_text": state_text,
                 "question": self._detector.question,
             },
-            "output": {"probability": result.probability, "threshold": result.threshold, "changed": result.changed},
+            "output": result.output_json(),
             "raw_response": result.reply.raw,
             "model": {
                 "backend": detector.backend,
@@ -557,11 +657,13 @@ class Translator:
             "usage": result.reply.usage,
         }
         run.emit(RECORD_DETECTOR_CALL, step, target, body)
-        if not result.changed:
+        if not result.triggered:
             return None
-        return TriggerReason(TRIGGER_DETECTOR_CHANGE, DETECTOR_SOURCE, call_id, result.probability)
+        return TriggerReason(result.label, DETECTOR_SOURCE, call_id, result.probability)
 
-    def _translate(self, run: _Run, step: int, state: TargetState, reasons: tuple[TriggerReason, ...]) -> None:
+    def _translate(
+        self, run: _Run, step: int, state: TargetState, reasons: tuple[TriggerReason, ...], started: float
+    ) -> None:
         target = state.target
         run.check_cap(LAYER_TRANSLATION, target, step)
         current_id = event_id(run.scenario.scenario_id, target, step)
@@ -583,14 +685,15 @@ class Translator:
             primary_instruction_id=state.instruction.instruction_id,
             trajectory=trajectory,
             previous=state.previous,
+            alarms=target_alarms(run.scenario, run.facts, target, step),
+            question=target_request(run.scenario, target, step),
         )
         prompt = self._translation.build_prompt(request)
         payload = self._translation.request_payload(prompt)
         request_sha256 = self._write_request(run, current_id, LAYER_TRANSLATION, step, target, payload)
-        output: IntentModelOutput = self._send(
-            run, LAYER_TRANSLATION, current_id, lambda: self._translation.generate(prompt)
-        )
-        self._answered(run, LAYER_TRANSLATION, current_id, output.raw)
+        output: IntentModelOutput
+        output, latency_s = self._send(run, LAYER_TRANSLATION, current_id, lambda: self._translation.generate(prompt))
+        self._answered(run, LAYER_TRANSLATION, current_id, latency_s, output.raw)
         try:
             translation = self._translation.parse(output)
         except TranslationOutputError as exc:
@@ -602,7 +705,7 @@ class Translator:
             ),
             "request_sha256": request_sha256,
         }
-        run.emit(RECORD_TRANSLATION_EVENT, step, target, body)
+        run.emit(RECORD_TRANSLATION_EVENT, step, target, body, started=started)
         previous = PreviousTranslation(current_id, step, translation)
         run.states = {**run.states, target: replace(state, previous=previous)}
 
@@ -632,6 +735,8 @@ def _translation_body(
             "target_aircraft": list(request.target_aircraft),
             "instructions_in_effect": [instruction.to_json() for instruction in request.instructions_in_effect],
             "primary_instruction_id": request.primary_instruction_id,
+            "alarms": [alarm.to_json() for alarm in request.alarms],
+            "question": _question_json(request.question),
             "trajectory": trajectory_json(request.trajectory),
             "previous_translation": request.previous.to_json() if request.previous else None,
             "output_language": output_language,
@@ -649,6 +754,17 @@ def _translation_body(
     }
 
 
+def _question_json(question: RequestPoint | None) -> dict[str, Any] | None:
+    if question is None:
+        return None
+    return {"request_id": question.request_id, "step": question.step, "text": question.question}
+
+
+def _elapsed_s(since: float) -> float:
+    """Monotonic seconds since ``since`` (a ``perf_counter`` reading), rounded to milliseconds."""
+    return round(perf_counter() - since, TIMING_DECIMALS)
+
+
 def _crash_status(run: _Run, exc: BaseException) -> tuple[str, _Stop]:
     """Status after an unexpected exception or Ctrl-C: ``uncertain`` while a sent call is not yet journaled."""
     error = redacted_error(exc)
@@ -661,12 +777,15 @@ def _crash_status(run: _Run, exc: BaseException) -> tuple[str, _Stop]:
     )
 
 
-def _response_record(call_id: str, layer: str, status: str, raw: Any, error: dict[str, str] | None) -> dict[str, Any]:
+def _response_record(
+    call_id: str, layer: str, status: str, latency_s: float, raw: Any, error: dict[str, str] | None
+) -> dict[str, Any]:
     return {
         "schema_version": EVENT_SCHEMA_VERSION,
         "call_id": call_id,
         "layer": layer,
         "status": status,
+        "latency_s": latency_s,
         "raw": raw,
         "error": error,
     }

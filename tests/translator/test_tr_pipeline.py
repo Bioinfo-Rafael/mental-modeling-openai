@@ -1,15 +1,20 @@
-"""Pipeline: start/tick/trigger rules, precedence, mid-episode targets, windows, death, caps, errors."""
+"""Pipeline: initial/tick/trigger rules, precedence, mid-episode targets, windows, death, caps, errors."""
 
 from __future__ import annotations
 
+import itertools
 import json
+import math
+import re
 from dataclasses import replace
 from typing import Any
 
 import pandas as pd
 import pytest
 
-from mtd_rl_xavier.translator.config import ScenarioError
+from mtd_rl_xavier.lag.rendering import render_detector_compact, render_lag17_jsonl
+from mtd_rl_xavier.translator import pipeline
+from mtd_rl_xavier.translator.config import ScenarioError, load_scenario
 from mtd_rl_xavier.translator.pipeline import (
     STATUS_CAP_REACHED,
     STATUS_COMPLETED,
@@ -22,7 +27,7 @@ from mtd_rl_xavier.translator.pipeline import (
 )
 from mtd_rl_xavier.translator.schema import (
     RECORD_TYPES,
-    ExternalChangePoint,
+    Alarm,
     ModelCallError,
     RequestPoint,
     Scenario,
@@ -30,18 +35,23 @@ from mtd_rl_xavier.translator.schema import (
 )
 
 from .tr_fakes import (
+    CHANGE,
+    EXAMPLE_SCENARIO,
     LOSS01,
+    NONE,
+    START,
     WIN01,
+    Answer,
     FakeDetectionModel,
     FakeIntentModel,
     MemorySink,
-    change,
+    alarm,
+    answers_at,
     instruction,
     make_config,
     make_scenario,
     make_translator,
     request,
-    state_key,
 )
 
 
@@ -72,27 +82,31 @@ def _detector_steps(sink: MemorySink, label: str) -> list[int]:
     return [e["step"] for e in sink.of_type("detector_call") if f"{e['target']['kind']} {e['target']['id']}" == label]
 
 
-def _positive_at(*keys: tuple[str, int]) -> FakeDetectionModel:
-    return FakeDetectionModel(lambda state: 0.9 if state_key(state) in keys else 0.1)
+def _answer_at(answers: dict[tuple[str, int], Answer]) -> FakeDetectionModel:
+    return FakeDetectionModel(answers_at(answers))
 
 
 A1 = ("aircraft", "A0100")
 
 
-def test_step_zero_starts_every_instructed_target_in_canonical_order(frames: dict[str, pd.DataFrame]) -> None:
+def test_first_instruction_gives_every_target_an_initial_translation_in_canonical_order(
+    frames: dict[str, pd.DataFrame],
+) -> None:
     scenario = make_scenario([instruction("t1", 0, "team", "A"), instruction("a1", 0, *A1)])
 
     summary, sink = _run(frames[WIN01], scenario)
 
     first, second = sink.of_type("translation_event")[:2]
     assert summary.status == STATUS_COMPLETED
-    assert _translations(sink) == [(0, "aircraft A0100", "start"), (0, "team A", "start")]
+    assert _translations(sink) == [(0, "aircraft A0100", "initial"), (0, "team A", "initial")]
     assert first["event_id"] == "test-scenario:aircraft:A0100:000000"
+    assert first["schema_version"] == 2 and first["input"]["prompt_version"] == "translator-intent-v2"
     assert [i["instruction_id"] for i in first["input"]["instructions_in_effect"]] == ["a1", "t1"]
     assert first["input"]["primary_instruction_id"] == "a1" and second["input"]["primary_instruction_id"] == "t1"
     assert first["input"]["previous_translation"] is None
+    assert (first["input"]["alarms"], first["input"]["question"]) == ([], None)
     assert first["trigger_reasons"] == [
-        {"kind": "start", "source": "scenario", "reference_id": "a1", "probability": None}
+        {"kind": "initial", "source": "first_instruction", "reference_id": "a1", "probability": None}
     ]
     assert first["time_s"] == 0.0 and first["episode"]["csv_sha256"] == frames[WIN01].attrs["csv_sha256"]
 
@@ -103,61 +117,63 @@ def test_detector_ticks_stay_on_the_fixed_grid(frames: dict[str, pd.DataFrame]) 
     summary, sink = _run(frames[WIN01], scenario)
 
     assert _detector_steps(sink, "aircraft A0100") == list(range(5, 341, 5))
-    assert _translations(sink) == [(0, "aircraft A0100", "start"), (3, "aircraft A0100", "request")]
+    assert _translations(sink) == [(0, "aircraft A0100", "initial"), (3, "aircraft A0100", "request")]
     assert summary.detector.completed == 68 and summary.translation.completed == 2
 
 
 def test_tick_with_coinciding_triggers_gives_one_detector_call_and_one_translation(
     frames: dict[str, pd.DataFrame],
 ) -> None:
-    scenario = make_scenario([instruction("a1", 0, *A1)], [request("r1", 10, A1)], [change("c1", 10, *A1)])
+    scenario = make_scenario([instruction("a1", 0, *A1)], [request("r1", 10, A1)])
 
-    _, sink = _run(frames[WIN01], scenario, detection=_positive_at(("aircraft A0100", 10)))
+    _, sink = _run(frames[WIN01], scenario, detection=_answer_at({("aircraft A0100", 10): CHANGE}))
 
     events = [e for e in sink.of_type("translation_event") if e["step"] == 10]
     assert _detector_steps(sink, "aircraft A0100").count(10) == 1
     assert len(events) == 1
     reasons = events[0]["trigger_reasons"]
-    assert [r["kind"] for r in reasons] == ["external_change", "detector_change", "request"]
-    assert reasons[1] == {
-        "kind": "detector_change",
+    assert [r["kind"] for r in reasons] == ["change", "request"]
+    assert reasons[0] == {
+        "kind": "change",
         "source": "detector",
         "reference_id": "test-scenario:detector:aircraft:A0100:000010",
         "probability": 0.9,
     }
-    assert events[0]["primary_trigger"] == "external_change"
+    assert events[0]["primary_trigger"] == "change"
+    assert events[0]["input"]["question"] == {"request_id": "r1", "step": 10, "text": "[PLACEHOLDER] question r1"}
 
 
 @pytest.mark.parametrize(
-    ("instructions", "requests", "changes", "positive", "expected"),
+    ("instructions", "requests", "answer", "step", "expected"),
     [
-        ([instruction("a2", 20, *A1)], [request("r1", 20, A1)], [change("c1", 20, *A1)], True, "instruction"),
-        ([], [request("r1", 20, A1)], [change("c1", 20, *A1)], True, "external_change"),
-        ([], [request("r1", 20, A1)], [], True, "detector_change"),
-        ([], [request("r1", 20, A1)], [], False, "request"),
-        ([], [request("r1", 0, A1)], [change("c1", 0, *A1)], False, "start"),
+        ([], [request("r1", 0, A1)], NONE, 0, ["initial", "request"]),
+        ([], [request("r1", 20, A1)], START, 20, ["start", "request"]),
+        ([], [request("r1", 20, A1)], CHANGE, 20, ["change", "request"]),
+        ([], [request("r1", 20, A1)], NONE, 20, ["request"]),
+        ([instruction("a2", 20, *A1)], [request("r1", 20, A1)], NONE, 20, ["request"]),  # D50: no instruction kind
+        ([instruction("a2", 20, *A1)], [], CHANGE, 20, ["change"]),
     ],
 )
 def test_primary_trigger_precedence(
     frames: dict[str, pd.DataFrame],
     instructions: list[dict[str, Any]],
     requests: list[dict[str, Any]],
-    changes: list[dict[str, Any]],
-    positive: bool,
-    expected: str,
+    answer: Answer,
+    step: int,
+    expected: list[str],
 ) -> None:
-    scenario = make_scenario([instruction("a1", 0, *A1), *instructions], requests, changes)
-    detection = _positive_at(("aircraft A0100", 20)) if positive else FakeDetectionModel(0.0)
+    scenario = make_scenario([instruction("a1", 0, *A1), *instructions], requests)
 
-    _, sink = _run(frames[WIN01], scenario, detection=detection)
+    _, sink = _run(frames[WIN01], scenario, detection=_answer_at({("aircraft A0100", 20): answer}))
 
-    step = 0 if expected == "start" else 20
     (event,) = [e for e in sink.of_type("translation_event") if e["step"] == step]
-    assert event["primary_trigger"] == expected
-    assert len(event["trigger_reasons"]) == len(requests) + len(changes) + len(instructions) + positive + (step == 0)
+    assert event["primary_trigger"] == expected[0]
+    assert [reason["kind"] for reason in event["trigger_reasons"]] == expected
 
 
-def test_target_first_instructed_mid_episode_differs_from_a_replacement(frames: dict[str, pd.DataFrame]) -> None:
+def test_later_instruction_only_feeds_the_detector_and_a_mid_episode_target_starts_with_initial(
+    frames: dict[str, pd.DataFrame],
+) -> None:
     instructions = [
         instruction("a1", 0, *A1),
         instruction("ta1", 0, "team", "A"),
@@ -168,13 +184,56 @@ def test_target_first_instructed_mid_episode_differs_from_a_replacement(frames: 
     _, sink = _run(frames[WIN01], make_scenario(instructions))
 
     by_key = {(e["step"], e["target"]["id"]): e for e in sink.of_type("translation_event")}
-    replacement, first_b = by_key[(20, "A")], by_key[(23, "B")]
-    assert replacement["primary_trigger"] == "instruction"
-    assert replacement["input"]["previous_translation"]["event_id"] == "test-scenario:team:A:000000"
-    assert first_b["primary_trigger"] == "instruction" and first_b["input"]["previous_translation"] is None
+    first_b = by_key[(23, "B")]
+    assert sorted(by_key) == [(0, "A"), (0, "A0100"), (23, "B")]  # no translation for the replacement at 20
+    assert first_b["primary_trigger"] == "initial" and first_b["input"]["previous_translation"] is None
+    assert first_b["trigger_reasons"][0]["reference_id"] == "tb1"
     assert [i["instruction_id"] for i in first_b["input"]["instructions_in_effect"]] == ["a1", "ta2", "tb1"]
     assert _detector_steps(sink, "team B")[:2] == [25, 30]  # no detector before its first translation
     assert 20 in _detector_steps(sink, "team A")  # the replaced target is still checked at its tick
+    team_a = {e["step"]: e for e in sink.of_type("detector_call") if e["target"]["id"] == "A"}
+    assert [i["instruction_id"] for i in team_a[15]["input"]["instructions_in_effect"]] == ["ta1"]
+    assert [i["instruction_id"] for i in team_a[20]["input"]["instructions_in_effect"]] == ["ta2"]
+    assert "issued at step 20: [PLACEHOLDER] instruction ta2" in team_a[20]["input"]["state_text"]
+    # D21: the replaced target keeps its previous translation
+    assert team_a[20]["input"]["previous_translation"]["event_id"] == "test-scenario:team:A:000000"
+    aircraft = next(e for e in sink.of_type("detector_call") if e["target"]["id"] == "A0100" and e["step"] == 20)
+    assert [i["instruction_id"] for i in aircraft["input"]["instructions_in_effect"]] == ["a1", "ta2"]  # own + team
+
+
+@pytest.mark.parametrize(("answer", "kind"), [(START, "start"), (CHANGE, "change")])
+def test_detector_start_or_change_triggers_a_translation(
+    frames: dict[str, pd.DataFrame], answer: Answer, kind: str
+) -> None:
+    scenario = make_scenario([instruction("a1", 0, *A1)])
+
+    _, sink = _run(frames[WIN01], scenario, detection=_answer_at({("aircraft A0100", 15): answer}))
+
+    call = next(e for e in sink.of_type("detector_call") if e["step"] == 15)
+    assert _translations(sink) == [(0, "aircraft A0100", "initial"), (15, "aircraft A0100", kind)]
+    assert call["output"] == {
+        "label": kind,
+        "probabilities": {
+            label: 0.9 if label == kind else pytest.approx(0.05) for label in ("none", "start", "change")
+        },
+        "threshold": 0.65,
+        "triggered": True,
+    }
+    event = sink.of_type("translation_event")[1]
+    assert event["trigger_reasons"] == [
+        {"kind": kind, "source": "detector", "reference_id": call["call_id"], "probability": 0.9}
+    ]
+    assert event["input"]["previous_translation"]["event_id"] == "test-scenario:aircraft:A0100:000000"
+
+
+@pytest.mark.parametrize("answer", [("start", 0.64), ("change", 0.6499), ("none", 1.0), ("none", 0.4)])
+def test_none_or_a_label_below_the_threshold_triggers_nothing(frames: dict[str, pd.DataFrame], answer: Answer) -> None:
+    _, sink = _run(frames[WIN01], make_scenario([instruction("a1", 0, *A1)]), detection=FakeDetectionModel(answer))
+
+    assert _translations(sink) == [(0, "aircraft A0100", "initial")]
+    assert all(
+        e["output"]["triggered"] is False and e["output"]["label"] == answer[0] for e in sink.of_type("detector_call")
+    )
 
 
 def test_windows_clip_at_step_zero_and_end_at_the_current_step(frames: dict[str, pd.DataFrame]) -> None:
@@ -204,17 +263,20 @@ def test_detector_input_uses_only_the_targets_own_previous_translation(frames: d
     assert team_call["input"]["trajectory"]["object_ids"] == ["A0100", "A0200", "B0100", "B0200"]
     aircraft_call = next(e for e in sink.of_type("detector_call") if e["target"]["id"] == "A0100")
     assert aircraft_call["input"]["trajectory"]["object_ids"] == ["A0100", "B0100", "B0200"]
-    assert aircraft_call["input"]["question"]["id"] == "unexplained_change"
-    assert aircraft_call["raw_response"]["answers"]["unexplained_change"]["noul"] == 0.0
+    assert aircraft_call["input"]["question"]["id"] == "point_kind"
+    assert aircraft_call["raw_response"]["answers"]["point_kind"]["choice"] == "none"
 
 
 def test_death_closes_targets_and_suppresses_later_triggers(frames: dict[str, pd.DataFrame]) -> None:
     instructions = [instruction(f"i-{a}", 0, "aircraft", a) for a in ("A0100", "A0200", "B0200")]
     instructions.append(instruction("tb", 0, "team", "B"))
-    requests = [request("r1", 150, ("aircraft", "B0200")), request("r2", 250, ("aircraft", "A0200"), A1)]
-    changes = [change("c1", 140, "aircraft", "B0200")]
+    requests = [
+        request("r0", 140, ("aircraft", "B0200")),
+        request("r1", 150, ("aircraft", "B0200")),
+        request("r2", 250, ("aircraft", "A0200"), A1),
+    ]
 
-    summary, sink = _run(frames[LOSS01], make_scenario(instructions, requests, changes, episode_id=LOSS01))
+    summary, sink = _run(frames[LOSS01], make_scenario(instructions, requests, episode_id=LOSS01))
 
     closed = {e["target"]["id"]: e for e in sink.of_type("target_closed")}
     assert set(closed) == {"B0200", "A0200"}  # team B keeps B0100 alive
@@ -222,7 +284,7 @@ def test_death_closes_targets_and_suppresses_later_triggers(frames: dict[str, pd
     assert (closed["A0200"]["step"], closed["A0200"]["down_step"]) == (210, 210)
     assert closed["B0200"]["last_event_id"] == "test-scenario:aircraft:B0200:000000"
     suppressed = [(e["step"], e["target"]["id"], e["primary_trigger"]) for e in sink.of_type("trigger_suppressed")]
-    assert suppressed == [(140, "B0200", "external_change"), (150, "B0200", "request"), (250, "A0200", "request")]
+    assert suppressed == [(140, "B0200", "request"), (150, "B0200", "request"), (250, "A0200", "request")]
     assert max(_detector_steps(sink, "aircraft B0200")) == 135
     assert max(_detector_steps(sink, "aircraft A0200")) == 205
     assert (250, "aircraft A0100", "request") in _translations(sink)
@@ -247,7 +309,7 @@ def test_instruction_for_an_already_down_target_is_suppressed(frames: dict[str, 
     (closed,) = sink.of_type("target_closed")
     (suppressed,) = sink.of_type("trigger_suppressed")
     assert (closed["step"], closed["down_step"], closed["last_event_id"]) == (150, 137, None)
-    assert (suppressed["step"], suppressed["primary_trigger"]) == (150, "instruction")
+    assert (suppressed["step"], suppressed["primary_trigger"]) == (150, "initial")
     assert all(e["target"]["id"] != "B0200" for e in sink.of_type("translation_event"))
 
 
@@ -257,7 +319,7 @@ def test_instruction_for_an_already_down_target_is_suppressed(frames: dict[str, 
 def test_detector_cap_at_cap_minus_one_cap_and_cap_plus_one(
     frames: dict[str, pd.DataFrame], cap: int, status: str, sent: int
 ) -> None:
-    detection = FakeDetectionModel(0.0)
+    detection = FakeDetectionModel(NONE)
 
     summary, sink = _run(
         frames[WIN01], make_scenario([instruction("a1", 0, *A1)]), detection=detection, limits__max_detector_calls=cap
@@ -286,7 +348,7 @@ def test_translation_cap_at_cap_minus_one_cap_and_cap_plus_one(
     summary, sink = _run(
         frames[WIN01],
         make_scenario([instruction("a1", 0, *A1)]),
-        detection=FakeDetectionModel(1.0),
+        detection=FakeDetectionModel(("start", 1.0)),
         intent=intent,
         limits__max_translation_calls=cap,
     )
@@ -309,7 +371,13 @@ def test_requests_are_written_before_each_send(frames: dict[str, pd.DataFrame]) 
     log: list[tuple[str, str]] = []
     scenario = make_scenario([instruction("a1", 0, *A1)], [request("r1", 7, A1)])
 
-    _run(frames[WIN01], scenario, detection=FakeDetectionModel(0.7, log=log), intent=FakeIntentModel(log=log), log=log)
+    _run(
+        frames[WIN01],
+        scenario,
+        detection=FakeDetectionModel(("change", 0.7), log=log),
+        intent=FakeIntentModel(log=log),
+        log=log,
+    )
 
     sends = [i for i, entry in enumerate(log) if entry[0] == "send"]
     assert sends and all(log[i - 1] == ("request", log[i][1]) and log[i + 1] == ("response", log[i][1]) for i in sends)
@@ -349,7 +417,7 @@ def test_detector_failure_stops_the_run(frames: dict[str, pd.DataFrame]) -> None
     error = ModelCallError("HTTP 500", error_type="SystemOneServerError", uncertain=False)
 
     summary, sink = _run(
-        frames[WIN01], make_scenario([instruction("a1", 0, *A1)]), detection=FakeDetectionModel(0.0, fail=(3, error))
+        frames[WIN01], make_scenario([instruction("a1", 0, *A1)]), detection=FakeDetectionModel(NONE, fail=(3, error))
     )
 
     assert summary.status == STATUS_FAILED and summary.error["layer"] == "detector"
@@ -367,16 +435,16 @@ def test_invalid_translation_output_fails_after_logging_the_raw_response(frames:
     assert sink.of_type("translation_event") == []
 
 
-@pytest.mark.parametrize("probability", [0.0, 1.0])
-def test_plan_schedule_matches_the_run(frames: dict[str, pd.DataFrame], probability: float) -> None:
+@pytest.mark.parametrize("answer", [NONE, ("start", 1.0), ("change", 1.0)])
+def test_plan_schedule_matches_the_run(frames: dict[str, pd.DataFrame], answer: Answer) -> None:
     instructions = [instruction("a2", 0, "aircraft", "A0200"), instruction("tb", 30, "team", "B")]
     requests = [request("r1", 7, ("aircraft", "A0200")), request("r2", 250, ("aircraft", "A0200"))]
     scenario = make_scenario(instructions, requests, episode_id=LOSS01)
     plan = plan_schedule(scenario, episode_facts(frames[LOSS01]), 5)
 
-    summary, sink = _run(frames[LOSS01], scenario, detection=FakeDetectionModel(probability))
+    summary, sink = _run(frames[LOSS01], scenario, detection=FakeDetectionModel(answer))
 
-    expected_translations = plan.translation_upper_bound if probability else plan.mandatory_translations
+    expected_translations = plan.translation_upper_bound if answer != NONE else plan.mandatory_translations
     assert summary.detector.completed == plan.detector_calls
     assert summary.translation.completed == expected_translations
     assert len(sink.of_type("trigger_suppressed")) == plan.suppressed_triggers == 1
@@ -427,15 +495,20 @@ def test_unexpected_exception_text_is_never_recorded(frames: dict[str, pd.DataFr
 
 def test_scenario_built_in_code_obeys_the_loader_rules(frames: dict[str, pd.DataFrame]) -> None:
     scenario = make_scenario([instruction("a1", 0, *A1), instruction("t1", 5, "team", "A")])
-    early_request = replace(scenario, requests=(RequestPoint("r1", 2, (TargetRef("team", "A"),), "human"),))
-    early_change = replace(
-        scenario, external_change_points=(ExternalChangePoint("c1", 3, TargetRef("team", "A"), "x"),)
-    )
+    team_a = (TargetRef("team", "A"),)
+    early_request = replace(scenario, requests=(RequestPoint("r1", 2, team_a, "human", "[PLACEHOLDER] q"),))
+    early_alarm = replace(scenario, alarms=(Alarm("c1", 3, team_a, "[PLACEHOLDER] warning"),))
+    long_alarm = replace(scenario, alarms=(Alarm("c2", 6, team_a, "x" * 201),))
+    limits = make_config().scenario_limits
 
-    for invalid in (early_request, early_change):
-        with pytest.raises(ScenarioError, match="no instruction at or before"):
-            validate_scenario(invalid, episode_facts(frames[WIN01]))
-        with pytest.raises(ScenarioError):  # the run refuses it too, so plan_schedule never disagrees
+    for invalid, match in (
+        (early_request, "no instruction at or before"),
+        (early_alarm, "no instruction at or before"),
+        (long_alarm, "the limit is 200"),
+    ):
+        with pytest.raises(ScenarioError, match=match):
+            validate_scenario(invalid, episode_facts(frames[WIN01]), limits)
+        with pytest.raises(ScenarioError, match=match):  # the run refuses it too, so plan_schedule never disagrees
             make_translator().run(frame=frames[WIN01], scenario=invalid, config=make_config(), sink=MemorySink())
 
 
@@ -490,3 +563,206 @@ def test_ctrl_c_between_calls_stops_the_run_as_failed(frames: dict[str, pd.DataF
         "uncertain": False,
     }
     assert summary.translation.completed == 1 and sink.responses[0]["status"] == "ok"
+
+
+# --- contract v2: inputs at or before t, messages, timing -----------------------------------------
+
+STEP_MENTIONS = (
+    re.compile(r"issued at step (\d+)"),  # instructions (both layers) and alarms (translation)
+    re.compile(r"(?:alarm|question) at step (\d+)"),  # detector messages
+    re.compile(r"Question from a human \(step (\d+)\)"),
+)
+PREVIOUS_MENTIONS = (re.compile(r"\(from step (\d+)\):"), re.compile(r"^From step (\d+):$", re.MULTILINE))
+
+
+def _payload_text(value: Any) -> str:
+    """Every string inside a request payload, one per line."""
+    if isinstance(value, str):
+        return value
+    if isinstance(value, dict):
+        return "\n".join(_payload_text(item) for item in value.values())
+    if isinstance(value, list):
+        return "\n".join(_payload_text(item) for item in value)
+    return ""
+
+
+def _trajectory_lines(text: str) -> list[dict[str, Any]]:
+    lines = []
+    for line in text.split("\n"):
+        if not line.startswith('{"step":'):
+            continue
+        lines.append(json.loads(line))
+    return lines
+
+
+def test_no_payload_contains_information_after_its_step(short_frame: pd.DataFrame) -> None:
+    """User minimum test 1: real renderers, real 13_LAG rows, the v2 example scenario, both layers."""
+    config = make_config()
+    scenario = load_scenario(EXAMPLE_SCENARIO, limits=config.scenario_limits)
+    answers = {("aircraft A0100", 5): START, ("aircraft A0100", 15): CHANGE, ("team A", 20): CHANGE}
+    translator = make_translator(
+        FakeDetectionModel(answers_at(answers)),
+        config=config,
+        detector_renderer=render_detector_compact,
+        translation_renderer=render_lag17_jsonl,
+    )
+    sink = MemorySink()
+
+    summary = translator.run(frame=short_frame, scenario=scenario, config=config, sink=sink)
+
+    later_texts = [
+        *((item.issue_step, item.text) for item in scenario.instructions),
+        *((item.step, item.text) for item in scenario.alarms),
+        *((item.step, item.question) for item in scenario.requests),
+    ]
+    assert summary.status == STATUS_COMPLETED and len(sink.requests) == 12 + 6
+    for record in sink.requests:
+        step, text = record["step"], _payload_text(record["payload"])
+        trajectory = _trajectory_lines(text)
+        assert trajectory and all(line["step"] <= step and line["relative_step"] <= 0 for line in trajectory)
+        mentioned = [int(m) for pattern in STEP_MENTIONS for m in pattern.findall(text)]
+        assert mentioned and all(mentioned_step <= step for mentioned_step in mentioned), record["call_id"]
+        previous = [int(m) for pattern in PREVIOUS_MENTIONS for m in pattern.findall(text)]
+        assert all(previous_step < step for previous_step in previous), record["call_id"]
+        assert all(item not in text for issued, item in later_texts if issued > step), record["call_id"]
+        assert scenario.episode.episode_id not in text and scenario.scenario_id not in text
+    shown = "\n".join(_payload_text(record["payload"]) for record in sink.requests)
+    assert all(item in shown for _, item in later_texts)  # every scenario text reaches some model input
+
+
+def _message_ids(sink: MemorySink, label: str, step: int) -> list[str]:
+    (call,) = [e for e in sink.of_type("detector_call") if e["step"] == step and _label(e) == label]
+    return [message["id"] for message in call["input"]["messages"]]
+
+
+def _label(event: dict[str, Any]) -> str:
+    return f"{event['target']['kind']} {event['target']['id']}"
+
+
+def test_messages_reach_the_detector_within_the_lookback_and_alarms_reach_every_sharing_target(
+    frames: dict[str, pd.DataFrame],
+) -> None:
+    instructions = [
+        instruction("a1", 0, *A1),
+        instruction("a2", 0, "aircraft", "A0200"),
+        instruction("ta", 0, "team", "A"),
+        instruction("tb", 0, "team", "B"),
+    ]
+    alarms = [alarm("w1", 12, A1), alarm("w2", 11, ("team", "B")), alarm("w3", 16, ("team", "A"))]
+    scenario = make_scenario(instructions, [request("r1", 10, A1)], alarms)
+
+    _, sink = _run(frames[WIN01], scenario, detection=_answer_at({("team A", 20): CHANGE}))
+
+    assert _message_ids(sink, "aircraft A0100", 10) == ["r1"]
+    assert _message_ids(sink, "aircraft A0100", 15) == ["r1", "w1"]  # most recent last
+    assert _message_ids(sink, "aircraft A0100", 30) == ["r1", "w1", "w3"]  # [6, 30]
+    assert _message_ids(sink, "aircraft A0100", 35) == ["w1", "w3"]  # [11, 35]: lookback 25
+    assert _message_ids(sink, "aircraft A0100", 40) == ["w3"]
+    assert _message_ids(sink, "aircraft A0100", 45) == []
+    assert _message_ids(sink, "team A", 15) == ["w1"]  # shares A0100; the question was for the aircraft only
+    assert _message_ids(sink, "aircraft A0200", 15) == [] and _message_ids(sink, "aircraft A0200", 20) == ["w3"]
+    assert _message_ids(sink, "team B", 15) == ["w2"]
+    call = next(e for e in sink.of_type("detector_call") if e["step"] == 15 and _label(e) == "aircraft A0100")
+    assert call["input"]["messages"][1] == {"kind": "alarm", "id": "w1", "step": 12, "text": "[PLACEHOLDER] alarm w1"}
+    assert "- alarm at step 12: [PLACEHOLDER] alarm w1" in call["input"]["state_text"]
+    events = {(e["step"], _label(e)): e for e in sink.of_type("translation_event")}
+    assert [a["alarm_id"] for a in events[(20, "team A")]["input"]["alarms"]] == ["w1", "w3"]
+    assert events[(10, "aircraft A0100")]["input"]["alarms"] == []  # w1 is issued later
+    assert events[(10, "aircraft A0100")]["input"]["question"]["request_id"] == "r1"
+    assert events[(20, "team A")]["input"]["question"] is None
+
+
+def test_every_message_reaches_at_least_one_detector_state_of_every_target_it_is_for(
+    frames: dict[str, pd.DataFrame],
+) -> None:
+    instructions = [instruction("a1", 0, *A1), instruction("ta", 0, "team", "A")]
+    steps = (1, 4, 5, 6, 9, 333, 339, 340)  # around ticks, and the last ticks of the episode
+    alarms = [alarm(f"w{step}", step, A1) for step in steps]
+    requests = [request(f"r{step}", step, ("team", "A")) for step in steps]
+    scenario = make_scenario(instructions, requests, alarms)
+
+    _, sink = _run(frames[WIN01], scenario)
+
+    seen = {(_label(e), m["id"]) for e in sink.of_type("detector_call") for m in e["input"]["messages"]}
+    expected = {(label, f"w{step}") for label in ("aircraft A0100", "team A") for step in steps}
+    expected |= {("team A", f"r{step}") for step in steps}
+    assert expected <= seen
+    assert not {key for key in seen if key[0] == "aircraft A0100" and key[1].startswith("r")}
+
+
+def _counting_clock(monkeypatch: pytest.MonkeyPatch) -> None:
+    ticks = itertools.count()
+    monkeypatch.setattr(pipeline, "perf_counter", lambda: float(next(ticks)))
+
+
+def test_latency_and_processing_seconds_follow_the_monotonic_clock(
+    frames: dict[str, pd.DataFrame], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _counting_clock(monkeypatch)  # every reading advances by exactly 1 s
+    scenario = make_scenario([instruction("a1", 0, *A1)], [request("r1", 5, A1)])
+
+    _, sink = _run(frames[WIN01], scenario)
+
+    events = {e["step"]: e for e in sink.of_type("translation_event")}
+    assert all(response["latency_s"] == 1.0 for response in sink.responses)
+    assert events[0]["processing_s"] == 3.0  # start, send, answer, record complete
+    assert events[5]["processing_s"] == 5.0  # the detector call at the tick is part of it
+
+
+def test_processing_seconds_end_after_the_whole_record_and_timings_round_to_milliseconds(
+    frames: dict[str, pd.DataFrame], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    clock = {"now": 0.0}
+    monkeypatch.setattr(pipeline, "perf_counter", lambda: clock["now"])
+    step_time_s = pipeline.step_time_s
+
+    def slow_step_time_s(step: int) -> float:  # built into every record's common fields
+        clock["now"] += 0.12345
+        return step_time_s(step)
+
+    def slow_detector(state: str) -> Answer:
+        clock["now"] += 1.23456
+        return NONE
+
+    monkeypatch.setattr(pipeline, "step_time_s", slow_step_time_s)
+    scenario = make_scenario([instruction("a1", 0, *A1)], [request("r1", 5, A1)])
+
+    _, sink = _run(frames[WIN01], scenario, detection=FakeDetectionModel(slow_detector))
+
+    events = {e["step"]: e for e in sink.of_type("translation_event")}
+    detector_latencies = {r["latency_s"] for r in sink.responses if r["layer"] == "detector"}
+    assert detector_latencies == {1.235}  # 1.23456 rounded to 3 decimals
+    assert events[0]["processing_s"] == 0.123  # its own record's fields are inside the measure
+    assert events[5]["processing_s"] == 1.481  # detector call + detector_call record + its own record
+
+
+@pytest.mark.parametrize(
+    ("layer", "error", "status"),
+    [
+        ("translation", None, "ok"),
+        ("translation", ModelCallError("HTTP 400", error_type="OpenAIClientError", uncertain=False), "error"),
+        ("translation", ModelCallError("timed out", error_type="OpenAIClientError", uncertain=True), "uncertain"),
+        ("translation", KeyboardInterrupt(), "uncertain"),
+        ("detector", ModelCallError("HTTP 500", error_type="SystemOneServerError", uncertain=False), "error"),
+        ("detector", ModelCallError("timed out", error_type="SystemOneTransportError", uncertain=True), "uncertain"),
+    ],
+)
+def test_latency_is_recorded_finite_and_non_negative_on_every_attempted_call(
+    frames: dict[str, pd.DataFrame], layer: str, error: BaseException | None, status: str
+) -> None:
+    scenario = make_scenario([instruction("a1", 0, *A1)], [request("r1", 7, A1)])
+    fail = None if error is None else (2, error)
+    intent = FakeIntentModel(fail=fail if layer == "translation" else None)
+    detection = FakeDetectionModel(NONE, fail=fail if layer == "detector" else None)
+
+    summary, sink = _run(frames[WIN01], scenario, detection=detection, intent=intent)
+
+    attempted = summary.detector.attempted + summary.translation.attempted
+    assert len(sink.responses) == attempted and sink.responses[-1]["status"] == status
+    assert error is None or sink.responses[-1]["layer"] == layer  # the failing call is the last one
+    assert all(
+        isinstance(r["latency_s"], float) and math.isfinite(r["latency_s"]) and r["latency_s"] >= 0
+        for r in sink.responses
+    )
+    processing = [e["processing_s"] for e in sink.of_type("translation_event")]
+    assert processing and all(isinstance(value, float) and math.isfinite(value) and value >= 0 for value in processing)

@@ -283,3 +283,125 @@ The prices in the config ($2 input, $0.10 cached input, $10 output per 1M tokens
 It includes two end-to-end chains on the real example episode: fake Translator layers -> event log
 -> judge preview, and the production System One adapter over `httpx.MockTransport` plus the
 production OpenAI translation adapter over a scripted SDK stand-in -> event log -> judge preview.
+
+## 3 time points x 4 aspects assessment (`assess_cli`)
+
+A second evaluator, separate from the D29 key-point judge above. It rates every translation event of
+a Translator **v2** run on the user's 3 points (開始点 `start`, 変化点 `change`, 要求点 `request`;
+the forced first translation `initial` counts as a start) x 4 aspects (要素 `elements`, 正しさ
+`correctness`, タイミング `timing`, 判断への寄与 `contribution`). The event is judged on the union
+of the criteria of all its trigger reasons. Machine, human and judge results are stored apart and
+never merged; nothing is aggregated into an overall score (D54).
+
+| Module | Responsibility |
+|---|---|
+| `assess_data.py` | v2 contract constants (checked against `translator.schema` by a test), strict loading of `assess.yaml`, the run, the annotation; the criteria of an event |
+| `assess_store.py` | The one result-record schema, append-only stores with `supersedes`, human-rating import |
+| `assess_checks.py` | Time-range (leakage) check of every model call, reference points and segments, machine metrics |
+| `assess_judge.py` | Packet (with `TIMELINE` and the `FUTURE` block), strict schema and parser, OpenAI adapter, call loop |
+| `assess_report.py` | Cells per point kind x aspect x criterion x evaluator, timing summary, agreement |
+| `assess_cli.py` | The composition root: `check`, `judge`, `import-ratings`, `report` |
+
+### Command
+
+```bash
+RUN=outputs/translator/<run>             # a completed Translator v2 run (events, requests, responses)
+uv run python -m evaluation.assess_cli check --translator-run $RUN --points private/evaluation/<points>.yaml
+uv run python -m evaluation.assess_cli judge --translator-run $RUN --points private/evaluation/<points>.yaml
+# paid: one gpt-6.1-sol call per event, at most judge.max_calls per invocation; needs BOTH flags
+uv run python -m evaluation.assess_cli judge --translator-run $RUN --points ... --execute --confirm-paid-api
+uv run python -m evaluation.assess_cli import-ratings --translator-run $RUN --ratings private/evaluation/<ratings>.jsonl
+uv run python -m evaluation.assess_cli report --translator-run $RUN
+```
+
+- Common flags: `--config` (default `evaluation/config/assess.yaml`), `--output-root`, and `--name`
+  (the assessment directory; default: the Translator run directory's name).
+- `--points` is optional: an annotation of start/change reference points, which may use hindsight
+  (format: `evaluation/examples/assess-points.example.yaml`). Without it, matching, delay, missed and
+  excess points are not measured, and a FUTURE block ends only at the next instruction or alarm, the
+  target's down step or `max_steps`.
+- `judge` without the flags writes the packets and a cost preview, builds no client and reads no
+  key. A request whose SHA-256 is already in `judge_requests.jsonl` is never sent again, so an
+  uncertain call is never resent and a capped run resumes where it stopped. Events of a target whose
+  generation input is invalid are never sent.
+- Ratings format: `evaluation/examples/human-ratings.example.jsonl`. `judgement` is `"1"`..`"5"`,
+  `cannot_judge`, or `not_applicable` (conditional elements only). A re-rating names the replaced
+  `rating_id` in `supersedes`. The whole file is validated before anything is appended.
+- Exit codes: 0 done or preview; 1 deterministic failure, including a `leak` or `error` found by
+  `check` (its files are still written); 2 usage or gate misuse; 3 uncertain judge call; 4 judge cap.
+
+### Files
+
+`<output.root>/<name>/` (mode 0700; gitignored), one directory per Translator run:
+
+| File | Writer | Content |
+|---|---|---|
+| `run.json` | first command | Binds the directory to the run's file hashes; a different run is refused |
+| `invocations.jsonl` | every command | Start and end of each invocation: inputs and hashes, git state, code hashes, the full resolved judge config, counts |
+| `leakage.jsonl` | `check` | One line per model call: `status` `ok` / `leak` / `error`, `problems` |
+| `machine_results.jsonl` | `check` | Machine records |
+| `packets-<batch>.{jsonl,md}` | `judge` | The exact text the judge receives; human raters read the `.md` |
+| `judge_requests.jsonl`, `judge_responses.jsonl` | `judge --execute` | Journal: request written before each call, raw response after |
+| `judge_results.jsonl` | `judge --execute` | Judge records |
+| `human_results.jsonl` | `import-ratings` | Human records |
+| `report-<batch>.json` | `report` | `online` and `retrospective` sections: leakage, timing, cells, agreement |
+
+All stores are append-only. A re-run of `check` or `judge` appends a new batch whose records name the
+record they replace in `supersedes`; the report reads the active records, and every record stays.
+Every record has the same keys: subject (scenario, target, step, time, event, point kinds),
+Translator input range, Translator output, aspect, criterion, `status` (`evaluated` /
+`not_evaluated`), `score`, `judgement`, `measurement`, `rationale`, `reason`, evaluator (kind, and
+for the judge its model, prompt version and hashes), rubric version and config hash.
+
+### Machine vs human vs judge
+
+| Aspect | Machine (`check`) | Human (`import-ratings`) | Judge (`judge`) |
+|---|---|---|---|
+| 要素 | `intent` non-blank, `evidence` non-empty | Each element 1-5; conditional ones may be `not_applicable` | Same criteria and scale as humans |
+| 正しさ | None | Every criterion of the event's kinds | Same; `future_behaviour` criteria may use the FUTURE block, `observable_records` criteria may not |
+| タイミング | Delay, missed, duplicates, excess, lead before the action onset, request `processing_s` vs deadline, question interval, utterance count | One `timing.*` criterion per kind, 1-5 | Same as humans |
+| 判断への寄与 | Never | 1-5 after reading the packet; none given => `not_evaluated/no_human_rating` | Rated, shown beside the human scores with agreement; never a substitute |
+
+- `cannot_judge`, `not_applicable`, unset thresholds and missing ratings are `not_evaluated` with a
+  reason. They never count as 0, and never enter a mean.
+- Agreement below two pairs, or with no variance, is `null` with a reason.
+- The start timing of a forced `initial` translation is `not_evaluated/forced_trigger` for every
+  evaluator.
+- `check` verifies every model call of both layers:
+  - the payload matches its event record's `request_sha256`;
+  - trajectory lines, instructions, alarms and questions are at or before t, and the previous
+    translation is older than t;
+  - the run's own episode and scenario ids are absent;
+  - `run.json` declares the visibility.
+- A `leak` or `error` on any call of a target makes every result for that target's events
+  `not_evaluated/generation_input_invalid`.
+- A run that declares a non-online visibility is tagged `retrospective` and reported in its own
+  section (D46).
+
+### `assess.yaml`
+
+Every editable evaluation value lives in `evaluation/config/assess.yaml`, commented. The unset
+behaviour is written next to each key. Unknown, missing or duplicate keys fail. Translator-side
+values (detector question and threshold, text limits, `max_intent_chars`) stay in
+`configs/translator/run.yaml`.
+
+| Key | Default | When `null` |
+|---|---|---|
+| `rubric_version` | `pilot-1` | Required. Bump it after editing criteria or scale wording; ratings must match it |
+| `timing.request_deadline_s` | 3.0 (D55) | `processing_s` reported, `not_evaluated/request_deadline_s_unset` |
+| `timing.min_question_interval_s` | 10.0 (D55) | Intervals reported, no verdict |
+| `timing.start_min_lead_steps` | null | Lead before the annotated action onset reported only |
+| `timing.change_max_delay_steps` | null | Delay of a change point reported only |
+| `timing.max_events_per_segment` | null | Same-kind events per segment counted only |
+| `timing.max_utterances_per_target` | null | Utterances counted only |
+| `future_evidence.*` | 13 fields, stride 5, max 120 steps, precision 5 | Required |
+| `leakage.allow_action_at_t` | true (D58) | Required; `false` makes an action shown at t a leak |
+| `judge.*` | `gpt-6.1-sol` (fixed), effort medium, 25000 tokens, 1800 s, 100 calls, Japanese rationale, pricing | Required |
+| `open_items.*` | null | Must stay null until decided (tactic vocabulary, annotated units, rater count, overall aggregation, judge-substitution agreement) |
+| `scale`, `criteria` | Pilot 1-5 wording and criteria per kind (D53) | Required; `correctness.*` needs `reference: observable_records` or `future_behaviour` |
+
+Tests: `uv run pytest tests/evaluation/test_assess_checks.py tests/evaluation/test_assess_judge.py
+tests/evaluation/test_assess_data_report.py tests/evaluation/test_assess_e2e.py -q`, offline. The
+E2E produces a v2 run with the real Translator CLI over fake layers on the real example episode,
+then runs `check -> judge preview -> judge --execute -> import-ratings -> report` with no socket
+opened.

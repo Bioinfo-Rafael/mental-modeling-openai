@@ -16,7 +16,7 @@ from typing import Any
 
 from mtd_rl_xavier.lag.rendering import SECONDS_DECIMALS, STEP_SECONDS, RenderedTrajectory
 
-EVENT_SCHEMA_VERSION = 1
+EVENT_SCHEMA_VERSION = 2
 RECORD_DETECTOR_CALL = "detector_call"
 RECORD_TRANSLATION_EVENT = "translation_event"
 RECORD_TARGET_CLOSED = "target_closed"
@@ -27,22 +27,20 @@ TARGET_AIRCRAFT = "aircraft"
 TARGET_TEAM = "team"
 TARGET_KINDS = (TARGET_AIRCRAFT, TARGET_TEAM)
 
-# Trigger kinds in primary-trigger precedence order (first = highest).
+# Trigger kinds in primary-trigger precedence order (first = highest). ``initial`` is the forced
+# bootstrap at a target's first instruction; ``start`` (開始点) and ``change`` (変化点) are detector
+# labels, exclusive by construction; ``request`` (要求点) is forced at a scenario request.
+TRIGGER_INITIAL = "initial"
 TRIGGER_START = "start"
-TRIGGER_INSTRUCTION = "instruction"
-TRIGGER_EXTERNAL_CHANGE = "external_change"
-TRIGGER_DETECTOR_CHANGE = "detector_change"
+TRIGGER_CHANGE = "change"
 TRIGGER_REQUEST = "request"
-TRIGGER_PRECEDENCE = (
-    TRIGGER_START,
-    TRIGGER_INSTRUCTION,
-    TRIGGER_EXTERNAL_CHANGE,
-    TRIGGER_DETECTOR_CHANGE,
-    TRIGGER_REQUEST,
-)
-SCENARIO_SOURCE = "scenario"
+TRIGGER_PRECEDENCE = (TRIGGER_INITIAL, TRIGGER_START, TRIGGER_CHANGE, TRIGGER_REQUEST)
+INITIAL_SOURCE = "first_instruction"
 DETECTOR_SOURCE = "detector"
 DOWN_REASON = "target_down"
+# The detector's one choice question: its option names, in request order. ``none`` triggers nothing.
+DETECTOR_LABEL_NONE = "none"
+DETECTOR_LABELS = (DETECTOR_LABEL_NONE, TRIGGER_START, TRIGGER_CHANGE)
 
 STEP_DIGITS = 6
 # Identifiers that end up in event ids, file names and prompts: no spaces, slashes or colons.
@@ -119,19 +117,30 @@ class Instruction:
 
 
 @dataclass(frozen=True)
+class Alarm:
+    """An external warning; it reaches every target that shares an aircraft with ``targets``."""
+
+    alarm_id: str
+    step: int
+    targets: tuple[TargetRef, ...]
+    text: str
+
+    def to_json(self) -> dict[str, Any]:
+        return {
+            "alarm_id": self.alarm_id,
+            "step": self.step,
+            "targets": [target.to_json() for target in self.targets],
+            "text": self.text,
+        }
+
+
+@dataclass(frozen=True)
 class RequestPoint:
     request_id: str
     step: int
     targets: tuple[TargetRef, ...]
     source: str
-
-
-@dataclass(frozen=True)
-class ExternalChangePoint:
-    change_id: str
-    step: int
-    target: TargetRef
-    source: str
+    question: str  # what the human asked; shown to the translation layer of each target
 
 
 @dataclass(frozen=True)
@@ -140,16 +149,16 @@ class Scenario:
     scenario_id: str
     episode: EpisodeRef
     instructions: tuple[Instruction, ...]
+    alarms: tuple[Alarm, ...]
     requests: tuple[RequestPoint, ...]
-    external_change_points: tuple[ExternalChangePoint, ...]
 
 
 @dataclass(frozen=True)
 class TriggerReason:
     kind: str  # one of TRIGGER_PRECEDENCE
-    source: str  # "scenario", "detector", or the request / change source label
-    reference_id: str  # instruction, request or change id, or the detector call id
-    probability: float | None  # detector probability; None for scenario triggers
+    source: str  # "first_instruction", "detector", or the request source label
+    reference_id: str  # instruction id (initial), request id, or the detector call id
+    probability: float | None  # detector p(label); None for forced triggers
 
     def to_json(self) -> dict[str, Any]:
         return {
@@ -195,7 +204,7 @@ def sort_reasons(reasons: tuple[TriggerReason, ...]) -> tuple[TriggerReason, ...
 
 
 def primary_trigger(reasons: tuple[TriggerReason, ...]) -> str:
-    """start > instruction > external_change > detector_change > request."""
+    """initial > start > change > request."""
     if not reasons:
         raise ValueError("a translation needs at least one trigger reason")
     return sort_reasons(reasons)[0].kind

@@ -48,7 +48,7 @@ from mtd_rl_xavier.llm.system_one import SystemOneClient, SystemOneError, questi
 from mtd_rl_xavier.tools.output_safety import derived_path
 
 from .config import DetectorConfig, TranslatorConfig, load_config, load_scenario
-from .detector import DETECTOR_STATE_VERSION, DetectorLayer, SystemOneDetectionModel, noul_question
+from .detector import DETECTOR_STATE_VERSION, DetectorLayer, SystemOneDetectionModel, choice_question
 from .pipeline import (
     INTERRUPTIONS,
     STATUS_CAP_REACHED,
@@ -65,6 +65,8 @@ from .pipeline import (
     episode_facts,
     instructions_in_effect,
     plan_schedule,
+    target_alarms,
+    target_request,
     validate_scenario,
 )
 from .schema import SAFE_ID_PATTERN, Scenario, canonical_json, redacted_error, sha256_text
@@ -158,7 +160,7 @@ def build_system_one_client(config: DetectorConfig, *, transport: httpx.BaseTran
         base_url=config.connection.base_url,
         uds_path=config.connection.uds_path,
         model=config.served_model_name,
-        questions=(noul_question(config.question),),
+        questions=(choice_question(config.question),),
         input_token_budget=config.input_token_budget,
         timeout_s=config.timeout_s,
         api_key_env=config.connection.api_key_env,
@@ -171,10 +173,10 @@ def build_system_one_client(config: DetectorConfig, *, transport: httpx.BaseTran
 
 def load_inputs(config_path: Path, scenario_path: Path, config: TranslatorConfig) -> Inputs:
     """Scenario + hash-verified episode + schedule + detector budget fit. No client, no credential."""
-    scenario = load_scenario(scenario_path)
+    scenario = load_scenario(scenario_path, limits=config.scenario_limits)
     frame = load_episode(scenario.episode.csv_path)
     facts = episode_facts(frame)
-    validate_scenario(scenario, facts)
+    validate_scenario(scenario, facts, config.scenario_limits)
     plan = plan_schedule(scenario, facts, config.pipeline.tick_interval_steps)
     ticks = tuple(
         (target_plan.target, step) for target_plan in plan.targets for step in target_plan.detector_tick_steps
@@ -182,16 +184,18 @@ def load_inputs(config_path: Path, scenario_path: Path, config: TranslatorConfig
     budget = check_detector_budget(
         frame,
         ticks=ticks,
+        scenario=scenario,
         facts=facts,
         config=config,
-        questions=(noul_question(config.detector.question),),
+        questions=(choice_question(config.detector.question),),
         renderer=render_detector_compact,
     )
     if not budget.fits:
         raise PipelineError(
             f"detector state bound {budget.worst_bound} >= input_token_budget {budget.input_token_budget} "
             f"({budget.worst_target.label if budget.worst_target else '-'} at step {budget.worst_step}); "
-            "shorten detector.window or its fields, or lower translation.max_intent_chars"
+            "shorten detector.window or its fields, the scenario's instruction, alarm or question texts, "
+            "or lower detector.messages_lookback_steps or translation.max_intent_chars"
         )
     return Inputs(config_path, scenario_path, config, scenario, frame, facts, plan, budget)
 
@@ -220,6 +224,8 @@ def _mandatory_requests(inputs: Inputs) -> list[TranslationModelRequest]:
                 primary_instruction_id=primary.instruction_id,
                 trajectory=trajectory,
                 previous=None,
+                alarms=target_alarms(inputs.scenario, inputs.facts, target_plan.target, step),
+                question=target_request(inputs.scenario, target_plan.target, step),
             )
             requests.append(request)
     return sorted(requests, key=lambda request: (request.step, request.target))
@@ -255,7 +261,9 @@ def _translation_estimate(inputs: Inputs, prompts: list[TranslationPrompt]) -> d
     )
     mandatory_tokens = sum(_approx_tokens(instructions_chars + len(prompt.user_text)) for prompt in prompts)
     extra_calls = inputs.plan.translation_upper_bound - inputs.plan.mandatory_translations
-    per_extra = _approx_tokens(instructions_chars + _representative_chars(inputs))
+    scenario = inputs.scenario
+    scenario_chars = sum(len(item.text) for item in (*scenario.instructions, *scenario.alarms))
+    per_extra = _approx_tokens(instructions_chars + _representative_chars(inputs) + scenario_chars)
     upper_tokens = mandatory_tokens + extra_calls * per_extra
     price = config.price(config.translation.model)
     max_out = config.translation.max_output_tokens
@@ -267,6 +275,7 @@ def _translation_estimate(inputs: Inputs, prompts: list[TranslationPrompt]) -> d
 
     return {
         "approximate": f"text tokens ~= ceil(chars / {CHARS_PER_TOKEN}); excludes previous translations; "
+        "a detector-triggered call counts a full window plus every instruction and alarm text; "
         "output priced at max_output_tokens per call (upper bound)",
         "mandatory_input_tokens": mandatory_tokens,
         "per_call_input_tokens_full_window": per_extra,
@@ -365,7 +374,7 @@ def _code_hashes() -> dict[str, str]:
 def _run_record(inputs: Inputs, *, mode: str, status: str) -> dict[str, Any]:
     config, scenario = inputs.config, inputs.scenario
     csv_path = scenario.episode.csv_path
-    questions = (noul_question(config.detector.question),)
+    questions = (choice_question(config.detector.question),)
     language, max_chars = config.translation.output_language, config.translation.max_intent_chars
     return {
         "schema_version": RUN_SCHEMA_VERSION,

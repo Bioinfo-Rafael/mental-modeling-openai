@@ -3,9 +3,15 @@
 Turns a LAG trajectory into natural-language intent statements, one target at a time (D3, D7).
 Two layers alternate in time order (D9):
 
-- the **detector layer** asks a System One model, on a fixed tick grid, whether the target's
-  motion is still explained by its previous intent;
-- the **translation layer** asks an OpenAI model for a new intent whenever a trigger fires.
+- the **detector layer** asks a System One model, on a fixed tick grid, one `choice` question:
+  does the target continue its previous intent (`none`), begin a new tactic as planned (`start`,
+  開始点) or change its tactic because of an external factor (`change`, 変化点)? (D50)
+- the **translation layer** asks an OpenAI model for a new intent whenever a trigger fires: the
+  forced `initial` bootstrap at a target's first instruction, a detector `start` / `change`, or a
+  human request (`request`, 要求点).
+
+Every model input holds only data issued at or before the current step t: the trajectory windows
+end at t, and instructions, alarms and questions are filtered to `step <= t` (D51).
 
 The authoritative output is `events.jsonl`. The judge (`evaluation/`) consumes it as is, so the
 trajectory the judge shows is byte-identical to what the translation layer saw (D1, D20).
@@ -80,7 +86,7 @@ directory is refused. Nothing in it is ever rewritten except `run.json` (status 
 | `example_translation_request.json` | Preview only: the exact Responses body of the first mandatory translation |
 | `events.jsonl` | The event log (contract below) |
 | `requests.jsonl` | One record per call, written and fsynced **before** the call is sent: `call_id`, `layer`, `step`, `target`, exact `payload` (System One body or Responses body), `written_at` |
-| `responses.jsonl` | One record per sent call: `call_id`, `layer`, `status` (`ok` / `error` / `uncertain`), `raw` response body (kept even when parsing fails), `error` (`type`, `message`), `written_at` |
+| `responses.jsonl` | One record per sent call: `call_id`, `layer`, `status` (`ok` / `error` / `uncertain`), `latency_s` (monotonic `time.perf_counter()` seconds around the model call, rounded to 3 decimals; on every attempted call, finite and non-negative, D56), `raw` response body (kept even when parsing fails), `error` (`type`, `message`), `written_at` |
 
 A request without a response line means the process died mid-call: treat that call as uncertain.
 All three JSONL files are standard JSON: a non-finite number in a received body (a lax server's
@@ -101,20 +107,27 @@ The unit of translation is one exact target: `aircraft:<id>` or `team:<id>` (D17
 `0 .. last_complete_step` (340 / 293 / 495 for the committed episodes):
 
 1. Instructions issued at this step are applied (in `instruction_id` order). A later instruction
-   replaces the target's current one; the target keeps its previous translation (D21).
+   replaces the target's current one; the target keeps its previous translation (D21). A later
+   instruction forces no translation: it only reaches the detector state (D50, D61).
 2. Every instructed target that is down is closed once (`target_closed`). Aircraft: first step with
    `alive == 0`. Team: the step its last aircraft is down. A closed target never reopens (D37).
 3. Targets are processed in canonical `(kind, id)` order (aircraft before team):
-   - scenario triggers: `start` (instruction at step 0), `instruction` (instruction at step > 0,
-     D24), `external_change` (D6), `request` (D4, D10);
+   - forced triggers: `initial` at the target's first instruction (step 0, or later per D35;
+     source `first_instruction`, the bootstrap the detector needs as its previous intent) and
+     `request` at a scenario request (D4, D10; the question goes into the prompt);
    - a closed target only logs its triggers as `trigger_suppressed` (no model call);
    - on a tick (`step > 0` and `step % tick_interval_steps == 0`, a fixed grid that requests never
      move, D28) a target that already has a translation gets exactly one detector call, even when
-     other triggers exist (D9); `probability >= threshold` adds a `detector_change` trigger;
+     other triggers exist (D9). Decision rule: `label` is the model's choice; the tick triggers
+     when `label != none` and `p(label) >= threshold`, adding a `start` or `change` reason;
    - if any trigger remains, the target gets exactly one translation. Coinciding reasons are all
-     kept; the primary trigger follows `start > instruction > external_change > detector_change > request`.
-4. A target first instructed after step 0 is translated at its issue step with trigger
-   `instruction` and no previous translation; its detector ticks start after that (D35).
+     kept; the primary trigger follows `initial > start > change > request` (`start` and `change`
+     are exclusive by construction).
+4. A target first instructed after step 0 gets its `initial` translation at its issue step with no
+   previous translation; its detector ticks start after that (D35).
+
+Scenario change points are not triggers: hindsight-placed change references live in the
+evaluation annotation, never in the scenario (D50 supersedes D6).
 
 Windows (online mode, D33): translation `[max(0, step-59), step]` with `lag17-jsonl` (D22, D32);
 detector `[max(0, step-9), step]` with `lag-detector-compact` over the target's aircraft, then the
@@ -132,37 +145,71 @@ response line yet, the run stops as `uncertain` with that call's id.
 
 ## Detector layer
 
-State string sent to `/v1/systemone` (exact; logged as `state_text`):
+State string sent to `/v1/systemone` (exact; logged as `state_text`, state version 2):
 
 ```text
-Target: team A (aircraft A0100, A0200). Opponents: B0100, B0200.
+Target: aircraft A0100 (aircraft A0100). Opponents: B0100, B0200.
 Previous intent translation for this target (from step <s>):
 <the target's own previous intent; evidence is not included>
+
+Instructions in effect for this target:
+- aircraft A0100, issued at step <i>: <its own instruction text>
+- team A, issued at step <j>: <its team's instruction text (aircraft targets only)>
+
+Recent messages (alarms and human questions up to this step, most recent last):
+- question at step <q>: <question text>
+- alarm at step <w>: <alarm text>
+(or "- none")
 
 Trajectory window: steps <a>-<b>, 0.2 s per step, one JSON line per step, newest last; relative_step = step - <b>. Fields: <fields>. null = unavailable.
 <compact window text>
 ```
 
+- Question: one `choice` question `point_kind` with exactly the options `none`, `start`,
+  `change` (config `detector.question`; the adapter rejects any other question set).
+- Instructions in effect: the target's own current instruction and, for an aircraft, its team's;
+  each with its issue step (all issued at or before t).
+- Recent messages: **all** alarms and questions for this target issued in
+  `[t - messages_lookback_steps + 1, t]`, oldest first. An alarm is for every target that shares
+  an aircraft with one of its targets (an alarm for aircraft A0100 reaches team A too); a
+  question is for the request's own targets. Nothing is truncated or capped. The config requires
+  `messages_lookback_steps >= tick_interval_steps`, so every message reaches at least one
+  detector call while the target is up (default 25 = 5 ticks). Boundary: a message issued after
+  the last tick the target gets (after the episode's last tick, or between the target's last tick
+  and its down step) reaches no detector call; a question still forces its own translation.
+
 - `float_precision: 5` (about 1 m). With 3 decimals, lon/lat resolve about 100 m while an aircraft
   moves about 50 m per step: in `mhi_v1.3_ic100601_win`, 45 of 340 consecutive A0100 positions are
   identical at 3 decimals and none at 5 (`tests/translator/test_tr_budget.py`).
 - Budget fit is proved before any call: for every scheduled tick, the client's conservative bound
-  (UTF-8 bytes + fixed reserves) of the exact state framing plus a worst-case intent
-  (4 bytes x `translation.max_intent_chars`) must stay below `input_token_budget`. With the default
-  config the worst bound over every tick of all three episodes is 14310 (team targets, margin 2074)
-  and 12334 (single aircraft, margin 4050) against 16384. Of that, 1407 is the question and
-  framing reserve and 4000 the intent reserve.
+  (UTF-8 bytes + fixed reserves) of the exact state, the scenario's actual instruction, alarm and
+  question texts included, plus a worst-case intent (4 bytes x `translation.max_intent_chars`)
+  must stay below `input_token_budget`. The scenario is known before the run, so this is exact;
+  a scenario that does not fit fails in preflight, before any directory, client or call. The
+  knobs: shorter scenario texts (`scenario_limits`), a shorter `detector.messages_lookback_steps`,
+  `detector.window` (steps, fields), or a lower `translation.max_intent_chars`.
+- With the default config (`max_intent_chars: 600`, reserve 2400) the example scenario's worst
+  bound is 13158 (team A, margin 3226). A dense worst case over every tick of all three episodes
+  (`test_tr_budget.py`: every target instructed at step 0 with a 300-character Japanese text, a
+  200-character Japanese alarm per team and a 200-character Japanese question per aircraft in every
+  25-step lookback) peaks at 14620 (team targets, margin 1764) against 16384.
 - `input_token_budget` must equal the server's real cap, `min(16384, --max-model-len)` for
   `vllm serve Cloudflare/clef-flash` (4096 for OpenJev `wev serve`); the config rejects > 16384.
 - `threshold: 0.65` is provisional until a labelled LAG check.
+- `detector_call.output` = `{label, probabilities: {none, start, change}, threshold, triggered}`.
 
 ## Translation layer
 
-- Prompt version `translator-intent-v1`. The system prompt describes LAG, the data format and the
-  task; the user message carries the episode alias (never the episode id, scenario id or event
-  ids), the step and time, the target and its aircraft, every instruction in effect (the target's
-  own one marked), the target's previous translation (intent and evidence) or "none", and the
-  17-format window verbatim between `BEGIN WINDOW DATA` / `END WINDOW DATA`.
+- Prompt version `translator-intent-v2` (additive to v1). The system prompt describes LAG, the
+  data format and the task, plus one sentence: "When the user message contains a question, answer
+  it at the granularity it asks for, using only the recorded data up to the current step; if the
+  data cannot answer it, say so instead of guessing." The user message carries the episode alias
+  (never the episode id, scenario id or event ids), the step and time, the target and its
+  aircraft, every instruction in effect (the target's own one marked), `Alarms for this target`
+  (every alarm for the target issued at or before t, or "(none)"), the target's previous
+  translation (intent and evidence) or "none", the 17-format window verbatim between
+  `BEGIN WINDOW DATA` / `END WINDOW DATA` and, for a request event only, `Question from a human
+  (step s)` with the question text.
 - Output: strict JSON schema `intent_translation` = `{"intent": string, "evidence": [string, ...]}`
   (`minItems: 1`, no other keys). The parser accepts exactly one JSON object with exactly those
   keys, a non-blank intent of at most `max_intent_chars` characters and a non-empty list of
@@ -174,24 +221,31 @@ Trajectory window: steps <a>-<b>, 0.2 s per step, one JSON line per step, newest
   English-only and receives the previous (now Japanese) translation in its state. The detector
   budget stays proved for any language: the intent reserve is 4 UTF-8 bytes per character.
 
-## `events.jsonl` contract (schema_version 1)
+## `events.jsonl` contract (schema_version 2)
 
-One JSON object per line, in emission order. Four record types only. Every record has:
+One JSON object per line, in emission order. Four record types only. `requests.jsonl` and
+`responses.jsonl` records carry the same `schema_version`. A v1 run is not accepted by the judges.
+Every record has:
 
 | Field | Meaning |
 |---|---|
-| `schema_version` | `1` |
+| `schema_version` | `2` |
 | `sequence` | 1, 2, 3, ... without gaps, in file order |
 | `record_type` | `translation_event`, `detector_call`, `target_closed`, `trigger_suppressed` |
 | `scenario_id`, `episode_id` | From the scenario |
 | `step`, `time_s` | Step and simulation seconds (`round(step * 0.2, 1)`) |
 | `target` | `{"kind": "aircraft" | "team", "id": "<id>"}` |
 
-Trigger reason object: `{"kind", "source", "reference_id", "probability"}`. `kind` is one of
-`start`, `instruction`, `external_change`, `detector_change`, `request`. `source` is `scenario`
-(start / instruction), `detector`, or the scenario's request / change source label.
-`reference_id` is the instruction, request or change id, or the detector `call_id`.
-`probability` is set only for `detector_change`. Lists are in precedence order.
+Trigger reason object: `{"kind", "source", "reference_id", "probability"}`.
+
+| `kind` | Point | `source` | `reference_id` | `probability` |
+|---|---|---|---|---|
+| `initial` | bootstrap at the target's first instruction (evaluated with the start rules; not a detector decision) | `first_instruction` | the instruction id | `null` |
+| `start` | 開始点: new tactic as planned | `detector` | the detector `call_id` | `p(start)` |
+| `change` | 変化点: tactic changed by an external factor | `detector` | the detector `call_id` | `p(change)` |
+| `request` | 要求点: a human asked | the request's `source` | the request id | `null` |
+
+Lists are in precedence order (`initial > start > change > request`), then by `reference_id`.
 
 ### `translation_event`
 
@@ -202,16 +256,19 @@ Trigger reason object: `{"kind", "source", "reference_id", "probability"}`. `kin
 | `episode` | `{episode_id, alias, csv_sha256}` |
 | `primary_trigger` | Trigger kind with the highest precedence |
 | `trigger_reasons` | Every coinciding reason |
-| `input.prompt_version` | `translator-intent-v1` |
+| `input.prompt_version` | `translator-intent-v2` |
 | `input.target_aircraft` | The target's aircraft ids, as named in the prompt |
 | `input.instructions_in_effect` | Every instructed target's current instruction, canonical target order: `{instruction_id, issue_step, target, text}` |
 | `input.primary_instruction_id` | The instruction of this exact target |
+| `input.alarms` | Every alarm for this target issued at or before `step`, oldest first: `{alarm_id, step, targets, text}` |
+| `input.question` | `{request_id, step, text}` for a request event, else `null` |
 | `input.trajectory` | `{renderer, renderer_version, start_step, end_step, anchor_step, object_ids, fields, text, sha256}`: `text` is the exact window text in the prompt; steps are the clipped, actually rendered ones |
 | `input.previous_translation` | `{event_id, step, intent, evidence}` of this target, or `null` |
 | `input.output_language` | Configured output language |
 | `output` | `{intent, evidence}` as parsed |
 | `model` | `{backend, model, reasoning_effort, max_output_tokens, response_model, response_id}` |
 | `usage` | `{input_tokens, cached_input_tokens, output_tokens, reasoning_tokens}` |
+| `processing_s` | Monotonic seconds from the start of processing this target at this step (before any detector call) until this parsed record is complete, immediately before its own fsynced write (one append, the same for every event). The request deadline's measure: question received to usable answer |
 
 The trajectory text is all the judge needs verbatim. The full prompt (system prompt + user
 message) is the `payload` of the request line whose `call_id` equals `event_id`; `request_sha256`
@@ -225,9 +282,11 @@ lets a consumer check that join.
 | `request_sha256` | SHA-256 of the canonical JSON of the exact `/v1/systemone` body (`model`, `state`, `questions`) |
 | `input.trajectory` | Compact window, same keys as above |
 | `input.previous_translation` | `{event_id, step, intent}` the state was built from |
+| `input.instructions_in_effect` | The target's own instruction and, for an aircraft, its team's: `{instruction_id, issue_step, target, text}` |
+| `input.messages` | Every alarm and question for this target in the lookback, oldest first: `{kind: alarm \| question, id, step, text}` |
 | `input.state_text` | The exact state string sent |
-| `input.question` | Full question object `{id, type, instructions, criteria: {true, false}}` |
-| `output` | `{probability, threshold, changed}`; `changed = probability >= threshold` |
+| `input.question` | Full question object `{id, type: choice, instructions, criteria: {none, start, change}}` |
+| `output` | `{label, probabilities: {none, start, change}, threshold, triggered}`; `triggered = label != none and probabilities[label] >= threshold` |
 | `raw_response` | The full server response body |
 | `model` | `{backend, model, revision, served_model_name, response_model}` |
 | `usage` | `{input_tokens, output_tokens}` |
@@ -243,47 +302,88 @@ it: the down step, or the issue step of an instruction for an aircraft that was 
 `reason` (`target_down`), `down_step`, `primary_trigger`, `trigger_reasons`. No model call is made
 and nothing about it is judged.
 
-### Example (trajectory and state text truncated)
+### Examples (trajectory and state text truncated)
+
+`translation_event` for the example request at step 10, after a detector `start` at step 5:
 
 ```json
-{"schema_version": 1, "sequence": 6, "record_type": "translation_event", "scenario_id": "placeholder-episode-01",
+{"schema_version": 2, "sequence": 7, "record_type": "translation_event", "scenario_id": "placeholder-episode-01",
  "episode_id": "mhi_v1.3_ic100601_win", "step": 10, "time_s": 2.0, "target": {"kind": "aircraft", "id": "A0100"},
- "event_id": "placeholder-episode-01:aircraft:A0100:000010", "request_sha256": "...",
+ "event_id": "placeholder-episode-01:aircraft:A0100:000010",
  "episode": {"episode_id": "mhi_v1.3_ic100601_win", "alias": "episode_01", "csv_sha256": "812a44c4..."},
  "primary_trigger": "request",
  "trigger_reasons": [{"kind": "request", "source": "placeholder-human", "reference_id": "placeholder-request-001", "probability": null}],
- "input": {"prompt_version": "translator-intent-v1", "target_aircraft": ["A0100"],
+ "input": {"prompt_version": "translator-intent-v2", "target_aircraft": ["A0100"],
            "instructions_in_effect": [
              {"instruction_id": "placeholder-aircraft-001", "issue_step": 0, "target": {"kind": "aircraft", "id": "A0100"}, "text": "[PLACEHOLDER] Perform the assigned single-aircraft task."},
              {"instruction_id": "placeholder-team-001", "issue_step": 0, "target": {"kind": "team", "id": "A"}, "text": "[PLACEHOLDER] Perform the assigned team task."}],
            "primary_instruction_id": "placeholder-aircraft-001",
+           "alarms": [],
+           "question": {"request_id": "placeholder-request-001", "step": 10, "text": "[PLACEHOLDER] What is aircraft A0100 trying to do now?"},
            "trajectory": {"renderer": "lag17-jsonl", "renderer_version": "1", "start_step": 0, "end_step": 10, "anchor_step": 10,
                           "object_ids": ["A0100", "A0200", "B0100", "B0200"], "fields": ["object_id", "...", "missiles_remaining"],
                           "text": "{\"step\":0,\"time_s\":0.0,\"relative_step\":-10,\"entities\":[...]}\n...", "sha256": "..."},
-           "previous_translation": {"event_id": "placeholder-episode-01:aircraft:A0100:000000", "step": 0,
-                                    "intent": "[PLACEHOLDER] Initial intent.", "evidence": ["[PLACEHOLDER] Evidence."]},
+           "previous_translation": {"event_id": "placeholder-episode-01:aircraft:A0100:000005", "step": 5,
+                                    "intent": "[PLACEHOLDER] Earlier intent.", "evidence": ["[PLACEHOLDER] Evidence."]},
            "output_language": "Japanese"},
- "output": {"intent": "[PLACEHOLDER] Updated intent.", "evidence": ["[PLACEHOLDER] Evidence."]},
+ "output": {"intent": "[PLACEHOLDER] Answer and intent.", "evidence": ["[PLACEHOLDER] Evidence."]},
  "model": {"backend": "openai_responses", "model": "gpt-6.1-terra", "reasoning_effort": "medium", "max_output_tokens": 4000,
            "response_model": "gpt-6.1-terra", "response_id": "resp_..."},
- "usage": {"input_tokens": 0, "cached_input_tokens": 0, "output_tokens": 0, "reasoning_tokens": 0}}
+ "usage": {"input_tokens": 0, "cached_input_tokens": 0, "output_tokens": 0, "reasoning_tokens": 0},
+ "request_sha256": "...", "processing_s": 2.41}
+```
+
+`detector_call` at tick 15, after the question at 10 and the alarm at 12:
+
+```json
+{"schema_version": 2, "sequence": 9, "record_type": "detector_call", "scenario_id": "placeholder-episode-01",
+ "episode_id": "mhi_v1.3_ic100601_win", "step": 15, "time_s": 3.0, "target": {"kind": "aircraft", "id": "A0100"},
+ "call_id": "placeholder-episode-01:detector:aircraft:A0100:000015", "request_sha256": "...",
+ "input": {"trajectory": {"renderer": "lag-detector-compact", "renderer_version": "1", "start_step": 6, "end_step": 15, "anchor_step": 15,
+                          "object_ids": ["A0100", "B0100", "B0200"], "fields": ["alive", "...", "vu_mps"], "text": "...", "sha256": "..."},
+           "previous_translation": {"event_id": "placeholder-episode-01:aircraft:A0100:000010", "step": 10, "intent": "[PLACEHOLDER] Answer and intent."},
+           "instructions_in_effect": [
+             {"instruction_id": "placeholder-aircraft-001", "issue_step": 0, "target": {"kind": "aircraft", "id": "A0100"}, "text": "[PLACEHOLDER] Perform the assigned single-aircraft task."},
+             {"instruction_id": "placeholder-team-001", "issue_step": 0, "target": {"kind": "team", "id": "A"}, "text": "[PLACEHOLDER] Perform the assigned team task."}],
+           "messages": [
+             {"kind": "question", "id": "placeholder-request-001", "step": 10, "text": "[PLACEHOLDER] What is aircraft A0100 trying to do now?"},
+             {"kind": "alarm", "id": "placeholder-alarm-001", "step": 12, "text": "[PLACEHOLDER] Warning about the situation of aircraft A0100."}],
+           "state_text": "Target: aircraft A0100 (aircraft A0100). Opponents: B0100, B0200.\n...",
+           "question": {"id": "point_kind", "type": "choice", "instructions": "...", "criteria": {"none": "...", "start": "...", "change": "..."}}},
+ "output": {"label": "change", "probabilities": {"none": 0.05, "start": 0.05, "change": 0.9}, "threshold": 0.65, "triggered": true},
+ "raw_response": {"model": "clef-flash", "answers": {"point_kind": {"type": "choice", "choice": "change", "probabilities": {"...": 0}}}, "usage": {"...": 0}},
+ "model": {"backend": "system_one", "model": "Cloudflare/clef-flash", "revision": "fb4417d31c1d0f9e7e77f1141b40aaede7491e00",
+           "served_model_name": "clef-flash", "response_model": "clef-flash"},
+ "usage": {"input_tokens": 0, "output_tokens": 0}}
 ```
 
 ## Config and scenario
 
 `configs/translator/run.yaml` is the full default; every key is required, unknown keys fail and
-duplicate YAML keys fail (in the scenario too).
+duplicate YAML keys fail (in the scenario too). Contract v2 keys: `scenario_limits`
+(`max_instruction_chars: 300`, `max_alarm_chars: 200`, `max_question_chars: 200`),
+`detector.messages_lookback_steps: 25` (must be `>= pipeline.tick_interval_steps`),
+`detector.question` (the `choice` question), `detector.threshold: 0.65` and
+`translation.max_intent_chars: 600`.
 Phase limits: `pipeline.visibility.mode` accepts only `online` (with `future_steps: 0`);
 `retrospective` and `translation.backend: vllm_chat` are rejected as "not implemented in this
 phase" (LATER, L2). `pricing` must have an entry for `translation.model` (preview estimates only).
 
-`configs/translator/scenario.example.yaml` documents the scenario format with placeholder text.
-Scenario rules: exact keys; ids unique across instructions, requests and change points; at least
-one instruction at step 0 (D16); at most one instruction per exact target per step; every request
-or change point references a target already instructed at or before its step; all steps within
-`[0, last_complete_step]`; aircraft and team ids must exist in the episode; `episode.alias` must
-differ from `episode_id`. Paths resolve relative to the scenario file. `pipeline.validate_scenario`
-re-runs the same rules, so a `Scenario` built in code is held to them too.
+`configs/translator/scenario.example.yaml` documents the scenario format (`schema_version: 2`)
+with placeholder text: `instructions`, `alarms` (`{alarm_id, step, targets, text}`) and
+`requests` (`{request_id, step, targets, source, question}`). The v1 key
+`external_change_points` is rejected. Scenario rules: exact keys; ids unique across
+instructions, alarms and requests; at least one instruction at step 0; at most one instruction
+and at most one request per exact target per step; every alarm or request target already
+instructed at or before its step; every text within `scenario_limits` (longer fails the load,
+nothing is truncated); all steps within `[0, last_complete_step]`; aircraft and team ids must
+exist in the episode. Alias outcome check (D58): `episode.alias` is lowercased and split into
+alphanumeric tokens (`episode_id` likewise); no token may be an outcome word (`win`, `loss`,
+`lose`, `won`, `lost`), and no token may be shared with `episode_id`. So `window_01` and
+`close_call` pass, while `ep-win` or a reused seed or IC token fail. Paths resolve relative to the scenario file. A
+scenario is always loaded against the run config (`load_scenario(path, limits=...)`), and
+`pipeline.validate_scenario` re-runs the same rules, so a `Scenario` built in code is held to them
+too.
 
 ### Detector endpoint
 
@@ -334,4 +434,8 @@ connection:
 ## Tests
 
 `uv run pytest tests/translator -q` runs offline: no network, GPU, paid call or real key.
-`test_tr_budget.py` renders every tick of all three episodes (about 17 s).
+`test_tr_budget.py` renders every tick of all three episodes (about 18 s).
+`test_tr_pipeline.py::test_no_payload_contains_information_after_its_step` parses every detector
+and translation payload of the example scenario (real renderers and 13_LAG rows) and checks that
+every trajectory step, instruction, alarm and question step is `<= t` and that no later text
+appears.

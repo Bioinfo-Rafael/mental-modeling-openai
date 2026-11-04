@@ -27,15 +27,14 @@ from tests.llm.llm_fakes import (
     SystemOneServer,
     json_response,
     models_body,
-    noul_answer,
-    systemone_body,
 )
-from tests.translator.tr_fakes import EXAMPLE_SCENARIO, FakeIntentModel, over_tcp
+from tests.translator.tr_fakes import EXAMPLE_SCENARIO, FakeIntentModel, over_tcp, systemone_responder
 
 from .eval_fakes import (
     A1_REQUEST,
     A1_START,
     EVENT_IDS,
+    EXAMPLE_DETECTOR_ANSWERS,
     EXAMPLE_JUDGED,
     EXAMPLE_KEY_POINTS,
     JUDGE_CONFIG,
@@ -371,10 +370,8 @@ def test_e2e_real_episode_production_adapters_event_log_judge_preview(
 ) -> None:
     monkeypatch.setenv("VLLM_API_KEY", "local-test-key")
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-    answer = systemone_body({"unexplained_change": noul_answer(0.1)})
-    server = SystemOneServer(
-        [json_response(200, models_body("clef-flash"))] + [json_response(200, answer)] * DETECTOR_TICKS
-    )
+    answer = systemone_responder(EXAMPLE_DETECTOR_ANSWERS)  # the same changes as the fake-layer run
+    server = SystemOneServer([json_response(200, models_body("clef-flash"))] + [answer] * DETECTOR_TICKS)
     translation_answer = json.dumps({"intent": "[FAKE] intent", "evidence": ["[FAKE] evidence"]})
     translation_client = ScriptedResponsesClient([judge_response(translation_answer) for _ in range(TRANSLATIONS)])
     translator_dir = tmp_path / "translator"

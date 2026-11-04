@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import getpass
 import json
+import math
 import socket
 from dataclasses import replace
 from pathlib import Path
@@ -15,6 +16,7 @@ from typing import Any
 
 import pandas as pd
 import pytest
+import yaml
 
 from mtd_rl_xavier.lag.rendering import render_lag17_jsonl
 from mtd_rl_xavier.llm.openai_responses import PROVENANCE_ENV
@@ -29,16 +31,27 @@ from tests.llm.llm_fakes import (
     json_response,
     message_item,
     models_body,
-    noul_answer,
     responses_body,
-    systemone_body,
 )
 
-from .tr_fakes import EXAMPLE_SCENARIO, RUN_CONFIG, over_tcp, read_jsonl, run_config_raw, write_yaml
+from .tr_fakes import (
+    CHANGE,
+    EXAMPLE_SCENARIO,
+    RUN_CONFIG,
+    START,
+    Answer,
+    over_tcp,
+    read_jsonl,
+    run_config_raw,
+    systemone_responder,
+    write_yaml,
+)
 
 KEY_ENV = "VLLM_API_KEY"  # the variable NAME in run.yaml; tests set a fake value
 SENTINEL_KEY = "local-test-key-0123"
 TRANSLATION_ANSWER = json.dumps({"intent": "[FAKE] intent", "evidence": ["[FAKE] evidence"]})
+# Detector answers on the example scenario: A0100 starts a tactic at tick 5 and changes it at tick 15.
+EXAMPLE_ANSWERS = {("aircraft A0100", 5): START, ("aircraft A0100", 15): CHANGE}
 
 
 class RecordingFactory:
@@ -79,9 +92,10 @@ def _args(tmp_path: Path, *extra: str, name: str = "run1") -> list[str]:
     return ["--scenario", str(EXAMPLE_SCENARIO), "--output-root", str(tmp_path / "out"), "--run-name", name, *extra]
 
 
-def _systemone_ok(calls: int, probability: float = 0.1) -> list[Any]:
-    answer = systemone_body({"unexplained_change": noul_answer(probability)})
-    return [json_response(200, models_body("clef-flash")), *[json_response(200, answer) for _ in range(calls)]]
+def _systemone_ok(calls: int, answers: dict[tuple[str, int], Answer] | None = None) -> list[Any]:
+    """The health check, then ``calls`` answers chosen by state (``none`` unless listed in ``answers``)."""
+    responder = systemone_responder(answers or {})
+    return [json_response(200, models_body("clef-flash")), *[responder for _ in range(calls)]]
 
 
 def _openai_ok(calls: int) -> ScriptedResponsesClient:
@@ -115,10 +129,14 @@ def test_preview_builds_no_client_reads_no_credential_and_writes_artifacts(
     assert run_dir.stat().st_mode & 0o777 == 0o700
     preview = json.loads((run_dir / "preview.json").read_text())
     assert preview["api_requests_made"] == 0
-    assert preview["plan"]["mandatory_translations"] == 5 and preview["plan"]["detector_calls"] == 136
-    assert preview["detector_budget"]["margin"] > 0
+    # initial x {A0100, team A} at step 0 + the request at 10; team A's instruction at 20 forces nothing (D50)
+    assert preview["plan"]["mandatory_translations"] == 3 and preview["plan"]["detector_calls"] == 136
+    assert preview["detector_budget"]["margin"] > 0 and preview["detector_budget"]["intent_reserve_bytes"] == 2400
     record = json.loads((run_dir / "run.json").read_text())
     assert (record["mode"], record["status"], record["api_requests_made"]) == ("preview", "preview", 0)
+    assert record["config"]["pipeline"]["visibility"] == {"mode": "online", "future_steps": 0}
+    assert record["provenance"]["prompt_version"] == "translator-intent-v2"
+    assert record["provenance"]["detector_state_version"] == "2"
     example = json.loads((run_dir / "example_translation_request.json").read_text())
     assert example["model"] == "gpt-6.1-terra" and example["store"] is False
 
@@ -161,8 +179,8 @@ def test_a_local_only_config_passes_the_gate_with_execute_alone(
 
 def test_execute_runs_both_layers_and_records_provenance(tmp_path: Path, short_episode: pd.DataFrame) -> None:
     order: list[str] = []
-    server = SystemOneServer(_systemone_ok(12))  # 6 ticks (5..30) x A0100 and team A
-    client = _openai_ok(5)  # step 0 x 2, request 10, change 15, instruction 20
+    server = SystemOneServer(_systemone_ok(12, EXAMPLE_ANSWERS))  # 6 ticks (5..30) x A0100 and team A
+    client = _openai_ok(5)  # initial at step 0 x 2, start 5, request 10, change 15
 
     code = cli.main(
         _args(tmp_path, "--execute", "--confirm-paid-api"),
@@ -187,7 +205,21 @@ def test_execute_runs_both_layers_and_records_provenance(tmp_path: Path, short_e
     }
     assert "mtd_rl_xavier/translator/pipeline.py" in record["provenance"]["code_sha256"]
     assert len(requests) == len(responses) == 17 and all(r["status"] == "ok" for r in responses)
+    assert all(
+        isinstance(r["latency_s"], float) and math.isfinite(r["latency_s"]) and r["latency_s"] >= 0 for r in responses
+    )
+    assert record["config"]["pipeline"]["visibility"] == {"mode": "online", "future_steps": 0}
     assert SENTINEL_KEY not in (run_dir / "run.json").read_text() + (run_dir / "requests.jsonl").read_text()
+    translations = [e for e in events if e["record_type"] == "translation_event"]
+    assert [(e["step"], e["target"]["id"], e["primary_trigger"]) for e in translations] == [
+        (0, "A0100", "initial"),
+        (0, "A", "initial"),
+        (5, "A0100", "start"),
+        (10, "A0100", "request"),
+        (15, "A0100", "change"),
+    ]
+    assert all(e["schema_version"] == 2 and e["processing_s"] >= 0 for e in events if "processing_s" in e)
+    assert len([e for e in events if "processing_s" in e]) == len(translations)
     _assert_exact_model_inputs(events, server, client, short_episode)
 
 
@@ -210,6 +242,13 @@ def _assert_exact_model_inputs(
         aircraft = ", ".join(event["input"]["target_aircraft"])
         assert f"Translation target: {target['kind']} {target['id']} (aircraft {aircraft})" in user_text
         assert all(item["text"] in user_text for item in event["input"]["instructions_in_effect"])
+        assert all(f"  {item['text']}" in user_text for item in event["input"]["alarms"])
+        assert all(item["step"] <= event["step"] for item in event["input"]["alarms"])
+        question = event["input"]["question"]
+        assert (question is not None) == ("Question from a human" in user_text)
+        assert (
+            question is None or f"Question from a human (step {question['step']}):\n  {question['text']}" in user_text
+        )
         previous = event["input"]["previous_translation"]
         assert previous is None or f"intent: {previous['intent']}" in user_text
         assert f"Write both in {event['input']['output_language']}." in sent["instructions"]
@@ -340,7 +379,7 @@ SECRET = "SECRETPW-canary-7f3a"  # fake password canary; must never reach stderr
 def test_detector_budget_that_does_not_fit_fails_preflight_before_any_directory_or_client(
     tmp_path: Path, capsys: pytest.CaptureFixture[str], short_episode: pd.DataFrame, mode: list[str]
 ) -> None:
-    raw = run_config_raw()  # 4096 (wev serve's cap) cannot hold the 4000-byte intent reserve plus framing
+    raw = run_config_raw()  # 4096 (wev serve's cap) cannot hold the 2400-byte intent reserve plus state and window
     config_path = write_yaml(
         tmp_path / "run.yaml", {**raw, "detector": {**raw["detector"], "input_token_budget": 4096}}
     )
@@ -409,7 +448,7 @@ def test_default_unix_socket_with_user_placeholder_runs_and_records_the_endpoint
     raw = run_config_raw()
     connection = {**raw["detector"]["connection"], "uds_path": str(tmp_path / "{user}-vllm" / "clef-flash.sock")}
     config_path = write_yaml(tmp_path / "run.yaml", {**raw, "detector": {**raw["detector"], "connection": connection}})
-    server = SystemOneServer(_systemone_ok(12))
+    server = SystemOneServer(_systemone_ok(12, EXAMPLE_ANSWERS))
 
     code = cli.main(
         ["--config", str(config_path), *_args(tmp_path, "--execute", "--confirm-paid-api")],
@@ -610,7 +649,7 @@ def test_execute_records_sdk_environment_names_only(
 
     code = cli.main(
         _args(tmp_path, "--execute", "--confirm-paid-api"),
-        detector_client_factory=_detector_factory(SystemOneServer(_systemone_ok(12)), []),
+        detector_client_factory=_detector_factory(SystemOneServer(_systemone_ok(12, EXAMPLE_ANSWERS)), []),
         openai_client_factory=_openai_factory(_openai_ok(5), []),
     )
 
@@ -637,3 +676,30 @@ def test_execute_with_openai_log_set_fails_before_any_call_without_echoing_the_v
     assert code == cli.EXIT_FAILED and record["status"] == "failed" and record["api_requests_made"] == 0
     assert record["error"]["type"] == "OpenAIClientError" and "OPENAI_LOG" in record["error"]["message"]
     assert "PW-canary" not in record["error"]["message"] + capsys.readouterr().err
+
+
+# --- contract v2: exact budget preflight ----------------------------------------------------------
+
+
+@pytest.mark.parametrize("mode", [[], ["--execute", "--confirm-paid-api"]])
+def test_scenario_texts_that_push_a_detector_state_over_budget_fail_preflight_before_anything(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], short_episode: pd.DataFrame, mode: list[str]
+) -> None:
+    raw = yaml.safe_load(EXAMPLE_SCENARIO.read_text(encoding="utf-8"))
+    csv = (EXAMPLE_SCENARIO.parent / raw["episode"]["csv_path"]).resolve()
+    alarms = [  # each within max_alarm_chars; together they exceed the budget at tick 25 (lookback [1, 25])
+        {"alarm_id": f"w{step}", "step": step, "targets": [{"kind": "team", "id": "A"}], "text": "\U0001f600" * 200}
+        for step in range(1, 21)
+    ]
+    scenario = write_yaml(
+        tmp_path / "scenario.yaml", {**raw, "episode": {**raw["episode"], "csv_path": str(csv)}, "alarms": alarms}
+    )
+    detector, openai = RecordingFactory(), RecordingFactory()
+    args = ["--scenario", str(scenario), "--output-root", str(tmp_path / "out"), "--run-name", "run1", *mode]
+
+    code = cli.main(args, detector_client_factory=detector, openai_client_factory=openai)
+
+    err = capsys.readouterr().err
+    assert code == cli.EXIT_FAILED and detector.calls == [] and openai.calls == []
+    assert not (tmp_path / "out").exists()
+    assert "PipelineError" in err and ">= input_token_budget 16384" in err and "alarm" in err

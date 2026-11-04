@@ -1,8 +1,9 @@
-"""Translation layer (D3, D10, D22-D24, D32): trajectory -> natural-language intent of one target.
+"""Translation layer (D3, D10, D22, D32, D51): trajectory -> natural-language intent of one target.
 
 - ``IntentModel`` is the consumer-side Protocol; any model can sit behind it.
 - ``TranslationLayer`` owns the prompt, the strict output schema and the strict parser; models
-  only run a ``TranslationPrompt``. The trajectory text goes into the prompt verbatim.
+  only run a ``TranslationPrompt``. The trajectory text goes into the prompt verbatim, and so do
+  the target's alarms and, for a request, the human's question (all issued at or before the step).
 - ``OpenAIIntentModel`` adapts ``OpenAIResponsesClient``; the SDK client is built only in the
   composition root (``translator/cli.py``) after the paid-call gate.
 - Parsing never repairs, coerces or retries: one JSON object with exactly ``intent`` and
@@ -24,16 +25,18 @@ from mtd_rl_xavier.llm.openai_responses import (
 )
 
 from .schema import (
+    Alarm,
     Instruction,
     IntentTranslation,
     ModelCallError,
     PreviousTranslation,
+    RequestPoint,
     TargetRef,
     step_time_s,
     strict_json_loads,
 )
 
-PROMPT_VERSION = "translator-intent-v1"
+PROMPT_VERSION = "translator-intent-v2"
 OUTPUT_SCHEMA_NAME = "intent_translation"
 OUTPUT_KEYS = frozenset({"intent", "evidence"})
 
@@ -69,6 +72,8 @@ to do. Do not assume the target follows its instruction; report the intent its b
 A previous translation, when given, is the earlier statement for the same target: keep what
 still holds and revise what newer behaviour contradicts. Treat intentions as hypotheses
 supported by evidence. Do not invent missile targets, hits, cooperation or outcomes.
+When the user message contains a question, answer it at the granularity it asks for, using only
+the recorded data up to the current step; if the data cannot answer it, say so instead of guessing.
 
 Output: one JSON object.
 - "intent": the target's current intent in at most {max_intent_chars} characters.
@@ -91,6 +96,8 @@ class TranslationModelRequest:
     primary_instruction_id: str  # the instruction of this exact target
     trajectory: RenderedTrajectory
     previous: PreviousTranslation | None  # target-specific; None for the target's first translation
+    alarms: tuple[Alarm, ...]  # every alarm for this target issued at or before ``step``
+    question: RequestPoint | None  # the request at this step for this target, if any
 
 
 @dataclass(frozen=True)
@@ -146,6 +153,20 @@ def _instruction_lines(request: TranslationModelRequest) -> list[str]:
     return lines
 
 
+def _alarm_lines(alarms: tuple[Alarm, ...]) -> list[str]:
+    lines = []
+    for alarm in alarms:
+        lines.append(f"- issued at step {alarm.step} for {', '.join(t.label for t in alarm.targets)}:")
+        lines.append(f"  {alarm.text}")
+    return lines or ["(none)"]
+
+
+def _question_lines(question: RequestPoint | None) -> list[str]:
+    if question is None:
+        return []
+    return ["", f"Question from a human (step {question.step}):", f"  {question.question}"]
+
+
 def _previous_lines(previous: PreviousTranslation | None) -> list[str]:
     if previous is None:
         return ["(none: this is the first translation for this target)"]
@@ -165,6 +186,9 @@ def render_user_text(request: TranslationModelRequest) -> str:
         "Instructions in effect:",
         *_instruction_lines(request),
         "",
+        "Alarms for this target:",
+        *_alarm_lines(request.alarms),
+        "",
         "Previous translation for this target:",
         *_previous_lines(request.previous),
         "",
@@ -173,6 +197,7 @@ def render_user_text(request: TranslationModelRequest) -> str:
         "BEGIN WINDOW DATA",
         trajectory.text,
         "END WINDOW DATA",
+        *_question_lines(request.question),
     ]
     return "\n".join(lines)
 
