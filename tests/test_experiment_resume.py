@@ -65,6 +65,23 @@ def test_prompt_change_refuses_resume(journal):
         common.prepare_resume(changed, directory)
 
 
+@pytest.mark.parametrize("saved", sorted(common.RESTRUCTURED_SEMANTICS))
+def test_journal_saved_before_layout_move_resumes(journal, saved):
+    directory, plan, _, _, save = journal
+    save("manifest.json", {**plan, "provenance": {"semantics_sha256": saved}})
+    current = {**plan, "provenance": {"semantics_sha256": common.CURRENT_SEMANTICS}}
+    cached, uncertain, _ = common.prepare_resume(current, directory)
+    assert set(cached) == {"q"} and not uncertain
+
+
+def test_semantics_change_refuses_resume(journal):
+    directory, plan, _, _, save = journal
+    save("manifest.json", {**plan, "provenance": {"semantics_sha256": common.CURRENT_SEMANTICS}})
+    older = {**plan, "provenance": {"semantics_sha256": sorted(common.RESTRUCTURED_SEMANTICS)[0]}}
+    with pytest.raises(ValueError, match="semantics mismatch"):
+        common.prepare_resume(older, directory)
+
+
 def test_request_parameter_change_refuses_resume(journal):
     directory, plan, request, _, save = journal
     request["kwargs"]["temperature"] = 1

@@ -8,7 +8,8 @@ from types import SimpleNamespace
 import pytest
 
 HERE = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(HERE), str(HERE.parent / "13_LAG"), str(HERE.parents[1] / "mentalmodeling")]
+from mtd_rl_xavier.paths import MENTALMODELING  # noqa: E402
+sys.path[:0] = [str(HERE), str(HERE.parent / "13_LAG"), str(MENTALMODELING)]
 from trajectory_experiment import batch, execution as ex, evaluation, prompts
 from lag_data.definitions import STATE_FEATURES, ACTIONS
 

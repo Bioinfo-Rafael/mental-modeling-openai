@@ -1,7 +1,8 @@
 """Repository layout: the one module that knows where top-level directories live.
 
 Saved results from the ``rafael/mental-modeling-openai`` branch record repo-relative
-paths in the old layout (``experiments/...``, ``upstream/LLM-Xavier/...``). Results
+paths in the old layout (``experiments/...``, ``upstream/LLM-Xavier/...``), and results
+saved before the vendored code moved under ``src/`` record ``mentalmodeling/...``. Results
 are immutable, so readers translate those paths here instead of rewriting files.
 """
 
@@ -10,15 +11,17 @@ from __future__ import annotations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-MENTALMODELING = ROOT / "mentalmodeling"  # Prior work: vendored LLM-Xavier (`llm_x`)
+MENTALMODELING = ROOT / "src" / "mentalmodeling"  # Prior work: vendored LLM-Xavier (`llm_x`)
 WORKSPACE = ROOT / "workspace"  # Exploratory experiments, importable as `workspace.<name>`
 DATA = ROOT / "data"
 CONFIGS = ROOT / "configs"
 OUTPUTS = ROOT / "outputs"
 
 # (old prefix, current prefix). Lookups use the longest matching prefix in either direction.
+# Several old prefixes may share a current prefix; the inverse then prefers the earliest entry.
 LEGACY_PREFIXES: tuple[tuple[str, str], ...] = (
-    ("upstream/LLM-Xavier/", "mentalmodeling/"),
+    ("upstream/LLM-Xavier/", "src/mentalmodeling/"),
+    ("mentalmodeling/", "src/mentalmodeling/"),
     ("experiments/common_analysis/", "src/mtd_rl_xavier/experiment/common_analysis/"),
     ("experiments/common.py", "src/mtd_rl_xavier/experiment/common.py"),
     ("experiments/analysis.py", "src/mtd_rl_xavier/experiment/analysis.py"),
@@ -47,9 +50,20 @@ def current_relpath(relative: str | Path) -> str:
     return _replace_prefix(Path(relative).as_posix(), list(LEGACY_PREFIXES))
 
 
+def legacy_relpaths(relative: str | Path) -> tuple[str, ...]:
+    """Every key older manifests may have used for a current path, oldest layout first."""
+    text = Path(relative).as_posix()
+    matches = [(old, new) for old, new in LEGACY_PREFIXES if text.startswith(new)]
+    if not matches:
+        return ()
+    longest = max(len(new) for _, new in matches)
+    return tuple(old + text[len(new) :] for old, new in matches if len(new) == longest)
+
+
 def legacy_relpath(relative: str | Path) -> str:
-    """Inverse of `current_relpath`: the key older manifests used for a current path."""
-    return _replace_prefix(Path(relative).as_posix(), [(new, old) for old, new in LEGACY_PREFIXES])
+    """Inverse of `current_relpath`: the oldest-layout key for a current path."""
+    candidates = legacy_relpaths(relative)
+    return candidates[0] if candidates else Path(relative).as_posix()
 
 
 def resolve_recorded(root: Path, relative: str | Path) -> Path:

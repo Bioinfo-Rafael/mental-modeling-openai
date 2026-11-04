@@ -27,7 +27,7 @@ API clientの構築やAPI requestは行わない。
 
 - `prompts/*.txt`：Experiment 03.1で実際に生成された8種類のmessage
 - `workspace/01_prompt_preview/results/*.txt`：既存promptを使ったExperiment 01のH=5 preview
-- `mentalmodeling/llm_x/feedback.py`：question本文の定義と、Joint promptの移植元
+- `src/mentalmodeling/llm_x/feedback.py`：question本文の定義と、Joint promptの移植元
 
 結論は次のとおり。
 

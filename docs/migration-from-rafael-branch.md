@@ -8,7 +8,7 @@ resume saved runs (see "Compatibility with saved results" below).
 
 | Old (rafael branch) | Now |
 | --- | --- |
-| `upstream/LLM-Xavier/` | `mentalmodeling/` (byte-identical) |
+| `upstream/LLM-Xavier/` | `src/mentalmodeling/` (byte-identical; `mentalmodeling/` until it moved under `src/`) |
 | `dataset_adapters/` | `src/mtd_rl_xavier/datasets/` |
 | `preprocessing/` | `src/mtd_rl_xavier/preprocessing/` |
 | `tools/<name>.py` | `src/mtd_rl_xavier/tools/<name>.py`, run as `python -m mtd_rl_xavier.tools.<name>` |
@@ -44,6 +44,8 @@ table.
    the branch head (`2048668f…`) to the current one. Evidence: `make_plan` in the new layout
    regenerates identical query identities and prompt hashes for 03_1 (960), 05 (120) and 06 (960).
    Manifests with older hashes (03, 04: `57369ab9…`) were already rejected on the branch head.
+   Moving `mentalmodeling/` to `src/mentalmodeling/` later changed only the path keys (every file
+   byte-identical), so the hash of that layout (`830a5841…`) is mapped to the current one too.
 3. **Not supported here:** commands that re-validate a saved run against the code or paths it was
    planned with: `--resume`, LAG batch `status`/resume (14–17), and re-planning 09–12 over their
    saved dry runs. Their recorded source hashes, input paths or query identities include files

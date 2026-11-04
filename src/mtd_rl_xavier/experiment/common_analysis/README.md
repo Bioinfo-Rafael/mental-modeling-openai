@@ -42,7 +42,7 @@ repository rootで既存の`.venv`を有効化して使う。
 | `joint_plots.py:make_figures()` | long tableから作図。モデルの混在を拒否、Nは引数で限定 |
 
 03_1/analysisの旧`joint_*.py`は互換importのみ。新しいコードは`experiments.common_analysis`から直接importする。
-questionの対応は別の`src/mtd_rl_xavier/experiment/joint_questions.py`。prompt本文は既存`mentalmodeling/llm_x/feedback.py`が所有する。
+questionの対応は別の`src/mtd_rl_xavier/experiment/joint_questions.py`。prompt本文は既存`src/mentalmodeling/llm_x/feedback.py`が所有する。
 
 ## 変えない評価定義
 

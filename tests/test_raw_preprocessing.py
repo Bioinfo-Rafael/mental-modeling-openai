@@ -5,6 +5,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 from mtd_rl_xavier.datasets.base import ROOT
+from mtd_rl_xavier import paths
 from mtd_rl_xavier.datasets.registry import dataset_ids,get_adapter
 from mtd_rl_xavier.preprocessing.prompting import load_config,config_identity,eligible_sequences,build_external_query,transform
 from mtd_rl_xavier.preprocessing.llmx_original import Episode,build_prompt_queries,default_metric_question
@@ -59,7 +60,7 @@ def test_original_prompt_identical():
     assert q.user_prompt==user_prompt(ep,history_start=q.history_start,history_end=q.history_end,indexed_history=True,drop_last_state_feature=False,question=question)
 
 def test_protected_output_and_symlink(tmp_path):
-    for path in [ROOT/'data/generated.csv',ROOT/'mentalmodeling/derived.json']:
+    for path in [ROOT/'data/generated.csv',paths.MENTALMODELING/'derived.json']:
         with pytest.raises(ValueError): derived_path(path)
     (tmp_path/'link').symlink_to(ROOT/'data',target_is_directory=True)
     with pytest.raises(ValueError): derived_path(tmp_path/'link/new.csv')

@@ -1,6 +1,6 @@
 """One question mapping shared by Exp.03_1, 05, and 06.
 
-Prompt text remains owned by mentalmodeling/llm_x/feedback.py.
+Prompt text remains owned by src/mentalmodeling/llm_x/feedback.py.
 """
 JOINT_QUESTIONS = {
     "MountainCar-v0": {

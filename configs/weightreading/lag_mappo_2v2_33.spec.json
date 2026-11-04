@@ -1,0 +1,403 @@
+{
+  "schema_version": 1,
+  "network_alias": "net-6a3a494d",
+  "hidden_from_prompt": [
+    "provenance",
+    "notes", "evaluation"
+  ],
+  "provenance": {
+    "origin": "mtd-rl-lag models/v1.3/files/actor_latest.pt (MHI delivery 2v2_rulebase c21de34); the same architecture and layout apply to models/v1.3-1/files/actor_latest.pt",
+    "checkpoint_sha256_by_model": "v1.3 7cdf5ebcfd2d165a81203605bd0a1b0d3558fb050a3ed2f3cbe58d19efff002d; v1.3-1 0f13232c08937379e5893f6b50f1c9996fb6c9f9dd9087c481eaa447c05c4acf",
+    "manifest": "mtd-rl-lag docs/mhi_integration/policy_manifest.json (observation_layout mhi_multiplecombat_shoot_33_v1, observation_size 33, action_head_sizes [3,5,3,2], policy_family mappo)",
+    "reference_code": "mtd-rl-lag algorithms/mappo/ppo_actor.py PPOActor; algorithms/utils/{mlp,gru,act,distributions}.py",
+    "observation_code": "mtd-rl-lag envs/JSBSim/tasks/multiplecombat_task.py HierarchicalMultipleCombatShootTask.observe_for_layout (layout mhi_multiplecombat_shoot_33_v1)",
+    "action_code": "mtd-rl-lag envs/JSBSim/tasks/multiplecombat_task.py HierarchicalMultipleCombatTask.normalize_action; HierarchicalMultipleCombatShootBaselineTask.normalize_action"
+  },
+  "description": "High-level tactical policy for one fighter aircraft (F-16 flight model) in a two-versus-two air-combat simulation. It is a recurrent policy trained with multi-agent reinforcement learning (MAPPO); both teammates run their own copy of this same network, each with its own recurrent state. Every decision (every 0.2 s of simulated time) it reads 33 numbers - its own altitude, attitude and velocity, then the relative geometry of its teammate, of each of the two opponents and of the incoming missile that threatens it - and chooses one bin for each of 4 heads: an altitude command, a heading command, a speed command and a shoot request. The first three are not control-surface deflections: they set the target-minus-current altitude, heading and speed that a separate, frozen low-level flight-controller network then flies until the next decision. The shoot request launches a missile at the nearest live opponent only if this aircraft has missiles left (2 per aircraft), that opponent is within 45 degrees of its velocity vector and within 14 km, and at least 25 s have passed since its previous launch; otherwise it has no effect. The opponents are scripted (rule-based) aircraft. Entries 0-26 of x are clipped to [-10, 10] before the network sees them (in practice they stay well inside that range); the missile entries 27-32 are not clipped. A destroyed teammate or opponent keeps contributing features computed from its last state.",
+  "inputs": [
+    {
+      "index": 0,
+      "name": "altitude",
+      "definition": "own altitude above sea level / 5000",
+      "unit": "5 km"
+    },
+    {
+      "index": 1,
+      "name": "roll_sin",
+      "definition": "sin(own roll angle)",
+      "unit": ""
+    },
+    {
+      "index": 2,
+      "name": "roll_cos",
+      "definition": "cos(own roll angle)",
+      "unit": ""
+    },
+    {
+      "index": 3,
+      "name": "pitch_sin",
+      "definition": "sin(own pitch angle)",
+      "unit": ""
+    },
+    {
+      "index": 4,
+      "name": "pitch_cos",
+      "definition": "cos(own pitch angle)",
+      "unit": ""
+    },
+    {
+      "index": 5,
+      "name": "v_body_x",
+      "definition": "own body-frame forward velocity u / 340",
+      "unit": "340 m/s"
+    },
+    {
+      "index": 6,
+      "name": "v_body_y",
+      "definition": "own body-frame sideways velocity v / 340",
+      "unit": "340 m/s"
+    },
+    {
+      "index": 7,
+      "name": "v_body_z",
+      "definition": "own body-frame downward velocity w / 340",
+      "unit": "340 m/s"
+    },
+    {
+      "index": 8,
+      "name": "airspeed",
+      "definition": "own calibrated airspeed / 340",
+      "unit": "340 m/s"
+    },
+    {
+      "index": 9,
+      "name": "partner_delta_speed",
+      "definition": "(body-x speed u of the teammate - own body-x speed u) / 340",
+      "unit": "340 m/s"
+    },
+    {
+      "index": 10,
+      "name": "partner_delta_altitude",
+      "definition": "(teammate altitude - own altitude) / 1000",
+      "unit": "km"
+    },
+    {
+      "index": 11,
+      "name": "partner_AO",
+      "definition": "angle-off: angle between own velocity vector and the line of sight from own aircraft to the teammate (3-D displacement in north/east/up metres), in [0, pi] (0 = it is dead ahead); velocities enter as (v_north, v_east, v_down), so the vertical velocity component has the opposite sign to the 'up' displacement axis",
+      "unit": "rad"
+    },
+    {
+      "index": 12,
+      "name": "partner_TA",
+      "definition": "target aspect: angle between the teammate's velocity vector and the same own-to-teammate line of sight, in [0, pi] (0 = it flies directly away from us, pi = straight at us); velocities enter as (v_north, v_east, v_down), so the vertical velocity component has the opposite sign to the 'up' displacement axis",
+      "unit": "rad"
+    },
+    {
+      "index": 13,
+      "name": "partner_distance",
+      "definition": "3-D distance to the teammate / 10000",
+      "unit": "10 km"
+    },
+    {
+      "index": 14,
+      "name": "partner_side",
+      "definition": "sign(v_north * d_east - v_east * d_north) with own horizontal velocity v and horizontal displacement d to the teammate: +1 = teammate is to the right of own track, -1 = to the left, 0 = dead ahead/behind.",
+      "unit": ""
+    },
+    {
+      "index": 15,
+      "name": "enemy1_delta_speed",
+      "definition": "(body-x speed u of the first opponent - own body-x speed u) / 340",
+      "unit": "340 m/s"
+    },
+    {
+      "index": 16,
+      "name": "enemy1_delta_altitude",
+      "definition": "(first opponent altitude - own altitude) / 1000",
+      "unit": "km"
+    },
+    {
+      "index": 17,
+      "name": "enemy1_AO",
+      "definition": "angle-off: angle between own velocity vector and the line of sight from own aircraft to the first opponent (3-D displacement in north/east/up metres), in [0, pi] (0 = it is dead ahead); velocities enter as (v_north, v_east, v_down), so the vertical velocity component has the opposite sign to the 'up' displacement axis",
+      "unit": "rad"
+    },
+    {
+      "index": 18,
+      "name": "enemy1_TA",
+      "definition": "target aspect: angle between the first opponent's velocity vector and the same own-to-first opponent line of sight, in [0, pi] (0 = it flies directly away from us, pi = straight at us); velocities enter as (v_north, v_east, v_down), so the vertical velocity component has the opposite sign to the 'up' displacement axis",
+      "unit": "rad"
+    },
+    {
+      "index": 19,
+      "name": "enemy1_distance",
+      "definition": "3-D distance to the first opponent / 10000",
+      "unit": "10 km"
+    },
+    {
+      "index": 20,
+      "name": "enemy1_side",
+      "definition": "sign(v_north * d_east - v_east * d_north) with own horizontal velocity v and horizontal displacement d to the first opponent: +1 = first opponent is to the right of own track, -1 = to the left, 0 = dead ahead/behind.",
+      "unit": ""
+    },
+    {
+      "index": 21,
+      "name": "enemy2_delta_speed",
+      "definition": "(body-x speed u of the second opponent - own body-x speed u) / 340",
+      "unit": "340 m/s"
+    },
+    {
+      "index": 22,
+      "name": "enemy2_delta_altitude",
+      "definition": "(second opponent altitude - own altitude) / 1000",
+      "unit": "km"
+    },
+    {
+      "index": 23,
+      "name": "enemy2_AO",
+      "definition": "angle-off: angle between own velocity vector and the line of sight from own aircraft to the second opponent (3-D displacement in north/east/up metres), in [0, pi] (0 = it is dead ahead); velocities enter as (v_north, v_east, v_down), so the vertical velocity component has the opposite sign to the 'up' displacement axis",
+      "unit": "rad"
+    },
+    {
+      "index": 24,
+      "name": "enemy2_TA",
+      "definition": "target aspect: angle between the second opponent's velocity vector and the same own-to-second opponent line of sight, in [0, pi] (0 = it flies directly away from us, pi = straight at us); velocities enter as (v_north, v_east, v_down), so the vertical velocity component has the opposite sign to the 'up' displacement axis",
+      "unit": "rad"
+    },
+    {
+      "index": 25,
+      "name": "enemy2_distance",
+      "definition": "3-D distance to the second opponent / 10000",
+      "unit": "10 km"
+    },
+    {
+      "index": 26,
+      "name": "enemy2_side",
+      "definition": "sign(v_north * d_east - v_east * d_north) with own horizontal velocity v and horizontal displacement d to the second opponent: +1 = second opponent is to the right of own track, -1 = to the left, 0 = dead ahead/behind.",
+      "unit": ""
+    },
+    {
+      "index": 27,
+      "name": "missile_delta_speed",
+      "definition": "(missile speed |v| - own body-x speed u) / 340",
+      "unit": "340 m/s"
+    },
+    {
+      "index": 28,
+      "name": "missile_delta_altitude",
+      "definition": "(missile height above the 0 m battlefield reference - own altitude above sea level) / 1000",
+      "unit": "km"
+    },
+    {
+      "index": 29,
+      "name": "missile_AO",
+      "definition": "angle-off: angle between own velocity vector and the line of sight from own aircraft to the incoming missile (3-D displacement in north/east/up metres), in [0, pi] (0 = it is dead ahead); own velocity enters as (v_north, v_east, v_down), the missile's as (v_north, v_east, v_up)",
+      "unit": "rad"
+    },
+    {
+      "index": 30,
+      "name": "missile_TA",
+      "definition": "target aspect: angle between the incoming missile's velocity vector and the same own-to-incoming missile line of sight, in [0, pi] (0 = it flies directly away from us, pi = straight at us); own velocity enters as (v_north, v_east, v_down), the missile's as (v_north, v_east, v_up)",
+      "unit": "rad"
+    },
+    {
+      "index": 31,
+      "name": "missile_distance",
+      "definition": "3-D distance to the incoming missile / 10000",
+      "unit": "10 km"
+    },
+    {
+      "index": 32,
+      "name": "missile_side",
+      "definition": "sign(v_north * d_east - v_east * d_north) with own horizontal velocity v and horizontal displacement d to the incoming missile: +1 = incoming missile is to the right of own track, -1 = to the left, 0 = dead ahead/behind. All six missile entries are 0 when no live missile is targeting this aircraft.",
+      "unit": ""
+    }
+  ],
+  "input_clip": null,
+  "architecture": [
+    {
+      "id": "base",
+      "type": "mlp",
+      "prefix": "base.mlp.fc.",
+      "input": "observation",
+      "input_size": 33,
+      "hidden_sizes": [
+        128,
+        128
+      ],
+      "eps": 1e-05
+    },
+    {
+      "id": "gru",
+      "type": "gru",
+      "prefix": "rnn.gru.",
+      "input": "base",
+      "input_size": 128,
+      "hidden_size": 128,
+      "num_layers": 1
+    },
+    {
+      "id": "gru_norm",
+      "type": "layernorm",
+      "prefix": "rnn.norm.",
+      "input": "gru",
+      "size": 128,
+      "eps": 1e-05
+    },
+    {
+      "id": "act_mlp",
+      "type": "mlp",
+      "prefix": "act.mlp.fc.",
+      "input": "gru_norm",
+      "input_size": 128,
+      "hidden_sizes": [
+        128,
+        128
+      ],
+      "eps": 1e-05
+    },
+    {
+      "id": "heads",
+      "type": "categorical_heads",
+      "prefix": "act.action_outs.",
+      "input": "act_mlp",
+      "input_size": 128,
+      "param": "logits_net"
+    }
+  ],
+  "outputs": [
+    {
+      "head": 0,
+      "name": "altitude_command",
+      "bins": 3,
+      "bin_value": {
+        "values": [
+          100,
+          0,
+          -100
+        ]
+      },
+      "labels": [
+        "up",
+        "hold",
+        "down"
+      ],
+      "unit": "m of target altitude above current altitude"
+    },
+    {
+      "head": 1,
+      "name": "heading_command",
+      "bins": 5,
+      "bin_value": {
+        "values": [
+          -30,
+          -15,
+          0,
+          15,
+          30
+        ]
+      },
+      "labels": [
+        "left30",
+        "left15",
+        "hold",
+        "right15",
+        "right30"
+      ],
+      "unit": "deg of target heading minus current heading, positive = turn right"
+    },
+    {
+      "head": 2,
+      "name": "speed_command",
+      "bins": 3,
+      "bin_value": {
+        "values": [
+          17,
+          0,
+          -17
+        ]
+      },
+      "labels": [
+        "up",
+        "hold",
+        "down"
+      ],
+      "unit": "m/s of target speed above current body-x speed"
+    },
+    {
+      "head": 3,
+      "name": "shoot",
+      "bins": 2,
+      "bin_value": {
+        "values": [
+          0,
+          1
+        ]
+      },
+      "labels": [
+        "no",
+        "yes"
+      ],
+      "unit": ""
+    }
+  ],
+  "notes": [
+    "provenance.checkpoint_sha256 is deliberately absent: the spec validates against both delivered actors (v1.3 and v1.3-1), whose hashes are listed in provenance.checkpoint_sha256_by_model and in the manifest. Use a copy with a fixed alias if each actor must be pinned.",
+    "Input order: mtd-rl-lag envs/JSBSim/tasks/multiplecombat_task.py:638-646 own 9 (alt/5000, sin/cos roll, sin/cos pitch, u/v/w/340, vc/340; state_var :59-75), then offset=8 (:648) and for sim in partners + enemies (:649) entries offset+1..+6 (:653-658): partner 9-14, enemy1 15-20, enemy2 21-26; missile 27-32 (:667-676). partners/enemies are in aircraft_configs key order (mtd-rl-lag envs/JSBSim/envs/env_base.py:103-110): for A0100 partner A0200, enemies B0100, B0200.",
+    "Legacy feature vector: mtd-rl-lag envs/JSBSim/tasks/multiplecombat_task.py:627-630 builds (N, E, U) from mhi_coordinates.LLA2NEU but appends state[6:9] = (v_north, v_east, v_down); get_AO_TA_R (envs/JSBSim/utils/utils.py:253-279) is 3-D. The missile feature (:669) uses MissileSimulator.get_velocity = (v_north, v_east, v_up) (simulatior.py:654-658). Hence the sign remarks in the AO/TA definitions.",
+    "side_flag_mode legacy (utils.py:244-247): np.sign(np.cross((vn, ve), (dn, de))) = sign(vn*de - ve*dn); +1 = target to the right of own horizontal track (north=x, east=y).",
+    "Clip: in the legacy layout norm_obs is clipped to observation_space [-10, 10] (:660-665; bounds :286) BEFORE the missile entries are written, so entries 27-32 are unclipped; input_clip is therefore null and the clip is stated in the description.",
+    "Missile entries: first live missile in under_missiles (simulatior.py:431-435), i.e. the earliest-launched still-flying missile targeting this aircraft; zeros otherwise (norm_obs initialised to zeros, :634). Missile altitude uses missile NEU 'up' (geodetic height above the battle_field_center alt 0) minus own position_h_sl_m (:672); the two references coincide only up to geoid vs ellipsoid.",
+    "Heads: mtd-rl-lag envs/JSBSim/tasks/multiplecombat_task.py:159-161 norm_delta_altitude [0.1, 0, -0.1] (km, low-level delta_altitude input) -> +100/0/-100 m; norm_delta_heading [-pi/6, -pi/12, 0, pi/12, pi/6] rad -> -30/-15/0/15/30 deg (delta = target - current heading, heading_true measured clockwise from north, so positive = right); norm_delta_velocity [0.05, 0, -0.05] x 340 m/s -> +17/0/-17 m/s. Shoot: intent = action[3] > 0 (:785-789), gated in step (:702-727) by alive, missiles left, geometry_allows (launch_gate fixed: max_attack_angle 45 deg, max_attack_distance 14000 m; core/launch_gate.py:74-77) and min_attack_interval 125 steps = 25 s (sim_freq 60, agent_interaction_steps 12) per configs/2v2/ShootMissile/HierarchyVsbaseline_mhi_v1_3.yaml.",
+    "Architecture: PPOActor (ppo_actor.py:46-61) = MLPBase (no feature_norm: manifest use_feature_normalization false) with MLPLayer [Linear, ReLU (activation_id 1), LayerNorm] x2 (mlp.py:13-18); GRULayer = nn.GRU + LayerNorm, the carried hxs is the raw GRU state and only the output is normed (gru.py:25, :71); ACTLayer MLP act_hidden_size '128 128' (act.py:55-58) then one Categorical logits_net per MultiDiscrete head (act.py:70-77, distributions.py:105-119); deterministic decision = mode = argmax (act.py:243).",
+    "Assumption: the description's 'scripted opponents' and launch-gate numbers come from the repository's MHI scenarios (HierarchyVsbaseline_mhi_v1_3 / _training_0353aaa, rule_based_enemy_type pursue); the client's exact training scenario is not verifiable here.",
+    "Deployment: the manifest's mhi_render_v1_3 protocol runs a single shared recurrent row (docs/mhi_integration/README.md), per_agent_v1 one row per learner; the prompt describes the per-agent semantics (one recurrent state per aircraft, h = 0 at episode start)."
+  ],
+  "evaluation": {
+    "notes": [
+      "Own state (assumption, from the LAG/MHI scenario configs: start 20000 ft, u 800 ft/s = 244 m/s, altitude_limit 2500 m): altitude 3-8 km, roll +-60 deg, pitch +-30 deg (sampled as angles, written as sin/cos), u 170-306 m/s, v +-10 m/s, w -17..34 m/s, calibrated airspeed 119-272 m/s. Inputs are sampled independently and uniformly, so physically coupled inputs (u vs airspeed, AO vs side) can form off-manifold combinations.",
+      "Teammate (both start in the same +-2.25 km box at 20000 ft): delta speed +-68 m/s, delta altitude +-2 km, AO/TA over [0, pi], distance 0.2-10 km, side in {-1, +1}.",
+      "Opponents (start ~20 km north, heading 165-195 deg): delta speed +-102 m/s, delta altitude +-2 km, AO/TA over [0, pi], distance 1-25 km, side in {-1, +1}.",
+      "Missile: present with p = 0.5 (else all six entries 0, as in the source); when present delta speed +102..+850 m/s, delta altitude +-2 km, AO/TA over [0, pi], distance 0.5-15 km, side in {-1, +1}."
+    ],
+    "inputs": {
+      "altitude": {"range": [0.6, 1.6]},
+      "v_body_x": {"range": [0.5, 0.9]},
+      "v_body_y": {"range": [-0.03, 0.03]},
+      "v_body_z": {"range": [-0.05, 0.1]},
+      "airspeed": {"range": [0.35, 0.8]},
+      "partner_delta_speed": {"range": [-0.2, 0.2]},
+      "partner_delta_altitude": {"range": [-2.0, 2.0]},
+      "partner_AO": {"range": [0.0, 3.141592653589793]},
+      "partner_TA": {"range": [0.0, 3.141592653589793]},
+      "partner_distance": {"range": [0.02, 1.0]},
+      "partner_side": {"values": [-1, 1]},
+      "enemy1_delta_speed": {"range": [-0.3, 0.3]},
+      "enemy1_delta_altitude": {"range": [-2.0, 2.0]},
+      "enemy1_AO": {"range": [0.0, 3.141592653589793]},
+      "enemy1_TA": {"range": [0.0, 3.141592653589793]},
+      "enemy1_distance": {"range": [0.1, 2.5]},
+      "enemy1_side": {"values": [-1, 1]},
+      "enemy2_delta_speed": {"range": [-0.3, 0.3]},
+      "enemy2_delta_altitude": {"range": [-2.0, 2.0]},
+      "enemy2_AO": {"range": [0.0, 3.141592653589793]},
+      "enemy2_TA": {"range": [0.0, 3.141592653589793]},
+      "enemy2_distance": {"range": [0.1, 2.5]},
+      "enemy2_side": {"values": [-1, 1]},
+      "missile_delta_speed": {"range": [0.3, 2.5]},
+      "missile_delta_altitude": {"range": [-2.0, 2.0]},
+      "missile_AO": {"range": [0.0, 3.141592653589793]},
+      "missile_TA": {"range": [0.0, 3.141592653589793]},
+      "missile_distance": {"range": [0.05, 1.5]},
+      "missile_side": {"values": [-1, 1]}
+    },
+    "angles": [
+      {"sin": "roll_sin", "cos": "roll_cos", "range": [-1.0472, 1.0472]},
+      {"sin": "pitch_sin", "cos": "pitch_cos", "range": [-0.5236, 0.5236]}
+    ],
+    "presence": [
+      {"inputs": ["missile_delta_speed", "missile_delta_altitude", "missile_AO", "missile_TA", "missile_distance", "missile_side"], "p_present": 0.5}
+    ]
+  }
+}

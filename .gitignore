@@ -35,3 +35,8 @@ outputs/smoke-episode.npz
 # only run-time lock and partial-write files stay local.
 workspace/**/results/**/.execution.lock
 workspace/**/results/**/*.partial
+
+# Local secrets (API keys)
+.env
+# weightreading bundles and runs (weights derived from checkpoints, transcripts)
+outputs/weightreading/

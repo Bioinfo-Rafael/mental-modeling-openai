@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "network_alias": "net-70c4f334",
+  "hidden_from_prompt": ["provenance", "notes", "evaluation"],
+  "provenance": {
+    "checkpoint_sha256": "b43200c82b083d63f9cec4c8d911130425c7d0b21bdd3ebf7d864741546c83e1",
+    "origin": "mtd-rl-lag envs/JSBSim/model/dodge_missile_model.pt",
+    "reference_code": "mtd-rl-lag envs/JSBSim/model/baseline_actor.py BaselineActor(input_dim=21, use_mlp_actlayer=True)",
+    "observation_code": "mtd-rl-lag envs/JSBSim/tasks/singlecombat_task.py DodgeMissileAgent.get_observation",
+    "action_code": "mtd-rl-lag envs/JSBSim/tasks/singlecombat_task.py BaselineAgent.normalize_action"
+  },
+  "description": "Low-level aircraft flight controller: a recurrent policy, trained with reinforcement learning (PPO), that directly flies a fixed-wing aircraft in a one-on-one engagement. Every control step it reads 21 numbers (its own attitude and velocity, the relative geometry of one opponent aircraft, and the relative geometry of the nearest live incoming missile) and chooses one bin for each of 4 control channels: aileron, elevator, rudder and throttle.",
+  "inputs": [
+    {"index": 0, "name": "altitude", "definition": "own altitude above sea level / 5000", "unit": "5 km"},
+    {"index": 1, "name": "roll_sin", "definition": "sin(own roll angle)", "unit": ""},
+    {"index": 2, "name": "roll_cos", "definition": "cos(own roll angle)", "unit": ""},
+    {"index": 3, "name": "pitch_sin", "definition": "sin(own pitch angle)", "unit": ""},
+    {"index": 4, "name": "pitch_cos", "definition": "cos(own pitch angle)", "unit": ""},
+    {"index": 5, "name": "v_body_x", "definition": "own body-frame forward velocity u / 340", "unit": "340 m/s"},
+    {"index": 6, "name": "v_body_y", "definition": "own body-frame sideways velocity v / 340", "unit": "340 m/s"},
+    {"index": 7, "name": "v_body_z", "definition": "own body-frame downward velocity w / 340", "unit": "340 m/s"},
+    {"index": 8, "name": "airspeed", "definition": "own calibrated airspeed / 340", "unit": "340 m/s"},
+    {"index": 9, "name": "opp_delta_speed", "definition": "(opponent body-x speed - own body-x speed) / 340", "unit": "340 m/s"},
+    {"index": 10, "name": "opp_delta_altitude", "definition": "(opponent altitude - own altitude) / 1000", "unit": "km"},
+    {"index": 11, "name": "opp_aspect_off", "definition": "AO: horizontal angle between own velocity and the line of sight from self to the opponent, in [0, pi]", "unit": "rad"},
+    {"index": 12, "name": "opp_target_aspect", "definition": "TA: horizontal angle between the opponent's velocity and the same line of sight (self -> opponent), in [0, pi]", "unit": "rad"},
+    {"index": 13, "name": "opp_distance", "definition": "horizontal distance to the opponent / 10000", "unit": "10 km"},
+    {"index": 14, "name": "opp_side", "definition": "+1 if the opponent is to the right of own horizontal velocity, -1 if to the left, 0 if straight ahead/behind", "unit": ""},
+    {"index": 15, "name": "msl_delta_speed", "definition": "(missile speed magnitude - own body-x speed) / 340; 0 when no live missile is approaching", "unit": "340 m/s"},
+    {"index": 16, "name": "msl_delta_altitude", "definition": "(missile altitude - own altitude) / 1000; 0 when no live missile", "unit": "km"},
+    {"index": 17, "name": "msl_aspect_off", "definition": "AO towards the missile (as index 11); 0 when no live missile", "unit": "rad"},
+    {"index": 18, "name": "msl_target_aspect", "definition": "TA of the missile (as index 12); 0 when no live missile", "unit": "rad"},
+    {"index": 19, "name": "msl_distance", "definition": "horizontal distance to the missile / 10000; 0 when no live missile", "unit": "10 km"},
+    {"index": 20, "name": "msl_side", "definition": "side of the missile (as index 14); 0 when no live missile", "unit": ""}
+  ],
+  "input_clip": null,
+  "architecture": [
+    {"id": "base", "type": "mlp", "prefix": "base.mlp.fc.", "input": "observation", "input_size": 21, "hidden_sizes": [128, 128], "eps": 1e-5},
+    {"id": "gru", "type": "gru", "prefix": "rnn.gru.", "input": "base", "input_size": 128, "hidden_size": 128, "num_layers": 1},
+    {"id": "gru_norm", "type": "layernorm", "prefix": "rnn.norm.", "input": "gru", "size": 128, "eps": 1e-5},
+    {"id": "act_mlp", "type": "mlp", "prefix": "act.mlp.fc.", "input": "gru_norm", "input_size": 128, "hidden_sizes": [128, 128], "eps": 1e-5},
+    {"id": "heads", "type": "categorical_heads", "prefix": "act.action_outs.", "input": "act_mlp", "input_size": 128, "param": "logits_net"}
+  ],
+  "outputs": [
+    {"head": 0, "name": "aileron", "bins": 41, "bin_value": {"linspace": [-1.0, 1.0]}},
+    {"head": 1, "name": "elevator", "bins": 41, "bin_value": {"linspace": [-1.0, 1.0]}},
+    {"head": 2, "name": "rudder", "bins": 41, "bin_value": {"linspace": [-1.0, 1.0]}},
+    {"head": 3, "name": "throttle", "bins": 30, "bin_value": {"linspace": [0.4, 0.9]}}
+  ],
+  "notes": [
+    "Layout from DodgeMissileAgent.get_observation (inference). Positions/velocities are NEU; AO/TA/R/side use get2d_AO_TA_R with side_flag_mode='legacy' (sign of the 2-D cross product velocity x displacement; +1 = right).",
+    "Assumption: the training task used the same 21-D layout; the training observation clip is not verified, so input_clip is null.",
+    "Missile features 15-20 are all 0 when no live missile targets this aircraft (first live entry of sim.under_missiles)."
+  ],
+  "evaluation": {
+    "notes": [
+      "Own state (assumption, from the LAG/MHI scenario configs: start 20000 ft, u 800 ft/s = 244 m/s, altitude_limit 2500 m): altitude 3-8 km, roll +-60 deg, pitch +-30 deg (sampled as angles, written as sin/cos), u 170-306 m/s, v +-10 m/s, w -17..34 m/s, calibrated airspeed 119-272 m/s. Inputs are sampled independently and uniformly, so physically coupled inputs (u vs airspeed, AO vs side) can form off-manifold combinations.",
+      "Opponent: delta speed +-102 m/s, delta altitude +-2 km, AO/TA over [0, pi], horizontal distance 1-20 km, side in {-1, +1} (0 = exactly ahead/behind has measure zero).",
+      "Missile: present with p = 0.5 (else all six entries 0, as in the source); when present delta speed +102..+850 m/s, delta altitude +-2 km, AO/TA over [0, pi], distance 0.5-15 km, side in {-1, +1}."
+    ],
+    "inputs": {
+      "altitude": {"range": [0.6, 1.6]},
+      "v_body_x": {"range": [0.5, 0.9]},
+      "v_body_y": {"range": [-0.03, 0.03]},
+      "v_body_z": {"range": [-0.05, 0.1]},
+      "airspeed": {"range": [0.35, 0.8]},
+      "opp_delta_speed": {"range": [-0.3, 0.3]},
+      "opp_delta_altitude": {"range": [-2.0, 2.0]},
+      "opp_aspect_off": {"range": [0.0, 3.141592653589793]},
+      "opp_target_aspect": {"range": [0.0, 3.141592653589793]},
+      "opp_distance": {"range": [0.1, 2.0]},
+      "opp_side": {"values": [-1, 1]},
+      "msl_delta_speed": {"range": [0.3, 2.5]},
+      "msl_delta_altitude": {"range": [-2.0, 2.0]},
+      "msl_aspect_off": {"range": [0.0, 3.141592653589793]},
+      "msl_target_aspect": {"range": [0.0, 3.141592653589793]},
+      "msl_distance": {"range": [0.05, 1.5]},
+      "msl_side": {"values": [-1, 1]}
+    },
+    "angles": [
+      {"sin": "roll_sin", "cos": "roll_cos", "range": [-1.0472, 1.0472]},
+      {"sin": "pitch_sin", "cos": "pitch_cos", "range": [-0.5236, 0.5236]}
+    ],
+    "presence": [
+      {"inputs": ["msl_delta_speed", "msl_delta_altitude", "msl_aspect_off", "msl_target_aspect", "msl_distance", "msl_side"], "p_present": 0.5}
+    ]
+  }
+}

@@ -13,6 +13,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from mtd_rl_xavier.paths import MENTALMODELING
+
 from lag_data.dataset import PROCESSED, index_records, load_episode
 from lag_data.definitions import ACTIONS, DT, STATE_FEATURES
 from .config import EPISODES, MODELS, OBSERVATION_SCOPES, REQUEST_OPTIONS, TARGET_ACTION_FIELDS, TASKS
@@ -140,7 +142,7 @@ def make_plan(experiment):
                 prompt_version=prompts.PROMPT_VERSION, request_options=dict(REQUEST_OPTIONS),
                 samples={}, queries=[], coverage=[], source_sha256={},
                 dynamics_prior=dynamics.provenance())
-    sources = [PROCESSED / "manifest.json", HERE / "run.py", ROOT / "mentalmodeling/llm_x/prompting.py"]
+    sources = [PROCESSED / "manifest.json", HERE / "run.py", MENTALMODELING / "llm_x/prompting.py"]
     sources += sorted((HERE / "dynamics_experiment").glob("*.py"))
     sources += [dynamics.MODEL_PATH, dynamics.TEMPLATE_PATH, HERE / 'baseline_provenance.json']
     sources += sorted((HERE.parent / "13_LAG/lag_data").glob("*.py"))

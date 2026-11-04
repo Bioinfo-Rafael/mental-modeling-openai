@@ -65,10 +65,11 @@ def load_source():
             raise ValueError("Every Exp.3 condition must have the same complete N30 prefix")
     # Private upstream scoring semantics must not silently change during reanalysis.
     previous = manifest["provenance"]["semantics_files_sha256"]
-    evaluation_path = common.ROOT / "mentalmodeling/llm_x/evaluation.py"
-    key = str(evaluation_path.relative_to(common.ROOT))
-    # Manifests saved before the repository restructure use old-layout keys.
-    if common.file_sha256(evaluation_path) != previous.get(key, previous.get(paths.legacy_relpath(key))):
+    key = (paths.MENTALMODELING / "llm_x/evaluation.py").relative_to(paths.ROOT).as_posix()
+    evaluation_path = common.ROOT / key
+    # Manifests saved before a layout move record the file under an old-layout key.
+    recorded = next((previous[k] for k in (key, *paths.legacy_relpaths(key)) if k in previous), None)
+    if common.file_sha256(evaluation_path) != recorded:
         raise ValueError("Upstream metric implementation changed since Exp.3")
     return manifest, grouped, {
         "experiment": SOURCE,

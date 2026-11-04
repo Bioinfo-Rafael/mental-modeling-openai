@@ -34,7 +34,7 @@ Research code for evaluating how well language models form a mental model of a t
 - 
 
 - Training RL policies or running live Gym environments; LLM-Xavier consumes recorded trajectories only.
-- Editing the vendored LLM-Xavier code in `mentalmodeling/` except to track upstream; its files are part of the semantics hash.
+- Editing the vendored LLM-Xavier code in `src/mentalmodeling/` except to track upstream; its files are part of the semantics hash.
 
 ## 機能要件 (Functional Requirements)
 
@@ -42,7 +42,7 @@ Research code for evaluating how well language models form a mental model of a t
 
 | ID | Requirement | Priority | Notes |
 |----|-------------|----------|-------|
-| FR-1 | Build prompts from recorded RL trajectories with original LLM-Xavier semantics (next/last action, state direction, Joint variants) | Must | src/mtd_rl_xavier/preprocessing, mentalmodeling/llm_x |
+| FR-1 | Build prompts from recorded RL trajectories with original LLM-Xavier semantics (next/last action, state direction, Joint variants) | Must | src/mtd_rl_xavier/preprocessing, src/mentalmodeling/llm_x |
 | FR-2 | Send paid OpenAI queries only through explicit execute paths, with resumable journals and provenance | Must | src/mtd_rl_xavier/experiment/common.py, split_execution.py |
 | FR-3 | Analyse saved responses offline (accuracy, continuous metrics, confusion matrices, figures) without API calls | Must | experiment/common_analysis, workspace/*/analysis |
 | FR-4 | Inspect raw datasets and count prompt tokens locally | Should | src/mtd_rl_xavier/tools, workspace/notebooks |
@@ -78,7 +78,7 @@ Research code for evaluating how well language models form a mental model of a t
 
 | Area | Technology | Rationale | Alternatives Considered |
 |------|------------|-----------|-------------------------|
-| Environment / packaging | uv + setuptools src layout; mentalmodeling/ as editable path dependency | Project rule (.claude/rules/dev-environment.md); one install exposes llm_x and mtd_rl_xavier | pip + setuptools flat packages (original branch) |
+| Environment / packaging | uv + setuptools src layout; src/mentalmodeling/ as editable path dependency (own distribution, excluded from the main wheel) | Project rule (.claude/rules/dev-environment.md); one install exposes llm_x and mtd_rl_xavier | pip + setuptools flat packages (original branch) |
 | LLM API | openai SDK (Chat Completions; Batch API for LAG 14-17) | Used by all ported experiments |  |
 | Lint | ruff (E,W,F,I,B,UP) with per-file ignores for ported modules | Enforce rules on new code without reformatting ported code or dropping star re-exports | Reformat all ported code now |
 | Tests / tasks | pytest + poethepoet (test, test-workspace, lint) | Workspace experiments reuse test file names, so each runs as its own pytest session | Single pytest run with importlib mode |

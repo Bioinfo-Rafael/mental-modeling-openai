@@ -47,7 +47,7 @@ workspace/03_gpt35_history_n30/results/
 
 出典：[`src/mtd_rl_xavier/experiment/analysis.py`](../../src/mtd_rl_xavier/experiment/analysis.py) の `load_source()`。
 
-32条件が揃い、各条件に順序どおりの30件があり、query IDの重複やmanifestとの不一致がないことを確認します。また、現在の [`llm_x/evaluation.py`](../../mentalmodeling/llm_x/evaluation.py) のhashを読み、Exp.3実行時から集計実装が変わっていないことを検査します。
+32条件が揃い、各条件に順序どおりの30件があり、query IDの重複やmanifestとの不一致がないことを確認します。また、現在の [`llm_x/evaluation.py`](../../src/mentalmodeling/llm_x/evaluation.py) のhashを読み、Exp.3実行時から集計実装が変わっていないことを検査します。
 
 `data/` のNPZ、01のprompt、02のpilot、05/06の応答は分析入力にしません。公式parserで応答を再解析するのでもなく、03が保存した公式scoreを使って集計し直します。
 
@@ -169,7 +169,7 @@ for N in SAMPLE_SIZES:
 
 `ordered` はその条件の保存済み30 records。`[:N]` は先頭N件です。N10はN20に、N20はN30に含まれます。別sampleの抽選やAPI再送はありません。
 
-`common.summarize_scored()` の出典は [`src/mtd_rl_xavier/experiment/common.py`](../../src/mtd_rl_xavier/experiment/common.py)。保存済みの `score` を取り出し、[`llm_x/evaluation.py`](../../mentalmodeling/llm_x/evaluation.py) の公式 `_summarize()` を呼びます。したがって、stateとactionの分母の違いも保持します。
+`common.summarize_scored()` の出典は [`src/mtd_rl_xavier/experiment/common.py`](../../src/mtd_rl_xavier/experiment/common.py)。保存済みの `score` を取り出し、[`llm_x/evaluation.py`](../../src/mentalmodeling/llm_x/evaluation.py) の公式 `_summarize()` を呼びます。したがって、stateとactionの分母の違いも保持します。
 
 出典：[`src/mtd_rl_xavier/experiment/analysis.py`](../../src/mtd_rl_xavier/experiment/analysis.py) の `calculate()` 内（正誤列の値を作る式）。
 

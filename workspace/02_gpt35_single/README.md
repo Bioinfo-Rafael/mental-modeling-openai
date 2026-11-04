@@ -111,7 +111,7 @@ API試行が通信失敗したとき、サーバー到達・課金の有無ま�
 出力元は大きく2つです。
 
 - [`src/mtd_rl_xavier/experiment/common.py`](../../src/mtd_rl_xavier/experiment/common.py)：計画、実送受信ログ、統合record、実験全体のsummaryを保存。
-- [`mentalmodeling/llm_x/cli.py`](../../mentalmodeling/llm_x/cli.py)：`runs/<condition>/episode_000/` の4ファイルを保存。
+- [`src/mentalmodeling/llm_x/cli.py`](../../src/mentalmodeling/llm_x/cli.py)：`runs/<condition>/episode_000/` の4ファイルを保存。
 
 次の表の `common.py` と `cli.py` は、それぞれ上記のファイルを指します。「作る関数」と「ファイルへ書く関数」を区別しています。
 
@@ -178,7 +178,7 @@ system_prompt_sha256, user_prompt_sha256, query_id, reuse_required
 
 #### requests：1試行に2つのmessage
 
-生成元：[`src/mtd_rl_xavier/experiment/common.py`](../../src/mtd_rl_xavier/experiment/common.py) の内部関数 `recording_create()`。実kwargsを作る元は [`llm_x/backends.py`](../../mentalmodeling/llm_x/backends.py) の `OpenAIChatBackend.complete()` です。
+生成元：[`src/mtd_rl_xavier/experiment/common.py`](../../src/mtd_rl_xavier/experiment/common.py) の内部関数 `recording_create()`。実kwargsを作る元は [`llm_x/backends.py`](../../src/mentalmodeling/llm_x/backends.py) の `OpenAIChatBackend.complete()` です。
 
 ```text
 requests.jsonl: 8行
@@ -241,7 +241,7 @@ records.jsonl: 8行
 
 ### 3.3 `runs/` 内の4ファイルの詳細
 
-保存元は全て [`mentalmodeling/llm_x/cli.py`](../../mentalmodeling/llm_x/cli.py) の `_write_result()` です。8条件に各1 episode directoryがあり、**8×4＝32ファイル**を確認しました。今回 `max_queries=1` なので、どの `predictions.jsonl` も1行です。
+保存元は全て [`src/mentalmodeling/llm_x/cli.py`](../../src/mentalmodeling/llm_x/cli.py) の `_write_result()` です。8条件に各1 episode directoryがあり、**8×4＝32ファイル**を確認しました。今回 `max_queries=1` なので、どの `predictions.jsonl` も1行です。
 
 | ファイル | object内の構造・内容 |
 | --- | --- |
@@ -254,7 +254,7 @@ records.jsonl: 8行
 
 #### 予測・正解の形状はタスクとmetricで異なる
 
-値の作成元：[`mentalmodeling/llm_x/evaluation.py`](../../mentalmodeling/llm_x/evaluation.py) の `_score_response()`。以下は今回の全8出力を確認した結果です。shape表記はJSON listの長さを説明したもので、保存された値はNumPy配列ではありません。
+値の作成元：[`src/mentalmodeling/llm_x/evaluation.py`](../../src/mentalmodeling/llm_x/evaluation.py) の `_score_response()`。以下は今回の全8出力を確認した結果です。shape表記はJSON listの長さを説明したもので、保存された値はNumPy配列ではありません。
 
 | task | metric | `prediction` / `ground_truth` の型・形状 | `score` のキー数 |
 | --- | --- | --- | ---: |
@@ -364,7 +364,7 @@ if not spec.preview and not args.execute:
 
 実行が許可された場合は同ファイルの `execute_plan()` → `invoke_cli()` が公式CLIを呼びます。Loggingは `RecordingSession.backend_class()` が返す `OpenAIChatBackend` のsubclassで追加し、実処理は `super().complete()` を通します。独自prompt/parser/scorerへの置換ではありません。
 
-集計は [`src/mtd_rl_xavier/experiment/common.py`](../../src/mtd_rl_xavier/experiment/common.py) の `summarize_scored()` → [`mentalmodeling/llm_x/evaluation.py`](../../mentalmodeling/llm_x/evaluation.py) の `_summarize()` です。primary `Accuracy` は `legacy_compatible_match_rate`。actionは全query数、stateはparsed数が分母で、parsed数0のstate Accuracyはnullです。
+集計は [`src/mtd_rl_xavier/experiment/common.py`](../../src/mtd_rl_xavier/experiment/common.py) の `summarize_scored()` → [`src/mentalmodeling/llm_x/evaluation.py`](../../src/mentalmodeling/llm_x/evaluation.py) の `_summarize()` です。primary `Accuracy` は `legacy_compatible_match_rate`。actionは全query数、stateはparsed数が分母で、parsed数0のstate Accuracyはnullです。
 
 ## 6. 呼び出し順
 
@@ -384,4 +384,4 @@ if not spec.preview and not args.execute:
          → collect_scores() → records/summary保存
 ```
 
-公式CLIの出典は [`llm_x/cli.py`](../../mentalmodeling/llm_x/cli.py)、評価処理は [`llm_x/evaluation.py`](../../mentalmodeling/llm_x/evaluation.py)、送信処理は [`llm_x/backends.py`](../../mentalmodeling/llm_x/backends.py) です。結果を確認した後、必要に応じて [Exp.3](../03_gpt35_history_n30/README.md) へ進みます。
+公式CLIの出典は [`llm_x/cli.py`](../../src/mentalmodeling/llm_x/cli.py)、評価処理は [`llm_x/evaluation.py`](../../src/mentalmodeling/llm_x/evaluation.py)、送信処理は [`llm_x/backends.py`](../../src/mentalmodeling/llm_x/backends.py) です。結果を確認した後、必要に応じて [Exp.3](../03_gpt35_history_n30/README.md) へ進みます。

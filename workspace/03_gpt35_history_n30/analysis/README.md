@@ -131,7 +131,7 @@ CSVはUTF-8、数値欠損は空欄、配列はJSON文字列です。`mean` / `s
 | `plot_figures()` | 集計行 → Accuracy・実行時間・token使用量の2×4パネルを各3図、PNG/SVGに保存 |
 | `main()` | 上記を順に呼び、CSV/JSON出力と前後のsource hash照合を行う |
 
-既存の `src/mtd_rl_xavier/experiment/common.py`、`src/mtd_rl_xavier/experiment/analysis.py`、`mentalmodeling/llm_x/` の関数はimportして再利用するだけで、この解析のために変更していません。Exp.4の「先頭N」方式とは別で、ここは固定seedによるnested samplingです。
+既存の `src/mtd_rl_xavier/experiment/common.py`、`src/mtd_rl_xavier/experiment/analysis.py`、`src/mentalmodeling/llm_x/` の関数はimportして再利用するだけで、この解析のために変更していません。Exp.4の「先頭N」方式とは別で、ここは固定seedによるnested samplingです。
 
 ## 6. Figure一覧
 

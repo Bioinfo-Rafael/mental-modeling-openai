@@ -39,7 +39,7 @@ b* = argmax_b Q_K(s_query,b)
 ## PPO provenance
 
 **PPO由来であることは確認できなかった。`ppo_prior` は実験的に注入するPPO prior / assumptionである。**
-repo、`mentalmodeling` のコード・文書、[data/README.md](../../data/README.md)、datasetのファイル配置を確認した。むしろ同梱artifactに次のDDPG名がある（checkpointはdeserializeしていない）：
+repo、`src/mentalmodeling` のコード・文書、[data/README.md](../../data/README.md)、datasetのファイル配置を確認した。むしろ同梱artifactに次のDDPG名がある（checkpointはdeserializeしていない）：
 
 ```text
 data/llmx_data/offline_data/physics_data/runs/
@@ -85,7 +85,7 @@ bin accuracyの分母はbin parse成功数、MAEの分母はnumeric action parse
 `run.py → runner.run() → make_plan()`。`prompts.py`だけが追加指示と補助episode表示を所有する。
 
 - `src/mtd_rl_xavier/preprocessing/llmx_original.py`: discovery、upstreamに一致するtarget prompt生成。`llm_x.data.Episode`: load/SHA256/history表示。
-- `src/mtd_rl_xavier/experiment/joint_questions.py` → `mentalmodeling/llm_x/feedback.py`: 既存Joint question。`llm_x.prompting`: 既存system/user。
+- `src/mtd_rl_xavier/experiment/joint_questions.py` → `src/mentalmodeling/llm_x/feedback.py`: 既存Joint question。`llm_x.prompting`: 既存system/user。
 - `src/mtd_rl_xavier/experiment/common.py`: Terra/Luna model名、`reasoning_effort='medium'` のrequest、hash、JSON/CSV writer。
 - `src/mtd_rl_xavier/experiment/split_execution.py`: `execution_lock`。
 - `09_ablation_reward/runner/execution.py`: API/logging/resumeを直接再利用。既存既定値を維持した `source_experiment` / `csv_fields` 引数だけを追加。
@@ -110,7 +110,7 @@ bin accuracyの分母はbin parse成功数、MAEの分母はnumeric action parse
 - src/mtd_rl_xavier/experiment/split_execution.py
 - src/mtd_rl_xavier/experiment/joint_questions.py
 - src/mtd_rl_xavier/preprocessing/llmx_original.py
-- mentalmodeling/llm_x/feedback.py
+- src/mentalmodeling/llm_x/feedback.py
 
 今回の目的は、Pendulum-v1 の Next Action predictionについて、
 通常のDirect predictionと、

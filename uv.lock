@@ -1959,7 +1959,7 @@ wheels = [
 [[package]]
 name = "llm-x-evaluator"
 version = "0.1.0"
-source = { editable = "mentalmodeling" }
+source = { editable = "src/mentalmodeling" }
 dependencies = [
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
@@ -2363,7 +2363,7 @@ requires-dist = [
     { name = "huggingface-hub", marker = "extra == 'data'", specifier = ">=0.26" },
     { name = "ipykernel", marker = "extra == 'notebook'", specifier = ">=6,<8" },
     { name = "jupyterlab", marker = "extra == 'notebook'", specifier = ">=4,<5" },
-    { name = "llm-x-evaluator", editable = "mentalmodeling" },
+    { name = "llm-x-evaluator", editable = "src/mentalmodeling" },
     { name = "matplotlib", marker = "extra == 'notebook'", specifier = ">=3.9,<4" },
     { name = "nbclient", marker = "extra == 'notebook'", specifier = ">=0.10,<1" },
     { name = "nbformat", marker = "extra == 'notebook'", specifier = ">=5,<6" },

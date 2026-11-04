@@ -16,6 +16,11 @@ from .joint_data import HERE, ROOT, BOUNDS, WIDTHS, TASKS, METRICS, COMPONENTS, 
 from .joint_metrics import angular_pair
 from .joint_aggregate import aggregate_all
 from .joint_plots import make_figures
+from mtd_rl_xavier import paths as layout
+
+# Repo-relative, so tests that relocate ROOT read the vendored code from their copy.
+MENTALMODELING = layout.MENTALMODELING.relative_to(layout.ROOT)
+RANGE_SOURCE = MENTALMODELING / "llm_x/task.py"
 
 
 def digest(path):
@@ -30,7 +35,7 @@ def protected_files(source):
     framework = HERE.parent  # Shared experiment code; it lived inside experiments/ before the restructure.
     if framework.is_relative_to(ROOT):
         paths.update(framework.rglob("*.py"))
-    paths.update((ROOT / "mentalmodeling").rglob("*.py"))
+    paths.update((ROOT / MENTALMODELING).rglob("*.py"))
     return {str(p.relative_to(ROOT)): digest(p) for p in sorted(paths) if p.is_file()}
 
 
@@ -169,8 +174,8 @@ def export_model(records, source, output, episode_hashes, spec, sizes, seed=42,
                 "model": records[0]["model"], "model_alias": records[0]["model_alias"], "subset_sizes": sizes,
                 "seed": seed, "bootstrap_repetitions": repetitions, "normalization_bounds": BOUNDS,
                 "normalization_widths": WIDTHS, "torque_width": 4, "angular_width": math.pi,
-                "range_source": "mentalmodeling/llm_x/task.py",
-                "range_source_sha256": digest(ROOT / "mentalmodeling/llm_x/task.py"),
+                "range_source": RANGE_SOURCE.as_posix(),
+                "range_source_sha256": digest(ROOT / RANGE_SOURCE),
                 "raw_episode_sha256": episode_hashes, "accuracy_missing_policy": "valid_only; all_selected alternative in CSV",
                 "figures": len(figures), "csv_rows": {k: len(v) for k, v in tables.items()},
                 "parse_summary": tables["parse_summary"], "analysis_seconds": time.perf_counter()-started,

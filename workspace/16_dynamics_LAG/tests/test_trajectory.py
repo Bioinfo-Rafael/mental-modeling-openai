@@ -13,7 +13,8 @@ import pytest
 HERE = Path(__file__).resolve().parents[1]
 ROOT = HERE.parents[1]
 sys.dont_write_bytecode = True
-sys.path[:0] = [str(HERE), str(HERE.parent / "13_LAG"), str(ROOT / "mentalmodeling")]
+from mtd_rl_xavier.paths import MENTALMODELING  # noqa: E402
+sys.path[:0] = [str(HERE), str(HERE.parent / "13_LAG"), str(MENTALMODELING)]
 
 from lag_data.dataset import PROCESSED, index_records, load_episode
 from lag_data.definitions import ACTIONS, STATE_FEATURES

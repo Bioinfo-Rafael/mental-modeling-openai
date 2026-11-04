@@ -12,7 +12,8 @@ from mtd_rl_xavier.paths import resolve_recorded
 
 HERE = Path(__file__).resolve().parents[1]
 ROOT = HERE.parents[1]
-sys.path[:0] = [str(HERE), str(HERE.parent/'13_LAG'), str(ROOT/'mentalmodeling')]
+from mtd_rl_xavier.paths import MENTALMODELING  # noqa: E402
+sys.path[:0] = [str(HERE), str(HERE.parent/'13_LAG'), str(MENTALMODELING)]
 from dynamics_experiment import dynamics, runner
 from dynamics_experiment.config import Experiment
 
