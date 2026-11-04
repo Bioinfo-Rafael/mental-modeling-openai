@@ -6,14 +6,12 @@ Exp.3を `--resume` で再開した場合、`common.latest_results()` が `resul
 
 ## 1. 実行方法
 
-既存のMental Modeling / LLM-Xavier用環境を使います。[01の環境説明](../01_prompt_preview/README.md)と同じ `.venv`（Notebookでは `Python (mental-modeling)`）で、新規作成は不要です。図作成には、projectの `notebook` extraに含まれるmatplotlibが必要です。
+[01の環境説明](../01_prompt_preview/README.md)と同じuv環境（`uv sync --all-extras`）を使い、repository直下から `uv run` で実行します。図作成には、projectの `notebook` extraに含まれるmatplotlibが必要です。
 
 入力が揃っているかだけ確認する場合：
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python workspace/04_sample_size_analysis/run.py --dry-run
+uv run python workspace/04_sample_size_analysis/run.py --dry-run
 ```
 
 入力を検査して `results/dry_run/manifest.json` を保存します。統計表・図はまだ作りません。**dry-runでもExp.3の完了結果が必要**で、不足していれば停止します。
@@ -21,9 +19,7 @@ python workspace/04_sample_size_analysis/run.py --dry-run
 統計表と図を生成する場合：
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python workspace/04_sample_size_analysis/run.py
+uv run python workspace/04_sample_size_analysis/run.py
 ```
 
 有料実験と異なり、04はフラグなしで分析を実行します。どちらのコマンドもAPI 0で、API keyは不要です。`--execute`・`--confirm-paid-api`・`--retries` は受け付けません。

@@ -75,7 +75,7 @@ system prompt、history format、query index、user prompt wrapperはすべてLL
 API clientを作成せず、8種類のAPI message previewを生成・検証する。
 
 ```bash
-.venv/bin/python workspace/03_1_gpt35_history_n30_joint/smoke_test/run_smoke_test.py
+uv run python workspace/03_1_gpt35_history_n30_joint/smoke_test/run_smoke_test.py
 ```
 
 生成結果は`smoke_test/prompts/`に保存される。
@@ -85,7 +85,7 @@ API clientを作成せず、8種類のAPI message previewを生成・検証す�
 APIを呼ばずにN30の全実行計画と前提条件を検証し、manifestを保存する。
 
 ```bash
-.venv/bin/python workspace/03_1_gpt35_history_n30_joint/run.py
+uv run python workspace/03_1_gpt35_history_n30_joint/run.py
 ```
 
 ## 本実行
@@ -95,14 +95,13 @@ APIを呼ばずにN30の全実行計画と前提条件を検証し、manifestを
 以下は本実行用commandであり、今回の実装・検証時には実行していない。
 
 ```bash
-source .venv/bin/activate
-python workspace/03_1_gpt35_history_n30_joint/run.py --execute --confirm-paid-api
+uv run python workspace/03_1_gpt35_history_n30_joint/run.py --execute --confirm-paid-api
 ```
 
 中断した実行は、既存の順序付きreplay/resume機構を利用できる。
 
 ```bash
-python workspace/03_1_gpt35_history_n30_joint/run.py \
+uv run python workspace/03_1_gpt35_history_n30_joint/run.py \
   --resume --execute --confirm-paid-api
 ```
 

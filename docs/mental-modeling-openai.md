@@ -1,6 +1,9 @@
-> Original README of the `rafael/mental-modeling-openai` branch, kept for its dataset, prompt and
-> token-count notes. Paths and commands were updated to the current layout; for setup use the
-> root [README](../README.md) (uv) instead of the pip/.venv steps below.
+> **Historical document.** Original README of the `rafael/mental-modeling-openai` branch, kept for
+> its dataset, prompt and token-count notes. Setup commands below were switched to `uv`, but the
+> directory trees, `outputs/pilot/`, root `tools/`, the `/Users/...` working path and the
+> "現状" notes describe the original branch and were not updated. For the current layout and setup
+> see the root [README](../README.md) and [migration-from-rafael-branch.md](migration-from-rafael-branch.md).
+> Links to `outputs/**/*.csv` point to files generated locally by the tools; they are gitignored.
 
 # @Rafaメモ：
 - ./experimentsが実験に用いたコードです。
@@ -14,17 +17,16 @@
 ## すぐ使う
 
 ```bash
-source .venv/bin/activate
-python -m mtd_rl_xavier.tools.list_datasets
-python -m mtd_rl_xavier.tools.describe_dataset --dataset MountainCar-v0
-python -m mtd_rl_xavier.tools.show_data --dataset MountainCar-v0 --episode 0 --index 25
-python -m mtd_rl_xavier.tools.show_data --dataset f16capstone --sequence 0 --index 10
-python -m mtd_rl_xavier.tools.show_data --dataset f16capstone --sequence 0 --index 10 --processed --preprocessing-config configs/preprocessing/f16capstone_default.yaml
-python -m mtd_rl_xavier.tools.show_data --dataset trajair --sequence 100 --index 20
-python -m mtd_rl_xavier.tools.show_data --dataset aircombat_wez --row 100
-python -m mtd_rl_xavier.tools.count_input_tokens --dataset MountainCar-v0 --history-size 1 --model gpt-4o
-python -m mtd_rl_xavier.tools.count_input_tokens --all --history-sizes 0 1 2 3 5 10 --model gpt-4o
-python -m mtd_rl_xavier.tools.count_input_tokens --external-all --prompt-mode external_generic --history-size 1 --model gpt-4o
+uv run python -m mtd_rl_xavier.tools.list_datasets
+uv run python -m mtd_rl_xavier.tools.describe_dataset --dataset MountainCar-v0
+uv run python -m mtd_rl_xavier.tools.show_data --dataset MountainCar-v0 --episode 0 --index 25
+uv run python -m mtd_rl_xavier.tools.show_data --dataset f16capstone --sequence 0 --index 10
+uv run python -m mtd_rl_xavier.tools.show_data --dataset f16capstone --sequence 0 --index 10 --processed --preprocessing-config configs/preprocessing/f16capstone_default.yaml
+uv run python -m mtd_rl_xavier.tools.show_data --dataset trajair --sequence 100 --index 20
+uv run python -m mtd_rl_xavier.tools.show_data --dataset aircombat_wez --row 100
+uv run python -m mtd_rl_xavier.tools.count_input_tokens --dataset MountainCar-v0 --history-size 1 --model gpt-4o
+uv run python -m mtd_rl_xavier.tools.count_input_tokens --all --history-sizes 0 1 2 3 5 10 --model gpt-4o
+uv run python -m mtd_rl_xavier.tools.count_input_tokens --external-all --prompt-mode external_generic --history-size 1 --model gpt-4o
 ```
 
 結果は [dataset目次](../outputs/dataset_inventory/datasets.csv)、[token比較表](../outputs/token_counts/token_inventory.csv)、[query別CSV](../outputs/token_counts/queries.csv)、[実施報告](../outputs/token_counts/REPORT.md)。各count実行は同じoutput-dirの結果を置き換えるため、比較実験は `--output-dir outputs/token_counts/experiment_name` で分けてください。
@@ -39,17 +41,17 @@ python -m mtd_rl_xavier.tools.count_input_tokens --external-all --prompt-mode ex
 どちらもread-onlyのlive scanを主とし、保存済みinventoryは後から検算にだけ使用します。
 
 ```bash
-# workspace直下で、初回のみ依存を追加
-.venv/bin/python -m pip install -e '.[data,notebook,test]'
-.venv/bin/python -m ipykernel install --prefix .venv --name mental-modeling --display-name 'Python (mental-modeling)'
-.venv/bin/jupyter lab workspace/notebooks/01_data_and_token_inspection.ipynb
+# repository直下で、初回のみ依存を追加（notebook extraを含む）
+uv sync --all-extras
+uv run python -m ipykernel install --prefix .venv --name mental-modeling --display-name 'Python (mental-modeling)'
+uv run jupyter lab workspace/notebooks/01_data_and_token_inspection.ipynb
 ```
 
 各Notebookの「drill-down selection」でdataset/episode/sequence/row/indexを選び、raw値→既存preprocessing→history→prompt全文→選択queryのtoken数を追跡します。公式20 taskはraw閲覧、元promptは対応11 taskのみ。外部用の初期選択はF16Capstoneで、`PREPROCESSING_CONFIG='configs/preprocessing/f16capstone_default.yaml'` を明示しています。外部preprocessingは本projectで定義するLLM入力用example / baseline変換であり、raw datasetそのものではありません。
 
 「LIVE TOKEN COUNT」は選択recordとは独立に、公式用は `build_token_inventory(datasets='all', ...)`、外部用は `datasets='external-all'` を呼びます。公式は全valid query、外部は既存YAML設定に従い100,000件超のpoolを既定2,000件・seed=0でsample（全件扱いしない）。Hは既定 `[1]`、staticは0です。各Notebookの対象範囲のqueryを `all_token_queries_df`、集計を `token_by_dataset_df`、scope/skip理由もDataFrameで保持し、mode/前処理別の分布と上位・下位queryを表示します。最後の保存済みbatch比較も各Notebookの対象datasetに限定します。
 
-Notebookはdata/・保存済みCSV/JSONを変更せず、OpenAI APIも呼びません。CLIとNotebookは同じ `src/mtd_rl_xavier/tools/token_inventory.py:build_token_inventory` を共有し、保存処理はCLI側の明示的writerへ分離しています。検証は `.venv/bin/python -m mtd_rl_xavier.tools.check_inspection_notebook`（全live scanと全token計測を実行）です。
+Notebookはdata/・保存済みCSV/JSONを変更せず、OpenAI APIも呼びません。CLIとNotebookは同じ `src/mtd_rl_xavier/tools/token_inventory.py:build_token_inventory` を共有し、保存処理はCLI側の明示的writerへ分離しています。検証は `uv run python -m mtd_rl_xavier.tools.check_inspection_notebook`（全live scanと全token計測を実行）です。
 
 ## データ一覧
 
@@ -95,7 +97,7 @@ tools/                        raw表示・processed表示・local token count
 outputs/                      全derived results、必要なcacheはoutputs/cache/
 ```
 
-data/に以前からある調査README/SCHEMAは今回変更せず保存しています。今後のschema文書生成先は `outputs/docs/` に変更しました。derived writerはdata/・upstream/への出力（symlink経由も）を拒否します。raw変更検証は `python -m mtd_rl_xavier.tools.raw_integrity --verify`。今回のbaselineは既存文書も含む34,227ファイルのSHA256です。
+data/に以前からある調査README/SCHEMAは今回変更せず保存しています。今後のschema文書生成先は `outputs/docs/` に変更しました。derived writerはdata/・upstream/への出力（symlink経由も）を拒否します。raw変更検証は `uv run python -m mtd_rl_xavier.tools.raw_integrity --verify`。今回のbaselineは既存文書も含む34,227ファイルのSHA256です。
 
 **このpreprocessingはraw datasetそのものではなく、LLM入力用に本projectで定義した変換である。** 外部はexample / baselineであり、original Mental Modeling benchmarkや精度評価ではありません。
 
@@ -124,7 +126,7 @@ CSV raw readerは元の文字列表現を保持するため、raw dtypeはUnicod
 今回と同じ一括実行:
 
 ```bash
-python -m mtd_rl_xavier.tools.count_input_tokens --everything --history-sizes 0 1 2 3 5 10 --external-history-sizes 1 --model gpt-4o
+uv run python -m mtd_rl_xavier.tools.count_input_tokens --everything --history-sizes 0 1 2 3 5 10 --external-history-sizes 1 --model gpt-4o
 ```
 
 ## ディレクトリ
@@ -167,16 +169,15 @@ downloadデータ・仮想環境・生成CSV/JSONはgitignore対象。`src/menta
 
 通常の`git clone`で原典コードも取得できる。submoduleの初期化は不要。取得元・元commitは`configs/sources.json`の`llm_xavier`に記録し、原典の`LICENSE`・`NOTICE`・`CITATION.cff`を保持する。公式コードの更新を取り込む際は、こちら側の変更を確認してから差分を統合する。
 
-token見積もりのスクリプトは`workspace/notebooks/01_token_estimation.py`、Excelは`workspace/notebooks/01data/token_estimation.xlsx`。再生成には`.[estimation]`の追加依存関係を使用する。
+token見積もりのスクリプトは`workspace/notebooks/01_token_estimation.py`、Excelは`workspace/notebooks/01data/token_estimation.xlsx`。再生成には`estimation` extra（`uv sync --extra estimation`）を使用する。
 
 環境再作成（source取得済みが前提）:
 
 ```bash
-python3 -m venv .venv
-.venv/bin/python -m pip install -e 'src/mentalmodeling[openai,test]' -e '.[data,test]'
+uv sync --all-extras   # src/mentalmodeling/ is installed editable as llm_x
 ```
 
-移動に伴う仮想環境の旧workspace参照は更新済み。明示的に `.venv/bin/python` を使うと解釈器が明確になる。
+`uv run` はrepository直下の `.venv` を使う。
 
 ## 原典と公式データ
 
@@ -282,10 +283,10 @@ NPZやCSVを添付する実装ではない。pilotはResponses API、上流backe
 ## Inventory再実行
 
 ```bash
-.venv/bin/python -m mtd_rl_xavier.tools.inventory_llmx_data
-.venv/bin/python -m mtd_rl_xavier.tools.inventory_candidates
-.venv/bin/python -m mtd_rl_xavier.tools.audit_dataset_relationships
-.venv/bin/python -m mtd_rl_xavier.tools.render_schema_docs
+uv run python -m mtd_rl_xavier.tools.inventory_llmx_data
+uv run python -m mtd_rl_xavier.tools.inventory_candidates
+uv run python -m mtd_rl_xavier.tools.audit_dataset_relationships
+uv run python -m mtd_rl_xavier.tools.render_schema_docs
 ```
 
 CSVはchunk、processedはscene、NPZはepisode単位。全nested ZIP entryと全展開dataを検査。MATはtop-level variableを選び巨大MCOS metadataの一括実体化を避ける。CSVは行数をschema fingerprintへ混ぜず列順/型/構造を比較する。source size/mtimeのscan前後不変性も確認。未取得Baiduのschemaは推測しない。
@@ -299,7 +300,7 @@ model名がtiktoken未登録なら既定cl100k_baseへfallbackし、警告とmet
 出力は `outputs/token_counts/queries.csv`, `summary_by_dataset.csv`, `summary_by_task.csv`, `summary.json`。再実行する例:
 
 ```bash
-.venv/bin/python -m mtd_rl_xavier.tools.count_input_tokens --all --history-size 1 --model gpt-4o
+uv run python -m mtd_rl_xavier.tools.count_input_tokens --all --history-size 1 --model gpt-4o
 ```
 
 単一taskなら `--all` の代わりに `--task MountainCar-v0 --metric next-action --question-name next_action_prediction`。
@@ -309,7 +310,7 @@ model名がtiktoken未登録なら既定cl100k_baseへfallbackし、警告とmet
 sample_size=5、seed=0でtaskの全episode中の有効queryから再現可能に抽出する。既定dry-runは `dry_run_plan.json` のみ作成し、`DRY RUN / Would send N queries. / No API request was made.` と表示。今回は追加pilotも実行していない。
 
 ```bash
-.venv/bin/python -m mtd_rl_xavier.tools.pilot_output_tokens --all --history-size 1 --model gpt-4o --sample-size 5
+uv run python -m mtd_rl_xavier.tools.pilot_output_tokens --all --history-size 1 --model gpt-4o --sample-size 5
 ```
 
 将来別途paid実行を決めたときだけ `--execute-paid-api` を付ける。その分岐のみが環境変数OPENAI_API_KEYを読みclientを作る。keyをCLI引数・文書・ログへ保存しない。今回key/.envは読んでいない。
@@ -319,7 +320,7 @@ sample_size=5、seed=0でtaskの全episode中の有効queryから再現可能に
 token countとpilotが揃った後、単価を実行時点で確認して明示指定:
 
 ```bash
-.venv/bin/python -m mtd_rl_xavier.tools.summarize_token_costs --pilot-summary outputs/pilot/gpt-4o/token_summary.json --input-price-per-million INPUT_PRICE --output-price-per-million OUTPUT_PRICE
+uv run python -m mtd_rl_xavier.tools.summarize_token_costs --pilot-summary outputs/pilot/gpt-4o/token_summary.json --input-price-per-million INPUT_PRICE --output-price-per-million OUTPUT_PRICE
 ```
 
 ## 外部候補・検証
@@ -329,7 +330,7 @@ token countとpilotが揃った後、単価を実行時点で確認して明示�
 外部34,036ファイル、公式と合わせ34,219ファイルを走査。support/archive/textも含む外部分類82群、構造化data/empty schemaのみ54群。公式はtask別20群（T可変）、task間の同型を重複除外すると13群。
 
 ```bash
-.venv/bin/python -m pytest tests src/mentalmodeling/tests -q
+uv run python -m pytest tests src/mentalmodeling/tests -q
 ```
 
 inventory testsはNPZ/CSV/MAT extraction、dtype/shape、grouping、chunk、欠損、empty、track分割、ZIP、script、source不変性を確認。既存prompt/token工具はsyntheticデータ・fake clientでregression testし、新規testは実raw reader、前処理設定、元prompt一致、ネットワーク禁止下のlocal countも検証します。LLM評価は実行しません。学習とsimulationも実行対象外。

@@ -41,7 +41,7 @@ CSVは08と同じUTF-8 BOM付き。既存列 `query_id, model, Task, Metrics, H,
 抽出を初回実行するコマンド（リポジトリルートから）:
 
 ```bash
-.venv/bin/python workspace/09_ablation_reward/reasoning_score_analysis/prepare_scoring.py
+uv run python workspace/09_ablation_reward/reasoning_score_analysis/prepare_scoring.py
 ```
 
 既存の採点用CSVを保護するため、ファイルがある場合は上書きせず停止する。

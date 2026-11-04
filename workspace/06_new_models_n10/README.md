@@ -16,9 +16,7 @@ retryなしの件数。統合後の960 recordsに05の120 recordsが含まれる
 05を今回のJoint・N=10設定で完了させる。[05の手順](../05_new_models_single/README.md)。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python workspace/06_new_models_n10/run.py
+uv run python workspace/06_new_models_n10/run.py
 ```
 
 フラグなしはAPI 0のdry-run。`results/dry_run/manifest.json/csv` に計画を保存する。
@@ -28,7 +26,7 @@ python workspace/06_new_models_n10/run.py
 `OPENAI_API_KEY` を環境変数に設定し、ユーザーが有料実行するときだけ：
 
 ```bash
-python workspace/06_new_models_n10/run.py --execute --confirm-paid-api
+uv run python workspace/06_new_models_n10/run.py --execute --confirm-paid-api
 ```
 
 05が未完了・不足・旧N1・非Joint・prompt不一致なら、最初の新規送信より前に止まる。
@@ -44,10 +42,10 @@ python workspace/06_new_models_n10/run.py --execute --confirm-paid-api
 
 ```bash
 # 予定確認：3モデル × 4 Metric × 10 query = 120件（40/model）
-python workspace/06_new_models_n10/run.py --task Pendulum-v1 --history 5
+uv run python workspace/06_new_models_n10/run.py --task Pendulum-v1 --history 5
 
 # 実際に送信する場合のみ
-python workspace/06_new_models_n10/run.py --task Pendulum-v1 --history 5 --execute --confirm-paid-api
+uv run python workspace/06_new_models_n10/run.py --task Pendulum-v1 --history 5 --execute --confirm-paid-api
 ```
 
 `--task`はMountainCar-v0 / Pendulum-v1、`--history`は5 / 10 / 20 / 30。いずれも複数値を指定できる。省略した軸は全てを対象とする。モデルはsol/terra/luna、Metricは全4種類、N=10で固定する。
@@ -57,8 +55,8 @@ python workspace/06_new_models_n10/run.py --task Pendulum-v1 --history 5 --execu
 ### 完了済みを除く残りをまとめて実行する
 
 ```bash
-python workspace/06_new_models_n10/run.py --remaining
-python workspace/06_new_models_n10/run.py --remaining --execute --confirm-paid-api
+uv run python workspace/06_new_models_n10/run.py --remaining
+uv run python workspace/06_new_models_n10/run.py --remaining --execute --confirm-paid-api
 ```
 
 **`--remaining`を明示したときだけ、完了済み条件を除外する。** 05と06のPendulum/H5が完了した状態なら、残り240件/model、全720件を新規送信する。`--remaining --task Pendulum-v1`のように範囲も限定できる。対象が全て完了していればエラーで終了する。
@@ -69,10 +67,10 @@ python workspace/06_new_models_n10/run.py --remaining --execute --confirm-paid-a
 
 ```bash
 # 計画だけ確認（APIなし）
-python workspace/06_new_models_n10/run.py --remaining --model-order terra luna sol
+uv run python workspace/06_new_models_n10/run.py --remaining --model-order terra luna sol
 
 # 有料実行
-python workspace/06_new_models_n10/run.py --remaining --model-order terra luna sol --execute --confirm-paid-api
+uv run python workspace/06_new_models_n10/run.py --remaining --model-order terra luna sol --execute --confirm-paid-api
 ```
 
 `--model-order luna terra sol`等へ変更可能。3モデルを重複なく1回ずつ指定する。省略は`terra luna sol`。
@@ -96,7 +94,7 @@ API失敗時のtoken数は不明なので`null`とし、0 token・無料とは�
 
 ### 単独probeと、過去の途中停止batch（再開機能は実装しない）
 
-今回のsol/MountainCar/next-action/H5の2件目（index=6）の500エラーを単独確認するには、repository rootで`python -m mtd_rl_xavier.tools.probe_exp06_query --execute --confirm-paid-api`を実行する。
+今回のsol/MountainCar/next-action/H5の2件目（index=6）の500エラーを単独確認するには、repository rootで`uv run python -m mtd_rl_xavier.tools.probe_exp06_query --execute --confirm-paid-api`を実行する。
 同じ入力をterra/lunaで検証するときは、それぞれ`--model terra` / `--model luna`を付ける（省略時はsol）。保存済みsol requestの`model`だけを変更し、system/user prompt・履歴・質問・reasoning_effortは一切変更しない。1コマンドにつき指定モデルへ1回送信する。
 新規出力directoryは`<日時>_<model alias>_<識別子>`。request/resultには実際の`model`と`source_query_id`を記録する。互換性のため残した`query_id`は元sol queryのIDであり、terra/lunaの正式な実験query IDではない。
 `612bf8080963456b9286c5481885a700`の保存済みrequestをそのまま1回だけ送信し、SDK自動retryも0にする。両フラグを外すと検証のみ。
@@ -110,7 +108,7 @@ API失敗時のtoken数は不明なので`null`とし、0 token・無料とは�
 ### 全条件が揃ったら統合（APIなし）
 
 ```bash
-python workspace/06_new_models_n10/run.py --merge
+uv run python workspace/06_new_models_n10/run.py --merge
 ```
 
 05の120件と、全batchの重複しない840件を検証し、960件を`results/merged/<識別子>/`へ新規保存する。足りない条件・重複・未完了・prompt/設定不一致があれば統合しない。`--merge`に有料実行フラグは付けない。再実行時も別snapshotを作り、既存snapshotを上書きしない。
@@ -150,7 +148,7 @@ EXPERIMENT = common.Experiment(
 
 ### 実行前の費用・時間見積もり
 
-05の完了後、`python workspace/05_new_models_single/analysis/estimate_exp06.py`で06の追加280件/modelのtoken・金額・時間を概算できる。05の40件/modelの実測を単純に7倍する。再利用する40件分は追加料金に含めない。05＋06累計（8倍）も別表で出力する。
+05の完了後、`uv run python workspace/05_new_models_single/analysis/estimate_exp06.py`で06の追加280件/modelのtoken・金額・時間を概算できる。05の40件/modelの実測を単純に7倍する。再利用する40件分は追加料金に含めない。05＋06累計（8倍）も別表で出力する。
 出力は05の`analysis/cost_estimates/<日時>_<識別子>/RESULTS.md`と`estimate.json`。詳しい入出力・前提は[05解析README](../05_new_models_single/analysis/README.md)を参照。06の実験コード・結果には触れず、APIも呼ばない。
 
 ### APIの生成設定
@@ -228,13 +226,13 @@ prompt生成・API送信・公式scorerは既存common/upstreamを再利用し�
 
 ## 5. N=10だけを共通解析する
 
-**GPT-3.5も含めた4モデル比較・PNGのみ**は、`python workspace/06_new_models_n10/analysis/compare_models.py --allow-api-failures`を使う。
+**GPT-3.5も含めた4モデル比較・PNGのみ**は、`uv run python workspace/06_new_models_n10/analysis/compare_models.py --allow-api-failures`を使う。
 固定色、状態成分別の図、モデル別CM、API欠損を明示する新しい解析入口。詳細は[比較README](analysis/COMPARISON_README.md)。以下は従来のモデル別PNG/SVG解析。
 
 06完了後：
 
 ```bash
-python workspace/06_new_models_n10/analysis/analyze.py
+uv run python workspace/06_new_models_n10/analysis/analyze.py
 ```
 
 APIなし。05を含む06の960 recordsを一度だけ読み、05のraw responseとの一致と再送の不在も照合する。

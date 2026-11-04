@@ -5,8 +5,7 @@
 05が完了してから、repository rootで実行する。
 
 ```bash
-source .venv/bin/activate
-python workspace/05_new_models_single/analysis/analyze.py
+uv run python workspace/05_new_models_single/analysis/analyze.py
 ```
 
 03_1と同じ[共通評価コード](../../../src/mtd_rl_xavier/experiment/common_analysis/README.md)を呼び、N=10のpilot CSVを`sol/tables/`、`terra/tables/`、`luna/tables/`へ保存する。
@@ -18,9 +17,7 @@ Pendulum・H20しか取得しないため比較図は06で生成する。APIを�
 **05の完了後**に実行する。`analyze.py`の事前実行は不要。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python workspace/05_new_models_single/analysis/estimate_exp06.py
+uv run python workspace/05_new_models_single/analysis/estimate_exp06.py
 ```
 
 このスクリプトは標準ライブラリのみ使用し、APIも実験runnerも呼ばない。05の`results/`を読み取り専用で扱う。

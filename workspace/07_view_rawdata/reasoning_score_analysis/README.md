@@ -63,8 +63,7 @@ scoreは順序尺度であり、平均levelは隣接レベルを等間隔と置�
 使用ライブラリ: Python、pandas、NumPy、Matplotlib。実行確認環境はpandas 3.0.5、NumPy 2.5.3、Matplotlib 3.11.1。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-.venv/bin/python workspace/07_view_rawdata/reasoning_score_analysis/plot_reasoning_scores.py \
+uv run python workspace/07_view_rawdata/reasoning_score_analysis/plot_reasoning_scores.py \
   --output-dir workspace/07_view_rawdata/reasoning_score_analysis_rerun
 ```
 

@@ -5,7 +5,9 @@ experiment needs belongs in `src/mtd_rl_xavier/` with tests.
 
 > **Paid API:** `09_ablation_reward`, `10_ICRL`, `11_ICRL_n10` and `12_fewshots_episodes` send
 > requests when `run.py` is run **without arguments**; use `--dry-run` to inspect the plan.
-> Experiments 01–06 and 08 need `--execute --confirm-paid-api`. Check each README first.
+> Experiments 01–06 and 08 need `--execute --confirm-paid-api`. `14`–`17` send OpenAI Batch
+> requests with `--execute` alone (no `--confirm-paid-api`), and `14_mental-modeling_LAG/batch_run.py`
+> submits on `run`, `submit`, `complete-prefix` and `rolling`. Check each README first.
 
 ## Experiment directory
 
@@ -18,7 +20,9 @@ NN_short_name/
   tests/           Offline tests (fixtures or saved data, never the API)
 ```
 
-- Number new experiments after the last one (`18_...`).
+- Number new experiments from `21_...` upward. Numbers `18`–`20` are reserved: the legacy
+  branch `rafael/mental-modeling-openai` already uses them (`18_desicion_LAG`, `19_RealTime_LAG`,
+  `19_RealTime_Lag_v2`, `20_foresight_LAG`) and has not been ported.
 - Entry points put the repository root on `sys.path` so sibling experiments can be imported:
   ```python
   sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -31,9 +35,10 @@ NN_short_name/
 
 ## Experiments
 
-Ported from `rafael/mental-modeling-openai`. Rafael's detailed index (conditions, raw-data
-locations, commands, slides) is [EXPERIMENTS.md](EXPERIMENTS.md); the static review of 01–06 is
-[REVIEW.md](REVIEW.md).
+01–17 were ported from `rafael/mental-modeling-openai` at `a232376`; later work on that branch
+(experiments 18–20 and changes to 13 and 17) is not on `main`. Rafael's detailed index
+(conditions, raw-data locations, commands, slides) is [EXPERIMENTS.md](EXPERIMENTS.md); the static
+review of 01–06 is [REVIEW.md](REVIEW.md).
 
 | Dir | Topic |
 | --- | --- |

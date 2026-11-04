@@ -6,24 +6,20 @@ Exp.1で確認したものと同じ8 queryを `gpt-3.5-turbo` に送り、応答
 
 ## 1. 実行方法
 
-既存のMental Modeling / LLM-Xavier用環境を有効化します。Notebookの `Python (mental-modeling)` と同じ環境です。
+repository直下から、`uv sync --all-extras` 済みの環境で `uv run` を使って実行します。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python workspace/02_gpt35_single/run.py
+uv run python workspace/02_gpt35_single/run.py
 ```
 
-上は計画だけ確認するコマンドです。API keyは不要です。環境を新規作成する必要はありません。[01の環境説明](../01_prompt_preview/README.md)と同じ `.venv` を使います。
+上は計画だけ確認するコマンドです。API keyは不要です。環境は[01の環境説明](../01_prompt_preview/README.md)と同じuv環境です。
 
 `results/dry_run/manifest.json` の `prerequisites` が `ready` であること、条件・件数・promptを確認します。Exp.1が不足・不一致の場合、通常はその理由をmanifestに記録します。計画が保存されたことだけでは、送信可能とは限りません。
 
 実際に送る場合だけ、`OPENAI_API_KEY` を安全な方法で環境変数に設定したうえで、両方のフラグを指定します。キーをコードやCLI引数へ書かないでください。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python workspace/02_gpt35_single/run.py --execute --confirm-paid-api
+uv run python workspace/02_gpt35_single/run.py --execute --confirm-paid-api
 ```
 
 全件成功・retryなしなら8 API試行です。`--execute` だけ、または `--confirm-paid-api` だけでは拒否されます。`--dry-run` という引数はなく、フラグなしがdry-runです。

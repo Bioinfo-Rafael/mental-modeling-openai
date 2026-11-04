@@ -6,12 +6,10 @@ MountainCar/Pendulumの4 metricについて履歴長H=5/10/20/30を比較しま�
 
 ## 1. 実行方法
 
-既存のLLM-Xavier用環境（Notebookでは `Python (mental-modeling)`）を使います。[01の環境説明](../01_prompt_preview/README.md)と同じ `.venv` で、新規作成は不要です。
+[01の環境説明](../01_prompt_preview/README.md)と同じuv環境（`uv sync --all-extras`）を使い、repository直下から `uv run` で実行します。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python workspace/03_gpt35_history_n30/run.py
+uv run python workspace/03_gpt35_history_n30/run.py
 ```
 
 上はdry-runで、API key不要・API 0です。`results/dry_run/manifest.json/csv` の件数・prompt・sourceを確認してください。`--dry-run` オプションではなく、フラグなしがdry-runです。
@@ -19,9 +17,7 @@ python workspace/03_gpt35_history_n30/run.py
 有料実行は、ユーザーが `OPENAI_API_KEY` を環境変数に設定し、費用と条件を確認した後に限ります。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python workspace/03_gpt35_history_n30/run.py --execute --confirm-paid-api
+uv run python workspace/03_gpt35_history_n30/run.py --execute --confirm-paid-api
 ```
 
 全件成功・既定 `--retries 0` なら960 API試行です。どちらか一方のフラグだけでは実行できません。retryを明示的に増やすとAPI試行数は増えますが、N30自体は変わりません。
@@ -35,9 +31,7 @@ python workspace/03_gpt35_history_n30/run.py --execute --confirm-paid-api
 まず、追加送信なしで再開計画を確認します。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python workspace/03_gpt35_history_n30/run.py --resume
+uv run python workspace/03_gpt35_history_n30/run.py --resume
 ```
 
 `results/dry_run/manifest.json` の `planned_api_requests`（これから送る件数）、`resume_cached_queries`（保存済み応答の再利用数）、`resume_uncertain_queries`（送信を試みたが応答が保存されていないquery）を確認します。
@@ -45,7 +39,7 @@ python workspace/03_gpt35_history_n30/run.py --resume
 今回の停止状態では、960件中30件を再利用し、残り930件を送信する計画です。930件にはタイムアウトした1件の再送と、未送信929件が含まれます。タイムアウトはサーバー側で未処理だったことを保証せず、再送すると重複課金の可能性があります。その1件を再送してよい場合は、次のコマンドを実行します。
 
 ```bash
-python workspace/03_gpt35_history_n30/run.py \
+uv run python workspace/03_gpt35_history_n30/run.py \
   --resume --retry-uncertain --execute --confirm-paid-api
 ```
 
@@ -154,7 +148,7 @@ EXPERIMENT = common.Experiment(
 
 | 設定 | 値 | 使用箇所・意味 |
 | --- | --- | --- |
-| `name` | `03_gpt35_history_n30` | `common.py:run()` で `experiments/<name>/results/` を決める |
+| `name` | `03_gpt35_history_n30` | `common.py:run()` で `workspace/<name>/results/` を決める |
 | `models` | `("3.5",)` | `common.py:MODELS` から `gpt-3.5-turbo` に解決。aliasは文字列 |
 | `tasks` | MountainCar-v0 / Pendulum-v1 | `common.py:TASKS`、`make_plan()` のtask別選択 |
 | `metrics` | 4 family | `common.py:METRICS` と `QUESTIONS` による公式質問の指定 |

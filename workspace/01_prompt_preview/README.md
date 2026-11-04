@@ -4,31 +4,21 @@
 
 ## 1. 実行方法
 
-作成済みの **Mental Modeling / LLM-Xavier用の仮想環境**を使います。新しい環境を作る必要はありません。既存環境を有効化し、repository直下から実行してください。
+repository直下で `uv sync --all-extras` 済みの環境を使い、`uv run` で実行します（[root README](../../README.md#setup)）。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python workspace/01_prompt_preview/run.py
+uv run python workspace/01_prompt_preview/run.py
 ```
 
-確認した既存環境は次のとおりです（2026-09-10）。
+`llm_x`（LLM-Xavier）は `src/mentalmodeling/llm_x/` にあり、`uv sync` が `llm-x-evaluator` としてeditable installします。
 
-| 項目 | 値 |
-| --- | --- |
-| 環境directory | `/Users/cls-lab/Git/Matsuo/mental-modeling-openai/.venv` |
-| Python | `3.14.5` |
-| LLM-Xavierのインストール済みpackage | `llm-x-evaluator==0.1.0`（editable install） |
-| `llm_x` の実際の参照先 | `/Users/cls-lab/Git/Matsuo/mental-modeling-openai/mentalmodeling/llm_x/` |
-| この環境内に登録されたNotebook kernel表示名 | `Python (mental-modeling)` |
+> 移行前（2026-09-10）は `rafael/mental-modeling-openai` のcheckoutにある `.venv`（Python 3.14.5、Notebook kernel表示名 `Python (mental-modeling)`）で確認していました。現在は上記のuv環境を使います。
 
-`Python (mental-modeling)` は別のconda環境ではなく、この `.venv/bin/python` を使うNotebook kernelの表示名です。元の `.venv/bin/python workspace/01_prompt_preview/run.py` も、この同じ環境を直接指定するコマンドでした。
-
-有効化後、使用中のPythonは次のコマンドで確認できます。これは実験を実行しません。
+使用中のPythonは次のコマンドで確認できます。これは実験を実行しません。
 
 ```bash
-python -c 'import sys; print(sys.executable)'
-# /Users/cls-lab/Git/Matsuo/mental-modeling-openai/.venv/bin/python
+uv run python -c 'import sys; print(sys.executable)'
+# <repository>/.venv/bin/python
 ```
 
 API keyは不要です。`--execute` / `--confirm-paid-api` は付けません。Exp.1はpaid実行を拒否します。
@@ -44,7 +34,7 @@ API keyは不要です。`--execute` / `--confirm-paid-api` は付けません�
 入力のルートは次の場所です。Exp.1自身はデータをダウンロードしません。
 
 ```text
-/Users/cls-lab/Git/Matsuo/mental-modeling-openai/data/llmx_data/
+data/llmx_data/
 └── offline_data/
     └── <dataset>/
         └── raw_transitions/
@@ -69,7 +59,7 @@ raw dataはread-onlyで読みます。加工データを `data/` に保存した
 出力はすべて次の場所に保存します。
 
 ```text
-/Users/cls-lab/Git/Matsuo/mental-modeling-openai/experiments/01_prompt_preview/results/
+workspace/01_prompt_preview/results/
 ├── .gitkeep
 ├── .started.json
 ├── manifest.json
@@ -215,7 +205,7 @@ if __name__ == "__main__":
 directory = EXPERIMENTS / spec.name / "results"
 ```
 
-`EXPERIMENTS` はrepositoryの `experiments/`。したがって、Exp.1の出力先は `workspace/01_prompt_preview/results/` になります。
+`EXPERIMENTS` は `mtd_rl_xavier.paths.WORKSPACE`（repositoryの `workspace/`）。したがって、Exp.1の出力先は `workspace/01_prompt_preview/results/` になります。
 
 ### `models`：aliasをmodel IDへ変換する
 

@@ -34,6 +34,7 @@ outputs/smoke-episode.npz
 # Experiment results under workspace/<NN_name>/results/ are shared in git;
 # only run-time lock and partial-write files stay local.
 workspace/**/results/**/.execution.lock
+workspace/**/results/**/.lock
 workspace/**/results/**/*.partial
 
 # Local secrets (API keys)
@@ -45,3 +46,5 @@ outputs/weightreading/
 /private/
 /outputs/translator/
 /outputs/evaluation/
+# intent_compare runs (rollout episodes, ACMI, npz, clips, viewers, Slurm logs) derive from partner checkpoints.
+/outputs/intent_compare/

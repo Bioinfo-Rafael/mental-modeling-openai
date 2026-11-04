@@ -6,7 +6,7 @@
 
 07で選択した正解例・不正解例を、同じTaskのNext Action質問の前に入れる。
 例数とReasoning scoreの組み合わせを変え、送信予定のsystem/user全文を確認する。
-**`python run.py` はdry-run。`--execute --confirm-paid-api` を付けた場合だけAPIへ送信する。**
+**`uv run python run.py` はdry-run。`--execute --confirm-paid-api` を付けた場合だけAPIへ送信する。**
 
 ## ファイル構成と役割
 
@@ -75,10 +75,10 @@
 通常は08のディレクトリから以下を実行する。集計・グラフ・ビューア生成は保存済みデータを使い、API送信は行わない。
 
 ```bash
-python run.py
-python analysis/summarize_results.py
-python analysis/plot_results.py
-python analysis/build_results_viewer.py
+uv run python run.py
+uv run python analysis/summarize_results.py
+uv run python analysis/plot_results.py
+uv run python analysis/build_results_viewer.py
 ```
 
 入力ファイルの相対パスは引き続き`08_fewshot/`基準。テンプレート・データ・結果の保存先も同じ基準で解決する。
@@ -107,16 +107,14 @@ Scoreの範囲は境界値を含む。`run.py` の `ScorePattern.correct_scores`
 
 ## 2. 実行方法
 
-既存の `.venv` を使う。初回のみrepository rootで環境を有効化してから、08へ移動する。
+repository rootで `uv sync --all-extras` 済みの環境を `uv run` で使う。08へ移動して実行する。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
 cd workspace/08_fewshot
-python run.py
+uv run python run.py
 ```
 
-以後08のディレクトリでは **`python run.py` だけ**で実行できる。repository rootから `python workspace/08_fewshot/run.py` でも同じ結果になる。`--dry-run` は明示してもよい。
+以後08のディレクトリでは **`uv run python run.py` だけ**で実行できる。repository rootから `uv run python workspace/08_fewshot/run.py` でも同じ結果になる。`--dry-run` は明示してもよい。
 
 実行のたびに `results/dry_run/` 直下へ出力し、最後に `preview.html` の絶対パスを表示する。生成完了後、このディレクトリの生成物を置き換える。`preview_template.html`は編集用の原本として保持する。
 
@@ -125,15 +123,13 @@ python run.py
 プレビュー確認後、以下をターミナル（zsh）で実行する。`OPENAI_API_KEY` が未設定の場合だけ、非表示入力でキーを尋ねる。既存のモデルID・reasoning_effortを維持し、Terra → Lunaの順で144件を1件ずつ送信する。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
 cd workspace/08_fewshot
 if [[ -z "${OPENAI_API_KEY:-}" ]]; then
   read -rs "OPENAI_API_KEY?OpenAI API key: "
   echo
   export OPENAI_API_KEY
 fi
-python run.py --execute --confirm-paid-api
+uv run python run.py --execute --confirm-paid-api
 ```
 
 [api_execution.py](runner/api_execution.py) が `results/api/` に保存する。`dry_run/` の再生成・削除でAPI結果は消えない。
@@ -145,14 +141,14 @@ python run.py --execute --confirm-paid-api
 
 SDK自動retryは0、timeoutは180秒。APIエラー・Ctrl-Cで停止し、自動再送しない。途中停止後は同じ送信コマンドの末尾へ `--resume` を付けると、保存済み応答を再利用して**未送信のqueryのみ**続ける。送信記録があるエラー・結果不明queryも再送しないため、その分は `unresolved_queries` に残る。全件完了済みなら再送は0件。`--resume` なしの二重実行は拒否する。
 
-入力や設定がプレビューと変わった場合は送信前に停止する。その場合は `python run.py` で再生成し、確認してから送信する。API実行開始後は同一の計画でのみ再開できる。
+入力や設定がプレビューと変わった場合は送信前に停止する。その場合は `uv run python run.py` で再生成し、確認してから送信する。API実行開始後は同一の計画でのみ再開できる。
 
 ### 選択済みJSONを配置する
 
 07の [view_rawdata.html](../07_view_rawdata/view_rawdata.html) で例を選び、**出力 → 候補集JSON（全選択）**を [data_prep/](data_prep/) に保存する。未選択の `examples.json` は自動選択には使わず、export内容の照合にだけ使用する。
 
 - `kind=candidate_pool` のJSONが1つなら、ファイル名に依存せず自動で読む。
-- 複数あれば自動で最新ファイルを選ばず、一覧を表示して停止する。`run.py` の `INPUT_FILES` に使うファイルを指定すれば、以後も `python run.py` だけで実行できる。
+- 複数あれば自動で最新ファイルを選ばず、一覧を表示して停止する。`run.py` の `INPUT_FILES` に使うファイルを指定すれば、以後も `uv run python run.py` だけで実行できる。
 - 複数ファイルを明示した場合、同じquery_idで区分・メモが一致する例は1件にまとめる。区分・メモが競合すれば停止する。
 - `fewshot_subset` 形式は自動検出しないが、`INPUT_FILES` または `--input` で明示すれば利用できる。
 - 入力・回答・Task・予測対象・モデル・H・正解・Score・出典等を共通データ `examples.json` と照合する。07で指定した正解／不正解とメモはそのまま使う。回答なし、未選択、未知ID、内容不一致は拒否する。
@@ -166,9 +162,9 @@ INPUT_FILES = ('data_prep/selected_examples_....json',)
 一度だけの指定や範囲の限定も可能：
 
 ```bash
-python run.py --input data_prep/selected_examples_....json
-python run.py --task Pendulum-v1
-python run.py --model terra --history 5 --shots 4
+uv run python run.py --input data_prep/selected_examples_....json
+uv run python run.py --task Pendulum-v1
+uv run python run.py --model terra --history 5 --shots 4
 ```
 
 `--input` は絶対パスも使える。`--task` / `--model` / `--history` / `--shots` は複数値を指定可能。その他の条件はrun.pyで変更する。
@@ -291,7 +287,7 @@ results/dry_run/
 repository rootから：
 
 ```bash
-.venv/bin/python -B -m pytest workspace/08_fewshot/tests/test_fewshot_runner.py workspace/08_fewshot/data_prep/test_data_prep.py -q -p no:cacheprovider
+uv run python -B -m pytest workspace/08_fewshot/tests/test_fewshot_runner.py workspace/08_fewshot/data_prep/test_data_prep.py -q -p no:cacheprovider
 ```
 
 144件の条件数、next-action限定、Task・Score・1:1、4/8/12例の入れ子、H間での問題一致、別episode選択、元user全文の保持、例のsystem除外、入力改変の拒否、候補不足、入力未配置、API client未生成を確認する。検証用の選択ラベルとpreviewは一時ディレクトリにのみ作り、ユーザーの選択済みデータや実験結果として保存しない。
@@ -380,7 +376,7 @@ repository rootから：
 
 MountainCar-v0とPendulum-v1を別表とし、行をH・Scoreパターン・総例数2k、列をTerra/Lunaとする。各条件n=3の正誤（1/0）を平均して正解率を計算し、正解数/回答数と解析不可件数を併記する。解析不可・空応答は正解には含めず、分母には含める。未回収分は分母から除外し、未完了と表示する。
 
-08のディレクトリから `python analysis/summarize_results.py` で更新できる。APIには送信せず、`results/api/`を読み取り、`results/analysis/`へ出力する。
+08のディレクトリから `uv run python analysis/summarize_results.py` で更新できる。APIには送信せず、`results/api/`を読み取り、`results/analysis/`へ出力する。
 
 ### 正解率グラフ
 
@@ -389,7 +385,7 @@ MountainCar-v0とPendulum-v1を別表とし、行をH・Scoreパターン・総�
 
 各Taskに1枚、行がScoreパターン1/2、列がH=5/20の4パネル。各パネルにTerra/Lunaを並べ、各モデルの棒を総例数2k=4/8/12で色分けする。高さはn=3の正解率、ラベルは正解率と正解数/回答数。0%もラベルを明示する。図の採点・分母は上の表と同じ。
 
-08のディレクトリで `python analysis/plot_results.py` を実行すると、表とグラフを保存済みAPI結果から再生成する（API送信なし）。
+08のディレクトリで `uv run python analysis/plot_results.py` を実行すると、表とグラフを保存済みAPI結果から再生成する（API送信なし）。
 
 ### 入出力ビューア
 
@@ -397,7 +393,7 @@ MountainCar-v0とPendulum-v1を別表とし、行をH・Scoreパターン・総�
 
 モデル、Task、予測対象、H、総例数2k、Scoreパターン、評価問題、採点結果で絞り込める。ID・入力・回答の検索、前後移動、1回答のJSON保存に対応。Reasoning scoreは今回の出力については未評価であり、使用例のScore条件と区別して表示する。ID差は物理量の誤差ではない。
 
-08のディレクトリで `python analysis/build_results_viewer.py` を実行すると保存済みAPI結果から更新する。HTMLはデータを内蔵しており、サーバー・通信なしで開ける。実行中に生成した場合は、その時点のスナップショットとなる。API送信や元結果の変更は行わない。
+08のディレクトリで `uv run python analysis/build_results_viewer.py` を実行すると保存済みAPI結果から更新する。HTMLはデータを内蔵しており、サーバー・通信なしで開ける。実行中に生成した場合は、その時点のスナップショットとなる。API送信や元結果の変更は行わない。
 
 ### 08のReasoning採点用データ
 
@@ -410,7 +406,7 @@ MountainCar-v0とPendulum-v1を別表とし、行をH・Scoreパターン・総�
 - [MountainCar一覧図](results/analysis/pooled_comparisons/MountainCar-v0_overview.png)
 - [Pendulum一覧図](results/analysis/pooled_comparisons/Pendulum-v1_overview.png)
 
-08から `python analysis/plot_pooled_comparisons.py` で再生成できる。採点済みCSVをquery_idで結合し、144回答を集計する。Scoreパターン・Hは各モデル・群18回答、few-shot総数は12回答。ただし物理的な評価問題は同じ3問を共有する。
+08から `uv run python analysis/plot_pooled_comparisons.py` で再生成できる。採点済みCSVをquery_idで結合し、144回答を集計する。Scoreパターン・Hは各モデル・群18回答、few-shot総数は12回答。ただし物理的な評価問題は同じ3問を共有する。
 
 **採点修正済み（2026-09-30）:** 旧parserは`predictions`のトルク値をbin IDとみなし、Pendulumを0/72正解と記録していた。現在は`runner/scoring.py`で最終action/bin IDを採点する方式に統一し、保存済み144回答の再採点と、正解率表・通常図・pool図・ビューアの再生成を完了した。Pendulumは59/72、MountainCarは65/72正解。旧records・summaryは`results/scoring_backups/`に保存し、各recordの`legacy_evaluation`にも旧採点を保持する。API応答全文・リクエスト・manifest・プロンプト・Reasoning採点CSVは変更していない。
 
@@ -419,10 +415,10 @@ MountainCar-v0とPendulum-v1を別表とし、行をH・Scoreパターン・総�
 再採点・再生成は08から次の順で実行する。既に現行バージョンで採点済みなら再採点は何もしない。API送信は行わない。
 
 ```bash
-python analysis/rescore_results.py
-python analysis/plot_results.py
-python analysis/build_results_viewer.py
-python analysis/plot_pooled_comparisons.py
+uv run python analysis/rescore_results.py
+uv run python analysis/plot_results.py
+uv run python analysis/build_results_viewer.py
+uv run python analysis/plot_pooled_comparisons.py
 ```
 
 ## 07の既存結果との比較
@@ -434,4 +430,4 @@ python analysis/plot_pooled_comparisons.py
 
 各一覧は4行（全条件／例数pool／パターンpool／Terra・Luna全pool）×3列（正解率／MAE／推論レベル）。一覧2枚と拡大24枚のPNG、集計CSV、使用回答一覧を保存する。07のMountainCar/Lunaには解析不可6件があるため、MAEの有効件数を明示する。episode・時点が違う既存結果の比較であり、同一問題の対応付き比較ではない。
 
-08から `python analysis/plot_previous_comparison.py` で再生成できる。追加取得用に誤って作ったn=10のコード・テスト・送信計画は削除した。
+08から `uv run python analysis/plot_previous_comparison.py` で再生成できる。追加取得用に誤って作ったn=10のコード・テスト・送信計画は削除した。

@@ -81,35 +81,35 @@ stepの欠落・重複・順序違い、非有限値、範囲外の行動ID、4�
 
 ```sh
 # デフォルトの60件を計画。20件のプロンプトを確認可能。
-.venv/bin/python workspace/15_trajectory_LAG/run.py
+uv run python workspace/15_trajectory_LAG/run.py
 
 # 60件を3 Batchへ投入して終了。
-.venv/bin/python workspace/15_trajectory_LAG/run.py --execute
+uv run python workspace/15_trajectory_LAG/run.py --execute
 
 # 投入から完了待ち・結果回収・採点まで行う場合。
-.venv/bin/python workspace/15_trajectory_LAG/run.py --execute --wait
+uv run python workspace/15_trajectory_LAG/run.py --execute --wait
 
 # 送信済みBatchの完了を待ち、結果を回収・採点（新規投入なし）。
-.venv/bin/python workspace/15_trajectory_LAG/run.py --collect --wait
+uv run python workspace/15_trajectory_LAG/run.py --collect --wait
 
 # 一度だけ状態を更新し、完了分を回収する場合。
-.venv/bin/python workspace/15_trajectory_LAG/run.py --collect
+uv run python workspace/15_trajectory_LAG/run.py --collect
 
 # 保存済みの状態を確認（API不要、リモートの最新状態は--collectで取得）。
-.venv/bin/python workspace/15_trajectory_LAG/run.py --status
+uv run python workspace/15_trajectory_LAG/run.py --status
 
 # 中断後は同じ実行コマンドで再開。--resumeも互換フラグとして使用可能。
-.venv/bin/python workspace/15_trajectory_LAG/run.py --execute --resume --wait
+uv run python workspace/15_trajectory_LAG/run.py --execute --resume --wait
 
 # 保存済み回答をオフラインで再採点。
-.venv/bin/python workspace/15_trajectory_LAG/run.py --rescore
+uv run python workspace/15_trajectory_LAG/run.py --rescore
 
 # 小さい計画の例。これもAPI不要。
-.venv/bin/python workspace/15_trajectory_LAG/run.py \
+uv run python workspace/15_trajectory_LAG/run.py \
   --models sol --targets A0100 --scopes self --n 1 --output smoke
 
 # オフラインテスト。
-.venv/bin/python -m pytest workspace/15_trajectory_LAG/tests -q
+uv run python -m pytest workspace/15_trajectory_LAG/tests -q
 ```
 
 `OPENAI_API_KEY`が未設定なら実行時に非表示入力を求める。
@@ -120,7 +120,7 @@ Batch用のJSONLを`purpose="batch"`でアップロードし、`/v1/chat/complet
 送信前にjournalと送信意図を保存する。Batch作成の応答が失われた場合はmetadataから既存Batchを探す。特定できなければ自動再送を止め、ダッシュボードで確認したIDを次のように関連付けられる。
 
 ```sh
-.venv/bin/python workspace/15_trajectory_LAG/run.py \
+uv run python workspace/15_trajectory_LAG/run.py \
   --adopt --job sol_000 --batch-id batch_...
 ```
 
@@ -156,10 +156,10 @@ analysis/<scoring_version>/
 状態10成分と行動4成分を表示し、shootは予測対象外なので実測のみ。形式不正の回答は線を描かず、理由と原文を表示する。実測値の欠損は補完せず、角度の折り返しでは線を切る。予測のstep 0〜9は正解の同一stepへ対応付ける。
 
 ```sh
-.venv/bin/python workspace/15_trajectory_LAG/plot_trajectory_timelines.py
+uv run python workspace/15_trajectory_LAG/plot_trajectory_timelines.py
 
 # 更新時は別の出力先へ作成（既存の図は上書きしない）。
-.venv/bin/python workspace/15_trajectory_LAG/plot_trajectory_timelines.py \
+uv run python workspace/15_trajectory_LAG/plot_trajectory_timelines.py \
   --output-dir workspace/15_trajectory_LAG/results/trajectory_batch_v1/analysis/trajectory_timelines_v2
 ```
 
@@ -172,10 +172,10 @@ analysis/<scoring_version>/
 各回答のJSON保存、モデル・機体・問題・状態による絞り込み、入力／回答の全文検索に対応する。同じ問題の時系列図へのリンクも表示する。
 
 ```sh
-.venv/bin/python workspace/15_trajectory_LAG/build_results_viewer.py
+uv run python workspace/15_trajectory_LAG/build_results_viewer.py
 
 # Batchの新しい回答を回収した後、HTMLスナップショットだけを更新。
-.venv/bin/python workspace/15_trajectory_LAG/build_results_viewer.py --overwrite
+uv run python workspace/15_trajectory_LAG/build_results_viewer.py --overwrite
 ```
 
 両ビューアはローカルの保存済みデータだけを読む。API送信・実験計画・生回答・既存の採点結果の変更は行わない。Raw data HTMLはデータを内包する単一ファイルで、オフラインで開ける。
@@ -185,10 +185,10 @@ analysis/<scoring_version>/
 直下の[view_results.html](view_results.html)から、14と同じself／全機体／全機体−selfの比較図を開ける。H=20のみなので横軸は3モデル。機体別（計画n=5）と2機体pool（計画n=10）を切り替える。
 
 ```sh
-.venv/bin/python workspace/15_trajectory_LAG/plot_results.py
+uv run python workspace/15_trajectory_LAG/plot_results.py
 
 # 再生成時は新しい出力先と入口HTMLを指定する。
-.venv/bin/python workspace/15_trajectory_LAG/plot_results.py \
+uv run python workspace/15_trajectory_LAG/plot_results.py \
   --output-dir workspace/15_trajectory_LAG/results/trajectory_batch_v1/analysis/comparison_plots_sum10_v2 \
   --entry workspace/15_trajectory_LAG/view_results_v2.html
 ```

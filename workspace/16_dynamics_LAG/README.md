@@ -48,13 +48,13 @@ $$
 
 ```bash
 # 20入力と60リクエストを準備。モデルごとに20件のBatch用JSONLを作る。
-.venv/bin/python workspace/16_dynamics_LAG/run.py --dry-run
+uv run python workspace/16_dynamics_LAG/run.py --dry-run
 
 # オフラインテスト（APIクライアントはモック）。
-.venv/bin/python -m pytest workspace/16_dynamics_LAG/tests -q
+uv run python -m pytest workspace/16_dynamics_LAG/tests -q
 
 # 保存済みのローカル状態のみ確認。
-.venv/bin/python workspace/16_dynamics_LAG/run.py --status
+uv run python workspace/16_dynamics_LAG/run.py --status
 ```
 
 API実行が必要になったときだけ `--execute` を使う。`--collect --wait` は投入済みBatchの回収、`--rescore` は保存済み回答の再採点。15と同じ再開・重複投入防止を引き継ぐ。設定やプロンプトを変更した場合は新しい `--output` を使い、既存計画を上書きしない。
@@ -74,9 +74,9 @@ baseline_comparison.json      15との問題・正解・設定・プロンプト
 送信後はAPI生回答・採点結果を15と同じ形式で保存する。可視化スクリプトは16の結果を既定の入力とする。
 
 ```bash
-.venv/bin/python workspace/16_dynamics_LAG/build_results_viewer.py
-.venv/bin/python workspace/16_dynamics_LAG/plot_results.py
-.venv/bin/python workspace/16_dynamics_LAG/plot_trajectory_timelines.py
+uv run python workspace/16_dynamics_LAG/build_results_viewer.py
+uv run python workspace/16_dynamics_LAG/plot_results.py
+uv run python workspace/16_dynamics_LAG/plot_trajectory_timelines.py
 ```
 
 15との対応付けには `problem_id`・`observation_scope`・`model_alias` を使う。プロンプトが違うため `sample_id`・`query_id` は異なる。状態・行動・予測距離別の誤差、形式成功率、トークン量を同じ問題で比較する。まだAPI回答がないdry-run段階では成績比較は作らない。

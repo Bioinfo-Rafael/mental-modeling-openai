@@ -5,9 +5,7 @@
 新しい入口は`compare_models.py`。GPT-3.5の03_1 N10 subsetとTerra/Luna/Solを同じ図で比較し、全図のモデル色を固定する。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python workspace/06_new_models_n10/analysis/compare_models.py --allow-api-failures
+uv run python workspace/06_new_models_n10/analysis/compare_models.py --allow-api-failures
 ```
 
 `comparison_4models/`へ65 PNG、CSV、抽出ID、README、RESULTSを新規保存する。`--allow-api-failures`を明示したときだけ、API失敗を欠損として保持して有効応答で評価する。元結果は上書きしない。
@@ -18,8 +16,7 @@ python workspace/06_new_models_n10/analysis/compare_models.py --allow-api-failur
 06の全分割実行が完了してから、repository rootで実行する。
 
 ```bash
-source .venv/bin/activate
-python workspace/06_new_models_n10/analysis/analyze.py
+uv run python workspace/06_new_models_n10/analysis/analyze.py
 ```
 
 03_1と同じ[共通評価コード](../../../src/mtd_rl_xavier/experiment/common_analysis/README.md)を使い、**N=10だけ**を生成する。

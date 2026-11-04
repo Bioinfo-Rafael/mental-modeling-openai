@@ -15,19 +15,17 @@
 
 ## 1. 実行方法と入出力
 
-Repository rootで、既存のPython環境を使う。
+Repository rootから `uv run` で実行する。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python -B -m pytest workspace/03_1_gpt35_history_n30_joint/analysis/test_joint_analysis.py -q -p no:cacheprovider
-python -B workspace/03_1_gpt35_history_n30_joint/analysis/analyze.py
+uv run python -B -m pytest workspace/03_1_gpt35_history_n30_joint/analysis/test_joint_analysis.py -q -p no:cacheprovider
+uv run python -B workspace/03_1_gpt35_history_n30_joint/analysis/analyze.py
 ```
 
 すでに成果物が存在する場合、最後のコマンドは上書きを拒否する。解析の派生ファイルだけを再生成する場合：
 
 ```bash
-python -B workspace/03_1_gpt35_history_n30_joint/analysis/analyze.py --seed 42 --bootstrap 1000 --overwrite-derived
+uv run python -B workspace/03_1_gpt35_history_n30_joint/analysis/analyze.py --seed 42 --bootstrap 1000 --overwrite-derived
 ```
 
 `--overwrite-derived`は、この解析が生成するCSV・図・JSONのみを同じ名前で更新する。

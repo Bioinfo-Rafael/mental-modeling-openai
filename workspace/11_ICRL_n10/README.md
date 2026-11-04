@@ -17,12 +17,12 @@ rewardなしでもsystem内のreward function説明とICR-FQI内の `(s_t, a_t, 
 - **09_ablation_reward**: `runner.prompts.without_rewards`、`runner.execution.execute`（key入力、retry=0、timeout=180秒、journaling、resume）。
 - **共通**: `build_prompt_queries`、`JOINT_QUESTIONS`、`common.expected_api_request`（`reasoning_effort=medium`）、`execution_lock`。採点は10と同じ既存Pendulum Joint scorer/parser。
 
-リポジトリrootから実行（必要なら先に `.venv` を有効化）。
+リポジトリrootから `uv run` で実行。
 
 ```bash
-python workspace/11_ICRL_n10/run.py --dry-run
-python workspace/11_ICRL_n10/run.py
-python workspace/11_ICRL_n10/run.py --resume
+uv run python workspace/11_ICRL_n10/run.py --dry-run
+uv run python workspace/11_ICRL_n10/run.py
+uv run python workspace/11_ICRL_n10/run.py --resume
 ```
 
 dry-runはAPI clientを作成・送信せず、`results/dry_run/manifest.json`・`manifest.csv` と40件の `prompts/*__query00.txt` 等を保存する。manifest内の `request` は送信予定パラメータの辞書。変更された既存previewや既存API runの無指定上書きは拒否する。resumeは未試行queryのみ送信し、送信済み失敗queryは自動再送しない。
@@ -32,7 +32,7 @@ dry-runはAPI clientを作成・送信せず、`results/dry_run/manifest.json`�
 `analysis/per_query.csv` とrecordsにはground truth/prediction（continuous・bin）、absolute error、bin match (`status`)、回答、token数、時間、query identityを保持する。parse successは `analysis/per_query.csv` に保存。`pair_id` は同じmodel/ordinal/episode/windowのrewardあり・なしを結び、analysisにも保持する。10 windowsは同一episode内で重なっている。
 
 ```bash
-python -m pytest -q workspace/11_ICRL_n10/tests workspace/10_ICRL/tests/test_icrl.py workspace/09_ablation_reward/tests/test_ablation.py tests/test_joint_modern_experiments.py tests/test_raw_preprocessing.py
+uv run python -m pytest -q workspace/11_ICRL_n10/tests workspace/10_ICRL/tests/test_icrl.py workspace/09_ablation_reward/tests/test_ablation.py tests/test_joint_modern_experiments.py tests/test_raw_preprocessing.py
 ```
 
 実装確認はoffline unit/regression testsとdry-runのみ。テスト内のexecution/resume検証もmock clientを使用する。
@@ -44,5 +44,5 @@ python -m pytest -q workspace/11_ICRL_n10/tests workspace/10_ICRL/tests/test_icr
 生成前にmanifest・request/response/recordの一致と20 rewardペアのprompt差分を検証する。API送信は行わず、既存HTMLも上書きしない。再生成は別名を指定する。
 
 ```bash
-.venv/bin/python workspace/11_ICRL_n10/build_results_viewer.py --output workspace/11_ICRL_n10/view_rawdata_v2.html
+uv run python workspace/11_ICRL_n10/build_results_viewer.py --output workspace/11_ICRL_n10/view_rawdata_v2.html
 ```

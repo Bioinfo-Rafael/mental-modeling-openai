@@ -5,7 +5,7 @@
 API clientの構築やAPI requestは行わない。
 
 ```bash
-.venv/bin/python workspace/03_1_gpt35_history_n30_joint/smoke_test/run_smoke_test.py
+uv run python workspace/03_1_gpt35_history_n30_joint/smoke_test/run_smoke_test.py
 ```
 
 `prompts/`の8ファイルには、本番計画から生成され、runtime capture backendへ実際に渡されたsystem/user messageを保存する。metadataは別blockとして末尾に付けており、API messageには含まれない。

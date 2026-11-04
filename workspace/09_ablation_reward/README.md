@@ -8,17 +8,16 @@ Terra / Luna × H=5 / 20 × 履歴開始t=0 / 100 × 0-shot / 4-shot × reward�
 
 ## 実行
 
-リポジトリの `.venv` を使用する。コマンド実行後にAPIキーの入力を求める（入力文字は表示しない）。
+リポジトリrootから `uv run` で実行する。コマンド実行後にAPIキーの入力を求める（入力文字は表示しない）。
 環境変数の設定は不要。設定済みでも対話入力したキーを使用し、キーをファイルへ保存しない。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-.venv/bin/python workspace/09_ablation_reward/run.py --dry-run
-.venv/bin/python workspace/09_ablation_reward/run.py
+uv run python workspace/09_ablation_reward/run.py --dry-run
+uv run python workspace/09_ablation_reward/run.py
 ```
 
 **引数なしで96件を実行する（有料API送信）。** `--dry-run` は送信予定プロンプトだけを生成する。
-実験ディレクトリから `../../.venv/bin/python run.py` でも同じ条件・出力先になる。
+実験ディレクトリから `uv run python run.py` でも同じ条件・出力先になる。
 APIキーが空なら送信前に停止。`--dry-run` と送信不要の完了済み再開では入力を求めない。既存のAPI結果があれば引数なしでの再実行は拒否する。
 途中再開は `--resume`。成功済み・送信済みは再送せず、未送信のqueryだけを送る。
 保存済みresponseはオフラインで採点復元できる。エラー・結果不明queryはunresolvedとして残し、自動再送しない。
@@ -62,8 +61,8 @@ bin accuracyはbin解析成功件数、action MAEは連続action解析成功件�
 3反復は同一問題の繰り返しで、episode間の一般化性能や独立な3サンプルを意味しない。
 
 ```bash
-.venv/bin/python -m pytest workspace/09_ablation_reward/tests -q
-.venv/bin/python workspace/09_ablation_reward/analysis/summarize.py
+uv run python -m pytest workspace/09_ablation_reward/tests -q
+uv run python workspace/09_ablation_reward/analysis/summarize.py
 ```
 
 ### 作成に利用したプロンプト

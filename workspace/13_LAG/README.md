@@ -9,7 +9,7 @@ LAG 2v2 のACMIとaction CSVをDataFrameとして読み、型・shape・欠損�
 リポジトリルートから、次のコマンドで起動する（pandas、ffmpeg、ffprobeが必要）。
 
 ```sh
-.venv/bin/python workspace/13_LAG/viewer/serve.py
+uv run python workspace/13_LAG/viewer/serve.py
 ```
 
 起動するとブラウザで <http://127.0.0.1:8130/viewer/> が開く。自動で開かない場合は、このURLにアクセスする。終了はターミナルで `Ctrl+C`。初回起動時は録画から表示用フレームを生成する。
@@ -37,9 +37,9 @@ LAG 2v2 のACMIとaction CSVをDataFrameとして読み、型・shape・欠損�
 リポジトリルートから：
 
 ```sh
-.venv/bin/python workspace/13_LAG/run.py
-.venv/bin/python workspace/13_LAG/run.py --check
-.venv/bin/python -m pytest workspace/13_LAG/tests -q
+uv run python workspace/13_LAG/run.py
+uv run python workspace/13_LAG/run.py --check
+uv run python -m pytest workspace/13_LAG/tests -q
 ```
 
 [`lag_data/dataset.py`](lag_data/dataset.py)はpandasによる型付き読み込み・履歴時点選択・機体別レコード抽出を提供する。
@@ -66,13 +66,13 @@ LAG 2v2 のACMIとaction CSVをDataFrameとして読み、型・shape・欠損�
 
 ## 実行
 
-リポジトリルートから、既存のPython環境を使用する。
+リポジトリルートから `uv run` で実行する。
 
 ```sh
-.venv/bin/python -m jupyterlab workspace/13_LAG/data/viz/inspect_acmi.ipynb
+uv run python -m jupyterlab workspace/13_LAG/data/viz/inspect_acmi.ipynb
 ```
 
-依存関係がない環境では `python -m pip install -e '.[notebook]'` で導入する。
+依存関係（`notebook` extra）は `uv sync --all-extras`（または `uv sync --extra notebook`）で導入する。
 Notebookの`ACMI_FILE`を変更し、上から全セルを実行する。
 
 - `acmi`: 選択ファイルのpandas DataFrame。1行は1オブジェクトの更新。

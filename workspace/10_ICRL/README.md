@@ -50,13 +50,13 @@ data/llmx_data/offline_data/physics_data/runs/
 
 ## 実行と出力
 
-repo rootで既存 `.venv` をactivateした環境から実行する。
+repo rootから `uv run` で実行する（環境は `uv sync --all-extras`）。
 
 ```bash
-python workspace/10_ICRL/run.py --dry-run  # API client生成・送信なし
-python workspace/10_ICRL/run.py            # 本番: 72 requests（API keyを非表示入力）
-python workspace/10_ICRL/run.py --resume   # 未試行requestだけ再開
-python -m pytest workspace/10_ICRL/tests workspace/09_ablation_reward/tests -q
+uv run python workspace/10_ICRL/run.py --dry-run  # API client生成・送信なし
+uv run python workspace/10_ICRL/run.py            # 本番: 72 requests（API keyを非表示入力）
+uv run python workspace/10_ICRL/run.py --resume   # 未試行requestだけ再開
+uv run python -m pytest workspace/10_ICRL/tests workspace/09_ablation_reward/tests -q
 ```
 
 09と同じくSDK `max_retries=0`, timeout 180秒、request前のjournal、排他lockを使用する。送信開始済みの失敗・成否不明requestはresumeでも再送しない。保存済みresponseの未採点分はローカルで回収する。`results/api` があれば通常実行を拒否し、resumeは保存した計画・入力hashとの一致を要求する。異なるdry-run manifestも上書きせず拒否するため、再計画時は既存の `results/dry_run` を別の場所へ退避する。
