@@ -5,7 +5,9 @@ Per translation step: the clip as a base64 ``<video>``, a timeline with the tran
 ``[t-59, t]`` shaded and a marker at the translation instant (click to seek), and per aircraft the
 A and B translations (intent + evidence) side by side, highlighted once playback reaches the
 translation instant. A missing ``cues_<method>.jsonl`` shows "not run yet". Every text value is
-HTML-escaped; no cue text reaches JavaScript. Output: ``<output_root>/<run_id>/viewer.html``.
+HTML-escaped; no cue text reaches JavaScript. All page text comes from ``intent_compare_labels``
+(English, or Japanese when the config sets ``output_language: ja``).
+Output: ``<output_root>/<run_id>/viewer.html``.
 """
 
 from __future__ import annotations
@@ -19,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 from intent_compare_config import CLIPS_MANIFEST, DEFAULT_CONFIG, METHODS, REPO_ROOT, CompareConfig, load_config
+from intent_compare_labels import EN, LABELS, Labels
 
 HUMAN = "human"
 # Places a local copy of the workspace/17 human annotation would live; none exists today (the
@@ -27,8 +30,6 @@ HUMAN_ANNOTATION_CANDIDATES = (
     REPO_ROOT / "workspace" / "17_commentary_LAG" / "annotation" / "human_annotation.jsonl",
     REPO_ROOT / "private" / "intent_compare" / "human_annotation.jsonl",
 )
-NOT_RUN = "not run yet"
-NO_CUE = "no translation for this step"
 
 STYLE = """
 body{font-family:system-ui,sans-serif;margin:1.5rem;max-width:1400px;color:#222}
@@ -63,7 +64,7 @@ document.querySelectorAll('section.timing').forEach(function (sec) {
   function update() {
     var sim = c0 + video.currentTime;
     head.style.left = pct(Math.min(sim, c1));
-    clock.textContent = 'sim t = ' + sim.toFixed(1) + ' s (step ' + Math.round(sim / dt) + ')';
+    clock.textContent = '__CLOCK_PREFIX__' + sim.toFixed(1) + '__CLOCK_MID__' + Math.round(sim / dt) + '__CLOCK_SUFFIX__';
     var live = sim >= tr - dt / 2;
     cues.classList.toggle('live', live);
     cues.classList.toggle('now', Math.abs(sim - tr) < 1.0);
@@ -89,6 +90,19 @@ def esc(value: object) -> str:
     return html.escape(str(value), quote=True)
 
 
+def js_text(text: str) -> str:
+    """Static label text as the inside of a single-quoted JS string (ASCII-only, quote-safe)."""
+    return json.dumps(text)[1:-1].replace("'", "\\u0027").replace("<", "\\u003c")
+
+
+def script(labels: Labels) -> str:
+    return (
+        SCRIPT.replace("__CLOCK_PREFIX__", js_text(labels.clock_prefix))
+        .replace("__CLOCK_MID__", js_text(labels.clock_mid))
+        .replace("__CLOCK_SUFFIX__", js_text(labels.clock_suffix))
+    )
+
+
 def load_cues(path: Path | None, seed: int) -> dict[tuple[int, str], dict[str, Any]] | None:
     """(step, aircraft) -> cue for this seed; ``None`` when the file does not exist."""
     if path is None or not path.is_file():
@@ -106,37 +120,39 @@ def load_cues(path: Path | None, seed: int) -> dict[tuple[int, str], dict[str, A
     return cues
 
 
-def cue_cell(cues: dict[tuple[int, str], dict[str, Any]] | None, step: int, aircraft: str) -> str:
+def cue_cell(cues: dict[tuple[int, str], dict[str, Any]] | None, step: int, aircraft: str, labels: Labels = EN) -> str:
     if cues is None:
-        return f'<td class="missing">{esc(NOT_RUN)}</td>'
+        return f'<td class="missing">{esc(labels.not_run)}</td>'
     record = cues.get((step, aircraft))
     if record is None:
-        return f'<td class="missing">{esc(NO_CUE)}</td>'
+        return f'<td class="missing">{esc(labels.no_cue)}</td>'
     if record.get("skipped"):
-        return f'<td class="missing">skipped: {esc(record["skipped"])}</td>'
+        return f'<td class="missing">{esc(labels.skipped.format(reason=record["skipped"]))}</td>'
     evidence = record.get("evidence") or []
     items = "".join(f"<li>{esc(item)}</li>" for item in evidence)
     meta = f"{record.get('model', '?')} / {record.get('reasoning_effort', '?')} / {record.get('source_run', '?')}"
     return f'<td><p>{esc(record.get("intent", ""))}</p><ul>{items}</ul><p class="note">{esc(meta)}</p></td>'
 
 
-def cue_table(config: CompareConfig, step: int, columns: dict[str, Any]) -> str:
-    head = "".join(f"<th>{esc(name)}</th>" for name in columns)
+def cue_table(config: CompareConfig, step: int, columns: dict[str, Any], labels: Labels = EN) -> str:
+    head = "".join(f"<th>{esc(labels.column_name(name))}</th>" for name in columns)
     rows = "".join(
-        f"<tr><th>{esc(aircraft)}</th>{''.join(cue_cell(c, step, aircraft) for c in columns.values())}</tr>"
+        f"<tr><th>{esc(aircraft)}</th>{''.join(cue_cell(c, step, aircraft, labels) for c in columns.values())}</tr>"
         for aircraft in config.targets
     )
-    return f'<table class="cues"><tr><th>aircraft</th>{head}</tr>{rows}</table>'
+    return f'<table class="cues"><tr><th>{esc(labels.aircraft_column)}</th>{head}</tr>{rows}</table>'
 
 
-def video_tag(clips_dir: Path, clip: dict[str, Any] | None) -> str:
+def video_tag(clips_dir: Path, clip: dict[str, Any] | None, labels: Labels = EN) -> str:
     if clip is None:
-        return '<p class="missing">clip missing (run scripts/intent_compare_video.sbatch)</p>'
+        return f'<p class="missing">{esc(labels.clip_missing)}</p>'
     data = base64.b64encode((clips_dir / clip["file"]).read_bytes()).decode("ascii")
     return f'<video controls preload="metadata" src="data:video/mp4;base64,{data}"></video>'
 
 
-def section(config: CompareConfig, step: int, clip: dict[str, Any] | None, columns: dict[str, Any]) -> str:
+def section(
+    config: CompareConfig, step: int, clip: dict[str, Any] | None, columns: dict[str, Any], labels: Labels = EN
+) -> str:
     t_s = config.t_s(step)
     window_start = config.window_start(step)
     start_s = clip["clip_start_s"] if clip else 0.0
@@ -149,65 +165,66 @@ def section(config: CompareConfig, step: int, clip: dict[str, Any] | None, colum
         "data-step-seconds": config.step_seconds,
     }
     attr_text = " ".join(f'{name}="{esc(value)}"' for name, value in attrs.items())
-    title = (
-        f"Step {step} (t = {t_s} s); translation window steps {window_start}-{step} "
-        f"({config.t_s(window_start)}-{t_s} s); clip {start_s}-{end_s} s"
+    title = labels.section_title.format(
+        step=step,
+        t_s=t_s,
+        win_a=window_start,
+        win_start_s=config.t_s(window_start),
+        clip_start=start_s,
+        clip_end=end_s,
     )
     return (
         f'<section class="timing" {attr_text}><h2>{esc(title)}</h2><div class="layout"><div>'
-        f"{video_tag(config.clips_dir, clip)}"
-        '<div class="timeline" title="click to seek"><div class="window"></div><div class="marker"></div>'
-        '<div class="playhead"></div></div><div class="clock"></div>'
-        f'<button class="seek">Seek to translation instant (t = {esc(t_s)} s)</button>'
-        '<p class="note">Blue: translation window (the input both methods see). Red: translation instant. '
-        "Text is dimmed before the instant (online translation).</p>"
-        f"</div><div>{cue_table(config, step, columns)}</div></div></section>"
+        f"{video_tag(config.clips_dir, clip, labels)}"
+        f'<div class="timeline" title="{esc(labels.timeline_title)}"><div class="window"></div>'
+        '<div class="marker"></div><div class="playhead"></div></div><div class="clock"></div>'
+        f'<button class="seek">{esc(labels.seek_button.format(t_s=t_s))}</button>'
+        f'<p class="note">{esc(labels.legend)}</p>'
+        f"</div><div>{cue_table(config, step, columns, labels)}</div></div></section>"
     )
 
 
-def header(config: CompareConfig, sources: dict[str, str], annotation_note: str) -> str:
+def header(config: CompareConfig, sources: dict[str, str], annotation_note: str, labels: Labels = EN) -> str:
     rows = [
-        f"seed {config.seed}; steps {list(config.steps)}; targets {list(config.targets)}",
-        f"model {config.model}; reasoning_effort {config.reasoning_effort}; window {config.window_steps} steps",
-        f"instruction (identical for A and B): {config.instruction}",
-        *(f"cues {method}: {source}" for method, source in sources.items()),
+        labels.header_seed.format(seed=config.seed, steps=list(config.steps), targets=list(config.targets)),
+        labels.header_model.format(model=config.model, effort=config.reasoning_effort, window=config.window_steps),
+        labels.header_instruction.format(instruction=config.instruction),
+        *(labels.header_cues.format(method=method, source=source) for method, source in sources.items()),
         annotation_note,
-        "Note: this rollout drifts numerically from the 13_LAG episode mhi_v1.3_ic100601_win used for the "
-        "workspace/17 human annotation (same initial condition and launches; positions diverge later).",
+        labels.drift_note,
     ]
     body = "".join(f"<p>{esc(row)}</p>" for row in rows)
-    return f"<header><h1>Intent translation comparison: method A vs method B</h1>{body}</header>"
+    return f"<header><h1>{esc(labels.heading)}</h1>{body}</header>"
 
 
-def human_annotation(explicit: Path | None) -> tuple[Path | None, str]:
+def human_annotation(explicit: Path | None, labels: Labels = EN) -> tuple[Path | None, str]:
     if explicit is not None:
-        return explicit, f"human annotation: {explicit}"
+        return explicit, labels.annotation_given.format(path=explicit)
     for candidate in HUMAN_ANNOTATION_CANDIDATES:
         if candidate.is_file():
-            return candidate, f"human annotation: {candidate.relative_to(REPO_ROOT)}"
-    return None, (
-        "human annotation (workspace/17): no local copy in this repository (only a Google Sheet link in "
-        "workspace/17_commentary_LAG/README.md, not fetched); column omitted."
-    )
+            return candidate, labels.annotation_given.format(path=candidate.relative_to(REPO_ROOT))
+    return None, labels.annotation_absent
 
 
 def build_html(config: CompareConfig, run_id: str, overrides: dict[str, Path | None], annotation: Path | None) -> str:
+    labels = LABELS[config.output_language]
     manifest_path = config.clips_dir / CLIPS_MANIFEST
     clips = json.loads(manifest_path.read_text(encoding="utf-8"))["clips"] if manifest_path.is_file() else []
     clip_by_step = {clip["step"]: clip for clip in clips}
     paths = {m: overrides.get(m) or config.cues_path(run_id, m) for m in METHODS}
     columns: dict[str, Any] = {m: load_cues(paths[m], config.seed) for m in METHODS}
-    sources = {m: f"{paths[m]}" + ("" if columns[m] is not None else f" ({NOT_RUN})") for m in METHODS}
-    human_path, annotation_note = human_annotation(annotation)
+    sources = {m: f"{paths[m]}" + ("" if columns[m] is not None else labels.not_run_suffix) for m in METHODS}
+    human_path, annotation_note = human_annotation(annotation, labels)
     if human_path is not None:
         columns = {**columns, HUMAN: load_cues(human_path, config.seed)}
-    body = "".join(section(config, step, clip_by_step.get(step), columns) for step in config.steps)
+    body = "".join(section(config, step, clip_by_step.get(step), columns, labels) for step in config.steps)
     csp = "default-src 'none'; media-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'"
+    title = labels.page_title.format(seed=config.seed, run_id=run_id)
     return (
-        '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
+        f'<!DOCTYPE html><html lang="{esc(labels.html_lang)}"><head><meta charset="utf-8">'
         f'<meta http-equiv="Content-Security-Policy" content="{csp}">'
-        f"<title>{esc(f'Intent comparison seed {config.seed} ({run_id})')}</title><style>{STYLE}</style></head>"
-        f"<body>{header(config, sources, annotation_note)}{body}<script>{SCRIPT}</script></body></html>\n"
+        f"<title>{esc(title)}</title><style>{STYLE}</style></head>"
+        f"<body>{header(config, sources, annotation_note, labels)}{body}<script>{script(labels)}</script></body></html>\n"
     )
 
 

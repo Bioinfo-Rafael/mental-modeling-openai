@@ -2,7 +2,9 @@
 
 The final answer has the Translator's output schema (method A, ``translator/translation.py``):
 exactly the keys ``intent`` (non-blank string, at most ``MAX_INTENT_CHARS`` characters) and
-``evidence`` (non-empty list of non-blank strings), no duplicate keys, valid UTF-8.
+``evidence`` (non-empty list of non-blank strings), no duplicate keys, valid UTF-8. The optional
+``AnswerLimits`` (from the compare config) tighten the intent length and cap the number and the
+length of the evidence items; all lengths are counted in characters, not bytes.
 
 A reply without a ```python block and without any ```json block is a protocol error (the model is
 told what is missing and may retry). A reply that DOES carry a ```json block is the final answer
@@ -27,6 +29,42 @@ from weightreading.protocol import (
 
 MAX_INTENT_CHARS = 1000
 OUTPUT_KEYS = frozenset({"intent", "evidence"})
+
+
+@dataclass(frozen=True)
+class AnswerLimits:
+    """Length limits of a final answer; ``None`` means unlimited (the default keeps today's rules)."""
+
+    max_intent_chars: int = MAX_INTENT_CHARS
+    max_evidence_items: int | None = None
+    max_evidence_chars: int | None = None
+
+
+DEFAULT_LIMITS = AnswerLimits()
+
+
+def _evidence_limit_text(limits: AnswerLimits) -> str:
+    items, chars = limits.max_evidence_items, limits.max_evidence_chars
+    if items is not None and chars is not None:
+        return f"at most {items} evidence items, each at most {chars} characters"
+    if items is not None:
+        return f"at most {items} evidence items"
+    if chars is not None:
+        return f"each evidence item at most {chars} characters"
+    return ""
+
+
+def limits_sentence(limits: AnswerLimits) -> str:
+    """The one prompt sentence that states the limits; ``""`` when they equal the defaults.
+
+    Single source of the wording: method B puts it into its final-answer section and method A appends
+    it to the Translator's instructions, so the two prompts cannot drift apart.
+    """
+    if limits == DEFAULT_LIMITS:
+        return ""
+    parts = [f"intent at most {limits.max_intent_chars} characters", _evidence_limit_text(limits)]
+    stated = "; ".join(part for part in parts if part)
+    return f"Length limits (counted in characters, not bytes; a longer answer is rejected): {stated}."
 
 
 class IntentAnswerError(ValueError):
@@ -54,24 +92,39 @@ def _is_utf8(text: str) -> bool:
     return True
 
 
-def _payload_problem(payload: object) -> str | None:
+def _evidence_length_problem(evidence: list, limits: AnswerLimits) -> str | None:
+    if limits.max_evidence_items is not None and len(evidence) > limits.max_evidence_items:
+        return f'"evidence" has {len(evidence)} items; the limit is {limits.max_evidence_items}'
+    if limits.max_evidence_chars is None:
+        return None
+    too_long = [len(item) for item in evidence if len(item) > limits.max_evidence_chars]
+    if too_long:
+        return f'an "evidence" item has {max(too_long)} characters; the limit is {limits.max_evidence_chars}'
+    return None
+
+
+def payload_problem(payload: object, limits: AnswerLimits) -> str | None:
+    """What is wrong with a parsed final-answer object (None = valid); shared by methods A and B."""
     if not isinstance(payload, dict) or set(payload) != OUTPUT_KEYS:
         return f"the ```json block must be an object with exactly the keys {sorted(OUTPUT_KEYS)}"
     intent, evidence = payload["intent"], payload["evidence"]
     if not isinstance(intent, str) or not intent.strip():
         return '"intent" must be a non-blank string'
-    if len(intent) > MAX_INTENT_CHARS:
-        return f'"intent" has {len(intent)} characters; the limit is {MAX_INTENT_CHARS}'
+    if len(intent) > limits.max_intent_chars:
+        return f'"intent" has {len(intent)} characters; the limit is {limits.max_intent_chars}'
     if not isinstance(evidence, list) or not evidence:
         return '"evidence" must be a non-empty list of strings'
     if not all(isinstance(item, str) and item.strip() for item in evidence):
         return 'every "evidence" item must be a non-blank string'
+    length_problem = _evidence_length_problem(evidence, limits)
+    if length_problem:
+        return length_problem
     if not all(_is_utf8(text) for text in (intent, *evidence)):
         return "the answer contains text that is not valid UTF-8 (lone surrogate)"
     return None
 
 
-def answer_problems(text: str) -> tuple[str, ...]:
+def answer_problems(text: str, limits: AnswerLimits = DEFAULT_LIMITS) -> tuple[str, ...]:
     """What is wrong with ``text`` as a final answer (empty = well-formed)."""
     blocks = JSON_BLOCK_RE.findall(text)
     if len(blocks) != 1:
@@ -82,13 +135,13 @@ def answer_problems(text: str) -> tuple[str, ...]:
         return ("the ```json block is not valid JSON",)
     except IntentAnswerError as exc:
         return (str(exc),)
-    problem = _payload_problem(payload)
+    problem = payload_problem(payload, limits)
     return (problem,) if problem else ()
 
 
-def parse_answer(text: str) -> IntentAnswer:
+def parse_answer(text: str, limits: AnswerLimits = DEFAULT_LIMITS) -> IntentAnswer:
     """The validated intent object of a final answer; raises ``IntentAnswerError`` otherwise."""
-    problems = answer_problems(text)
+    problems = answer_problems(text, limits)
     if problems:
         raise IntentAnswerError("; ".join(problems))
     payload = json.loads(JSON_BLOCK_RE.findall(text)[0])

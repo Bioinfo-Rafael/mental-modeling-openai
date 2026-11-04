@@ -5,7 +5,8 @@
 # 1. replay the configured seed with ACMI on (mtd-rl-lag interpreter, output under the gitignored
 #    $LAG_ROOT/LOCAL_ONLY/) and assert bitwise equality of every aircraft field vs the npz;
 # 2. run mtd-rl-lag's unmodified evaluate_mhi_team.py --acmi and require a byte-identical ACMI;
-# 3. copy the ACMI + reports to outputs/intent_compare/episode/seed<seed>/;
+# 3. copy the ACMI + reports to outputs/intent_compare/episode/seed<seed>/ and convert npz + ACMI
+#    to the 13_LAG episode CSV (Translator input);
 # 4. render the full episode with mtd-rl-lag scripts/render/acmi_to_mp4.py (imageio-ffmpeg binary
 #    shimmed onto PATH) and trim one clip per translation step.
 # Paths must be on the shared filesystem: compute nodes do not see the login node's /tmp.
@@ -49,6 +50,7 @@ echo "evaluate_mhi_team.py --acmi is byte-identical to the checked replay: ${SEC
 cp "$WORK/replay.txt.acmi" "$EPISODE_DIR/replay.txt.acmi"
 cp "$WORK/replay_check.json" "$EPISODE_DIR/replay_check.json"
 cp "$WORK/evaluate/evaluation.json" "$EPISODE_DIR/lag_evaluation.json"
+"$UV" run --no-sync python scripts/intent_compare_convert.py --config "$CONFIG"
 
 FF="$("$UV" run --offline --isolated --no-project --python 3.12 --with imageio-ffmpeg \
   python -c "import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())")"

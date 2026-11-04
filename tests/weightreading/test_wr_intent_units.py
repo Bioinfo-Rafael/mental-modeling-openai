@@ -16,6 +16,7 @@ from weightreading.intent_cues import CueContext, CueWriter, skipped_cue, transl
 from weightreading.intent_prompt import IntentRequest, PreviousTranslation, intent_message
 from weightreading.intent_protocol import (
     MAX_INTENT_CHARS,
+    AnswerLimits,
     IntentAnswer,
     IntentAnswerError,
     parse_answer,
@@ -128,11 +129,18 @@ def _zero_tensors(spec) -> tuple[Tensor, ...]:
     return tuple(Tensor(key, "float32", shape, bytes(4 * int(np.prod(shape)))) for key, shape in shapes.items())
 
 
-def _mappo_message(previous: PreviousTranslation | None, spec: Spec | None = None) -> str:
+def _mappo_message(
+    previous: PreviousTranslation | None,
+    spec: Spec | None = None,
+    language: str | None = None,
+    limits: AnswerLimits | None = None,
+) -> str:
     spec = spec or load_spec(MAPPO_SPEC)
     tensors = _zero_tensors(spec)
     policy = build_policy(spec, tensors)
-    request = IntentRequest("A0100", 145, 29.0, (86, 145), 0.2, "No operator instruction.", previous)
+    extra = {} if language is None else {"output_language": language}
+    extra = extra if limits is None else {**extra, "limits": limits}
+    request = IntentRequest("A0100", 145, 29.0, (86, 145), 0.2, "No operator instruction.", previous, **extra)
     return intent_message(spec, tensors, activation_docs(policy), request, LIMITS)
 
 
@@ -160,6 +168,22 @@ def test_intent_message_has_no_world_trajectory_and_chains_previous() -> None:
     assert "From step 45:" in message and "Climb and close on B0100." in message
     for world in ("lon_deg", "lat_deg", "geodetic", "position_neu", "velocity_neu", "missiles_left"):
         assert world not in message
+
+
+def test_intent_message_asks_for_japanese_only_when_requested() -> None:
+    english = _mappo_message(None)
+    explicit_en = _mappo_message(None, language="en")
+    japanese = _mappo_message(None, language="ja")
+
+    assert english == explicit_en and "Write both fields in English." in english and "Japanese" not in english
+    assert "Write both fields in natural Japanese" in japanese and "English" not in japanese.split("# Final answer")[1]
+    assert japanese.split("# Final answer")[0] == english.split("# Final answer")[0]  # rest of the prompt unchanged
+    assert f"at most {MAX_INTENT_CHARS} characters" in japanese  # characters, not bytes
+
+
+def test_intent_message_with_unknown_language_raises() -> None:
+    with pytest.raises(ValueError, match="output_language"):
+        _mappo_message(None, language="fr")
 
 
 # --- protocol ----------------------------------------------------------------------------------
@@ -193,6 +217,13 @@ def test_parse_answer_rejects_schema_violations_without_a_retry(payload: object)
     assert parse_intent_reply(text).kind == KIND_FINAL  # a json attempt ends the session, as in method A
     with pytest.raises(IntentAnswerError):
         parse_answer(text)
+
+
+def test_parse_answer_counts_japanese_characters_not_bytes() -> None:
+    at_limit = _answer_text({"intent": "あ" * MAX_INTENT_CHARS, "evidence": ["根拠"]})
+    assert parse_answer(at_limit).intent == "あ" * MAX_INTENT_CHARS  # 3000 UTF-8 bytes, 1000 characters
+    with pytest.raises(IntentAnswerError):
+        parse_answer(_answer_text({"intent": "あ" * (MAX_INTENT_CHARS + 1), "evidence": ["根拠"]}))
 
 
 def test_parse_answer_accepts_the_length_limit_and_rejects_two_blocks_duplicates_surrogates() -> None:
@@ -255,6 +286,20 @@ def test_parse_compare_sorts_steps_and_ignores_unused_keys(tmp_path: Path) -> No
 def test_parse_compare_rejects_bad_values(tmp_path: Path, key: str, value: object) -> None:
     with pytest.raises(ConfigError):
         parse_compare({**_compare_raw(), key: value}, tmp_path / "c.yaml", "sha", tmp_path)
+
+
+def test_parse_compare_output_language_defaults_to_en_and_accepts_ja(tmp_path: Path) -> None:
+    parse = lambda raw: parse_compare(raw, tmp_path / "c.yaml", "sha", tmp_path)  # noqa: E731
+
+    assert parse(_compare_raw()).output_language == "en"
+    assert parse({**_compare_raw(), "output_language": "en"}).output_language == "en"
+    assert parse({**_compare_raw(), "output_language": "ja"}).output_language == "ja"
+
+
+@pytest.mark.parametrize("language", ["fr", "", "JA", None, 1])
+def test_parse_compare_rejects_unknown_output_language(tmp_path: Path, language: object) -> None:
+    with pytest.raises(ConfigError, match="output_language"):
+        parse_compare({**_compare_raw(), "output_language": language}, tmp_path / "c.yaml", "sha", tmp_path)
 
 
 @pytest.mark.parametrize("run_id", ["", "../x", "a/b", ".hidden", "a..b"])

@@ -5,11 +5,18 @@
 #   mkdir -p outputs/intent_compare/slurm
 #   sbatch scripts/intent_compare_run_b.sbatch                                         # preview
 #   INTENT_COMPARE_CONFIRM_PAID=yes RUN_ID=seed100601 sbatch --export=ALL scripts/intent_compare_run_b.sbatch
+# Japanese output (new run id; the English run stays intact):
+#   INTENT_COMPARE_CONFIRM_PAID=yes RUN_ID=seed100601-ja COMPARE=configs/intent_compare/compare.ja.yaml \
+#     sbatch --export=ALL scripts/intent_compare_run_b.sbatch
+# Short Japanese answers (intent <= 200, <= 4 evidence items of <= 80 characters; new run id):
+#   INTENT_COMPARE_CONFIRM_PAID=yes RUN_ID=seed100601-ja-short COMPARE=configs/intent_compare/compare.ja-short.yaml \
+#     sbatch --export=ALL scripts/intent_compare_run_b.sbatch
 # OPENAI_API_KEY must already be in the submitting environment (read only after the sandbox
 # preflight passed); this script never reads or sources a .env file.
 # Optional: RUN_ID (default seed<seed>), RESUME=yes (continue an interrupted paid run with the same
-# RUN_ID), COMPARE, CONFIG, UV. Sessions run sequentially; the sandbox has no cgroup limits, so keep
-# paid runs inside a Slurm job.
+# RUN_ID), COMPARE (the shared compare config, same name as in intent_compare_run_a.sbatch), CONFIG
+# (method B's OWN config, configs/weightreading/intent_b.yaml; NOT the compare config), UV.
+# Sessions run sequentially; the sandbox has no cgroup limits, so keep paid runs inside a Slurm job.
 #SBATCH -p 151-partition
 #SBATCH -n 1
 #SBATCH --job-name=ic-run-b
@@ -19,6 +26,9 @@ cd "${SLURM_SUBMIT_DIR:-.}"
 UV="${UV:-$HOME/.local/bin/uv}"
 COMPARE="${COMPARE:-configs/intent_compare/compare.yaml}"
 CONFIG="${CONFIG:-configs/weightreading/intent_b.yaml}"
+case "$CONFIG" in
+  *intent_compare/*) echo "CONFIG is method B's own config; pass the compare config as COMPARE=$CONFIG" >&2; exit 2 ;;
+esac
 ARGS=(--compare "$COMPARE" --config "$CONFIG")
 
 "$UV" run --no-sync python -m weightreading sandbox-selftest --config "$CONFIG"
