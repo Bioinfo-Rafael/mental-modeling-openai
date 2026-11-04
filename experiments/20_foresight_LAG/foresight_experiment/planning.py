@@ -6,8 +6,13 @@ from .common import HERE, ROOT, ex, batch, prompt_tools, lag
 from .dataset import build_samples
 
 
-def prompt_spec():
-    folder = HERE / 'prompts/foresight_short_v1'
+VARIANTS = ('foresight_short_v1', 'targets_v1')
+
+
+def prompt_spec(variant='foresight_short_v1'):
+    if variant not in VARIANTS:
+        raise ValueError(f'Unknown prompt variant: {variant}')
+    folder = HERE / 'prompts' / variant
     comparison = ex.read_json(folder / 'changes/provenance.json')
     comparison.update(baseline_templates={}, diffs={})
     templates = {}
@@ -20,7 +25,7 @@ def prompt_spec():
             raise ValueError(f'Proposal {role} hash differs; version the prompt and provenance')
         diff = ''.join(difflib.unified_diff(
             baseline.splitlines(True), current.splitlines(True),
-            fromfile=f'tactical_short_batch_v2/{role}.txt', tofile=f'foresight_short_v1/{role}.txt'))
+            fromfile=f"{comparison['source_run']}/{role}.txt", tofile=f'{variant}/{role}.txt'))
         if diff != (folder / f'changes/{role}.diff').read_text():
             raise ValueError(f'Stale {role} diff')
         templates[role] = dict(content=current, sha256=prompt_tools.text_sha256(current),
@@ -28,10 +33,12 @@ def prompt_spec():
         comparison['baseline_templates'][role] = baseline
         comparison['diffs'][role] = diff
     comparison['change_notes'] = (folder / 'changes/README.md').read_text()
-    return dict(version='foresight-short-v1', variant='foresight_short_v1', templates=templates,
+    return dict(version=variant.replace('_', '-'), variant=variant, templates=templates,
                 output_format='aircraft_intentions_json', comparison=comparison,
                 description='固定30遷移の目的と動きのみ。n=30は後続情報込みの参照回答。',
-                length=dict(max_words=55, target_sentences=[1, 1], max_sentences=1))
+                length=dict(max_words=80 if variant == 'targets_v1' else 55,
+                            target_sentences=[1, 2] if variant == 'targets_v1' else [1, 1],
+                            max_sentences=2 if variant == 'targets_v1' else 1))
 
 
 def messages(window, spec):
@@ -42,7 +49,7 @@ def messages(window, spec):
             dict(role='user', content=spec['templates']['user']['content'].format(**fields, window_data=data))]
 
 
-def make_plan():
+def make_plan(variant='foresight_short_v1'):
     config = ex.read_json(HERE / 'configs/cutoff_sweep_v1.json')
     annotations = ex.read_json(HERE / 'data/annotations_v1.json')
     if (config['history_before'], config['horizon'], config['repeats'], config['offsets']) != (30, 30, 1, [-1, 1, 30]):
@@ -54,7 +61,8 @@ def make_plan():
     ids = [e['id'] for e in annotations['events']]
     if len(ids) != len(set(ids)):
         raise ValueError('Duplicate annotation ID')
-    spec = prompt_spec()
+    spec = prompt_spec(variant)
+    config['prompt_version'] = variant
     if config['models'] != spec['comparison']['models'] or config['request_options'] != spec['comparison']['request_options']:
         raise ValueError('v1 retains the saved v2 models and request options')
     csv = lag.PROCESSED / f"{config['episode_id']}.csv"

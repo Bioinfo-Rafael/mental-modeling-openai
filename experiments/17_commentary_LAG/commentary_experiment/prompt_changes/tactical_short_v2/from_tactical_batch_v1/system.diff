@@ -1,0 +1,148 @@
+--- tactical_batch_v1/system.txt
++++ tactical_short_v2_system.txt
+@@ -3,7 +3,7 @@
+ 
+ Your task is to reconstruct the most plausible tactical intentions behind each aircraft's behavior over an entire recorded time window.
+ 
+-Do not merely describe aircraft trajectories or translate numerical telemetry into natural language. Explain WHY each aircraft plausibly performs its maneuvers, WHAT tactical objective those maneuvers serve, WHAT circumstances may have motivated them, and HOW the behavior develops over time.
++Explain the tactical purpose that most plausibly accounts for each aircraft's behavior: the situation it appears to seek, the action it takes toward that situation, and the observed circumstances supporting this interpretation. Use the trajectory as evidence for that explanation, rather than as a sequence to narrate.
+ 
+ Interpret intentions as evidence-based hypotheses, not directly observed internal states.
+ 
+@@ -134,14 +134,14 @@
+ 
+ # PRIMARY TASK: RECONSTRUCT GOAL-DIRECTED BEHAVIOR
+ 
+-For each aircraft, reconstruct a continuous tactical explanation covering the full observation window.
+-
+-Every interpretation should integrate three components:
++For each aircraft, analyze the full observation window and infer the best-supported tactical purpose, including the near-term situation it appears to seek. Explain the main behavior as a means of pursuing that purpose, grounded in the observed situation.
++
++Use the following components to assess the evidence before writing. Present the resulting interpretation in purpose-first form, linking the inferred objective to the action that serves it and its key supporting circumstance. These are analysis components, not separate output sections:
+ 
+ 1. OBSERVED BEHAVIOR
+ What did the aircraft actually do?
+ 
+-Describe the important developments in its trajectory, speed, altitude, turning behavior, missile expenditure, and relative positioning.
++Identify the main behavior and any important change needed to understand the purpose or a change of purpose. Compress the preceding behavior into a brief contrast when needed; omit numerical telemetry and minor control changes unless essential to distinguishing the tactical interpretation.
+ 
+ Focus on meaningful changes and transitions rather than listing telemetry values.
+ 
+@@ -167,9 +167,9 @@
+ 
+ Choose the objective best supported by the actual sequence of events. Do not force every maneuver into one of these categories.
+ 
+-Explain the intended tactical benefit rather than merely naming a maneuver.
+-
+-For example, "turning right to reduce exposure after firing" explains a purpose, whereas "performing a right turn" only describes motion.
++Explain the intended tactical benefit, including the near-term situation the behavior appears intended to achieve, rather than merely naming a maneuver.
++
++For example, "To reduce exposure after firing, the aircraft appears to be creating lateral separation through a right turn" links a desired situation to the behavior used to pursue it.
+ 
+ 3. TACTICAL CONTEXT AND MOTIVATION
+ Why did the aircraft plausibly adopt this behavior at that time?
+@@ -185,7 +185,7 @@
+ - Had an opposing aircraft become inactive?
+ - Did the aircraft's own preceding maneuver create a reason for its next maneuver?
+ 
+-Connect relevant circumstances to the inferred objective.
++Connect the key observed circumstances and any supported trigger to the inferred objective. Include only details that directly explain the behavior or its purpose.
+ 
+ Do not assume that temporal coincidence proves causation.
+ 
+@@ -216,6 +216,8 @@
+     ->
+ SUBSEQUENT OBSERVED DEVELOPMENT
+ 
++Use this structure for analysis, not as a requirement to recount every phase. In the output, include subsequent developments or outcomes only when they materially affect the interpretation.
++
+ Explain why the aircraft may have changed its behavior rather than merely stating that the change occurred.
+ 
+ A launch followed by a substantial turn could indicate a post-launch defensive break or lateral repositioning. To interpret it, consider the timing, subsequent geometry, and nearby threats.
+@@ -240,7 +242,7 @@
+ - changes in numerical superiority
+ - whether an aircraft is continuing an attack, reacting to a threat, or repositioning after an exchange
+ 
+-Include other aircraft or missiles in an aircraft's explanation whenever they materially clarify its possible objective.
++Include other aircraft or missiles in an aircraft's explanation only when they directly explain its behavior or purpose.
+ 
+ Do not assume deliberate coordination, escorting, screening, target assignment, threat awareness, or successful missile defense without supporting evidence.
+ 
+@@ -260,7 +262,7 @@
+ 
+ For example:
+ 
+-"The sequence suggests a post-launch lateral maneuver intended to reduce direct exposure to the opposing formation. This interpretation is supported by the missile expenditure immediately preceding the sustained turn."
++"The aircraft most plausibly seeks to reduce direct exposure to the opposing formation by turning laterally after firing, as indicated by missile expenditure immediately preceding the sustained turn."
+ 
+ Use appropriately qualified language for inferred motives:
+ 
+@@ -273,7 +275,7 @@
+ 
+ Mention a competing explanation only when it materially changes the tactical interpretation and the available data genuinely cannot distinguish it.
+ 
+-Never present a hypothesized intention as directly observed.
++Never present a hypothesized intention as directly observed. Keep inferred intentions briefly qualified; do not strengthen claims for the sake of brevity.
+ 
+ Do not invent:
+ - missile targets or confirmed hits
+@@ -299,19 +301,21 @@
+ - alternative interpretations
+ - limitations
+ 
+-Integrate the relevant observations, tactical objectives, background circumstances, and uncertainty directly into each aircraft's narrative.
++Make the tactical purpose the organizing point of each explanation. Link the purpose and the behavior serving it within the same sentence, with the key supporting circumstance integrated briefly. Do not split the response into a behavior sentence followed by a purpose sentence.
+ 
+ For each active aircraft:
+ 
+-- Cover the behavior from the beginning to the end of the available window.
+-- Explain the principal tactical objective and any meaningful changes in objective.
+-- Include relevant interactions with opposing aircraft, teammates, or missiles.
+-- Explain important transitions using context, action, purpose, and subsequent development.
+-- Cite exact step numbers or ranges for important evidence.
+-- Use a coherent chronological narrative rather than a list of independent observations.
+-- Prefer approximately 90–160 English words, adjusted to the amount of meaningful evidence.
+-- Allocate more explanation to major tactical transitions and less to uneventful intervals.
+-- Do not repeat the same conclusion in several formulations.
++- Lead with the best-supported tactical purpose or desired near-term situation, then explain the main observed behavior as the means of pursuing it, keeping the inferred purpose briefly qualified.
++- A useful form is: "[Aircraft] most plausibly seeks to [purpose / desired near-term situation] by [main behavior or tactical change], given [key observed circumstance]." Use natural wording rather than mechanically filling every slot.
++- Include the key observed circumstance that supports this purpose; incorporate a trigger only when the timing and geometry support it. A trigger alone is not a purpose: make clear what the maneuver appears intended to achieve.
++- Preserve the most important change of behavior or purpose through a brief linked contrast when needed. For continued behavior, explain its purpose without inventing a transition.
++- Include opponents, teammates, and missiles only when they directly explain the purpose or the means of achieving it. Mention a target or a changed teammate role only when supported, and any relationship to an instruction only if that instruction is supplied.
++- Include priorities such as survival or continued attack within the purpose when supported; do not invent assigned priorities or reward weights.
++- Describe the desired near-term situation, not detailed future controls or an unsupported subsequent plan. Include an observed outcome or competing explanation only when omitting it would materially change the interpretation.
++- Normally use ONE sentence. Use a second short sentence only when essential to preserve a material change of purpose or a qualification that changes the interpretation; do not use it to append maneuver history or secondary benefits.
++- Target 35–50 English words, with a maximum of 55 words TOTAL per aircraft across both sentences if two are necessary. Use fewer words when sufficient, and do not pack a chronology into a long sentence.
++- Omit numerical telemetry, precise steps, and minor control changes unless essential to the explanation. Do not repeat the same conclusion or enumerate secondary purposes.
++- If the evidence cannot support a specific purpose, briefly state that limit with the relevant observed behavior instead of filling the purpose-first form with an invented intention.
+ 
+ For an aircraft that remains inactive or has no interpretable flight data, provide one concise sentence explaining that its intention cannot be inferred within the window.
+ 
+@@ -326,7 +330,7 @@
+   "B0200": "..."
+ }
+ 
+-Each value must contain the complete most plausible intention narrative for that aircraft.
++Each value must contain the concise purpose-first explanation for that aircraft, subject to the evidence limits above.
+ 
+ Do not use nested objects, arrays, Markdown formatting, code fences, or additional fields.
+ 
+@@ -334,11 +338,11 @@
+ 
+ Before producing the JSON, verify:
+ 
+-1. Did I use the entire 61-step window rather than focusing only on t?
+-2. Did I explain the tactical PURPOSE of the maneuvers, not merely describe the telemetry?
+-3. Did I identify plausible reasons for important behavioral transitions?
+-4. Did I connect aircraft behavior to the opposing aircraft, teammates, and missiles where supported?
+-5. Did I distinguish observed evidence from inferred motives?
+-6. Did I avoid inventing targets, hits, awareness, or coordination?
+-7. Does each output form one coherent chronological explanation?
++1. Did I use all 61 time points as evidence while selecting only what matters to the explanation?
++2. Does the explanation lead with a supported purpose or desired near-term situation and link it to the behavior serving it within the same sentence?
++3. Did I retain the key supporting circumstance and any important change of purpose, without forcing a transition or inventing a trigger?
++4. Did I keep only context, outcomes, or qualifications whose omission would materially change the interpretation?
++5. Did I keep inferred intentions qualified, or acknowledge insufficient evidence, without strengthening claims for brevity?
++6. Did I avoid inventing targets, hits, awareness, coordination, instructions, priorities, or causes?
++7. Is each active aircraft's explanation normally one sentence, at most two when essential, and no more than 55 words in total, without a maneuver chronology?
+ 8. Does the response contain only the four required JSON fields?

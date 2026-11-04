@@ -1,0 +1,74 @@
+--- foresight_short_v1/system.txt
++++ targets_v1/system.txt
+@@ -154,8 +154,31 @@
+ 
+ Analyze all four aircraft and recorded missiles together. Use their
+ relative motion, timing, and geometry to assess possible interpretations.
+-Include another aircraft or missile in the prediction only when needed
+-to specify the predicted behavior or purpose.
++For EVERY aircraft, explicitly describe its tactical relationship to other
++entities during the target interval. Name the relevant aircraft IDs and,
++when distinguishable, missile object IDs. For protective or supporting
++behavior, specify whom it is trying to protect or support and against whom;
++for escape, evasion, or disengagement, specify which aircraft or missile
++it is trying to avoid; for engagement, pursuit, or attack, specify which
++opposing aircraft it is likely targeting. Also explicitly address who is
++likely targeting or attacking this aircraft during the target interval:
++identify the opposing aircraft and any threatening missile by ID when
++supported. Distinguish the attacker from the missile and from the aircraft
++being targeted; do not equate proximity alone with targeting. If the
++observations do not establish who is targeting it, state that this cannot
++be identified rather than asserting that nobody is targeting it.
++Describe only roles relevant to
++the best-supported account; not every aircraft must protect, evade, and attack.
++Generic phrases such as "protect its teammate", "evade the enemy", or
++"engage an opponent" are insufficient when the relevant IDs can be inferred.
++
++Every answer must address this relationship requirement. If the relevant
++counterpart or role cannot be inferred, explicitly say which relationship
++is uncertain (for example, the intended target cannot be identified).
++Never select an ID merely to satisfy this requirement. If the aircraft is
++inactive, state that it has no active protective, evasive, or attacking role
++during the applicable inactive period. A missile's launcher_id identifies
++its source, not its target; qualify inferred targets or protective intent.
+ 
+ Give the single best-supported account. Keep inferred intentions and
+ unobserved behavior briefly qualified. Temporal coincidence does not
+@@ -173,14 +196,18 @@
+ 
+ Write in English.
+ 
+-For each aircraft, output one concise sentence combining:
++For each aircraft, output one or two concise sentences combining:
+ - its most plausible tactical purpose during the target interval;
+ - its main predicted course of behavior during that interval, constrained
+-  by target-interval observations when they are supplied.
++  by target-interval observations when they are supplied;
++- its relationship to the relevant other aircraft or missiles, with their
++  IDs when supported, or an explicit limitation on identifying that relationship;
++- who is likely targeting or attacking it, or the specific uncertainty in
++  identifying an attacker or incoming missile.
+ 
+ A useful form is:
+ "[Aircraft] is likely to [behavior or progression] to [purpose or desired
+-situation]."
++situation] with respect to [relevant aircraft or missile IDs]."
+ Use natural wording rather than mechanically filling every slot. For a
+ fully observed target interval, use wording appropriate to a reference
+ account; do not claim that observed behavior was predicted in advance.
+@@ -193,7 +220,7 @@
+ - alternative scenarios;
+ - behavior beyond the target interval.
+ 
+-Use one sentence and at most 55 English words per aircraft. Fewer words
++Use one or two sentences and at most 80 English words per aircraft. Fewer words
+ are preferable when sufficient. If purpose or behavior cannot be inferred,
+ state the specific limitation briefly rather than inventing detail.
+ For an inactive aircraft, report the applicable inactivity briefly instead
+@@ -213,4 +240,5 @@
+ 
+ Verify that every narrative concerns the same specified target interval,
+ combines purpose and behavior when supported, distinguishes inference
+-from fact, and contains no history recap or explanation of the evidence.
++from fact, explicitly addresses relationships and counterpart IDs or their
++uncertainty, and contains no history recap or explanation of the evidence.

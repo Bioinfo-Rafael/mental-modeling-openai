@@ -1,0 +1,2270 @@
+[
+  {
+    "query_id": "baaaef13922f6693a4d83c37e9aa8bbb35dfd8c8dee8ff6995f2fbd0973b069f",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 46,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 is likely to continue a fast descending rightward maneuver while pressing its probable attack on B0100 with missile A01002, seeking to maintain useful engagement geometry. B0100 is the likely opposing attacker, but no missile from B0100 is identified.\",\"A0200\":\"A0200 is likely to continue closing on B0200 while descending and accelerating, then maneuver defensively against probable incoming missile B02002 without fully abandoning the engagement. B0200 is the likely attacker and missile source; A0200’s own intended target is probably B0200.\",\"B0100\":\"B0100 is likely to continue closing on and targeting A0100, but may transition into defensive maneuvering against A01002 while preserving an opportunity to counterattack. A0100 is its likely attacker and A01002 the specific missile threat.\",\"B0200\":\"B0200 is likely to press its attack on A0200 through missile B02002 while continuing the descending closure, then maneuver to reduce exposure to A0200. A0200 is the likely aircraft targeting B0200, although no A0200-launched missile is identified.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 758,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 512,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 20943,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 20940,
+        "cached_tokens": 0
+      },
+      "total_tokens": 21701
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely to continue a fast descending rightward maneuver while pressing its probable attack on B0100 with missile A01002, seeking to maintain useful engagement geometry. B0100 is the likely opposing attacker, but no missile from B0100 is identified.",
+        "A0200": "A0200 is likely to continue closing on B0200 while descending and accelerating, then maneuver defensively against probable incoming missile B02002 without fully abandoning the engagement. B0200 is the likely attacker and missile source; A0200’s own intended target is probably B0200.",
+        "B0100": "B0100 is likely to continue closing on and targeting A0100, but may transition into defensive maneuvering against A01002 while preserving an opportunity to counterattack. A0100 is its likely attacker and A01002 the specific missile threat.",
+        "B0200": "B0200 is likely to press its attack on A0200 through missile B02002 while continuing the descending closure, then maneuver to reduce exposure to A0200. A0200 is the likely aircraft targeting B0200, although no A0200-launched missile is identified."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 39,
+        "A0200": 40,
+        "B0100": 35,
+        "B0200": 37
+      },
+      "total_words": 151,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "fd15bb7eb80acea44a73fcd73c166ed6d898a69895898d196ed8ebc7468f3879",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 46,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 is likely to continue a fast, descending northbound attack run against B0100 after launching A01002, with a rightward adjustment possibly preserving the intercept geometry. B0100 is the most plausible opposing attacker against A0100, but no B0100 missile threatening it is identified.\",\"A0200\":\"A0200 is likely to continue closing northward and descending toward B0200, potentially attempting to support A0100’s parallel engagement, though its intended target is not confirmed. B02002, launched by B0200 in the closely aligned opposing pair, is the most plausible incoming threat to A0200.\",\"B0100\":\"B0100 is likely to continue southbound, descending closure against A0100, maintaining the opposing lane while A01002 is plausibly directed at it. No missile launched by B0100 is identified, and B0100’s attack on A0100 remains inferred from geometry rather than confirmed firing data.\",\"B0200\":\"B0200 is likely to press a southbound, descending engagement against A0200 after launching B02002, likely seeking to threaten or defeat A0200 before the formations pass. A0200 is the plausible opposing pursuer or targeter of B0200, but no A0200 missile aimed at B0200 is identified.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 951,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 664,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 20943,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 18816,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 21894
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely to continue a fast, descending northbound attack run against B0100 after launching A01002, with a rightward adjustment possibly preserving the intercept geometry. B0100 is the most plausible opposing attacker against A0100, but no B0100 missile threatening it is identified.",
+        "A0200": "A0200 is likely to continue closing northward and descending toward B0200, potentially attempting to support A0100’s parallel engagement, though its intended target is not confirmed. B02002, launched by B0200 in the closely aligned opposing pair, is the most plausible incoming threat to A0200.",
+        "B0100": "B0100 is likely to continue southbound, descending closure against A0100, maintaining the opposing lane while A01002 is plausibly directed at it. No missile launched by B0100 is identified, and B0100’s attack on A0100 remains inferred from geometry rather than confirmed firing data.",
+        "B0200": "B0200 is likely to press a southbound, descending engagement against A0200 after launching B02002, likely seeking to threaten or defeat A0200 before the formations pass. A0200 is the plausible opposing pursuer or targeter of B0200, but no A0200 missile aimed at B0200 is identified."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 42,
+        "A0200": 43,
+        "B0100": 42,
+        "B0200": 44
+      },
+      "total_words": 171,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "7005718aaf0dd5d58b4acaf0dba956cc6b3ff1ae190a4c17f45189dbc2c2acb5",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 46,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 is likely closing northward to attack the opposing B formation, with its A01002 missile supporting an attack on either B0100 or B0200; the intended target cannot be identified. It will likely continue the high-speed approach while avoiding the potentially threatening B02002 missile launched by B0200; which B aircraft is targeting A0100 cannot be established.\",\n  \"A0200\": \"A0200 is likely accompanying and supporting A0100 in the northward attack on B0100 and B0200, maintaining a high-speed approach rather than disengaging. B02002, launched by B0200, may threaten A0200, but neither its target nor whether B0100 or B0200 is specifically attacking A0200 can be identified.\",\n  \"B0100\": \"B0100 is likely advancing southward as part of Team B's attack on the approaching A formation, potentially engaging A0100 or A0200; its specific target cannot be identified. It may face A01002, launched by A0100, but the missile's target and whether B0100 itself is being attacked cannot be established.\",\n  \"B0200\": \"B0200 is likely advancing southward to engage the A formation and has launched B02002, probably to threaten A0100 or A0200, though the target is not recorded. It may be targeted by A01002 from A0100, but neither that missile's target nor whether A0100 or A0200 is specifically attacking B0200 can be identified.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 846,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 512,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 20943,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 18816,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 21789
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely closing northward to attack the opposing B formation, with its A01002 missile supporting an attack on either B0100 or B0200; the intended target cannot be identified. It will likely continue the high-speed approach while avoiding the potentially threatening B02002 missile launched by B0200; which B aircraft is targeting A0100 cannot be established.",
+        "A0200": "A0200 is likely accompanying and supporting A0100 in the northward attack on B0100 and B0200, maintaining a high-speed approach rather than disengaging. B02002, launched by B0200, may threaten A0200, but neither its target nor whether B0100 or B0200 is specifically attacking A0200 can be identified.",
+        "B0100": "B0100 is likely advancing southward as part of Team B's attack on the approaching A formation, potentially engaging A0100 or A0200; its specific target cannot be identified. It may face A01002, launched by A0100, but the missile's target and whether B0100 itself is being attacked cannot be established.",
+        "B0200": "B0200 is likely advancing southward to engage the A formation and has launched B02002, probably to threaten A0100 or A0200, though the target is not recorded. It may be targeted by A01002 from A0100, but neither that missile's target nor whether A0100 or A0200 is specifically attacking B0200 can be identified."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 55,
+        "A0200": 45,
+        "B0100": 48,
+        "B0200": 51
+      },
+      "total_words": 199,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "9b5277d361a8f3aaa8fe2b2a99dc1ffb910931280e56101d87f91370190dd6d5",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 46,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 attacks B0200 with A01002, then makes a hard descending right turn east, likely to offset defensively while maintaining speed. B0100 and B0200 likely attack A0100 with B01002 and B02002 respectively, making both missiles probable threats.\",\"A0200\":\"A0200 continues fast northward closure and descent while attacking B0200 with A02002, reinforcing A0100’s pressure on B0200. No specific attacker against A0200 is identifiable; B01002 and B02002 more plausibly threaten A0100.\",\"B0100\":\"B0100 continues southward closure and descent while attacking A0100 with B01002, potentially supporting B0200 against A0100’s attack. No specific attack on B0100 is identifiable; A01002 and A02002 more plausibly target B0200.\",\"B0200\":\"B0200 presses southward while descending and attacks A0100 with B02002 rather than making a clear evasive turn. It is likely under attack from both A0100 and A0200 through A01002 and A02002, respectively.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1796,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1536,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 48345,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 46218,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 50141
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 attacks B0200 with A01002, then makes a hard descending right turn east, likely to offset defensively while maintaining speed. B0100 and B0200 likely attack A0100 with B01002 and B02002 respectively, making both missiles probable threats.",
+        "A0200": "A0200 continues fast northward closure and descent while attacking B0200 with A02002, reinforcing A0100’s pressure on B0200. No specific attacker against A0200 is identifiable; B01002 and B02002 more plausibly threaten A0100.",
+        "B0100": "B0100 continues southward closure and descent while attacking A0100 with B01002, potentially supporting B0200 against A0100’s attack. No specific attack on B0100 is identifiable; A01002 and A02002 more plausibly target B0200.",
+        "B0200": "B0200 presses southward while descending and attacks A0100 with B02002 rather than making a clear evasive turn. It is likely under attack from both A0100 and A0200 through A01002 and A02002, respectively."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 36,
+        "A0200": 31,
+        "B0100": 31,
+        "B0200": 32
+      },
+      "total_words": 130,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "c5ddc9a124daeff13114da1fe98c85393817eb3d81adc0493e833fd6b77ebdcb",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 46,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 is likely to press an attack on B0200 with A01002, then make a hard rightward, descending break to reposition or reduce exposure. B0100 likely attacks A0100 with B01002; B0200 is the most plausible target of A01002, though the missile target is unrecorded.\",\"A0200\":\"A0200 is likely to continue a northbound, descending attack on B0200 after launching A02002, maintaining pressure rather than breaking sharply away. B0200 likely attacks A0200 with B02002, while B0200 is also the likely target of A0200's missile.\",\"B0100\":\"B0100 is likely to continue descending southbound while prosecuting A0100, having launched B01002 on the geometry most consistent with that target. A0100 and A0200's missiles appear more plausibly directed at B0200, so a direct Team A attack on B0100 cannot be identified.\",\"B0200\":\"B0200 is likely to continue its descending southbound pass while attacking A0200 with B02002. It is likely under pressure from both A01002 and A02002, whose trajectories are most consistent with attacks on B0200, although their intended targets are not recorded.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1684,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1396,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 48345,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 46218,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 50029
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely to press an attack on B0200 with A01002, then make a hard rightward, descending break to reposition or reduce exposure. B0100 likely attacks A0100 with B01002; B0200 is the most plausible target of A01002, though the missile target is unrecorded.",
+        "A0200": "A0200 is likely to continue a northbound, descending attack on B0200 after launching A02002, maintaining pressure rather than breaking sharply away. B0200 likely attacks A0200 with B02002, while B0200 is also the likely target of A0200's missile.",
+        "B0100": "B0100 is likely to continue descending southbound while prosecuting A0100, having launched B01002 on the geometry most consistent with that target. A0100 and A0200's missiles appear more plausibly directed at B0200, so a direct Team A attack on B0100 cannot be identified.",
+        "B0200": "B0200 is likely to continue its descending southbound pass while attacking A0200 with B02002. It is likely under pressure from both A01002 and A02002, whose trajectories are most consistent with attacks on B0200, although their intended targets are not recorded."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 43,
+        "A0200": 37,
+        "B0100": 42,
+        "B0200": 40
+      },
+      "total_words": 162,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "0eaf6ded693b4ee925fd3595614e2e304f6abfdbccde59845c96a166e9468048",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 46,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 is likely cranking east while continuing its northward engagement, probably to improve survivability or firing geometry against B0100 and B0200. B0100 and B0200 are the likely opposing attackers; missile B01002 is geometrically the most plausible threat, but exact targeting cannot be established.\",\n  \"A0200\": \"A0200 is likely pressing north toward the opposing formation while maintaining an attack approach, with missile A02002 continuing outbound toward an uncertain B-team target. B0100 and B0200 are the likely opposing attackers, and B02002 is the most plausible aligned threat, though target attribution is uncertain.\",\n  \"B0100\": \"B0100 is likely continuing a southbound intercept or attack against Team A, with missile B01002 supporting that engagement against an unidentified A aircraft. A0100 and A0200, plus their missiles A01002 and A02002, are opposing threats, but which specifically targets B0100 cannot be identified.\",\n  \"B0200\": \"B0200 is likely continuing a southbound attack approach toward Team A, with missile B02002 supporting an engagement against an unidentified A aircraft. A0100 and A0200 and their missiles are opposing threats; the observations do not establish which aircraft or missile is specifically targeting B0200.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1317,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 48345,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 46218,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 49662
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely cranking east while continuing its northward engagement, probably to improve survivability or firing geometry against B0100 and B0200. B0100 and B0200 are the likely opposing attackers; missile B01002 is geometrically the most plausible threat, but exact targeting cannot be established.",
+        "A0200": "A0200 is likely pressing north toward the opposing formation while maintaining an attack approach, with missile A02002 continuing outbound toward an uncertain B-team target. B0100 and B0200 are the likely opposing attackers, and B02002 is the most plausible aligned threat, though target attribution is uncertain.",
+        "B0100": "B0100 is likely continuing a southbound intercept or attack against Team A, with missile B01002 supporting that engagement against an unidentified A aircraft. A0100 and A0200, plus their missiles A01002 and A02002, are opposing threats, but which specifically targets B0100 cannot be identified.",
+        "B0200": "B0200 is likely continuing a southbound attack approach toward Team A, with missile B02002 supporting an engagement against an unidentified A aircraft. A0100 and A0200 and their missiles are opposing threats; the observations do not establish which aircraft or missile is specifically targeting B0200."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 43,
+        "A0200": 45,
+        "B0100": 43,
+        "B0200": 44
+      },
+      "total_words": 175,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "e56ead346662e7fd2d8a1052472fd9aaf89b1f160ceb6c32d7d41cd64f27131e",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 49,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 likely maintains A01002’s attack on B0200 while descending, accelerating, and entering a rightward crank to offset the head-on closure. B0100 is the most plausible opposing aircraft targeting A0100, though no specific incoming missile is identifiable.\",\"A0200\":\"A0200 likely presses an attack on B0200 with A02002, then begins a descending rightward offset while supporting A0100’s pressure on B0200. B0200 is likely attacking A0200 with missile B02002.\",\"B0100\":\"B0100 likely continues its southbound, descending closure toward A0100, complementing B0200’s attack on A0200. A0100 is its most plausible target, while neither A01002 nor A02002 appears most likely aimed at B0100 and any attacker against it remains uncertain.\",\"B0200\":\"B0200 likely continues a descending southbound attack on A0200 while B02002 closes on that aircraft, maintaining mutual pressure with B0100. B0200 is itself likely targeted by both A0100’s A01002 and A0200’s A02002, so a later defensive offset is plausible within the interval.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1808,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1536,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 21625,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 19498,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 23433
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 likely maintains A01002’s attack on B0200 while descending, accelerating, and entering a rightward crank to offset the head-on closure. B0100 is the most plausible opposing aircraft targeting A0100, though no specific incoming missile is identifiable.",
+        "A0200": "A0200 likely presses an attack on B0200 with A02002, then begins a descending rightward offset while supporting A0100’s pressure on B0200. B0200 is likely attacking A0200 with missile B02002.",
+        "B0100": "B0100 likely continues its southbound, descending closure toward A0100, complementing B0200’s attack on A0200. A0100 is its most plausible target, while neither A01002 nor A02002 appears most likely aimed at B0100 and any attacker against it remains uncertain.",
+        "B0200": "B0200 likely continues a descending southbound attack on A0200 while B02002 closes on that aircraft, maintaining mutual pressure with B0100. B0200 is itself likely targeted by both A0100’s A01002 and A0200’s A02002, so a later defensive offset is plausible within the interval."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 36,
+        "A0200": 29,
+        "B0100": 38,
+        "B0200": 42
+      },
+      "total_words": 145,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "5526c1b19ded828f29f752ff07e80397e3e096d0b9bb790c1ed34358c3ce8421",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 49,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 is likely to continue its descending, rightward northbound maneuver while pressing the attack on B0200; its launched missile A01002 is most plausibly directed at B0200. B0200's missile B02002 is geometrically more consistent with threatening A0200, so an attacker specifically targeting A0100 cannot be identified.\",\"A0200\":\"A0200 is likely to continue descending and turning right while prosecuting B0200, with A02002 plausibly joining A01002 in attacking that aircraft. B0200 is likely attacking A0200 through B02002, making that missile the clearest recorded threat to A0200.\",\"B0100\":\"B0100 is likely to continue southbound with B0200 toward the approaching A0100 and A0200, maintaining the opposing formation's forward pressure. Its intended individual target is not identifiable, and no recorded missile geometry clearly establishes an attack on B0100.\",\"B0200\":\"B0200 is likely to continue southbound while attacking A0200 through missile B02002 and remaining engaged with the A pair. It is likely the intended target of A0100's A01002 and A0200's A02002, although the missiles' eventual outcomes cannot be determined.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1543,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1259,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 21625,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 19498,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 23168
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely to continue its descending, rightward northbound maneuver while pressing the attack on B0200; its launched missile A01002 is most plausibly directed at B0200. B0200's missile B02002 is geometrically more consistent with threatening A0200, so an attacker specifically targeting A0100 cannot be identified.",
+        "A0200": "A0200 is likely to continue descending and turning right while prosecuting B0200, with A02002 plausibly joining A01002 in attacking that aircraft. B0200 is likely attacking A0200 through B02002, making that missile the clearest recorded threat to A0200.",
+        "B0100": "B0100 is likely to continue southbound with B0200 toward the approaching A0100 and A0200, maintaining the opposing formation's forward pressure. Its intended individual target is not identifiable, and no recorded missile geometry clearly establishes an attack on B0100.",
+        "B0200": "B0200 is likely to continue southbound while attacking A0200 through missile B02002 and remaining engaged with the A pair. It is likely the intended target of A0100's A01002 and A0200's A02002, although the missiles' eventual outcomes cannot be determined."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 45,
+        "A0200": 37,
+        "B0100": 38,
+        "B0200": 39
+      },
+      "total_words": 159,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "11a7fdbf9059462435ac62ab6fb30a34fdd3c0160cbace19bdd52a53e4fd9b79",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 49,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 is likely to continue a descending, accelerating northbound attack toward B0100, supporting that engagement with missile A01002 while maneuvering to refine its firing geometry. No specific attacker targeting A0100, including B02002, can be identified from the observations.\",\n  \"A0200\": \"A0200 is likely to continue closing north toward B0200 to attack it, with missile A02002 supporting that engagement. B02002, launched by B0200, is plausibly directed at A0200; this inferred targeting cannot be confirmed.\",\n  \"B0100\": \"B0100 is likely to continue its southbound interception toward the A formation, with A01002 plausibly threatening it based on launch geometry and relative motion. A0100 is the likely opposing aircraft associated with that missile attack, while any B0100 attack target cannot be identified with confidence.\",\n  \"B0200\": \"B0200 is likely to continue a southbound engagement against A0200 while its missile B02002 threatens that aircraft, and will face A0200's likely reciprocal attack with missile A02002. The missile-target attribution is geometry-based and not directly recorded.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1289,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 21625,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 21622,
+        "cached_tokens": 0
+      },
+      "total_tokens": 22914
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely to continue a descending, accelerating northbound attack toward B0100, supporting that engagement with missile A01002 while maneuvering to refine its firing geometry. No specific attacker targeting A0100, including B02002, can be identified from the observations.",
+        "A0200": "A0200 is likely to continue closing north toward B0200 to attack it, with missile A02002 supporting that engagement. B02002, launched by B0200, is plausibly directed at A0200; this inferred targeting cannot be confirmed.",
+        "B0100": "B0100 is likely to continue its southbound interception toward the A formation, with A01002 plausibly threatening it based on launch geometry and relative motion. A0100 is the likely opposing aircraft associated with that missile attack, while any B0100 attack target cannot be identified with confidence.",
+        "B0200": "B0200 is likely to continue a southbound engagement against A0200 while its missile B02002 threatens that aircraft, and will face A0200's likely reciprocal attack with missile A02002. The missile-target attribution is geometry-based and not directly recorded."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 38,
+        "A0200": 33,
+        "B0100": 45,
+        "B0200": 36
+      },
+      "total_words": 152,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "569118b3f7b31dc2ba55a1a4471b5183ae7bfa7f32fb817ddb70b69e6477ceab",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 49,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 executes a hard descending right break after sending A01002 toward B0200, likely combining continued pressure with missile defense. B0100 and B0200 likely attack A0100 through B01002 and B02002, respectively, both of which appear to track its eastward turn.\",\"A0200\":\"A0200 continues a fast, shallow northward advance and descent while sending A02002 toward B0200, likely maintaining the attack as A0100 breaks away. No opposing aircraft or missile can be confidently identified as specifically targeting A0200 during this interval.\",\"B0100\":\"B0100 continues southward and descending while committing B01002, likely against the turning A0100, thereby sustaining Team B's attack. No incoming missile is clearly aimed at B0100; A01002 and A02002 more plausibly threaten B0200.\",\"B0200\":\"B0200 continues southward and descending while B02002 likely pursues A0100, favoring continued attack over a pronounced defensive turn. B0200 is probably the target of both A0100's A01002 and A0200's A02002, although no hit or successful evasion is established.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1632,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1360,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 49507,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 47380,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 51139
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 executes a hard descending right break after sending A01002 toward B0200, likely combining continued pressure with missile defense. B0100 and B0200 likely attack A0100 through B01002 and B02002, respectively, both of which appear to track its eastward turn.",
+        "A0200": "A0200 continues a fast, shallow northward advance and descent while sending A02002 toward B0200, likely maintaining the attack as A0100 breaks away. No opposing aircraft or missile can be confidently identified as specifically targeting A0200 during this interval.",
+        "B0100": "B0100 continues southward and descending while committing B01002, likely against the turning A0100, thereby sustaining Team B's attack. No incoming missile is clearly aimed at B0100; A01002 and A02002 more plausibly threaten B0200.",
+        "B0200": "B0200 continues southward and descending while B02002 likely pursues A0100, favoring continued attack over a pronounced defensive turn. B0200 is probably the target of both A0100's A01002 and A0200's A02002, although no hit or successful evasion is established."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 39,
+        "A0200": 38,
+        "B0100": 33,
+        "B0200": 38
+      },
+      "total_words": 148,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "b96b450e49fd80a2c0bb01278224aaf410faa967789011d157ebe69350ca3579",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 49,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 is likely making a hard right-hand defensive break while descending to evade the southbound B02002, launched by B0200, and possibly B01002 from B0100. Its earlier A01002 appears directed toward B0200, but the exact missile target cannot be confirmed.\",\"A0200\":\"A0200 likely continues a northward, descending attack-support run against B0200 after expending A02002, maintaining separation from A0100 rather than turning sharply away. B01002 from B0100 may threaten it, but the recorded geometry does not identify that missile’s target with confidence.\",\"B0100\":\"B0100 is likely continuing southward and descending to open range from Team A while its B01002 remains in flight; its intended aircraft target cannot be identified from the record. It may be threatened by A01002, although that missile’s target is uncertain and its trajectory also leaves B0200 plausible.\",\"B0200\":\"B0200 likely continues southward defensive egress and descent while B02002 pursues a likely target in Team A, most plausibly A0100. It is the most plausible focus of A01002 and A02002, both launched by Team A, though neither missile’s target is explicitly recorded.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1820,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1536,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 49507,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 47380,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 51327
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely making a hard right-hand defensive break while descending to evade the southbound B02002, launched by B0200, and possibly B01002 from B0100. Its earlier A01002 appears directed toward B0200, but the exact missile target cannot be confirmed.",
+        "A0200": "A0200 likely continues a northward, descending attack-support run against B0200 after expending A02002, maintaining separation from A0100 rather than turning sharply away. B01002 from B0100 may threaten it, but the recorded geometry does not identify that missile’s target with confidence.",
+        "B0100": "B0100 is likely continuing southward and descending to open range from Team A while its B01002 remains in flight; its intended aircraft target cannot be identified from the record. It may be threatened by A01002, although that missile’s target is uncertain and its trajectory also leaves B0200 plausible.",
+        "B0200": "B0200 likely continues southward defensive egress and descent while B02002 pursues a likely target in Team A, most plausibly A0100. It is the most plausible focus of A01002 and A02002, both launched by Team A, though neither missile’s target is explicitly recorded."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 39,
+        "A0200": 40,
+        "B0100": 48,
+        "B0200": 42
+      },
+      "total_words": 169,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "31df9e309bd7d2e138da0ea7698fa16b324bd587be0a2fa2e2c268efc88549f6",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 49,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 is likely breaking east after launching A01002, using a lateral defensive maneuver while A0200 continues the northward attack toward the B formation. B0100 and B01002 are the most plausible opposing threat to this aircraft, but missile targeting cannot be established from the records.\",\n  \"A0200\": \"A0200 is likely the forward attacker, continuing north while A02002 advances toward the B formation, plausibly engaging B0200. B0200 and B02002 are the most plausible opposing attackers against A0200, though the missile target assignment remains uncertain.\",\n  \"B0100\": \"B0100 is likely pressing south toward Team A while supporting an attack with B01002, plausibly aimed at A0100 as that aircraft turns east. A0100 and A01002 are the most plausible attackers threatening B0100, but neither missile’s target is directly identified.\",\n  \"B0200\": \"B0200 is likely advancing south as the other forward attacker, with B02002 plausibly directed toward A0200. A0200 and A02002 are the most plausible opposing attackers against B0200; exact targeting and any successful engagement cannot be established.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1217,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 948,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 49507,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 47380,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 50724
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely breaking east after launching A01002, using a lateral defensive maneuver while A0200 continues the northward attack toward the B formation. B0100 and B01002 are the most plausible opposing threat to this aircraft, but missile targeting cannot be established from the records.",
+        "A0200": "A0200 is likely the forward attacker, continuing north while A02002 advances toward the B formation, plausibly engaging B0200. B0200 and B02002 are the most plausible opposing attackers against A0200, though the missile target assignment remains uncertain.",
+        "B0100": "B0100 is likely pressing south toward Team A while supporting an attack with B01002, plausibly aimed at A0100 as that aircraft turns east. A0100 and A01002 are the most plausible attackers threatening B0100, but neither missile’s target is directly identified.",
+        "B0200": "B0200 is likely advancing south as the other forward attacker, with B02002 plausibly directed toward A0200. A0200 and A02002 are the most plausible opposing attackers against B0200; exact targeting and any successful engagement cannot be established."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 44,
+        "A0200": 36,
+        "B0100": 40,
+        "B0200": 36
+      },
+      "total_words": 156,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "3c7022f76a93c45f628a8cdbf38f30772eb9245abaaa1657ae56ac2b009263a7",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 83,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 is likely to continue a fast eastward beam and begin leveling to reduce exposure to B01002 and B02002, missiles likely launched by B0100 and B0200 against it. Its own A01002 likely continues toward B0200, so it sustains offensive pressure while defending.\",\"A0200\":\"A0200 is likely to keep closing northward, descending and accelerating, to pressure B0200 while A02002 and A0100’s A01002 converge on that aircraft. Neither recorded B missile appears aimed at A0200, and a specific opposing aircraft targeting it cannot be identified.\",\"B0100\":\"B0100 is likely to continue southward closure on A0100, supporting its likely attack through B01002 while B0200 and B02002 also pressure A0100. No recorded A missile is clearly directed at B0100; whether A0100 or A0200 is otherwise targeting it cannot be identified.\",\"B0200\":\"B0200 is likely to continue southward initially while prosecuting A0100 through B02002, but may begin defensive maneuvering as A01002 and A02002 approach from the south. Those missiles indicate likely attacks by A0100 and A0200 against B0200, while B0100 supports the attack on A0100.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1831,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1537,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 33107,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 30980,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 34938
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely to continue a fast eastward beam and begin leveling to reduce exposure to B01002 and B02002, missiles likely launched by B0100 and B0200 against it. Its own A01002 likely continues toward B0200, so it sustains offensive pressure while defending.",
+        "A0200": "A0200 is likely to keep closing northward, descending and accelerating, to pressure B0200 while A02002 and A0100’s A01002 converge on that aircraft. Neither recorded B missile appears aimed at A0200, and a specific opposing aircraft targeting it cannot be identified.",
+        "B0100": "B0100 is likely to continue southward closure on A0100, supporting its likely attack through B01002 while B0200 and B02002 also pressure A0100. No recorded A missile is clearly directed at B0100; whether A0100 or A0200 is otherwise targeting it cannot be identified.",
+        "B0200": "B0200 is likely to continue southward initially while prosecuting A0100 through B02002, but may begin defensive maneuvering as A01002 and A02002 approach from the south. Those missiles indicate likely attacks by A0100 and A0200 against B0200, while B0100 supports the attack on A0100."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 42,
+        "A0200": 40,
+        "B0100": 42,
+        "B0200": 43
+      },
+      "total_words": 167,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "9046430139239fba17fe9e3074a576a1401b9f11bb937a67241b4897d8330218",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 83,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 is likely to hold its eastward break to evade B0100’s likely attack, especially missile B01002, while A01002 continues north toward B0200. B0100 is the most plausible attacker; A0100’s own intended aircraft target is inferred as B0200 from A01002’s geometry.\",\"A0200\":\"A0200 is likely to continue descending and turning northward to press an engagement against B0200, with A02002 plausibly pursuing B0200. It is also likely threatened by B0200’s missile B02002, although its observed maneuver does not establish a specific missile-avoidance response.\",\"B0100\":\"B0100 is likely to continue southbound pressure against A0100, with B01002 plausibly directed at A0100. No opposing missile is geometrically associated with B0100, so an aircraft or missile specifically attacking B0100 cannot be identified.\",\"B0200\":\"B0200 is likely to continue southbound against A0200 while B02002 plausibly pursues A0200. B0200 is the most plausible target of both A01002 and A02002 and may need to survive those incoming A missiles; A0100 and A0200 are their respective launchers, not confirmed target assignments.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1746,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1457,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 33107,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 30980,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 34853
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely to hold its eastward break to evade B0100’s likely attack, especially missile B01002, while A01002 continues north toward B0200. B0100 is the most plausible attacker; A0100’s own intended aircraft target is inferred as B0200 from A01002’s geometry.",
+        "A0200": "A0200 is likely to continue descending and turning northward to press an engagement against B0200, with A02002 plausibly pursuing B0200. It is also likely threatened by B0200’s missile B02002, although its observed maneuver does not establish a specific missile-avoidance response.",
+        "B0100": "B0100 is likely to continue southbound pressure against A0100, with B01002 plausibly directed at A0100. No opposing missile is geometrically associated with B0100, so an aircraft or missile specifically attacking B0100 cannot be identified.",
+        "B0200": "B0200 is likely to continue southbound against A0200 while B02002 plausibly pursues A0200. B0200 is the most plausible target of both A01002 and A02002 and may need to survive those incoming A missiles; A0100 and A0200 are their respective launchers, not confirmed target assignments."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 40,
+        "A0200": 40,
+        "B0100": 34,
+        "B0200": 44
+      },
+      "total_words": 158,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "66d42780f28a35107dd8d6281f096f07b1406e8b2884ff71d848ae8c276aa86d",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 83,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 is likely to continue an eastward, altitude-holding repositioning while laterally evading B0100 and the incoming B01002, which is aligned with its track; it may retain an offensive role through A01002, but that missile’s target cannot be identified.\",\n  \"A0200\": \"A0200 is likely to continue accelerating eastward while descending, seeking separation or a firing position relative to B0200; B02002 is a plausible incoming threat along its side of the formation, while A02002 appears offensively oriented toward Team B but has no identifiable target.\",\n  \"B0100\": \"B0100 is likely to maintain its southbound approach toward Team A, plausibly attacking or pressuring A0100 in coordination with B01002; A01002 and A02002 may threaten B’s formation, but neither missile’s target or whether B0100 itself is targeted can be established.\",\n  \"B0200\": \"B0200 is likely to continue southbound with B02002, maintaining an attack approach toward Team A and plausibly engaging A0200; A01002 and A02002 are opposing missiles moving northward, but their intended target and any specific attack on B0200 remain uncertain.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1261,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 982,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 33107,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 30980,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 34368
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely to continue an eastward, altitude-holding repositioning while laterally evading B0100 and the incoming B01002, which is aligned with its track; it may retain an offensive role through A01002, but that missile’s target cannot be identified.",
+        "A0200": "A0200 is likely to continue accelerating eastward while descending, seeking separation or a firing position relative to B0200; B02002 is a plausible incoming threat along its side of the formation, while A02002 appears offensively oriented toward Team B but has no identifiable target.",
+        "B0100": "B0100 is likely to maintain its southbound approach toward Team A, plausibly attacking or pressuring A0100 in coordination with B01002; A01002 and A02002 may threaten B’s formation, but neither missile’s target or whether B0100 itself is targeted can be established.",
+        "B0200": "B0200 is likely to continue southbound with B02002, maintaining an attack approach toward Team A and plausibly engaging A0200; A01002 and A02002 are opposing missiles moving northward, but their intended target and any specific attack on B0200 remain uncertain."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 38,
+        "A0200": 43,
+        "B0100": 40,
+        "B0200": 39
+      },
+      "total_words": 160,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "b0a23ed6b966751686232410bde97f3cb84b46ac805fbec428f700887f26961e",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 83,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 levels and accelerates eastward, likely beaming or separating from B0100’s missile B01002 while its own A01002 continues toward B0200. B0100 is the likely attacker through B01002.\",\"A0200\":\"A0200 descends and turns progressively right toward the northeast, likely balancing continued pressure on B0200 through A02002 with lateral evasion of B0200’s incoming B02002. B0200 is its likely attacker.\",\"B0100\":\"B0100 continues southbound and descending, likely closing on A0100 while supporting B01002’s attack against it. No opposing aircraft or missile can be confidently identified as targeting B0100 during this interval.\",\"B0200\":\"B0200 continues nearly straight south and descending, likely pressing its attack on A0200 through B02002 despite converging threats. A0100 and A0200 are likely attacking B0200 through missiles A01002 and A02002, respectively.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2140,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1906,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 61146,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 59019,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 63286
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 levels and accelerates eastward, likely beaming or separating from B0100’s missile B01002 while its own A01002 continues toward B0200. B0100 is the likely attacker through B01002.",
+        "A0200": "A0200 descends and turns progressively right toward the northeast, likely balancing continued pressure on B0200 through A02002 with lateral evasion of B0200’s incoming B02002. B0200 is its likely attacker.",
+        "B0100": "B0100 continues southbound and descending, likely closing on A0100 while supporting B01002’s attack against it. No opposing aircraft or missile can be confidently identified as targeting B0100 during this interval.",
+        "B0200": "B0200 continues nearly straight south and descending, likely pressing its attack on A0200 through B02002 despite converging threats. A0100 and A0200 are likely attacking B0200 through missiles A01002 and A02002, respectively."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 27,
+        "A0200": 29,
+        "B0100": 30,
+        "B0200": 31
+      },
+      "total_words": 117,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "65c93d4b258f1d2c789bda50682fe17f1babf90801907e3c08305dc20176c12a",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 83,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 likely turns east and levels its descent to evade B0100’s likely inbound missile B01002 while remaining disengaged from the direct northbound attack line. Its missile A01002 appears to be pursuing B0200; B0100 is the likely opposing attacker, while B0200’s role against A0100 is uncertain.\",\"A0200\":\"A0200 likely continues a rightward northeast turn and descent, combining an attack on B0200 through missile A02002 with evasion of B0200’s likely inbound B02002. B0200 is therefore the likely opposing attacker, while A01002 may also be converging on B0200 in support.\",\"B0100\":\"B0100 likely presses southward and descends against A0100 while B01002 continues toward A0100. No recorded A missile is clearly directed at B0100; A0100 and A0200 appear more likely focused on B0200.\",\"B0200\":\"B0200 likely continues southward toward A0200, with B02002 likely attacking A0200, while descending through a threatened approach. It is likely the intended target of both A02002 and A01002, launched by A0200 and A0100 respectively; its specific defensive response cannot be identified.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1514,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1225,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 61146,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 59019,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 62660
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 likely turns east and levels its descent to evade B0100’s likely inbound missile B01002 while remaining disengaged from the direct northbound attack line. Its missile A01002 appears to be pursuing B0200; B0100 is the likely opposing attacker, while B0200’s role against A0100 is uncertain.",
+        "A0200": "A0200 likely continues a rightward northeast turn and descent, combining an attack on B0200 through missile A02002 with evasion of B0200’s likely inbound B02002. B0200 is therefore the likely opposing attacker, while A01002 may also be converging on B0200 in support.",
+        "B0100": "B0100 likely presses southward and descends against A0100 while B01002 continues toward A0100. No recorded A missile is clearly directed at B0100; A0100 and A0200 appear more likely focused on B0200.",
+        "B0200": "B0200 likely continues southward toward A0200, with B02002 likely attacking A0200, while descending through a threatened approach. It is likely the intended target of both A02002 and A01002, launched by A0200 and A0100 respectively; its specific defensive response cannot be identified."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 45,
+        "A0200": 41,
+        "B0100": 31,
+        "B0200": 41
+      },
+      "total_words": 158,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "f7a894da2784f939a5e146688c98ee5afe03801a7ba942dd0d63f178146ac5af",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 83,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 is likely offsetting east while maintaining altitude and speed to reposition defensively or support A0200, rather than pressing directly toward B0100 or B0200. B01002 and B02002 are the most plausible incoming threats, but neither missile’s aircraft target can be identified with confidence.\",\n  \"A0200\": \"A0200 is likely pressing northeast toward the opposing formation, seeking an attack position against B0100 or B0200 while A0100 offsets. B0100 and B0200 are closing opposing aircraft, and B01002/B02002 may threaten A0200, but the specific attacker-target pairing cannot be established.\",\n  \"B0100\": \"B0100 is likely continuing a southbound approach to engage Team A, with A0100 and A0200 as the opposing aircraft in its forward engagement area; its specific intended target cannot be identified. B01002 is associated with B0100, but no observation establishes that it targets either A aircraft or that B0100 is targeting one particular opponent.\",\n  \"B0200\": \"B0200 is likely continuing a southbound attack approach toward Team A, broadly confronting A0100 and A0200 while remaining near B0100. B02002 is associated with B0200, but its target is unknown; whether B0200 specifically attacks A0100 or A0200, or is itself targeted by either, cannot be identified.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 822,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 512,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 61146,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 59019,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 61968
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely offsetting east while maintaining altitude and speed to reposition defensively or support A0200, rather than pressing directly toward B0100 or B0200. B01002 and B02002 are the most plausible incoming threats, but neither missile’s aircraft target can be identified with confidence.",
+        "A0200": "A0200 is likely pressing northeast toward the opposing formation, seeking an attack position against B0100 or B0200 while A0100 offsets. B0100 and B0200 are closing opposing aircraft, and B01002/B02002 may threaten A0200, but the specific attacker-target pairing cannot be established.",
+        "B0100": "B0100 is likely continuing a southbound approach to engage Team A, with A0100 and A0200 as the opposing aircraft in its forward engagement area; its specific intended target cannot be identified. B01002 is associated with B0100, but no observation establishes that it targets either A aircraft or that B0100 is targeting one particular opponent.",
+        "B0200": "B0200 is likely continuing a southbound attack approach toward Team A, broadly confronting A0100 and A0200 while remaining near B0100. B02002 is associated with B0200, but its target is unknown; whether B0200 specifically attacks A0100 or A0200, or is itself targeted by either, cannot be identified."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 43,
+        "A0200": 40,
+        "B0100": 54,
+        "B0200": 46
+      },
+      "total_words": 183,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "667a4d11b04e1f5700e4edd1662633a752ba8337903bffe8ad3de156b21fac9d",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 95,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 is likely to maintain a fast eastward beam or extension to gain cross-range from B01002 and B02002 while A01002 continues toward B0200. B0100 and B0200 are likely attacking A0100 through B01002 and B02002 respectively.\",\"A0200\":\"A0200 is likely to continue northward closure while descending and offsetting right, pressuring B0200 and supporting A0100 as A02002 pursues B0200. No specific Team B aircraft or missile can be identified as targeting A0200.\",\"B0100\":\"B0100 is likely to continue southbound closure on A0100 while B01002 leads toward A0100, sustaining its attack as A0100 beams east. A specific Team A attacker against B0100 cannot be identified; A01002 and A02002 are instead most consistent with threats to B0200.\",\"B0200\":\"B0200 is likely to continue southbound closure while sustaining its attack on A0100 through B02002, without a clearly supported immediate evasive turn. It is likely being attacked by A0100 and A0200 through the approaching A01002 and A02002 respectively.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2845,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2560,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 33122,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 30995,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 35967
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely to maintain a fast eastward beam or extension to gain cross-range from B01002 and B02002 while A01002 continues toward B0200. B0100 and B0200 are likely attacking A0100 through B01002 and B02002 respectively.",
+        "A0200": "A0200 is likely to continue northward closure while descending and offsetting right, pressuring B0200 and supporting A0100 as A02002 pursues B0200. No specific Team B aircraft or missile can be identified as targeting A0200.",
+        "B0100": "B0100 is likely to continue southbound closure on A0100 while B01002 leads toward A0100, sustaining its attack as A0100 beams east. A specific Team A attacker against B0100 cannot be identified; A01002 and A02002 are instead most consistent with threats to B0200.",
+        "B0200": "B0200 is likely to continue southbound closure while sustaining its attack on A0100 through B02002, without a clearly supported immediate evasive turn. It is likely being attacked by A0100 and A0200 through the approaching A01002 and A02002 respectively."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 35,
+        "A0200": 34,
+        "B0100": 42,
+        "B0200": 38
+      },
+      "total_words": 149,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "6e05e46f4940756ede7b3a21c27178506c36366637068d460a668fd26405be92",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 95,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 is likely to continue eastward and stabilize its altitude while keeping A01002 directed at B0200. It is plausibly the focus of B0100 and B0200's attack through B01002 and B02002, so its course also appears defensive against those missiles.\",\"A0200\":\"A0200 is likely to keep turning right and descending to support the Team A attack on B0200, with A02002 also plausibly pursuing B0200. B0100 and B0200 remain the opposing aircraft, but the recorded missile geometry does not establish that either B missile is targeting A0200 rather than A0100.\",\"B0100\":\"B0100 is likely to continue southward with B0200, closing the Team A pair and supporting an attack on A0100 through B01002. A01002 and A02002 appear more closely aligned with B0200, so no direct incoming missile threat to B0100 can be identified.\",\"B0200\":\"B0200 is likely to continue the southbound ingress and contribute to the apparent attack on A0100 through B02002. It is also the most plausible target of A01002 and A02002, requiring it to survive the converging Team A missile threat while remaining with B0100.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2279,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1984,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 33122,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 30995,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 35401
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely to continue eastward and stabilize its altitude while keeping A01002 directed at B0200. It is plausibly the focus of B0100 and B0200's attack through B01002 and B02002, so its course also appears defensive against those missiles.",
+        "A0200": "A0200 is likely to keep turning right and descending to support the Team A attack on B0200, with A02002 also plausibly pursuing B0200. B0100 and B0200 remain the opposing aircraft, but the recorded missile geometry does not establish that either B missile is targeting A0200 rather than A0100.",
+        "B0100": "B0100 is likely to continue southward with B0200, closing the Team A pair and supporting an attack on A0100 through B01002. A01002 and A02002 appear more closely aligned with B0200, so no direct incoming missile threat to B0100 can be identified.",
+        "B0200": "B0200 is likely to continue the southbound ingress and contribute to the apparent attack on A0100 through B02002. It is also the most plausible target of A01002 and A02002, requiring it to survive the converging Team A missile threat while remaining with B0100."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 39,
+        "A0200": 48,
+        "B0100": 41,
+        "B0200": 43
+      },
+      "total_words": 171,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "35e3eb68e981c2a58692799e342c27e3ae456a015feecead02629ce87c4e4ab8",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 95,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 is likely to continue an eastward, relatively level course to preserve separation while engaging the approaching B formation, with B0100/B0200 as opposing attackers. B01002, launched by B0100, is the strongest identified missile threat to A0100; exact targeting remains inferred rather than established.\",\n  \"A0200\": \"A0200 is likely to continue accelerating northeastward and descending toward the approaching B formation, most plausibly pursuing an intercept with B0100/B0200. B02002 from B0200 appears geometrically threatening, while A0200's exact attacker or missile target cannot be established with certainty.\",\n  \"B0100\": \"B0100 is likely to continue its southward closure toward Team A, participating in the attack on A0100/A0200 rather than disengaging; its associated missile B01002 is likely part of that attack, though the intended aircraft target is uncertain. A01002 and A02002 are northbound threats to B0100/B0200, but neither missile's exact target can be identified.\",\n  \"B0200\": \"B0200 is likely to maintain a southward, descending attack course toward Team A, with A0100/A0200 as the opposing formation and B02002 supporting that engagement. A01002 and A02002 are the likely incoming missile threats to B0200/B0100, but their individual target assignments cannot be established.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1699,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1376,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 33122,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 33119,
+        "cached_tokens": 0
+      },
+      "total_tokens": 34821
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely to continue an eastward, relatively level course to preserve separation while engaging the approaching B formation, with B0100/B0200 as opposing attackers. B01002, launched by B0100, is the strongest identified missile threat to A0100; exact targeting remains inferred rather than established.",
+        "A0200": "A0200 is likely to continue accelerating northeastward and descending toward the approaching B formation, most plausibly pursuing an intercept with B0100/B0200. B02002 from B0200 appears geometrically threatening, while A0200's exact attacker or missile target cannot be established with certainty.",
+        "B0100": "B0100 is likely to continue its southward closure toward Team A, participating in the attack on A0100/A0200 rather than disengaging; its associated missile B01002 is likely part of that attack, though the intended aircraft target is uncertain. A01002 and A02002 are northbound threats to B0100/B0200, but neither missile's exact target can be identified.",
+        "B0200": "B0200 is likely to maintain a southward, descending attack course toward Team A, with A0100/A0200 as the opposing formation and B02002 supporting that engagement. A01002 and A02002 are the likely incoming missile threats to B0200/B0100, but their individual target assignments cannot be established."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 43,
+        "A0200": 39,
+        "B0100": 53,
+        "B0200": 43
+      },
+      "total_words": 178,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "285ed3f2921754a7af1231bbb7a3bbd8992a4b92f70e1217555f2dc6aa338ea4",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 95,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 maintains a fast eastward beam at nearly constant altitude, likely limiting closure and complicating B0100’s inferred B01002 attack while A01002 continues toward B0200. B0100 is the likeliest aircraft attacking A0100; no other incoming missile is clearly supported.\",\"A0200\":\"A0200 makes a sustained descending right turn toward the east, likely cranking away while supporting A02002’s inferred attack on B0200 and reducing exposure. B0200 is the likeliest attacker through missile B02002, although its target is inferred rather than recorded.\",\"B0100\":\"B0100 continues rapidly southward and descending, likely maintaining pressure on A0100 while B01002 pursues its inferred intercept. No specific Team A aircraft or missile can be identified as targeting B0100; A01002 and A02002 instead appear oriented toward B0200.\",\"B0200\":\"B0200 continues south in a strengthening descent, likely extending defensively from the converging A01002 and A02002 missiles while its own B02002 attacks A0200. A0100 and A0200 are therefore the likeliest attackers through their respective missiles, though neither missile’s target is explicitly recorded.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2334,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2048,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 61173,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 59046,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 63507
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 maintains a fast eastward beam at nearly constant altitude, likely limiting closure and complicating B0100’s inferred B01002 attack while A01002 continues toward B0200. B0100 is the likeliest aircraft attacking A0100; no other incoming missile is clearly supported.",
+        "A0200": "A0200 makes a sustained descending right turn toward the east, likely cranking away while supporting A02002’s inferred attack on B0200 and reducing exposure. B0200 is the likeliest attacker through missile B02002, although its target is inferred rather than recorded.",
+        "B0100": "B0100 continues rapidly southward and descending, likely maintaining pressure on A0100 while B01002 pursues its inferred intercept. No specific Team A aircraft or missile can be identified as targeting B0100; A01002 and A02002 instead appear oriented toward B0200.",
+        "B0200": "B0200 continues south in a strengthening descent, likely extending defensively from the converging A01002 and A02002 missiles while its own B02002 attacks A0200. A0100 and A0200 are therefore the likeliest attackers through their respective missiles, though neither missile’s target is explicitly recorded."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 38,
+        "A0200": 39,
+        "B0100": 38,
+        "B0200": 42
+      },
+      "total_words": 157,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "78ee58e81aa2f65309fe2009efe089d7e6682f42bd1b31d3f3aaf2790b34c498",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 95,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 is likely maintaining an eastward beam/egress to reduce the threat from B01002 and likely B02002, both apparently pursuing A0100, while A01002 continues toward B0100. Its purpose appears defensive survival while retaining pressure on B0100 rather than closing directly on either B aircraft.\",\"A0200\":\"A0200 is likely continuing a descending right turn eastward to separate from the opposing formation while A02002 pursues B0200. A direct attacker against A0200 cannot be identified; B02002's geometry more strongly suggests pursuit of A0100, while B0200 is likely defending against A02002.\",\"B0100\":\"B0100 is likely continuing southward and downward to evade the approaching A01002 while B01002 remains directed against A0100. Thus B0100 appears to be both defending against A0100's missile attack and sustaining an attack on A0100 rather than maneuvering toward A0200.\",\"B0200\":\"B0200 is likely descending southward to survive A02002's continuing approach, while B02002 is likely prosecuting A0100 rather than A0200. B0200 is therefore likely under attack from A0200 via A02002 and simultaneously contributing pressure against A0100; no other incoming missile can be identified.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2205,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1902,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 61173,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 59046,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 63378
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely maintaining an eastward beam/egress to reduce the threat from B01002 and likely B02002, both apparently pursuing A0100, while A01002 continues toward B0100. Its purpose appears defensive survival while retaining pressure on B0100 rather than closing directly on either B aircraft.",
+        "A0200": "A0200 is likely continuing a descending right turn eastward to separate from the opposing formation while A02002 pursues B0200. A direct attacker against A0200 cannot be identified; B02002's geometry more strongly suggests pursuit of A0100, while B0200 is likely defending against A02002.",
+        "B0100": "B0100 is likely continuing southward and downward to evade the approaching A01002 while B01002 remains directed against A0100. Thus B0100 appears to be both defending against A0100's missile attack and sustaining an attack on A0100 rather than maneuvering toward A0200.",
+        "B0200": "B0200 is likely descending southward to survive A02002's continuing approach, while B02002 is likely prosecuting A0100 rather than A0200. B0200 is therefore likely under attack from A0200 via A02002 and simultaneously contributing pressure against A0100; no other incoming missile can be identified."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 43,
+        "A0200": 42,
+        "B0100": 40,
+        "B0200": 42
+      },
+      "total_words": 167,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "950c0d6132c1ae2368a6aae6670c30277f7d2d8cf3fbf98bd1c410026a29788b",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 95,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 is likely maintaining an eastward offset while preserving separation from A0200 and presenting an attack approach toward B0100/B0200; it continues level, fast flight rather than pursuing either opponent directly. B0100 and B0200 are the opposing aircraft closing on Team A, but which one targets A0100 cannot be identified, and no specific incoming missile can be attributed to it.\",\n  \"A0200\": \"A0200 is likely maneuvering eastward toward an attacking position against B0100/B0200 while descending and accelerating, with missile A02002 accompanying that forward engagement. B0100 and B0200 are closing opponents, but the intended target of either aircraft or of the recorded B missiles cannot be identified.\",\n  \"B0100\": \"B0100 is likely continuing a southbound closing attack toward Team A, broadly opposing A0100 and A0200 while remaining near B0200; its course changes little during the interval. A0100 and A0200 are the likely opposing attackers, but which aircraft B0100 is targeting, and whether missile A01002 or A02002 threatens it, cannot be established.\",\n  \"B0200\": \"B0200 is likely pressing the southbound engagement with Team A alongside B0100, maintaining a coordinated closing posture against A0100/A0200 rather than disengaging. A0100 and A0200 are the likely opposing attackers, but the specific target of B0200 or B0100 and any incoming A missile cannot be identified.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 842,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 512,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 61173,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 59046,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 62015
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely maintaining an eastward offset while preserving separation from A0200 and presenting an attack approach toward B0100/B0200; it continues level, fast flight rather than pursuing either opponent directly. B0100 and B0200 are the opposing aircraft closing on Team A, but which one targets A0100 cannot be identified, and no specific incoming missile can be attributed to it.",
+        "A0200": "A0200 is likely maneuvering eastward toward an attacking position against B0100/B0200 while descending and accelerating, with missile A02002 accompanying that forward engagement. B0100 and B0200 are closing opponents, but the intended target of either aircraft or of the recorded B missiles cannot be identified.",
+        "B0100": "B0100 is likely continuing a southbound closing attack toward Team A, broadly opposing A0100 and A0200 while remaining near B0200; its course changes little during the interval. A0100 and A0200 are the likely opposing attackers, but which aircraft B0100 is targeting, and whether missile A01002 or A02002 threatens it, cannot be established.",
+        "B0200": "B0200 is likely pressing the southbound engagement with Team A alongside B0100, maintaining a coordinated closing posture against A0100/A0200 rather than disengaging. A0100 and A0200 are the likely opposing attackers, but the specific target of B0200 or B0100 and any incoming A missile cannot be identified."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 59,
+        "A0200": 44,
+        "B0100": 52,
+        "B0200": 46
+      },
+      "total_words": 201,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "c851a9510839609a2173288ac47be270f9453ffc3a14b415d7e729d881127a5e",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 143,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 is likely to continue a fast, nearly level eastward extension, preserving separation rather than closing on B0100 while A0200 handles the nearer missile threat. No attacker or incoming missile against A0100 is clearly identifiable; B01002 and B02002 more plausibly threaten A0200.\",\"A0200\":\"A0200 is likely to continue descending and accelerating through a reversing turn to complicate interception by B01002 and B02002. B0100 is the likely attacker through B01002, while inactive B0200 launched B02002; A0200 is not clearly pursuing either opponent.\",\"B0100\":\"B0100 is likely to continue its descending turn and then stabilize or reposition for survival while B01002 maintains pressure on A0200 alongside B02002. Neither A0100 nor the defensive A0200 is clearly targeting B0100 during this interval, and no active Team A missile against it is identifiable.\",\"B0200\":\"B0200 is inactive throughout the interval and has no active protective, evasive, or attacking role toward A0100 or A0200. Its previously launched B02002 likely continues threatening A0200, but no aircraft or missile actively targeting inactive B0200 can be identified.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2335,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2048,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 30923,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 28796,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 33258
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely to continue a fast, nearly level eastward extension, preserving separation rather than closing on B0100 while A0200 handles the nearer missile threat. No attacker or incoming missile against A0100 is clearly identifiable; B01002 and B02002 more plausibly threaten A0200.",
+        "A0200": "A0200 is likely to continue descending and accelerating through a reversing turn to complicate interception by B01002 and B02002. B0100 is the likely attacker through B01002, while inactive B0200 launched B02002; A0200 is not clearly pursuing either opponent.",
+        "B0100": "B0100 is likely to continue its descending turn and then stabilize or reposition for survival while B01002 maintains pressure on A0200 alongside B02002. Neither A0100 nor the defensive A0200 is clearly targeting B0100 during this interval, and no active Team A missile against it is identifiable.",
+        "B0200": "B0200 is inactive throughout the interval and has no active protective, evasive, or attacking role toward A0100 or A0200. Its previously launched B02002 likely continues threatening A0200, but no aircraft or missile actively targeting inactive B0200 can be identified."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 42,
+        "A0200": 38,
+        "B0100": 46,
+        "B0200": 39
+      },
+      "total_words": 165,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "9ef4d056eb51c1c0f5139e36bc63a85a0571d4e3fafab62b16d3085775f69ff8",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 143,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 is likely to continue eastward and separate from the fight, chiefly evading the likely B0100- and B0200-launched threats B01002 and B02002. Its intended attack target during this interval is unclear; B0100 is the supported opposing attacker through B01002, while B0200 is inactive although B02002 remains airborne.\",\"A0200\":\"A0200 is likely to continue its descending east-to-southeast turn to open separation from pursuing B0100 after B0200 becomes inactive. B0100 appears the relevant opposing attacker based on its closing geometry, but no airborne missile can be identified as specifically targeting A0200.\",\"B0100\":\"B0100 is likely to continue turning and descending southeastward in pursuit of A0200, attempting to retain pressure as A0200 moves eastward. Its B01002 missile is more plausibly directed at A0100 than A0200; B0100 is not shown under a specifically identifiable incoming missile threat during this interval.\",\"B0200\":\"B0200 is inactive throughout the target interval and has no active attacking, protective, or evasive role. Its previously launched B02002 remains airborne and is plausibly threatening A0100, but B0200 itself cannot continue an attack.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1229,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 947,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 30923,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 30920,
+        "cached_tokens": 0
+      },
+      "total_tokens": 32152
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely to continue eastward and separate from the fight, chiefly evading the likely B0100- and B0200-launched threats B01002 and B02002. Its intended attack target during this interval is unclear; B0100 is the supported opposing attacker through B01002, while B0200 is inactive although B02002 remains airborne.",
+        "A0200": "A0200 is likely to continue its descending east-to-southeast turn to open separation from pursuing B0100 after B0200 becomes inactive. B0100 appears the relevant opposing attacker based on its closing geometry, but no airborne missile can be identified as specifically targeting A0200.",
+        "B0100": "B0100 is likely to continue turning and descending southeastward in pursuit of A0200, attempting to retain pressure as A0200 moves eastward. Its B01002 missile is more plausibly directed at A0100 than A0200; B0100 is not shown under a specifically identifiable incoming missile threat during this interval.",
+        "B0200": "B0200 is inactive throughout the target interval and has no active attacking, protective, or evasive role. Its previously launched B02002 remains airborne and is plausibly threatening A0100, but B0200 itself cannot continue an attack."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 47,
+        "A0200": 41,
+        "B0100": 46,
+        "B0200": 34
+      },
+      "total_words": 168,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "1a6d1351dda96a278ae8c767c19380ce4166583a6be410f4b5d4a680366bd83d",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 143,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 is likely maintaining a fast, level eastward transit to preserve separation or a firing position relative to B0100 and the inactive B0200. B01002 and B02002 are plausible threats to the A formation, but their intended target cannot be identified; no specific aircraft attacker of A0100 is established.\",\n  \"A0200\": \"A0200 is likely continuing a descending, turning maneuver to engage or reposition against B0100 while complicating the approach of B01002 and B02002. B0100 is the nearest plausible opposing attacker, but neither missile's target—and therefore whether either specifically threatens A0200—can be identified.\",\n  \"B0100\": \"B0100 is likely maneuvering southward to close or attack A0200, the nearer active opposing aircraft, while B0200 remains inactive. B01002 and B02002 are associated with B-team attacks, but their targets cannot be identified; A0100 and A0200 are both potential threats to B0100, with no confirmed specific attacker.\",\n  \"B0200\": \"B0200 is inactive throughout the target interval and therefore has no active attacking, protective, or evasive role. Its missile B02002 remains recorded, but the missile's target is uncertain; no aircraft can be identified as targeting the inactive B0200 during this interval.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1325,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 30923,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 28796,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 32248
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely maintaining a fast, level eastward transit to preserve separation or a firing position relative to B0100 and the inactive B0200. B01002 and B02002 are plausible threats to the A formation, but their intended target cannot be identified; no specific aircraft attacker of A0100 is established.",
+        "A0200": "A0200 is likely continuing a descending, turning maneuver to engage or reposition against B0100 while complicating the approach of B01002 and B02002. B0100 is the nearest plausible opposing attacker, but neither missile's target—and therefore whether either specifically threatens A0200—can be identified.",
+        "B0100": "B0100 is likely maneuvering southward to close or attack A0200, the nearer active opposing aircraft, while B0200 remains inactive. B01002 and B02002 are associated with B-team attacks, but their targets cannot be identified; A0100 and A0200 are both potential threats to B0100, with no confirmed specific attacker.",
+        "B0200": "B0200 is inactive throughout the target interval and therefore has no active attacking, protective, or evasive role. Its missile B02002 remains recorded, but the missile's target is uncertain; no aircraft can be identified as targeting the inactive B0200 during this interval."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 48,
+        "A0200": 41,
+        "B0100": 47,
+        "B0200": 41
+      },
+      "total_words": 177,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "36b490c06d717c11bc9e0d2ec07e77efca1b91bc2f480d505009b59e0cba733f",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 143,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 maintains a fast, nearly level eastward extension, likely seeking separation from B0100 while drawing the pursuing B01002 and B02002 away from A0200. B0100 itself appears focused on A0200, so the supported attacks on A0100 are the missiles launched by B0100 and B0200 rather than direct aircraft pursuit.\",\"A0200\":\"A0200 continues an accelerating, descending southeastward escape with repeated turns, likely to frustrate B0100's pursuit rather than attack it or support A0100. B0100 is the likely aircraft targeting A0200; B01002 and B02002 are not geometrically directed at it, and no incoming missile to A0200 is identifiable.\",\"B0100\":\"B0100 continues descending and maneuvering south-southeast in likely pursuit of A0200, seeking favorable attack geometry, while its missile B01002 continues toward A0100. Neither A0100 nor A0200, and no active missile, can be identified as targeting B0100 during this interval.\",\"B0200\":\"B0200 remains inactive throughout the interval and therefore has no active protective, evasive, or attacking role toward A0100, A0200, or B0100. Its recorded missile B02002 likely continues toward A0100, but no aircraft or missile can be identified as targeting inactive B0200.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2365,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2048,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 51283,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 49156,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 53648
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 maintains a fast, nearly level eastward extension, likely seeking separation from B0100 while drawing the pursuing B01002 and B02002 away from A0200. B0100 itself appears focused on A0200, so the supported attacks on A0100 are the missiles launched by B0100 and B0200 rather than direct aircraft pursuit.",
+        "A0200": "A0200 continues an accelerating, descending southeastward escape with repeated turns, likely to frustrate B0100's pursuit rather than attack it or support A0100. B0100 is the likely aircraft targeting A0200; B01002 and B02002 are not geometrically directed at it, and no incoming missile to A0200 is identifiable.",
+        "B0100": "B0100 continues descending and maneuvering south-southeast in likely pursuit of A0200, seeking favorable attack geometry, while its missile B01002 continues toward A0100. Neither A0100 nor A0200, and no active missile, can be identified as targeting B0100 during this interval.",
+        "B0200": "B0200 remains inactive throughout the interval and therefore has no active protective, evasive, or attacking role toward A0100, A0200, or B0100. Its recorded missile B02002 likely continues toward A0100, but no aircraft or missile can be identified as targeting inactive B0200."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 48,
+        "A0200": 46,
+        "B0100": 39,
+        "B0200": 41
+      },
+      "total_words": 174,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "a86cee11e9fcd890ca06e13cbca55884e3e19af7c155f178a0ddf5c66182d2e4",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 143,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 is likely continuing an eastward, accelerating egress while maintaining separation from B0100 and B0200; B01002 and B02002 are plausibly pursuing A0100 from behind, though their target assignments are inferred from geometry rather than recorded.\",\"A0200\":\"A0200 is likely diving and turning southeast to disengage from the remaining fight, increasing separation from B0100 while B0200 is inactive. B0100 appears to be the most plausible aircraft pursuing or threatening A0200; no incoming missile can be specifically assigned to A0200.\",\"B0100\":\"B0100 is likely descending and turning southeast in pursuit of A0200, seeking to retain or improve an attack position as B0200 remains inactive. A0100 is farther southeast and its current attack relationship to B0100 is uncertain; no surviving A missile can be identified as targeting B0100.\",\"B0200\":\"B0200 is inactive throughout the applicable target interval after its early removal and has no active attacking, protective, or evasive role. Its missile B02002 continues in the record and is plausibly threatening A0100, but B0200 itself cannot continue an attack.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1287,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 51283,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 49156,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 52570
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely continuing an eastward, accelerating egress while maintaining separation from B0100 and B0200; B01002 and B02002 are plausibly pursuing A0100 from behind, though their target assignments are inferred from geometry rather than recorded.",
+        "A0200": "A0200 is likely diving and turning southeast to disengage from the remaining fight, increasing separation from B0100 while B0200 is inactive. B0100 appears to be the most plausible aircraft pursuing or threatening A0200; no incoming missile can be specifically assigned to A0200.",
+        "B0100": "B0100 is likely descending and turning southeast in pursuit of A0200, seeking to retain or improve an attack position as B0200 remains inactive. A0100 is farther southeast and its current attack relationship to B0100 is uncertain; no surviving A missile can be identified as targeting B0100.",
+        "B0200": "B0200 is inactive throughout the applicable target interval after its early removal and has no active attacking, protective, or evasive role. Its missile B02002 continues in the record and is plausibly threatening A0100, but B0200 itself cannot continue an attack."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 35,
+        "A0200": 42,
+        "B0100": 46,
+        "B0200": 40
+      },
+      "total_words": 163,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "40e6212b1d71daee6e24145433bb435e9b83281bea9a8e747f012ddd90fbf9a4",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 143,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 is likely maintaining a high-speed eastward egress or standoff position rather than turning into B0100, preserving separation while A0200 remains under pressure. No opposing attacker or incoming missile can be identified as specifically targeting A0100.\",\n  \"A0200\": \"A0200 is likely performing a defensive descending break while trying to survive and disengage from B0100, whose approach is consistent with attacking it. Its maneuver also appears directed against threatening B01002 and B02002, although missile target attribution cannot be established with certainty.\",\n  \"B0100\": \"B0100 is likely pursuing A0200 while descending and maneuvering to maintain an attack position, with B01002 plausibly supporting that engagement. A0100 is not clearly its target; no other attacker of B0100 can be identified.\",\n  \"B0200\": \"B0200 is inactive throughout the target interval and therefore has no active attacking, protective, or evasive role. B02002 remains recorded, but its intended target cannot be identified, and no attacker of B0200 can be established.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1273,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 51283,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 49156,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 52556
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely maintaining a high-speed eastward egress or standoff position rather than turning into B0100, preserving separation while A0200 remains under pressure. No opposing attacker or incoming missile can be identified as specifically targeting A0100.",
+        "A0200": "A0200 is likely performing a defensive descending break while trying to survive and disengage from B0100, whose approach is consistent with attacking it. Its maneuver also appears directed against threatening B01002 and B02002, although missile target attribution cannot be established with certainty.",
+        "B0100": "B0100 is likely pursuing A0200 while descending and maneuvering to maintain an attack position, with B01002 plausibly supporting that engagement. A0100 is not clearly its target; no other attacker of B0100 can be identified.",
+        "B0200": "B0200 is inactive throughout the target interval and therefore has no active attacking, protective, or evasive role. B02002 remains recorded, but its intended target cannot be identified, and no attacker of B0200 can be established."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 36,
+        "A0200": 42,
+        "B0100": 34,
+        "B0200": 35
+      },
+      "total_words": 147,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "2ab388b65e66c369db99104706a68ba209b5c1e3da2933f2efeb470d82d2b42a",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 243,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 likely begins a high-altitude left reversal to reorient toward B0100 and support A0200 against B01001. B0100’s targeting of A0100 is uncertain; B01002 is removed at the interval opening and is not a continuing identifiable threat.\",\"A0200\":\"A0200 likely continues hard turning while moving eastward to evade B01001 and separate from its launcher, B0100, rather than immediately attack. B0100 is the likely attacker and B01001 the specific missile threat; A0200’s own intended target is not identifiable.\",\"B0100\":\"B0100 likely continues eastward pursuit of A0200, supporting its missile B01001 despite having no recorded missiles remaining. A0100’s developing reversal makes it the likeliest prospective threat to B0100, though no Team A missile attack is established.\",\"B0200\":\"B0200 remains inactive throughout the interval and has no active attacking, protective, or evasive role relative to A0100, A0200, or B0100. No aircraft or missile actively targeting B0200 during this interval can be identified.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2313,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2048,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 27057,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 24930,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 29370
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 likely begins a high-altitude left reversal to reorient toward B0100 and support A0200 against B01001. B0100’s targeting of A0100 is uncertain; B01002 is removed at the interval opening and is not a continuing identifiable threat.",
+        "A0200": "A0200 likely continues hard turning while moving eastward to evade B01001 and separate from its launcher, B0100, rather than immediately attack. B0100 is the likely attacker and B01001 the specific missile threat; A0200’s own intended target is not identifiable.",
+        "B0100": "B0100 likely continues eastward pursuit of A0200, supporting its missile B01001 despite having no recorded missiles remaining. A0100’s developing reversal makes it the likeliest prospective threat to B0100, though no Team A missile attack is established.",
+        "B0200": "B0200 remains inactive throughout the interval and has no active attacking, protective, or evasive role relative to A0100, A0200, or B0100. No aircraft or missile actively targeting B0200 during this interval can be identified."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 36,
+        "A0200": 39,
+        "B0100": 36,
+        "B0200": 34
+      },
+      "total_words": 145,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "42514bf86ce674b540c0038b5ca6605639f6441597ca81dec4e497e0b35cffc5",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 243,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 is likely to continue its eastward escape/separation while beginning a leftward turn, remaining high and ahead of A0200 rather than directly pressing B0100. B0100’s active attack appears more likely directed at A0200 via B01001; no opposing aircraft or active missile can be identified as targeting A0100 during this interval.\",\"A0200\":\"A0200 is likely to sustain its hard rightward defensive maneuver while leveling from its descent to evade the approaching B01001 missile and separate from its launcher, B0100. B01001 most plausibly threatens A0200, with B0100 likely pursuing or attacking it; A0200 shows no supported attack against B0100.\",\"B0100\":\"B0100 is likely to continue east-southeast in pursuit of A0200, maintaining pressure while its missile B01001 most plausibly continues toward A0200. No active A missile or specific A aircraft attack on B0100 can be identified during this interval.\",\"B0200\":\"B0200 is inactive throughout the target interval and has no active protective, evasive, or attacking role. Its previously recorded missile B02002 is no longer present, and no current relationship or attacker can be identified.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1270,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 996,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 27057,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 27054,
+        "cached_tokens": 0
+      },
+      "total_tokens": 28327
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely to continue its eastward escape/separation while beginning a leftward turn, remaining high and ahead of A0200 rather than directly pressing B0100. B0100’s active attack appears more likely directed at A0200 via B01001; no opposing aircraft or active missile can be identified as targeting A0100 during this interval.",
+        "A0200": "A0200 is likely to sustain its hard rightward defensive maneuver while leveling from its descent to evade the approaching B01001 missile and separate from its launcher, B0100. B01001 most plausibly threatens A0200, with B0100 likely pursuing or attacking it; A0200 shows no supported attack against B0100.",
+        "B0100": "B0100 is likely to continue east-southeast in pursuit of A0200, maintaining pressure while its missile B01001 most plausibly continues toward A0200. No active A missile or specific A aircraft attack on B0100 can be identified during this interval.",
+        "B0200": "B0200 is inactive throughout the target interval and has no active protective, evasive, or attacking role. Its previously recorded missile B02002 is no longer present, and no current relationship or attacker can be identified."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 50,
+        "A0200": 46,
+        "B0100": 38,
+        "B0200": 34
+      },
+      "total_words": 168,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "1bb195a0b20d3c1c10ad31821b4d400e1c0a988585213fedb39455446116420b",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 243,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 is likely maintaining a high-altitude standoff or cover position, continuing eastward while beginning a leftward repositioning relative to B0100 and teammate A0200. No specific attacker or incoming missile targeting A0100 can be identified.\",\n  \"A0200\": \"A0200 is likely extending defensively toward the northeast while maneuvering away from B0100 and the nearby B01001 missile, possibly to preserve an attack opportunity against B0100; an actual target cannot be established. B0100 is the most plausible attacking aircraft, with B01001 the most plausible associated threat, though missile targeting is unconfirmed.\",\n  \"B0100\": \"B0100 is likely pursuing A0200 while continuing its southeastward approach, with B01001 apparently supporting that engagement; B01002's removal does not establish its target or result. A0100 and A0200 are opposing aircraft, but which one B0100 is targeting cannot be proven beyond the stronger A0200 association.\",\n  \"B0200\": \"B0200 is inactive throughout the applicable interval and therefore has no active attacking, protective, evasive, or supporting role involving A0100, A0200, B0100, or the recorded missiles. No attacker relationship can be identified for B0200.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1313,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 27057,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 24930,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 28370
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely maintaining a high-altitude standoff or cover position, continuing eastward while beginning a leftward repositioning relative to B0100 and teammate A0200. No specific attacker or incoming missile targeting A0100 can be identified.",
+        "A0200": "A0200 is likely extending defensively toward the northeast while maneuvering away from B0100 and the nearby B01001 missile, possibly to preserve an attack opportunity against B0100; an actual target cannot be established. B0100 is the most plausible attacking aircraft, with B01001 the most plausible associated threat, though missile targeting is unconfirmed.",
+        "B0100": "B0100 is likely pursuing A0200 while continuing its southeastward approach, with B01001 apparently supporting that engagement; B01002's removal does not establish its target or result. A0100 and A0200 are opposing aircraft, but which one B0100 is targeting cannot be proven beyond the stronger A0200 association.",
+        "B0200": "B0200 is inactive throughout the applicable interval and therefore has no active attacking, protective, evasive, or supporting role involving A0100, A0200, B0100, or the recorded missiles. No attacker relationship can be identified for B0200."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 34,
+        "A0200": 51,
+        "B0100": 45,
+        "B0200": 34
+      },
+      "total_words": 164,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "eb4b703591c001ac60f5698fa1ba5fa8795b658c52a414f9ab054e1c81f0e911",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 243,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 executes a hard left, descending reversal, likely seeking to turn back toward B0100 and support the pursued A0200. B01002, launched by B0100, was plausibly attacking A0100 but ceases to be an active recorded threat at the interval’s outset; no other attacker is identifiable.\",\"A0200\":\"A0200 extends east-northeast with repeated turning adjustments and gradual descent, likely trying to remain ahead of pursuing B0100 and defeat the trailing missile B01001. B0100 is the likely attacking aircraft, while B01001 is its distinct incoming weapon.\",\"B0100\":\"B0100 turns onto an easterly course behind A0200, likely maintaining pursuit while its missile B01001 continues the attack; A0100’s reversal may be developing into support for A0200 against it. Neither A0100 nor A0200 is clearly established as targeting B0100 during this interval, and no Team A missile threat is identifiable.\",\"B0200\":\"B0200 remains inactive throughout the interval and has no active protective, evasive, or attacking role toward A0100, A0200, or B0100. No aircraft or missile currently targeting the inactive B0200 can be identified.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 3043,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2742,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 44553,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 42426,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 47596
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 executes a hard left, descending reversal, likely seeking to turn back toward B0100 and support the pursued A0200. B01002, launched by B0100, was plausibly attacking A0100 but ceases to be an active recorded threat at the interval’s outset; no other attacker is identifiable.",
+        "A0200": "A0200 extends east-northeast with repeated turning adjustments and gradual descent, likely trying to remain ahead of pursuing B0100 and defeat the trailing missile B01001. B0100 is the likely attacking aircraft, while B01001 is its distinct incoming weapon.",
+        "B0100": "B0100 turns onto an easterly course behind A0200, likely maintaining pursuit while its missile B01001 continues the attack; A0100’s reversal may be developing into support for A0200 against it. Neither A0100 nor A0200 is clearly established as targeting B0100 during this interval, and no Team A missile threat is identifiable.",
+        "B0200": "B0200 remains inactive throughout the interval and has no active protective, evasive, or attacking role toward A0100, A0200, or B0100. No aircraft or missile currently targeting the inactive B0200 can be identified."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 44,
+        "A0200": 37,
+        "B0100": 50,
+        "B0200": 32
+      },
+      "total_words": 163,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "9abfe35fe31a8f09bd8d3e1dc8c0f17d9542799237eb06a7823e45be6590eb60",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 243,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 makes a sustained left-turning, descending reposition, plausibly circling back toward B0100 while remaining separated from A0200’s missile threat. B0100’s active attack appears directed at A0200 via B01001 rather than A0100; no attacker or incoming missile against A0100 can be identified.\",\"A0200\":\"A0200 continues a fast rightward/forward maneuver to evade the likely B0100-launched missile B01001, which closes from its west-northwest while B0100 follows eastward behind it. A0200 does not show a supported attack on B0100 during this interval; B01001 is the identifiable immediate threat.\",\"B0100\":\"B0100 continues eastward with its remaining B01001 missile plausibly prosecuting A0200, maintaining geometry behind and northwest of that aircraft despite having no recorded missiles remaining. Neither A0100 nor A0200 can be identified as actively attacking B0100 during this interval.\",\"B0200\":\"B0200 is inactive throughout the target interval and has no active attacking, protective, or evasive role. Its earlier missile B02002 is no longer recorded before the interval, and no aircraft or missile can be identified as attacking B0200 during it.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1303,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 44553,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 42426,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 45856
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 makes a sustained left-turning, descending reposition, plausibly circling back toward B0100 while remaining separated from A0200’s missile threat. B0100’s active attack appears directed at A0200 via B01001 rather than A0100; no attacker or incoming missile against A0100 can be identified.",
+        "A0200": "A0200 continues a fast rightward/forward maneuver to evade the likely B0100-launched missile B01001, which closes from its west-northwest while B0100 follows eastward behind it. A0200 does not show a supported attack on B0100 during this interval; B01001 is the identifiable immediate threat.",
+        "B0100": "B0100 continues eastward with its remaining B01001 missile plausibly prosecuting A0200, maintaining geometry behind and northwest of that aircraft despite having no recorded missiles remaining. Neither A0100 nor A0200 can be identified as actively attacking B0100 during this interval.",
+        "B0200": "B0200 is inactive throughout the target interval and has no active attacking, protective, or evasive role. Its earlier missile B02002 is no longer recorded before the interval, and no aircraft or missile can be identified as attacking B0200 during it."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 41,
+        "A0200": 42,
+        "B0100": 39,
+        "B0200": 40
+      },
+      "total_words": 162,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "ed64d8803bc33b3dba4517557822e4c4d48107b97ecf8aaa05d77d73e39fe61e",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 243,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 is likely a high-altitude cover aircraft, maneuvering into a broad turning course while remaining separated from A0200 and B0100. No opposing aircraft or missile can be identified as targeting A0100 during this interval; B01001 appears directed toward A0200 instead.\",\n  \"A0200\": \"A0200 is likely trying to evade or outrun B0100 and the threatening missile B01001 while continuing eastward and descending rather than closing the engagement. B0100 is the likely attacking aircraft, with B01001 the associated incoming missile; a successful evasion or exact missile target cannot be established.\",\n  \"B0100\": \"B0100 is likely pursuing an attack on A0200, continuing an eastward approach while B01001 closes from ahead and slightly north. B01001 is launched by B0100 and is plausibly aimed at A0200; no A-team aircraft or missile is clearly targeting B0100.\",\n  \"B0200\": \"B0200 is inactive throughout the target interval and has no active protective, evasive, or attacking role. No attacker or threatening missile can be assigned to B0200 during this interval.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1290,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 44553,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 42426,
+        "cached_tokens": 2124
+      },
+      "total_tokens": 45843
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 is likely a high-altitude cover aircraft, maneuvering into a broad turning course while remaining separated from A0200 and B0100. No opposing aircraft or missile can be identified as targeting A0100 during this interval; B01001 appears directed toward A0200 instead.",
+        "A0200": "A0200 is likely trying to evade or outrun B0100 and the threatening missile B01001 while continuing eastward and descending rather than closing the engagement. B0100 is the likely attacking aircraft, with B01001 the associated incoming missile; a successful evasion or exact missile target cannot be established.",
+        "B0100": "B0100 is likely pursuing an attack on A0200, continuing an eastward approach while B01001 closes from ahead and slightly north. B01001 is launched by B0100 and is plausibly aimed at A0200; no A-team aircraft or missile is clearly targeting B0100.",
+        "B0200": "B0200 is inactive throughout the target interval and has no active protective, evasive, or attacking role. No attacker or threatening missile can be assigned to B0200 during this interval."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 40,
+        "A0200": 46,
+        "B0100": 40,
+        "B0200": 29
+      },
+      "total_words": 155,
+      "max_words_per_aircraft": 80,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  }
+]

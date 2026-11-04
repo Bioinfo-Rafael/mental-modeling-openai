@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "plan_id": "396035e042786286b54efafa14ff8b1e9b58b14db8aeb06065f800f127e66f49",
+  "transport": "batch",
+  "jobs": [
+    {
+      "name": "model0_000",
+      "model": "gpt-5.6-sol",
+      "input_file": "model0_000.input.jsonl",
+      "sha256": "3229e81802cae2a730ed907401136c8297b10f68b95a09dec82d458a9b80e1e8",
+      "query_ids": [
+        "b70507c31521a8c09612882c5bf78566ac8d5c47d26377cbeb7b96a1d9dc8de4",
+        "c57e456599ae917f551bdadda378b9420456e6b735a312f56715153a06c13559",
+        "ccaa9e5df0886bc17d7083d00b9417d0b18ccea22ad2d642517e362c727ba48e",
+        "830f9ef56e519860353374d6ceb753f3d448396999ebf94d679d3fd67bbc8fac",
+        "97e4d34f7bb9c6efd7db17b638989137fa2e4198330a9d8c9ec115fc4fa9c4fa"
+      ],
+      "estimated_input_tokens": 286983,
+      "status": "completed",
+      "job_key": "e516e2e364e8c3c59f2a7b018810002b3ffeddd8e2554e2ad93c6dc4d7b903e2",
+      "file_id": "file-23yTG68FJgnVhYRyyVpPwt",
+      "batch_id": "batch_6ade2834f460819090f0268ba6530918",
+      "collected": true,
+      "successful": 5
+    },
+    {
+      "name": "model1_000",
+      "model": "gpt-5.6-terra",
+      "input_file": "model1_000.input.jsonl",
+      "sha256": "97c121cb508f86fa7d58c143c1acad8f5dad7f8d65b7c7c5520567704bba5b5b",
+      "query_ids": [
+        "dcd1271c993a0e2bcfe66be16bf7db358cba036873554ff196b864a5cc35b0d4",
+        "4fc4a45b16584abc095f949e367e947bc25d2502330c98cd8192ef675983f772",
+        "aaf59f8a36b1f8153b9c9b687f251a97346fc44097882249609a6f773c495c64",
+        "0e44ec7d7311de5b579493eb7b7e575baef4a814ee844b454cb0f4aef0870076",
+        "cac90c47c33c16a21f4377c16da972a340314beb24c2c6c1015c3597b70a895b"
+      ],
+      "estimated_input_tokens": 286990,
+      "status": "completed",
+      "job_key": "160a354077499390da5d19090918e9a59cadbd6bf74b49e173c8d1d34bcf2517",
+      "file_id": "file-Ket6K71ZbXs11DTjXPLNUQ",
+      "batch_id": "batch_6ade283a1ccc81908e0b498bc7de88c8",
+      "collected": true,
+      "successful": 5
+    },
+    {
+      "name": "model2_000",
+      "model": "gpt-5.6-luna",
+      "input_file": "model2_000.input.jsonl",
+      "sha256": "459409fe4bcadb9830c57aba4117e51827ea1358e396417f6785f295e01d4375",
+      "query_ids": [
+        "0eb48821d60700acf62e36915756ae5feacad103785e9eae94a033d5b54bb4e4",
+        "b4541e89645b4438cf2149793ad92c8a1bf8cf2c9671e986ae46e5b777a9925e",
+        "eca217835a8444217b086bbcb0491af9b6c45ca8b0b2d209b3bc82251bf06eb0",
+        "1daf413dca5f42a7ad62b17cad30dadb6bd5ffd5d793a643d26f50e07d9d96f4",
+        "a29a806c34c9a27658e973fb0a8daa38dc55bf15cc4a62fd6b5bab96e3d9f48f"
+      ],
+      "estimated_input_tokens": 286990,
+      "status": "completed",
+      "job_key": "0d842c611ff2ee1b61f25d6c547516952915582c111fc08f5186c7ea6752fe45",
+      "file_id": "file-Xos968idDuYQfuLGnemTyR",
+      "batch_id": "batch_6ade2864418081908061c5f56a9ebe45",
+      "collected": true,
+      "successful": 5
+    }
+  ]
+}

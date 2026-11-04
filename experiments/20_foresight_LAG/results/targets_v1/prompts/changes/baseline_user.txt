@@ -1,0 +1,21 @@
+Episode: {episode_alias}
+
+Observation window:
+Start step: {start_step}
+Cutoff step c: {end_step}
+Start time: {start_time_s:.1f} seconds
+Cutoff time: {end_time_s:.1f} seconds
+Number of time points: {time_points}
+Elapsed time: {elapsed_s:.1f} seconds
+
+Target interval:
+Start step T: {target_start_step}
+End step: {target_end_step}
+Start time: {target_start_time_s:.1f} seconds
+End time: {target_end_time_s:.1f} seconds
+
+BEGIN OBSERVATION DATA
+
+{window_data}
+
+END OBSERVATION DATA

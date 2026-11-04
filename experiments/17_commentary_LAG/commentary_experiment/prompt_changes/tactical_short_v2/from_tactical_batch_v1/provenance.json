@@ -1,0 +1,19 @@
+{
+  "source_run": "tactical_batch_v1",
+  "source_manifest": "experiments/17_commentary_LAG/results/tactical_batch_v1/manifest.json",
+  "source_manifest_sha256": "2e448ed63bc1e16e4694afb522da5b4b5deb0e408db17d13973172787e6cd860",
+  "source_plan_id": "96ebf96d541c8ddf70101c4d4aba80a993fbb616698dcadb503660e0cf0209f1",
+  "source_prompt_version": "lag-tactical-v1",
+  "verified_sample_ids": [
+    "center_0045",
+    "center_0085",
+    "center_0145",
+    "center_0245",
+    "center_0310"
+  ],
+  "verification": "System and expanded user template match all five saved sample messages byte-for-byte.",
+  "baseline_sha256": {
+    "system": "9ef12100173ed85b4fffd0176348a9a766dc664322716d2271bde352f89c331a",
+    "user": "e2e862ec03c289b5e45e3a951a89ddbc035c45f4af4ab161055c0051bc307345"
+  }
+}

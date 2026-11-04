@@ -1,7 +1,7 @@
 import argparse
 import json
 from .common import ROOT, ex, batch, run_directory
-from .planning import make_plan, save_plan
+from .planning import make_plan, save_plan, VARIANTS
 from .evaluation import export
 from .viewer import build_viewer
 
@@ -9,7 +9,8 @@ from .viewer import build_viewer
 def run(argv=None):
     parser = argparse.ArgumentParser(description='Fixed 30-transition forecasts; plan is offline.')
     parser.add_argument('command', choices=['plan', 'execute', 'collect', 'status', 'export', 'adopt'])
-    parser.add_argument('--run', default='foresight_short_v1')
+    parser.add_argument('--run', default=None)
+    parser.add_argument('--prompt-variant', choices=VARIANTS, default=None)
     parser.add_argument('--wait', action='store_true')
     parser.add_argument('--poll-seconds', type=float, default=30)
     parser.add_argument('--job')
@@ -24,12 +25,15 @@ def run(argv=None):
             parser.error('adopt requires --job and --batch-id')
     elif args.job or args.batch_id:
         parser.error('--job/--batch-id require adopt')
-    directory = run_directory(args.run)
+    if args.prompt_variant and args.command != 'plan':
+        parser.error('--prompt-variant is only valid with plan; other commands use the saved run')
+    variant = args.prompt_variant or 'foresight_short_v1'
+    directory = run_directory(args.run or variant)
     if args.command != 'plan' and not (directory / 'manifest.json').exists():
         parser.error('No saved run; use plan first')
     with ex.run_lock(directory):
         if args.command == 'plan':
-            plan = make_plan()
+            plan = make_plan(variant)
             save_plan(plan, directory)
         else:
             plan = ex.read_json(directory / 'manifest.json')

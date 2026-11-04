@@ -1,0 +1,22 @@
+{
+  "source_run": "foresight_short_v1",
+  "source_manifest_path": "experiments/20_foresight_LAG/results/foresight_short_v1/manifest.json",
+  "source_manifest_sha256": "67969effc1e5caa2984fe411d68b0bd6453852e5a11e371d6d2910705019bf81",
+  "source_plan_id": "8d345dfde2af860014ed7849371369ac0c72642a2c00e67c5816198530556ea3",
+  "baseline_sha256": {
+    "system": "8f11e9e9423eeb1874b4d6086e5edb94edbdf3353df224d0d066f54223bd485e",
+    "user": "b4fd6373c4ee2b68388d639205f53a688e1359f11ebe4b09c847318456a6236d"
+  },
+  "proposal_sha256": {
+    "system": "e726251214cb0899c87c33617abdc9327634008c5e9f72498faa4bd80daa468e",
+    "user": "b4fd6373c4ee2b68388d639205f53a688e1359f11ebe4b09c847318456a6236d"
+  },
+  "request_options": {
+    "reasoning_effort": "medium"
+  },
+  "models": [
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-5.6-luna"
+  ]
+}

@@ -4,7 +4,15 @@ from . import execution as ex
 from .config import REFERENCE_URL
 
 
-def parse_intentions(raw):
+def length_metrics(narratives, max_words=None):
+    """Whitespace-separated words, matching the baseline descriptive count."""
+    counts = {aircraft: len(text.split()) for aircraft, text in narratives.items()}
+    return dict(counting_method='whitespace_split', words_by_aircraft=counts,
+                total_words=sum(counts.values()), max_words_per_aircraft=max_words,
+                over_limit_by_aircraft={a: n > max_words for a, n in counts.items()} if max_words else None)
+
+
+def parse_intentions(raw, aircraft_ids=('A0100', 'A0200', 'B0100', 'B0200')):
     def unique(pairs):
         result = {}
         for key, value in pairs:
@@ -17,8 +25,8 @@ def parse_intentions(raw):
         if choice.get('finish_reason') != 'stop':
             raise ValueError('Response did not finish normally')
         value = json.loads(choice['message']['content'], object_pairs_hook=unique)
-        if not isinstance(value, dict) or set(value) != {'A0100', 'A0200', 'B0100', 'B0200'}:
-            raise ValueError('Expected exactly four aircraft fields')
+        if not isinstance(value, dict) or set(value) != set(aircraft_ids):
+            raise ValueError(f'Expected exactly these aircraft fields: {", ".join(aircraft_ids)}')
         if any(not isinstance(v, str) or not v.strip() for v in value.values()):
             raise ValueError('Each narrative must be a nonempty string')
         return dict(valid=True, narratives=value, error=None)
@@ -45,6 +53,11 @@ def evaluate_saved(plan, directory):
             status='received' if raw is not None else ('error' if record else 'pending'),
             choices=raw.get('choices', []) if raw else [], usage=raw.get('usage') if raw else None,
             error=record.get('error')))
-        if plan.get('prompt_variant') == 'tactical':
-            output[-1]['intention_format'] = parse_intentions(raw) if raw else None
+        spec = plan.get('prompt_spec', {})
+        if spec.get('output_format') == 'aircraft_intentions_json' or plan.get('prompt_variant') == 'tactical':
+            output[-1]['intention_format'] = parse_intentions(
+                raw, spec.get('aircraft_ids', ('A0100', 'A0200', 'B0100', 'B0200'))) if raw else None
+            parsed = output[-1]['intention_format']
+            output[-1]['length_metrics'] = length_metrics(
+                parsed['narratives'], spec.get('length', {}).get('max_words')) if parsed and parsed['valid'] else None
     ex.write_json(folder/'responses.json', output)

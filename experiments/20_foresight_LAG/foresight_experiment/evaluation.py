@@ -27,7 +27,7 @@ def export(plan, directory):
                          narratives=narratives, raw_response=raw,
                          error=(parsed['error'] if parsed else None) or (record or {}).get('error'),
                          usage=raw.get('usage') if raw else None,
-                         length_metrics=answers.length_metrics(narratives, 55) if narratives else None,
+                         length_metrics=answers.length_metrics(narratives, plan['prompt_spec']['length']['max_words']) if narratives else None,
                          sentence_counts_heuristic=sentences))
     summary = dict(plan_id=plan['plan_id'], counts=plan['counts'], statuses=dict(Counter(r['status'] for r in rows)),
                    excluded_events=plan['excluded_events'],

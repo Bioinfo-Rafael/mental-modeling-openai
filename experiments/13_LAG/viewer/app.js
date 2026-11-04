@@ -1,8 +1,17 @@
 import {stateFields,actionFields,derivedFields,defaults,derived} from './model.js';
 import {Playback} from './playback.js';
 import {renderProbabilities,renderSeries} from './charts.js';
+import {Commentary} from './commentary.js';
 const $=id=>document.getElementById(id);
 let data, step=0, uid='A0100', activeTab='series', rows=new Map(), selected=new Set(defaults), request=0;
+const commentary=new Commentary($('commentaryPanel'),()=>{
+  if(!data)return;
+  data.lastStep=Math.max(data.recordingLastStep,commentary.replay?.last_step || 0);
+  $('scrubber').max=$('stepInput').max=data.lastStep;$('timeInput').max=(data.lastStep*data.dt).toFixed(1);
+  $('duration').textContent=`${(data.lastStep*data.dt).toFixed(1)} s / ${data.lastStep} steps${data.lastStep>data.recordingLastStep?'（結果待ちを含む）':''}`;
+  if(commentary.replay && activeTab==='series')switchTab('commentary');
+  else render();
+});
 const allFields=[...stateFields,...actionFields,...derivedFields];
 const playback=new Playback($('video'), s=>{step=s;render();}, playing=>{$('play').textContent=playing?'Ⅱ 停止':'▶ 再生';}, (frame,pending,error)=>{
   $('videoTime').textContent=frame?`映像 ${(frame.simulationTime).toFixed(1)} s${pending?' · 同期中':''}`:'映像を読み込み中';
@@ -22,6 +31,7 @@ function launches(){return data.launches.filter(e=>e.launcher_id===uid).sort((a,
 function renderAnalysis(){
   if(!data)return;
   $('analysisContext').textContent=`${uid} · step ${step} · ${(step*data.dt).toFixed(1)} s`;
+  if(activeTab==='commentary'){commentary.render(step*data.dt);return;}
   if(activeTab==='probability')renderProbabilities($('probabilities'),rows.get(step),data.actions);
   else {const scroll=$('charts').scrollTop;renderSeries($('charts'),{fields:allFields.filter(f=>selected.has(f[0])),rows,step,dt:data.dt,lastStep:data.lastStep,windowSize:$('window').value,launches:launches(),onSeek:s=>playback.seek(s)});$('charts').scrollTop=scroll;}
 }
@@ -43,14 +53,15 @@ async function loadEpisode(item){
   $('play').disabled=true;
   try{
     const loaded=await getJSON(item.data);if(token!==request)return;
-    data=loaded;step=0;
+    data=loaded;data.recordingLastStep=data.lastStep;step=0;
     $('aircraft').replaceChildren(...data.aircraft.map(id=>option(id,`${id} · ${id.startsWith('A')?'学習モデル':'固定ルール'}`)));$('aircraft').value=uid;
     buildRows();$('scrubber').max=$('stepInput').max=data.lastStep;$('timeInput').max=(data.lastStep*data.dt).toFixed(1);
     $('duration').textContent=`${(data.lastStep*data.dt).toFixed(1)} s / ${data.lastStep} steps`;
     playback.load(data);$('play').disabled=false;
+    await commentary.loadEpisode(data);
   }catch(e){if(token===request)fail(e);}
 }
-function switchTab(tab){activeTab=tab;const isSeries=tab==='series';$('seriesPanel').hidden=!isSeries;$('probabilityPanel').hidden=isSeries;$('tabSeries').setAttribute('aria-selected',isSeries);$('tabProbability').setAttribute('aria-selected',!isSeries);renderAnalysis();}
+function switchTab(tab){activeTab=tab;for(const [key,panel,button] of [['series','seriesPanel','tabSeries'],['probability','probabilityPanel','tabProbability'],['commentary','commentaryPanel','tabCommentary']]){const on=key===tab;$(panel).hidden=!on;$(button).setAttribute('aria-selected',String(on));}renderAnalysis();}
 function buildFields(){
   $('fields').replaceChildren();for(const [key,title] of allFields){const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.checked=selected.has(key);input.addEventListener('change',()=>{input.checked?selected.add(key):selected.delete(key);renderAnalysis();});label.append(input,document.createTextNode(title));$('fields').append(label);}
 }
@@ -64,6 +75,7 @@ $('speed').addEventListener('change',e=>playback.setSpeed(e.target.value));
 $('window').addEventListener('change',renderAnalysis);
 $('tabSeries').addEventListener('click',()=>switchTab('series'));
 $('tabProbability').addEventListener('click',()=>switchTab('probability'));
+$('tabCommentary').addEventListener('click',()=>switchTab('commentary'));
 $('prevLaunch').addEventListener('click',()=>{const e=launches().filter(e=>e.action_step<step).at(-1);if(e)playback.seek(e.action_step);});
 $('nextLaunch').addEventListener('click',()=>{const e=launches().find(e=>e.action_step>step);if(e)playback.seek(e.action_step);});
 $('launches').addEventListener('change',e=>{if(e.target.value!=='')playback.seek(e.target.value);e.target.value='';});

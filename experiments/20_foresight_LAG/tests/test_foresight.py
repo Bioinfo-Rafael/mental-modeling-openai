@@ -189,3 +189,23 @@ def test_cli_wait_and_missing_run_rejected():
         cli.run(['plan', '--wait'])
     with pytest.raises(SystemExit):
         cli.run(['collect', '--run', 'nonexistent-test-run'])
+
+
+def test_targets_preserves_inputs_and_changes_requests(plan, tmp_path):
+    targets = planning.make_plan('targets_v1')
+    assert targets['counts'] == plan['counts']
+    assert targets['prompt_variant'] == 'targets_v1'
+    assert targets['prompt_spec']['length']['max_words'] == 80
+    for sid, sample in targets['samples'].items():
+        assert sample['window'] == plan['samples'][sid]['window']
+        assert sample['messages'][1] == plan['samples'][sid]['messages'][1]
+        assert sample['messages'][0] != plan['samples'][sid]['messages'][0]
+    assert {q['request_sha256'] for q in targets['queries']}.isdisjoint(
+        q['request_sha256'] for q in plan['queries'])
+    planning.save_plan(targets, tmp_path)
+    rows, summary = evaluation.export(targets, tmp_path)
+    page = viewer.build_viewer(targets, rows, summary, tmp_path).read_text()
+    assert summary['statuses'] == {'unsubmitted': 54}
+    assert '上限55語' not in page
+    with pytest.raises(ValueError, match='Unknown prompt variant'):
+        planning.prompt_spec('../invalid')

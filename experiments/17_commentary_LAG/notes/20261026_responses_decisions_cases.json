@@ -1,0 +1,3322 @@
+{
+  "schema_version": 1,
+  "created_date_jst": "2026-10-26",
+  "status": "plan_only_no_api_calls",
+  "model": "gpt-6-luna",
+  "source": "experiments/13_LAG/data/processed/mhi_v1.3_ic100601_win.csv",
+  "source_sha256": "812a44c4ba2d2d3a285394722da48fd93189be2c9495cac2866632fa997282f4",
+  "dt_s": 0.2,
+  "history_points": 50,
+  "target_points": 10,
+  "stride_steps": 5,
+  "annotation_source": "/Users/cls-lab/Downloads/MHI_annotated.xlsx",
+  "labels_not_for_model_input": true,
+  "annotation_events": [
+    {
+      "id": "e01",
+      "step": 46,
+      "aircraft_id": "A0100"
+    },
+    {
+      "id": "e02",
+      "step": 49,
+      "aircraft_id": "A0200"
+    },
+    {
+      "id": "e03",
+      "step": 83,
+      "aircraft_id": "A0100"
+    },
+    {
+      "id": "e04",
+      "step": 95,
+      "aircraft_id": "A0200"
+    },
+    {
+      "id": "e05",
+      "step": 143,
+      "aircraft_id": "A0200"
+    },
+    {
+      "id": "e06",
+      "step": 243,
+      "aircraft_id": "A0100"
+    },
+    {
+      "id": "e07",
+      "step": 311,
+      "aircraft_id": "A0100"
+    }
+  ],
+  "stage1": {
+    "positive_end_steps": [
+      50,
+      55,
+      85,
+      90,
+      95,
+      100,
+      145,
+      150,
+      245,
+      250,
+      315,
+      320
+    ],
+    "negative_candidate_end_steps": [
+      65,
+      110,
+      125,
+      170,
+      195,
+      210,
+      225,
+      235,
+      270,
+      290,
+      305,
+      335
+    ],
+    "case_count": 24,
+    "repeats": 3,
+    "planned_requests": 72
+  },
+  "full_episode_cases": [
+    {
+      "case_id": "mhi_t0000",
+      "current_step": 0,
+      "input_start": 0,
+      "input_end": 0,
+      "input_points": 1,
+      "target_start": 0,
+      "target_end": 0,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 0,
+          "end": 0,
+          "points": 1
+        },
+        "50": {
+          "start": 0,
+          "end": 0,
+          "points": 1
+        },
+        "100": {
+          "start": 0,
+          "end": 0,
+          "points": 1
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0005",
+      "current_step": 5,
+      "input_start": 0,
+      "input_end": 5,
+      "input_points": 6,
+      "target_start": 0,
+      "target_end": 5,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 0,
+          "end": 5,
+          "points": 6
+        },
+        "50": {
+          "start": 0,
+          "end": 5,
+          "points": 6
+        },
+        "100": {
+          "start": 0,
+          "end": 5,
+          "points": 6
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0010",
+      "current_step": 10,
+      "input_start": 0,
+      "input_end": 10,
+      "input_points": 11,
+      "target_start": 1,
+      "target_end": 10,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 0,
+          "end": 10,
+          "points": 11
+        },
+        "50": {
+          "start": 0,
+          "end": 10,
+          "points": 11
+        },
+        "100": {
+          "start": 0,
+          "end": 10,
+          "points": 11
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0015",
+      "current_step": 15,
+      "input_start": 0,
+      "input_end": 15,
+      "input_points": 16,
+      "target_start": 6,
+      "target_end": 15,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 0,
+          "end": 15,
+          "points": 16
+        },
+        "50": {
+          "start": 0,
+          "end": 15,
+          "points": 16
+        },
+        "100": {
+          "start": 0,
+          "end": 15,
+          "points": 16
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0020",
+      "current_step": 20,
+      "input_start": 0,
+      "input_end": 20,
+      "input_points": 21,
+      "target_start": 11,
+      "target_end": 20,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 0,
+          "end": 20,
+          "points": 21
+        },
+        "50": {
+          "start": 0,
+          "end": 20,
+          "points": 21
+        },
+        "100": {
+          "start": 0,
+          "end": 20,
+          "points": 21
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0025",
+      "current_step": 25,
+      "input_start": 0,
+      "input_end": 25,
+      "input_points": 26,
+      "target_start": 16,
+      "target_end": 25,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 0,
+          "end": 25,
+          "points": 26
+        },
+        "50": {
+          "start": 0,
+          "end": 25,
+          "points": 26
+        },
+        "100": {
+          "start": 0,
+          "end": 25,
+          "points": 26
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0030",
+      "current_step": 30,
+      "input_start": 0,
+      "input_end": 30,
+      "input_points": 31,
+      "target_start": 21,
+      "target_end": 30,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 1,
+          "end": 30,
+          "points": 30
+        },
+        "50": {
+          "start": 0,
+          "end": 30,
+          "points": 31
+        },
+        "100": {
+          "start": 0,
+          "end": 30,
+          "points": 31
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0035",
+      "current_step": 35,
+      "input_start": 0,
+      "input_end": 35,
+      "input_points": 36,
+      "target_start": 26,
+      "target_end": 35,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 6,
+          "end": 35,
+          "points": 30
+        },
+        "50": {
+          "start": 0,
+          "end": 35,
+          "points": 36
+        },
+        "100": {
+          "start": 0,
+          "end": 35,
+          "points": 36
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0040",
+      "current_step": 40,
+      "input_start": 0,
+      "input_end": 40,
+      "input_points": 41,
+      "target_start": 31,
+      "target_end": 40,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 11,
+          "end": 40,
+          "points": 30
+        },
+        "50": {
+          "start": 0,
+          "end": 40,
+          "points": 41
+        },
+        "100": {
+          "start": 0,
+          "end": 40,
+          "points": 41
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0045",
+      "current_step": 45,
+      "input_start": 0,
+      "input_end": 45,
+      "input_points": 46,
+      "target_start": 36,
+      "target_end": 45,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 16,
+          "end": 45,
+          "points": 30
+        },
+        "50": {
+          "start": 0,
+          "end": 45,
+          "points": 46
+        },
+        "100": {
+          "start": 0,
+          "end": 45,
+          "points": 46
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0050",
+      "current_step": 50,
+      "input_start": 1,
+      "input_end": 50,
+      "input_points": 50,
+      "target_start": 41,
+      "target_end": 50,
+      "annotation_event_ids": [
+        "e01",
+        "e02"
+      ],
+      "label_status": "annotation_based_positive",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 21,
+          "end": 50,
+          "points": 30
+        },
+        "50": {
+          "start": 1,
+          "end": 50,
+          "points": 50
+        },
+        "100": {
+          "start": 0,
+          "end": 50,
+          "points": 51
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0055",
+      "current_step": 55,
+      "input_start": 6,
+      "input_end": 55,
+      "input_points": 50,
+      "target_start": 46,
+      "target_end": 55,
+      "annotation_event_ids": [
+        "e01",
+        "e02"
+      ],
+      "label_status": "annotation_based_positive",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 26,
+          "end": 55,
+          "points": 30
+        },
+        "50": {
+          "start": 6,
+          "end": 55,
+          "points": 50
+        },
+        "100": {
+          "start": 0,
+          "end": 55,
+          "points": 56
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0060",
+      "current_step": 60,
+      "input_start": 11,
+      "input_end": 60,
+      "input_points": 50,
+      "target_start": 51,
+      "target_end": 60,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 31,
+          "end": 60,
+          "points": 30
+        },
+        "50": {
+          "start": 11,
+          "end": 60,
+          "points": 50
+        },
+        "100": {
+          "start": 0,
+          "end": 60,
+          "points": 61
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0065",
+      "current_step": 65,
+      "input_start": 16,
+      "input_end": 65,
+      "input_points": 50,
+      "target_start": 56,
+      "target_end": 65,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 36,
+          "end": 65,
+          "points": 30
+        },
+        "50": {
+          "start": 16,
+          "end": 65,
+          "points": 50
+        },
+        "100": {
+          "start": 0,
+          "end": 65,
+          "points": 66
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0070",
+      "current_step": 70,
+      "input_start": 21,
+      "input_end": 70,
+      "input_points": 50,
+      "target_start": 61,
+      "target_end": 70,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 41,
+          "end": 70,
+          "points": 30
+        },
+        "50": {
+          "start": 21,
+          "end": 70,
+          "points": 50
+        },
+        "100": {
+          "start": 0,
+          "end": 70,
+          "points": 71
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0075",
+      "current_step": 75,
+      "input_start": 26,
+      "input_end": 75,
+      "input_points": 50,
+      "target_start": 66,
+      "target_end": 75,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 46,
+          "end": 75,
+          "points": 30
+        },
+        "50": {
+          "start": 26,
+          "end": 75,
+          "points": 50
+        },
+        "100": {
+          "start": 0,
+          "end": 75,
+          "points": 76
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0080",
+      "current_step": 80,
+      "input_start": 31,
+      "input_end": 80,
+      "input_points": 50,
+      "target_start": 71,
+      "target_end": 80,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 51,
+          "end": 80,
+          "points": 30
+        },
+        "50": {
+          "start": 31,
+          "end": 80,
+          "points": 50
+        },
+        "100": {
+          "start": 0,
+          "end": 80,
+          "points": 81
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0085",
+      "current_step": 85,
+      "input_start": 36,
+      "input_end": 85,
+      "input_points": 50,
+      "target_start": 76,
+      "target_end": 85,
+      "annotation_event_ids": [
+        "e03"
+      ],
+      "label_status": "annotation_based_positive",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 56,
+          "end": 85,
+          "points": 30
+        },
+        "50": {
+          "start": 36,
+          "end": 85,
+          "points": 50
+        },
+        "100": {
+          "start": 0,
+          "end": 85,
+          "points": 86
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0090",
+      "current_step": 90,
+      "input_start": 41,
+      "input_end": 90,
+      "input_points": 50,
+      "target_start": 81,
+      "target_end": 90,
+      "annotation_event_ids": [
+        "e03"
+      ],
+      "label_status": "annotation_based_positive",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 61,
+          "end": 90,
+          "points": 30
+        },
+        "50": {
+          "start": 41,
+          "end": 90,
+          "points": 50
+        },
+        "100": {
+          "start": 0,
+          "end": 90,
+          "points": 91
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0095",
+      "current_step": 95,
+      "input_start": 46,
+      "input_end": 95,
+      "input_points": 50,
+      "target_start": 86,
+      "target_end": 95,
+      "annotation_event_ids": [
+        "e04"
+      ],
+      "label_status": "annotation_based_positive",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 66,
+          "end": 95,
+          "points": 30
+        },
+        "50": {
+          "start": 46,
+          "end": 95,
+          "points": 50
+        },
+        "100": {
+          "start": 0,
+          "end": 95,
+          "points": 96
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0100",
+      "current_step": 100,
+      "input_start": 51,
+      "input_end": 100,
+      "input_points": 50,
+      "target_start": 91,
+      "target_end": 100,
+      "annotation_event_ids": [
+        "e04"
+      ],
+      "label_status": "annotation_based_positive",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 71,
+          "end": 100,
+          "points": 30
+        },
+        "50": {
+          "start": 51,
+          "end": 100,
+          "points": 50
+        },
+        "100": {
+          "start": 1,
+          "end": 100,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0105",
+      "current_step": 105,
+      "input_start": 56,
+      "input_end": 105,
+      "input_points": 50,
+      "target_start": 96,
+      "target_end": 105,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 76,
+          "end": 105,
+          "points": 30
+        },
+        "50": {
+          "start": 56,
+          "end": 105,
+          "points": 50
+        },
+        "100": {
+          "start": 6,
+          "end": 105,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0110",
+      "current_step": 110,
+      "input_start": 61,
+      "input_end": 110,
+      "input_points": 50,
+      "target_start": 101,
+      "target_end": 110,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 81,
+          "end": 110,
+          "points": 30
+        },
+        "50": {
+          "start": 61,
+          "end": 110,
+          "points": 50
+        },
+        "100": {
+          "start": 11,
+          "end": 110,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0115",
+      "current_step": 115,
+      "input_start": 66,
+      "input_end": 115,
+      "input_points": 50,
+      "target_start": 106,
+      "target_end": 115,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 86,
+          "end": 115,
+          "points": 30
+        },
+        "50": {
+          "start": 66,
+          "end": 115,
+          "points": 50
+        },
+        "100": {
+          "start": 16,
+          "end": 115,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0120",
+      "current_step": 120,
+      "input_start": 71,
+      "input_end": 120,
+      "input_points": 50,
+      "target_start": 111,
+      "target_end": 120,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 91,
+          "end": 120,
+          "points": 30
+        },
+        "50": {
+          "start": 71,
+          "end": 120,
+          "points": 50
+        },
+        "100": {
+          "start": 21,
+          "end": 120,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0125",
+      "current_step": 125,
+      "input_start": 76,
+      "input_end": 125,
+      "input_points": 50,
+      "target_start": 116,
+      "target_end": 125,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 96,
+          "end": 125,
+          "points": 30
+        },
+        "50": {
+          "start": 76,
+          "end": 125,
+          "points": 50
+        },
+        "100": {
+          "start": 26,
+          "end": 125,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0130",
+      "current_step": 130,
+      "input_start": 81,
+      "input_end": 130,
+      "input_points": 50,
+      "target_start": 121,
+      "target_end": 130,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 101,
+          "end": 130,
+          "points": 30
+        },
+        "50": {
+          "start": 81,
+          "end": 130,
+          "points": 50
+        },
+        "100": {
+          "start": 31,
+          "end": 130,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0135",
+      "current_step": 135,
+      "input_start": 86,
+      "input_end": 135,
+      "input_points": 50,
+      "target_start": 126,
+      "target_end": 135,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 106,
+          "end": 135,
+          "points": 30
+        },
+        "50": {
+          "start": 86,
+          "end": 135,
+          "points": 50
+        },
+        "100": {
+          "start": 36,
+          "end": 135,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0140",
+      "current_step": 140,
+      "input_start": 91,
+      "input_end": 140,
+      "input_points": 50,
+      "target_start": 131,
+      "target_end": 140,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 111,
+          "end": 140,
+          "points": 30
+        },
+        "50": {
+          "start": 91,
+          "end": 140,
+          "points": 50
+        },
+        "100": {
+          "start": 41,
+          "end": 140,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0145",
+      "current_step": 145,
+      "input_start": 96,
+      "input_end": 145,
+      "input_points": 50,
+      "target_start": 136,
+      "target_end": 145,
+      "annotation_event_ids": [
+        "e05"
+      ],
+      "label_status": "annotation_based_positive",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 116,
+          "end": 145,
+          "points": 30
+        },
+        "50": {
+          "start": 96,
+          "end": 145,
+          "points": 50
+        },
+        "100": {
+          "start": 46,
+          "end": 145,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0150",
+      "current_step": 150,
+      "input_start": 101,
+      "input_end": 150,
+      "input_points": 50,
+      "target_start": 141,
+      "target_end": 150,
+      "annotation_event_ids": [
+        "e05"
+      ],
+      "label_status": "annotation_based_positive",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 121,
+          "end": 150,
+          "points": 30
+        },
+        "50": {
+          "start": 101,
+          "end": 150,
+          "points": 50
+        },
+        "100": {
+          "start": 51,
+          "end": 150,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0155",
+      "current_step": 155,
+      "input_start": 106,
+      "input_end": 155,
+      "input_points": 50,
+      "target_start": 146,
+      "target_end": 155,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 126,
+          "end": 155,
+          "points": 30
+        },
+        "50": {
+          "start": 106,
+          "end": 155,
+          "points": 50
+        },
+        "100": {
+          "start": 56,
+          "end": 155,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0160",
+      "current_step": 160,
+      "input_start": 111,
+      "input_end": 160,
+      "input_points": 50,
+      "target_start": 151,
+      "target_end": 160,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 131,
+          "end": 160,
+          "points": 30
+        },
+        "50": {
+          "start": 111,
+          "end": 160,
+          "points": 50
+        },
+        "100": {
+          "start": 61,
+          "end": 160,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0165",
+      "current_step": 165,
+      "input_start": 116,
+      "input_end": 165,
+      "input_points": 50,
+      "target_start": 156,
+      "target_end": 165,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 136,
+          "end": 165,
+          "points": 30
+        },
+        "50": {
+          "start": 116,
+          "end": 165,
+          "points": 50
+        },
+        "100": {
+          "start": 66,
+          "end": 165,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0170",
+      "current_step": 170,
+      "input_start": 121,
+      "input_end": 170,
+      "input_points": 50,
+      "target_start": 161,
+      "target_end": 170,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 141,
+          "end": 170,
+          "points": 30
+        },
+        "50": {
+          "start": 121,
+          "end": 170,
+          "points": 50
+        },
+        "100": {
+          "start": 71,
+          "end": 170,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0175",
+      "current_step": 175,
+      "input_start": 126,
+      "input_end": 175,
+      "input_points": 50,
+      "target_start": 166,
+      "target_end": 175,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 146,
+          "end": 175,
+          "points": 30
+        },
+        "50": {
+          "start": 126,
+          "end": 175,
+          "points": 50
+        },
+        "100": {
+          "start": 76,
+          "end": 175,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0180",
+      "current_step": 180,
+      "input_start": 131,
+      "input_end": 180,
+      "input_points": 50,
+      "target_start": 171,
+      "target_end": 180,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 151,
+          "end": 180,
+          "points": 30
+        },
+        "50": {
+          "start": 131,
+          "end": 180,
+          "points": 50
+        },
+        "100": {
+          "start": 81,
+          "end": 180,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0185",
+      "current_step": 185,
+      "input_start": 136,
+      "input_end": 185,
+      "input_points": 50,
+      "target_start": 176,
+      "target_end": 185,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 156,
+          "end": 185,
+          "points": 30
+        },
+        "50": {
+          "start": 136,
+          "end": 185,
+          "points": 50
+        },
+        "100": {
+          "start": 86,
+          "end": 185,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0190",
+      "current_step": 190,
+      "input_start": 141,
+      "input_end": 190,
+      "input_points": 50,
+      "target_start": 181,
+      "target_end": 190,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 161,
+          "end": 190,
+          "points": 30
+        },
+        "50": {
+          "start": 141,
+          "end": 190,
+          "points": 50
+        },
+        "100": {
+          "start": 91,
+          "end": 190,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0195",
+      "current_step": 195,
+      "input_start": 146,
+      "input_end": 195,
+      "input_points": 50,
+      "target_start": 186,
+      "target_end": 195,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 166,
+          "end": 195,
+          "points": 30
+        },
+        "50": {
+          "start": 146,
+          "end": 195,
+          "points": 50
+        },
+        "100": {
+          "start": 96,
+          "end": 195,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0200",
+      "current_step": 200,
+      "input_start": 151,
+      "input_end": 200,
+      "input_points": 50,
+      "target_start": 191,
+      "target_end": 200,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 171,
+          "end": 200,
+          "points": 30
+        },
+        "50": {
+          "start": 151,
+          "end": 200,
+          "points": 50
+        },
+        "100": {
+          "start": 101,
+          "end": 200,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0205",
+      "current_step": 205,
+      "input_start": 156,
+      "input_end": 205,
+      "input_points": 50,
+      "target_start": 196,
+      "target_end": 205,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 176,
+          "end": 205,
+          "points": 30
+        },
+        "50": {
+          "start": 156,
+          "end": 205,
+          "points": 50
+        },
+        "100": {
+          "start": 106,
+          "end": 205,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0210",
+      "current_step": 210,
+      "input_start": 161,
+      "input_end": 210,
+      "input_points": 50,
+      "target_start": 201,
+      "target_end": 210,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 181,
+          "end": 210,
+          "points": 30
+        },
+        "50": {
+          "start": 161,
+          "end": 210,
+          "points": 50
+        },
+        "100": {
+          "start": 111,
+          "end": 210,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0215",
+      "current_step": 215,
+      "input_start": 166,
+      "input_end": 215,
+      "input_points": 50,
+      "target_start": 206,
+      "target_end": 215,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 186,
+          "end": 215,
+          "points": 30
+        },
+        "50": {
+          "start": 166,
+          "end": 215,
+          "points": 50
+        },
+        "100": {
+          "start": 116,
+          "end": 215,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0220",
+      "current_step": 220,
+      "input_start": 171,
+      "input_end": 220,
+      "input_points": 50,
+      "target_start": 211,
+      "target_end": 220,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 191,
+          "end": 220,
+          "points": 30
+        },
+        "50": {
+          "start": 171,
+          "end": 220,
+          "points": 50
+        },
+        "100": {
+          "start": 121,
+          "end": 220,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0225",
+      "current_step": 225,
+      "input_start": 176,
+      "input_end": 225,
+      "input_points": 50,
+      "target_start": 216,
+      "target_end": 225,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 196,
+          "end": 225,
+          "points": 30
+        },
+        "50": {
+          "start": 176,
+          "end": 225,
+          "points": 50
+        },
+        "100": {
+          "start": 126,
+          "end": 225,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0230",
+      "current_step": 230,
+      "input_start": 181,
+      "input_end": 230,
+      "input_points": 50,
+      "target_start": 221,
+      "target_end": 230,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 201,
+          "end": 230,
+          "points": 30
+        },
+        "50": {
+          "start": 181,
+          "end": 230,
+          "points": 50
+        },
+        "100": {
+          "start": 131,
+          "end": 230,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0235",
+      "current_step": 235,
+      "input_start": 186,
+      "input_end": 235,
+      "input_points": 50,
+      "target_start": 226,
+      "target_end": 235,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 206,
+          "end": 235,
+          "points": 30
+        },
+        "50": {
+          "start": 186,
+          "end": 235,
+          "points": 50
+        },
+        "100": {
+          "start": 136,
+          "end": 235,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0240",
+      "current_step": 240,
+      "input_start": 191,
+      "input_end": 240,
+      "input_points": 50,
+      "target_start": 231,
+      "target_end": 240,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 211,
+          "end": 240,
+          "points": 30
+        },
+        "50": {
+          "start": 191,
+          "end": 240,
+          "points": 50
+        },
+        "100": {
+          "start": 141,
+          "end": 240,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0245",
+      "current_step": 245,
+      "input_start": 196,
+      "input_end": 245,
+      "input_points": 50,
+      "target_start": 236,
+      "target_end": 245,
+      "annotation_event_ids": [
+        "e06"
+      ],
+      "label_status": "annotation_based_positive",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 216,
+          "end": 245,
+          "points": 30
+        },
+        "50": {
+          "start": 196,
+          "end": 245,
+          "points": 50
+        },
+        "100": {
+          "start": 146,
+          "end": 245,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0250",
+      "current_step": 250,
+      "input_start": 201,
+      "input_end": 250,
+      "input_points": 50,
+      "target_start": 241,
+      "target_end": 250,
+      "annotation_event_ids": [
+        "e06"
+      ],
+      "label_status": "annotation_based_positive",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 221,
+          "end": 250,
+          "points": 30
+        },
+        "50": {
+          "start": 201,
+          "end": 250,
+          "points": 50
+        },
+        "100": {
+          "start": 151,
+          "end": 250,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0255",
+      "current_step": 255,
+      "input_start": 206,
+      "input_end": 255,
+      "input_points": 50,
+      "target_start": 246,
+      "target_end": 255,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 226,
+          "end": 255,
+          "points": 30
+        },
+        "50": {
+          "start": 206,
+          "end": 255,
+          "points": 50
+        },
+        "100": {
+          "start": 156,
+          "end": 255,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0260",
+      "current_step": 260,
+      "input_start": 211,
+      "input_end": 260,
+      "input_points": 50,
+      "target_start": 251,
+      "target_end": 260,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 231,
+          "end": 260,
+          "points": 30
+        },
+        "50": {
+          "start": 211,
+          "end": 260,
+          "points": 50
+        },
+        "100": {
+          "start": 161,
+          "end": 260,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0265",
+      "current_step": 265,
+      "input_start": 216,
+      "input_end": 265,
+      "input_points": 50,
+      "target_start": 256,
+      "target_end": 265,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 236,
+          "end": 265,
+          "points": 30
+        },
+        "50": {
+          "start": 216,
+          "end": 265,
+          "points": 50
+        },
+        "100": {
+          "start": 166,
+          "end": 265,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0270",
+      "current_step": 270,
+      "input_start": 221,
+      "input_end": 270,
+      "input_points": 50,
+      "target_start": 261,
+      "target_end": 270,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 241,
+          "end": 270,
+          "points": 30
+        },
+        "50": {
+          "start": 221,
+          "end": 270,
+          "points": 50
+        },
+        "100": {
+          "start": 171,
+          "end": 270,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0275",
+      "current_step": 275,
+      "input_start": 226,
+      "input_end": 275,
+      "input_points": 50,
+      "target_start": 266,
+      "target_end": 275,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 246,
+          "end": 275,
+          "points": 30
+        },
+        "50": {
+          "start": 226,
+          "end": 275,
+          "points": 50
+        },
+        "100": {
+          "start": 176,
+          "end": 275,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0280",
+      "current_step": 280,
+      "input_start": 231,
+      "input_end": 280,
+      "input_points": 50,
+      "target_start": 271,
+      "target_end": 280,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 251,
+          "end": 280,
+          "points": 30
+        },
+        "50": {
+          "start": 231,
+          "end": 280,
+          "points": 50
+        },
+        "100": {
+          "start": 181,
+          "end": 280,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0285",
+      "current_step": 285,
+      "input_start": 236,
+      "input_end": 285,
+      "input_points": 50,
+      "target_start": 276,
+      "target_end": 285,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 256,
+          "end": 285,
+          "points": 30
+        },
+        "50": {
+          "start": 236,
+          "end": 285,
+          "points": 50
+        },
+        "100": {
+          "start": 186,
+          "end": 285,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0290",
+      "current_step": 290,
+      "input_start": 241,
+      "input_end": 290,
+      "input_points": 50,
+      "target_start": 281,
+      "target_end": 290,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 261,
+          "end": 290,
+          "points": 30
+        },
+        "50": {
+          "start": 241,
+          "end": 290,
+          "points": 50
+        },
+        "100": {
+          "start": 191,
+          "end": 290,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0295",
+      "current_step": 295,
+      "input_start": 246,
+      "input_end": 295,
+      "input_points": 50,
+      "target_start": 286,
+      "target_end": 295,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 266,
+          "end": 295,
+          "points": 30
+        },
+        "50": {
+          "start": 246,
+          "end": 295,
+          "points": 50
+        },
+        "100": {
+          "start": 196,
+          "end": 295,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0300",
+      "current_step": 300,
+      "input_start": 251,
+      "input_end": 300,
+      "input_points": 50,
+      "target_start": 291,
+      "target_end": 300,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 271,
+          "end": 300,
+          "points": 30
+        },
+        "50": {
+          "start": 251,
+          "end": 300,
+          "points": 50
+        },
+        "100": {
+          "start": 201,
+          "end": 300,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0305",
+      "current_step": 305,
+      "input_start": 256,
+      "input_end": 305,
+      "input_points": 50,
+      "target_start": 296,
+      "target_end": 305,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 276,
+          "end": 305,
+          "points": 30
+        },
+        "50": {
+          "start": 256,
+          "end": 305,
+          "points": 50
+        },
+        "100": {
+          "start": 206,
+          "end": 305,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0310",
+      "current_step": 310,
+      "input_start": 261,
+      "input_end": 310,
+      "input_points": 50,
+      "target_start": 301,
+      "target_end": 310,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 281,
+          "end": 310,
+          "points": 30
+        },
+        "50": {
+          "start": 261,
+          "end": 310,
+          "points": 50
+        },
+        "100": {
+          "start": 211,
+          "end": 310,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0315",
+      "current_step": 315,
+      "input_start": 266,
+      "input_end": 315,
+      "input_points": 50,
+      "target_start": 306,
+      "target_end": 315,
+      "annotation_event_ids": [
+        "e07"
+      ],
+      "label_status": "annotation_based_positive",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 286,
+          "end": 315,
+          "points": 30
+        },
+        "50": {
+          "start": 266,
+          "end": 315,
+          "points": 50
+        },
+        "100": {
+          "start": 216,
+          "end": 315,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0320",
+      "current_step": 320,
+      "input_start": 271,
+      "input_end": 320,
+      "input_points": 50,
+      "target_start": 311,
+      "target_end": 320,
+      "annotation_event_ids": [
+        "e07"
+      ],
+      "label_status": "annotation_based_positive",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 291,
+          "end": 320,
+          "points": 30
+        },
+        "50": {
+          "start": 271,
+          "end": 320,
+          "points": 50
+        },
+        "100": {
+          "start": 221,
+          "end": 320,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0325",
+      "current_step": 325,
+      "input_start": 276,
+      "input_end": 325,
+      "input_points": 50,
+      "target_start": 316,
+      "target_end": 325,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 296,
+          "end": 325,
+          "points": 30
+        },
+        "50": {
+          "start": 276,
+          "end": 325,
+          "points": 50
+        },
+        "100": {
+          "start": 226,
+          "end": 325,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0330",
+      "current_step": 330,
+      "input_start": 281,
+      "input_end": 330,
+      "input_points": 50,
+      "target_start": 321,
+      "target_end": 330,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 301,
+          "end": 330,
+          "points": 30
+        },
+        "50": {
+          "start": 281,
+          "end": 330,
+          "points": 50
+        },
+        "100": {
+          "start": 231,
+          "end": 330,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0335",
+      "current_step": 335,
+      "input_start": 286,
+      "input_end": 335,
+      "input_points": 50,
+      "target_start": 326,
+      "target_end": 335,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": true,
+      "history_variants": {
+        "30": {
+          "start": 306,
+          "end": 335,
+          "points": 30
+        },
+        "50": {
+          "start": 286,
+          "end": 335,
+          "points": 50
+        },
+        "100": {
+          "start": 236,
+          "end": 335,
+          "points": 100
+        }
+      }
+    },
+    {
+      "case_id": "mhi_t0340",
+      "current_step": 340,
+      "input_start": 291,
+      "input_end": 340,
+      "input_points": 50,
+      "target_start": 331,
+      "target_end": 340,
+      "annotation_event_ids": [],
+      "label_status": "unreviewed_negative_candidate",
+      "reviewed_label": null,
+      "stage1_member": false,
+      "history_variants": {
+        "30": {
+          "start": 311,
+          "end": 340,
+          "points": 30
+        },
+        "50": {
+          "start": 291,
+          "end": 340,
+          "points": 50
+        },
+        "100": {
+          "start": 241,
+          "end": 340,
+          "points": 100
+        }
+      }
+    }
+  ],
+  "additional_unannotated_episodes": [
+    {
+      "episode_id": "ours_seed100100_ic100601_loss",
+      "source": "experiments/13_LAG/data/processed/ours_seed100100_ic100601_loss.csv",
+      "source_sha256": "8884b108c6b0d2ae8d4f5adee2f83c6a8d69fe269c0c717d8d16d11a9060f4cc",
+      "label_status": "unannotated",
+      "case_count": 60,
+      "cases": [
+        {
+          "current_step": 0,
+          "input_start": 0,
+          "input_end": 0,
+          "target_start": 0,
+          "target_end": 0
+        },
+        {
+          "current_step": 5,
+          "input_start": 0,
+          "input_end": 5,
+          "target_start": 0,
+          "target_end": 5
+        },
+        {
+          "current_step": 10,
+          "input_start": 0,
+          "input_end": 10,
+          "target_start": 1,
+          "target_end": 10
+        },
+        {
+          "current_step": 15,
+          "input_start": 0,
+          "input_end": 15,
+          "target_start": 6,
+          "target_end": 15
+        },
+        {
+          "current_step": 20,
+          "input_start": 0,
+          "input_end": 20,
+          "target_start": 11,
+          "target_end": 20
+        },
+        {
+          "current_step": 25,
+          "input_start": 0,
+          "input_end": 25,
+          "target_start": 16,
+          "target_end": 25
+        },
+        {
+          "current_step": 30,
+          "input_start": 0,
+          "input_end": 30,
+          "target_start": 21,
+          "target_end": 30
+        },
+        {
+          "current_step": 35,
+          "input_start": 0,
+          "input_end": 35,
+          "target_start": 26,
+          "target_end": 35
+        },
+        {
+          "current_step": 40,
+          "input_start": 0,
+          "input_end": 40,
+          "target_start": 31,
+          "target_end": 40
+        },
+        {
+          "current_step": 45,
+          "input_start": 0,
+          "input_end": 45,
+          "target_start": 36,
+          "target_end": 45
+        },
+        {
+          "current_step": 50,
+          "input_start": 1,
+          "input_end": 50,
+          "target_start": 41,
+          "target_end": 50
+        },
+        {
+          "current_step": 55,
+          "input_start": 6,
+          "input_end": 55,
+          "target_start": 46,
+          "target_end": 55
+        },
+        {
+          "current_step": 60,
+          "input_start": 11,
+          "input_end": 60,
+          "target_start": 51,
+          "target_end": 60
+        },
+        {
+          "current_step": 65,
+          "input_start": 16,
+          "input_end": 65,
+          "target_start": 56,
+          "target_end": 65
+        },
+        {
+          "current_step": 70,
+          "input_start": 21,
+          "input_end": 70,
+          "target_start": 61,
+          "target_end": 70
+        },
+        {
+          "current_step": 75,
+          "input_start": 26,
+          "input_end": 75,
+          "target_start": 66,
+          "target_end": 75
+        },
+        {
+          "current_step": 80,
+          "input_start": 31,
+          "input_end": 80,
+          "target_start": 71,
+          "target_end": 80
+        },
+        {
+          "current_step": 85,
+          "input_start": 36,
+          "input_end": 85,
+          "target_start": 76,
+          "target_end": 85
+        },
+        {
+          "current_step": 90,
+          "input_start": 41,
+          "input_end": 90,
+          "target_start": 81,
+          "target_end": 90
+        },
+        {
+          "current_step": 95,
+          "input_start": 46,
+          "input_end": 95,
+          "target_start": 86,
+          "target_end": 95
+        },
+        {
+          "current_step": 100,
+          "input_start": 51,
+          "input_end": 100,
+          "target_start": 91,
+          "target_end": 100
+        },
+        {
+          "current_step": 105,
+          "input_start": 56,
+          "input_end": 105,
+          "target_start": 96,
+          "target_end": 105
+        },
+        {
+          "current_step": 110,
+          "input_start": 61,
+          "input_end": 110,
+          "target_start": 101,
+          "target_end": 110
+        },
+        {
+          "current_step": 115,
+          "input_start": 66,
+          "input_end": 115,
+          "target_start": 106,
+          "target_end": 115
+        },
+        {
+          "current_step": 120,
+          "input_start": 71,
+          "input_end": 120,
+          "target_start": 111,
+          "target_end": 120
+        },
+        {
+          "current_step": 125,
+          "input_start": 76,
+          "input_end": 125,
+          "target_start": 116,
+          "target_end": 125
+        },
+        {
+          "current_step": 130,
+          "input_start": 81,
+          "input_end": 130,
+          "target_start": 121,
+          "target_end": 130
+        },
+        {
+          "current_step": 135,
+          "input_start": 86,
+          "input_end": 135,
+          "target_start": 126,
+          "target_end": 135
+        },
+        {
+          "current_step": 140,
+          "input_start": 91,
+          "input_end": 140,
+          "target_start": 131,
+          "target_end": 140
+        },
+        {
+          "current_step": 145,
+          "input_start": 96,
+          "input_end": 145,
+          "target_start": 136,
+          "target_end": 145
+        },
+        {
+          "current_step": 150,
+          "input_start": 101,
+          "input_end": 150,
+          "target_start": 141,
+          "target_end": 150
+        },
+        {
+          "current_step": 155,
+          "input_start": 106,
+          "input_end": 155,
+          "target_start": 146,
+          "target_end": 155
+        },
+        {
+          "current_step": 160,
+          "input_start": 111,
+          "input_end": 160,
+          "target_start": 151,
+          "target_end": 160
+        },
+        {
+          "current_step": 165,
+          "input_start": 116,
+          "input_end": 165,
+          "target_start": 156,
+          "target_end": 165
+        },
+        {
+          "current_step": 170,
+          "input_start": 121,
+          "input_end": 170,
+          "target_start": 161,
+          "target_end": 170
+        },
+        {
+          "current_step": 175,
+          "input_start": 126,
+          "input_end": 175,
+          "target_start": 166,
+          "target_end": 175
+        },
+        {
+          "current_step": 180,
+          "input_start": 131,
+          "input_end": 180,
+          "target_start": 171,
+          "target_end": 180
+        },
+        {
+          "current_step": 185,
+          "input_start": 136,
+          "input_end": 185,
+          "target_start": 176,
+          "target_end": 185
+        },
+        {
+          "current_step": 190,
+          "input_start": 141,
+          "input_end": 190,
+          "target_start": 181,
+          "target_end": 190
+        },
+        {
+          "current_step": 195,
+          "input_start": 146,
+          "input_end": 195,
+          "target_start": 186,
+          "target_end": 195
+        },
+        {
+          "current_step": 200,
+          "input_start": 151,
+          "input_end": 200,
+          "target_start": 191,
+          "target_end": 200
+        },
+        {
+          "current_step": 205,
+          "input_start": 156,
+          "input_end": 205,
+          "target_start": 196,
+          "target_end": 205
+        },
+        {
+          "current_step": 210,
+          "input_start": 161,
+          "input_end": 210,
+          "target_start": 201,
+          "target_end": 210
+        },
+        {
+          "current_step": 215,
+          "input_start": 166,
+          "input_end": 215,
+          "target_start": 206,
+          "target_end": 215
+        },
+        {
+          "current_step": 220,
+          "input_start": 171,
+          "input_end": 220,
+          "target_start": 211,
+          "target_end": 220
+        },
+        {
+          "current_step": 225,
+          "input_start": 176,
+          "input_end": 225,
+          "target_start": 216,
+          "target_end": 225
+        },
+        {
+          "current_step": 230,
+          "input_start": 181,
+          "input_end": 230,
+          "target_start": 221,
+          "target_end": 230
+        },
+        {
+          "current_step": 235,
+          "input_start": 186,
+          "input_end": 235,
+          "target_start": 226,
+          "target_end": 235
+        },
+        {
+          "current_step": 240,
+          "input_start": 191,
+          "input_end": 240,
+          "target_start": 231,
+          "target_end": 240
+        },
+        {
+          "current_step": 245,
+          "input_start": 196,
+          "input_end": 245,
+          "target_start": 236,
+          "target_end": 245
+        },
+        {
+          "current_step": 250,
+          "input_start": 201,
+          "input_end": 250,
+          "target_start": 241,
+          "target_end": 250
+        },
+        {
+          "current_step": 255,
+          "input_start": 206,
+          "input_end": 255,
+          "target_start": 246,
+          "target_end": 255
+        },
+        {
+          "current_step": 260,
+          "input_start": 211,
+          "input_end": 260,
+          "target_start": 251,
+          "target_end": 260
+        },
+        {
+          "current_step": 265,
+          "input_start": 216,
+          "input_end": 265,
+          "target_start": 256,
+          "target_end": 265
+        },
+        {
+          "current_step": 270,
+          "input_start": 221,
+          "input_end": 270,
+          "target_start": 261,
+          "target_end": 270
+        },
+        {
+          "current_step": 275,
+          "input_start": 226,
+          "input_end": 275,
+          "target_start": 266,
+          "target_end": 275
+        },
+        {
+          "current_step": 280,
+          "input_start": 231,
+          "input_end": 280,
+          "target_start": 271,
+          "target_end": 280
+        },
+        {
+          "current_step": 285,
+          "input_start": 236,
+          "input_end": 285,
+          "target_start": 276,
+          "target_end": 285
+        },
+        {
+          "current_step": 290,
+          "input_start": 241,
+          "input_end": 290,
+          "target_start": 281,
+          "target_end": 290
+        },
+        {
+          "current_step": 293,
+          "input_start": 244,
+          "input_end": 293,
+          "target_start": 284,
+          "target_end": 293
+        }
+      ]
+    },
+    {
+      "episode_id": "ours_seed100100_ic100606_win",
+      "source": "experiments/13_LAG/data/processed/ours_seed100100_ic100606_win.csv",
+      "source_sha256": "43211744056a66d627a968f237d7ca55fd2d7f44354c987bd62192a2401b69fd",
+      "label_status": "unannotated",
+      "case_count": 100,
+      "cases": [
+        {
+          "current_step": 0,
+          "input_start": 0,
+          "input_end": 0,
+          "target_start": 0,
+          "target_end": 0
+        },
+        {
+          "current_step": 5,
+          "input_start": 0,
+          "input_end": 5,
+          "target_start": 0,
+          "target_end": 5
+        },
+        {
+          "current_step": 10,
+          "input_start": 0,
+          "input_end": 10,
+          "target_start": 1,
+          "target_end": 10
+        },
+        {
+          "current_step": 15,
+          "input_start": 0,
+          "input_end": 15,
+          "target_start": 6,
+          "target_end": 15
+        },
+        {
+          "current_step": 20,
+          "input_start": 0,
+          "input_end": 20,
+          "target_start": 11,
+          "target_end": 20
+        },
+        {
+          "current_step": 25,
+          "input_start": 0,
+          "input_end": 25,
+          "target_start": 16,
+          "target_end": 25
+        },
+        {
+          "current_step": 30,
+          "input_start": 0,
+          "input_end": 30,
+          "target_start": 21,
+          "target_end": 30
+        },
+        {
+          "current_step": 35,
+          "input_start": 0,
+          "input_end": 35,
+          "target_start": 26,
+          "target_end": 35
+        },
+        {
+          "current_step": 40,
+          "input_start": 0,
+          "input_end": 40,
+          "target_start": 31,
+          "target_end": 40
+        },
+        {
+          "current_step": 45,
+          "input_start": 0,
+          "input_end": 45,
+          "target_start": 36,
+          "target_end": 45
+        },
+        {
+          "current_step": 50,
+          "input_start": 1,
+          "input_end": 50,
+          "target_start": 41,
+          "target_end": 50
+        },
+        {
+          "current_step": 55,
+          "input_start": 6,
+          "input_end": 55,
+          "target_start": 46,
+          "target_end": 55
+        },
+        {
+          "current_step": 60,
+          "input_start": 11,
+          "input_end": 60,
+          "target_start": 51,
+          "target_end": 60
+        },
+        {
+          "current_step": 65,
+          "input_start": 16,
+          "input_end": 65,
+          "target_start": 56,
+          "target_end": 65
+        },
+        {
+          "current_step": 70,
+          "input_start": 21,
+          "input_end": 70,
+          "target_start": 61,
+          "target_end": 70
+        },
+        {
+          "current_step": 75,
+          "input_start": 26,
+          "input_end": 75,
+          "target_start": 66,
+          "target_end": 75
+        },
+        {
+          "current_step": 80,
+          "input_start": 31,
+          "input_end": 80,
+          "target_start": 71,
+          "target_end": 80
+        },
+        {
+          "current_step": 85,
+          "input_start": 36,
+          "input_end": 85,
+          "target_start": 76,
+          "target_end": 85
+        },
+        {
+          "current_step": 90,
+          "input_start": 41,
+          "input_end": 90,
+          "target_start": 81,
+          "target_end": 90
+        },
+        {
+          "current_step": 95,
+          "input_start": 46,
+          "input_end": 95,
+          "target_start": 86,
+          "target_end": 95
+        },
+        {
+          "current_step": 100,
+          "input_start": 51,
+          "input_end": 100,
+          "target_start": 91,
+          "target_end": 100
+        },
+        {
+          "current_step": 105,
+          "input_start": 56,
+          "input_end": 105,
+          "target_start": 96,
+          "target_end": 105
+        },
+        {
+          "current_step": 110,
+          "input_start": 61,
+          "input_end": 110,
+          "target_start": 101,
+          "target_end": 110
+        },
+        {
+          "current_step": 115,
+          "input_start": 66,
+          "input_end": 115,
+          "target_start": 106,
+          "target_end": 115
+        },
+        {
+          "current_step": 120,
+          "input_start": 71,
+          "input_end": 120,
+          "target_start": 111,
+          "target_end": 120
+        },
+        {
+          "current_step": 125,
+          "input_start": 76,
+          "input_end": 125,
+          "target_start": 116,
+          "target_end": 125
+        },
+        {
+          "current_step": 130,
+          "input_start": 81,
+          "input_end": 130,
+          "target_start": 121,
+          "target_end": 130
+        },
+        {
+          "current_step": 135,
+          "input_start": 86,
+          "input_end": 135,
+          "target_start": 126,
+          "target_end": 135
+        },
+        {
+          "current_step": 140,
+          "input_start": 91,
+          "input_end": 140,
+          "target_start": 131,
+          "target_end": 140
+        },
+        {
+          "current_step": 145,
+          "input_start": 96,
+          "input_end": 145,
+          "target_start": 136,
+          "target_end": 145
+        },
+        {
+          "current_step": 150,
+          "input_start": 101,
+          "input_end": 150,
+          "target_start": 141,
+          "target_end": 150
+        },
+        {
+          "current_step": 155,
+          "input_start": 106,
+          "input_end": 155,
+          "target_start": 146,
+          "target_end": 155
+        },
+        {
+          "current_step": 160,
+          "input_start": 111,
+          "input_end": 160,
+          "target_start": 151,
+          "target_end": 160
+        },
+        {
+          "current_step": 165,
+          "input_start": 116,
+          "input_end": 165,
+          "target_start": 156,
+          "target_end": 165
+        },
+        {
+          "current_step": 170,
+          "input_start": 121,
+          "input_end": 170,
+          "target_start": 161,
+          "target_end": 170
+        },
+        {
+          "current_step": 175,
+          "input_start": 126,
+          "input_end": 175,
+          "target_start": 166,
+          "target_end": 175
+        },
+        {
+          "current_step": 180,
+          "input_start": 131,
+          "input_end": 180,
+          "target_start": 171,
+          "target_end": 180
+        },
+        {
+          "current_step": 185,
+          "input_start": 136,
+          "input_end": 185,
+          "target_start": 176,
+          "target_end": 185
+        },
+        {
+          "current_step": 190,
+          "input_start": 141,
+          "input_end": 190,
+          "target_start": 181,
+          "target_end": 190
+        },
+        {
+          "current_step": 195,
+          "input_start": 146,
+          "input_end": 195,
+          "target_start": 186,
+          "target_end": 195
+        },
+        {
+          "current_step": 200,
+          "input_start": 151,
+          "input_end": 200,
+          "target_start": 191,
+          "target_end": 200
+        },
+        {
+          "current_step": 205,
+          "input_start": 156,
+          "input_end": 205,
+          "target_start": 196,
+          "target_end": 205
+        },
+        {
+          "current_step": 210,
+          "input_start": 161,
+          "input_end": 210,
+          "target_start": 201,
+          "target_end": 210
+        },
+        {
+          "current_step": 215,
+          "input_start": 166,
+          "input_end": 215,
+          "target_start": 206,
+          "target_end": 215
+        },
+        {
+          "current_step": 220,
+          "input_start": 171,
+          "input_end": 220,
+          "target_start": 211,
+          "target_end": 220
+        },
+        {
+          "current_step": 225,
+          "input_start": 176,
+          "input_end": 225,
+          "target_start": 216,
+          "target_end": 225
+        },
+        {
+          "current_step": 230,
+          "input_start": 181,
+          "input_end": 230,
+          "target_start": 221,
+          "target_end": 230
+        },
+        {
+          "current_step": 235,
+          "input_start": 186,
+          "input_end": 235,
+          "target_start": 226,
+          "target_end": 235
+        },
+        {
+          "current_step": 240,
+          "input_start": 191,
+          "input_end": 240,
+          "target_start": 231,
+          "target_end": 240
+        },
+        {
+          "current_step": 245,
+          "input_start": 196,
+          "input_end": 245,
+          "target_start": 236,
+          "target_end": 245
+        },
+        {
+          "current_step": 250,
+          "input_start": 201,
+          "input_end": 250,
+          "target_start": 241,
+          "target_end": 250
+        },
+        {
+          "current_step": 255,
+          "input_start": 206,
+          "input_end": 255,
+          "target_start": 246,
+          "target_end": 255
+        },
+        {
+          "current_step": 260,
+          "input_start": 211,
+          "input_end": 260,
+          "target_start": 251,
+          "target_end": 260
+        },
+        {
+          "current_step": 265,
+          "input_start": 216,
+          "input_end": 265,
+          "target_start": 256,
+          "target_end": 265
+        },
+        {
+          "current_step": 270,
+          "input_start": 221,
+          "input_end": 270,
+          "target_start": 261,
+          "target_end": 270
+        },
+        {
+          "current_step": 275,
+          "input_start": 226,
+          "input_end": 275,
+          "target_start": 266,
+          "target_end": 275
+        },
+        {
+          "current_step": 280,
+          "input_start": 231,
+          "input_end": 280,
+          "target_start": 271,
+          "target_end": 280
+        },
+        {
+          "current_step": 285,
+          "input_start": 236,
+          "input_end": 285,
+          "target_start": 276,
+          "target_end": 285
+        },
+        {
+          "current_step": 290,
+          "input_start": 241,
+          "input_end": 290,
+          "target_start": 281,
+          "target_end": 290
+        },
+        {
+          "current_step": 295,
+          "input_start": 246,
+          "input_end": 295,
+          "target_start": 286,
+          "target_end": 295
+        },
+        {
+          "current_step": 300,
+          "input_start": 251,
+          "input_end": 300,
+          "target_start": 291,
+          "target_end": 300
+        },
+        {
+          "current_step": 305,
+          "input_start": 256,
+          "input_end": 305,
+          "target_start": 296,
+          "target_end": 305
+        },
+        {
+          "current_step": 310,
+          "input_start": 261,
+          "input_end": 310,
+          "target_start": 301,
+          "target_end": 310
+        },
+        {
+          "current_step": 315,
+          "input_start": 266,
+          "input_end": 315,
+          "target_start": 306,
+          "target_end": 315
+        },
+        {
+          "current_step": 320,
+          "input_start": 271,
+          "input_end": 320,
+          "target_start": 311,
+          "target_end": 320
+        },
+        {
+          "current_step": 325,
+          "input_start": 276,
+          "input_end": 325,
+          "target_start": 316,
+          "target_end": 325
+        },
+        {
+          "current_step": 330,
+          "input_start": 281,
+          "input_end": 330,
+          "target_start": 321,
+          "target_end": 330
+        },
+        {
+          "current_step": 335,
+          "input_start": 286,
+          "input_end": 335,
+          "target_start": 326,
+          "target_end": 335
+        },
+        {
+          "current_step": 340,
+          "input_start": 291,
+          "input_end": 340,
+          "target_start": 331,
+          "target_end": 340
+        },
+        {
+          "current_step": 345,
+          "input_start": 296,
+          "input_end": 345,
+          "target_start": 336,
+          "target_end": 345
+        },
+        {
+          "current_step": 350,
+          "input_start": 301,
+          "input_end": 350,
+          "target_start": 341,
+          "target_end": 350
+        },
+        {
+          "current_step": 355,
+          "input_start": 306,
+          "input_end": 355,
+          "target_start": 346,
+          "target_end": 355
+        },
+        {
+          "current_step": 360,
+          "input_start": 311,
+          "input_end": 360,
+          "target_start": 351,
+          "target_end": 360
+        },
+        {
+          "current_step": 365,
+          "input_start": 316,
+          "input_end": 365,
+          "target_start": 356,
+          "target_end": 365
+        },
+        {
+          "current_step": 370,
+          "input_start": 321,
+          "input_end": 370,
+          "target_start": 361,
+          "target_end": 370
+        },
+        {
+          "current_step": 375,
+          "input_start": 326,
+          "input_end": 375,
+          "target_start": 366,
+          "target_end": 375
+        },
+        {
+          "current_step": 380,
+          "input_start": 331,
+          "input_end": 380,
+          "target_start": 371,
+          "target_end": 380
+        },
+        {
+          "current_step": 385,
+          "input_start": 336,
+          "input_end": 385,
+          "target_start": 376,
+          "target_end": 385
+        },
+        {
+          "current_step": 390,
+          "input_start": 341,
+          "input_end": 390,
+          "target_start": 381,
+          "target_end": 390
+        },
+        {
+          "current_step": 395,
+          "input_start": 346,
+          "input_end": 395,
+          "target_start": 386,
+          "target_end": 395
+        },
+        {
+          "current_step": 400,
+          "input_start": 351,
+          "input_end": 400,
+          "target_start": 391,
+          "target_end": 400
+        },
+        {
+          "current_step": 405,
+          "input_start": 356,
+          "input_end": 405,
+          "target_start": 396,
+          "target_end": 405
+        },
+        {
+          "current_step": 410,
+          "input_start": 361,
+          "input_end": 410,
+          "target_start": 401,
+          "target_end": 410
+        },
+        {
+          "current_step": 415,
+          "input_start": 366,
+          "input_end": 415,
+          "target_start": 406,
+          "target_end": 415
+        },
+        {
+          "current_step": 420,
+          "input_start": 371,
+          "input_end": 420,
+          "target_start": 411,
+          "target_end": 420
+        },
+        {
+          "current_step": 425,
+          "input_start": 376,
+          "input_end": 425,
+          "target_start": 416,
+          "target_end": 425
+        },
+        {
+          "current_step": 430,
+          "input_start": 381,
+          "input_end": 430,
+          "target_start": 421,
+          "target_end": 430
+        },
+        {
+          "current_step": 435,
+          "input_start": 386,
+          "input_end": 435,
+          "target_start": 426,
+          "target_end": 435
+        },
+        {
+          "current_step": 440,
+          "input_start": 391,
+          "input_end": 440,
+          "target_start": 431,
+          "target_end": 440
+        },
+        {
+          "current_step": 445,
+          "input_start": 396,
+          "input_end": 445,
+          "target_start": 436,
+          "target_end": 445
+        },
+        {
+          "current_step": 450,
+          "input_start": 401,
+          "input_end": 450,
+          "target_start": 441,
+          "target_end": 450
+        },
+        {
+          "current_step": 455,
+          "input_start": 406,
+          "input_end": 455,
+          "target_start": 446,
+          "target_end": 455
+        },
+        {
+          "current_step": 460,
+          "input_start": 411,
+          "input_end": 460,
+          "target_start": 451,
+          "target_end": 460
+        },
+        {
+          "current_step": 465,
+          "input_start": 416,
+          "input_end": 465,
+          "target_start": 456,
+          "target_end": 465
+        },
+        {
+          "current_step": 470,
+          "input_start": 421,
+          "input_end": 470,
+          "target_start": 461,
+          "target_end": 470
+        },
+        {
+          "current_step": 475,
+          "input_start": 426,
+          "input_end": 475,
+          "target_start": 466,
+          "target_end": 475
+        },
+        {
+          "current_step": 480,
+          "input_start": 431,
+          "input_end": 480,
+          "target_start": 471,
+          "target_end": 480
+        },
+        {
+          "current_step": 485,
+          "input_start": 436,
+          "input_end": 485,
+          "target_start": 476,
+          "target_end": 485
+        },
+        {
+          "current_step": 490,
+          "input_start": 441,
+          "input_end": 490,
+          "target_start": 481,
+          "target_end": 490
+        },
+        {
+          "current_step": 495,
+          "input_start": 446,
+          "input_end": 495,
+          "target_start": 486,
+          "target_end": 495
+        }
+      ]
+    }
+  ]
+}

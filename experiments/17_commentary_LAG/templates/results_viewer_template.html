@@ -52,7 +52,7 @@ $('overview').textContent=`${data.created_at_jst} 時点 · ${data.run} · 保�
 const saved=rows.filter(r=>responseStatuses.has(r.status)).length,pending=rows.filter(r=>r.status==='pending').length,unstarted=rows.filter(r=>r.status==='unstarted').length,errors=rows.filter(r=>r.status==='api_error').length;
 for(const [title,count] of [['計画',rows.length],['応答保存済み',saved],['結果未回収',pending],['未送信',unstarted],['APIエラー',errors]]){const card=el('div');card.className='stat';card.append(el('strong',count.toLocaleString()),el('span',title));$('stats').append(card)}
 
-$('run-description').textContent=`${data.prompt_version} · ${data.run.startsWith('tactical')?'61時点全体の戦術的意図（4機のJSON回答）':'場面解説（セクション別の文章回答）'}`;
+$('run-description').textContent=`${data.prompt_variant} · ${data.prompt_version} · ${data.prompt_description}`;
 }
 function selectRun(name){
  clearTimeout(searchTimer);data=bundle.runs[name];rows=data.rows;$('run-selector').value=name;

@@ -30,7 +30,7 @@ $('counts').textContent=`${count.events}注釈 × 3入力条件 × ${count.model
 $('status').textContent=Object.entries(data.summary.statuses).map(([k,v])=>`${stateLabels[k]||k}: ${v}件`).join(' ｜ ');
 for(const x of data.summary.excluded_events){$('excluded').append(el('p',`除外: ${x.event.id} / T=${x.event.step} / ${x.event.aircraft_id}。必要区間 ${x.required_start}–${x.required_end} のうち、完全な記録のないstep: ${x.missing_steps.join(', ')}。全3条件から除外。`));}
 $('identity').textContent=`plan_id: ${data.plan_id}`;
-for(const role of ['system','user']){const group=el('details');group.append(el('summary',role.toUpperCase()));const pair=el('div',undefined,'pairs');const before=el('div'),after=el('div');before.append(el('h3','元の tactical_short_batch_v2'),el('pre',data.prompt_spec.comparison.baseline_templates[role]));after.append(el('h3','今回の foresight_short_v1'),el('pre',data.prompt_spec.templates[role].content));pair.append(before,after);group.append(pair,details('Unified diff',data.prompt_spec.comparison.diffs[role]));$('prompts').append(group);}
+for(const role of ['system','user']){const group=el('details');group.append(el('summary',role.toUpperCase()));const pair=el('div',undefined,'pairs');const before=el('div'),after=el('div');before.append(el('h3','元の '+data.prompt_spec.comparison.source_run),el('pre',data.prompt_spec.comparison.baseline_templates[role]));after.append(el('h3','今回の '+data.prompt_spec.variant),el('pre',data.prompt_spec.templates[role].content));pair.append(before,after);group.append(pair,details('Unified diff',data.prompt_spec.comparison.diffs[role]));$('prompts').append(group);}
 function render(){
  const event=events.find(e=>e.id===$('event').value);if(!event)return;
  const selected=data.rows.filter(r=>r.event.id===event.id&&r.model===$('model').value);
@@ -47,7 +47,7 @@ function render(){
   card.append(el('span',stateLabels[row.status]||row.status,'badge'));
   const narrative=row.narratives?.[aircraft];
   card.append(el('div',narrative||((row.status==='unsubmitted'||row.status==='pending')?'回答はまだありません。':row.error||'有効な回答がありません。'),'narrative'+(narrative?'':row.status.includes('error')?' error':' pending')));
-  if(narrative){const words=row.length_metrics.words_by_aircraft[aircraft],sentences=row.sentence_counts_heuristic?.[aircraft];card.append(el('div',`${words}語 / 上限55語 · 文数参考値 ${sentences}${words>55?' · 語数超過':''}${sentences>1?' · 1文指定を要確認':''}`,'metric'));}
+  if(narrative){const words=row.length_metrics.words_by_aircraft[aircraft],sentences=row.sentence_counts_heuristic?.[aircraft];card.append(el('div',`${words}語 / 上限${data.prompt_spec.length.max_words}語 · 文数参考値 ${sentences}${words>data.prompt_spec.length.max_words?' · 語数超過':''}${sentences>data.prompt_spec.length.max_sentences?' · 文数指定を要確認':''}`,'metric'));}
   if(row.narratives)card.append(details('全4機の回答',JSON.stringify(row.narratives,null,2)));
   card.append(details('送信するuser全文（入力データを含む）',s.messages[1].content));
   card.append(details('生の応答・エラー',JSON.stringify({raw_response:row.raw_response,error:row.error,usage:row.usage},null,2)));

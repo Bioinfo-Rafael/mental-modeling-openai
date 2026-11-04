@@ -96,3 +96,25 @@ Batchの処理時間から2〜3秒の即時応答要件を満たしたとは判�
 ```sh
 .venv/bin/python -m pytest experiments/20_foresight_LAG/tests -q
 ```
+
+## 関係する相手を明記する条件（targets_v1）
+
+`targets_v1` は各機体について、守る・支援する相手、回避する機体やミサイル、攻撃対象や自機を狙う敵機・ミサイルなど、予測する行動に関係する相手をID付きで述べる。相手や役割を特定できない場合は、その関係の不確実性を明記する。各機体にすべての役割を要求するものではない。
+
+1機あたり80英単語以内・1〜2文とする。4機のJSON形式、対象区間、入力窓、6注釈・3条件・3モデルの54件、生成設定は従来どおり。プロンプト原文は `prompts/targets_v1/`、元の `foresight_short_v1` との差分と変更理由は同ディレクトリの `changes/` に保存する。関係性の指示と出力長の両方を変更しているため、結果の差をどちらか一方だけの効果とは解釈できない。
+
+```sh
+# オフライン計画・入力全文・比較HTMLを生成
+.venv/bin/python experiments/20_foresight_LAG/run.py plan --prompt-variant targets_v1
+# 保存済み計画を送信
+.venv/bin/python experiments/20_foresight_LAG/run.py execute --run targets_v1
+# 回収
+.venv/bin/python experiments/20_foresight_LAG/run.py collect --run targets_v1
+```
+
+保存先は `results/targets_v1/`、入力確認は `results/targets_v1/report/review.html`。
+`--prompt-variant` はplan専用で、省略時は従来版。`--run` を省略すると選択したvariant名を保存先に使う。同じ版を別runで試す場合はplanで `--run` も指定する。execute/collectは保存済みmanifestのプロンプトを使う。
+
+### targets_v1 の実行済み結果
+
+`results/targets_v1/` は、n=+1・n=30のみを実行した36件（6注釈 × 2条件 × 3モデル）の回収済み結果。未送信の54件計画に代えて実行済み結果をこの名前へ統一した。プロンプトは `targets_v1`。保存済みmanifest・API記録・計画IDは保持している。既存runへplanを再実行せず、閲覧には実験直下の `view_rawdata.html`、再エクスポートには `run.py export --run targets_v1` を使う。

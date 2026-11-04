@@ -82,8 +82,14 @@ def load_data(directory):
                    comparison_id=query['sample_id'])
         rows.append(row)
     counts = Counter(r['status'] for r in rows)
+    spec = plan.get('prompt_spec', {})
+    variant = plan.get('prompt_variant', 'commentary')
+    legacy_description = ('61時点全体の戦術的意図（4機のJSON回答）' if variant == 'tactical'
+                          else '場面解説（セクション別の文章回答）')
     return dict(created_at_jst=datetime.now(timezone(timedelta(hours=9))).isoformat(timespec='seconds'),
                 run=directory.name, plan_id=plan['plan_id'], rows=rows, samples=plan['samples'],
+                prompt_variant=variant, prompt_description=spec.get('description', legacy_description),
+                prompt_template_sha256={role: value['sha256'] for role, value in spec.get('templates', {}).items()},
                 request_options=plan['request_options'], reference_url=plan['reference_url'], prompt_version=plan['prompt_version'],
                 counts=dict(counts), sources=dict(manifest_sha256=hashlib.sha256(manifest_bytes).hexdigest(),
                                                   responses=response_info, requests=request_info))

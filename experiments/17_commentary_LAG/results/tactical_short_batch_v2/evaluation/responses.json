@@ -1,0 +1,947 @@
+[
+  {
+    "query_id": "b70507c31521a8c09612882c5bf78566ac8d5c47d26377cbeb7b96a1d9dc8de4",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 45,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reduce exposure after committing a missile by converting its head-on, descending approach into a sustained hard right turn while its missile continues north; the ammunition decrease and simultaneous opposing launch support post-shot separation rather than continued direct closure.\",\"A0200\":\"A0200 most plausibly seeks to maintain pressure and support its missile engagement by continuing the fast, descending northbound closure after expending a missile rather than breaking away; its path remains nearly aligned with the southbound opponents while A0100 turns sharply aside.\",\"B0100\":\"B0100 most plausibly seeks to preserve head-on firing geometry and sustain pressure by accelerating southward in a steady descent, launching during the continuing closure and then remaining nose-on rather than separating as the opposing aircraft approach.\",\"B0200\":\"B0200 most plausibly seeks an early head-on missile engagement while retaining pressure by maintaining its fast southbound descent through missile expenditure; despite A0100 launching at the same time and subsequently turning aside, B0200 continues closing almost directly toward Team A.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1102,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 870,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 49085,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 45856,
+        "cached_tokens": 3226
+      },
+      "total_tokens": 50187
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly seeks to reduce exposure after committing a missile by converting its head-on, descending approach into a sustained hard right turn while its missile continues north; the ammunition decrease and simultaneous opposing launch support post-shot separation rather than continued direct closure.",
+        "A0200": "A0200 most plausibly seeks to maintain pressure and support its missile engagement by continuing the fast, descending northbound closure after expending a missile rather than breaking away; its path remains nearly aligned with the southbound opponents while A0100 turns sharply aside.",
+        "B0100": "B0100 most plausibly seeks to preserve head-on firing geometry and sustain pressure by accelerating southward in a steady descent, launching during the continuing closure and then remaining nose-on rather than separating as the opposing aircraft approach.",
+        "B0200": "B0200 most plausibly seeks an early head-on missile engagement while retaining pressure by maintaining its fast southbound descent through missile expenditure; despite A0100 launching at the same time and subsequently turning aside, B0200 continues closing almost directly toward Team A."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 43,
+        "A0200": 41,
+        "B0100": 36,
+        "B0200": 40
+      },
+      "total_words": 160,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "dcd1271c993a0e2bcfe66be16bf7db358cba036873554ff196b864a5cc35b0d4",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 45,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to engage the approaching B formation while reducing exposure after firing, launching as the forces close and then making a sustained rightward break that creates lateral separation from the reciprocal missile exchange while its own missile continues northward.\",\"A0200\":\"A0200 most plausibly seeks to sustain attack geometry against the approaching opponents by continuing its northerly, descending approach and launching shortly after A0100, rather than immediately breaking away; its continued forward track is consistent with maintaining pressure during the developing missile exchange.\",\"B0100\":\"B0100 most plausibly seeks to prosecute the head-on engagement by maintaining its southbound, descending approach toward Team A and expending a missile after the initial exchange; its largely unchanged track suggests continued attack pressure rather than an observed defensive disengagement.\",\"B0200\":\"B0200 most plausibly seeks an early firing opportunity against the northbound A formation, launching as the groups close and continuing southward afterward; the persistent approach track, despite the reciprocal A missile launch, is consistent with retaining pressure rather than creating immediate separation.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 710,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 479,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 49085,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 45856,
+        "cached_tokens": 3226
+      },
+      "total_tokens": 49795
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly seeks to engage the approaching B formation while reducing exposure after firing, launching as the forces close and then making a sustained rightward break that creates lateral separation from the reciprocal missile exchange while its own missile continues northward.",
+        "A0200": "A0200 most plausibly seeks to sustain attack geometry against the approaching opponents by continuing its northerly, descending approach and launching shortly after A0100, rather than immediately breaking away; its continued forward track is consistent with maintaining pressure during the developing missile exchange.",
+        "B0100": "B0100 most plausibly seeks to prosecute the head-on engagement by maintaining its southbound, descending approach toward Team A and expending a missile after the initial exchange; its largely unchanged track suggests continued attack pressure rather than an observed defensive disengagement.",
+        "B0200": "B0200 most plausibly seeks an early firing opportunity against the northbound A formation, launching as the groups close and continuing southward afterward; the persistent approach track, despite the reciprocal A missile launch, is consistent with retaining pressure rather than creating immediate separation."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 42,
+        "A0200": 42,
+        "B0100": 40,
+        "B0200": 42
+      },
+      "total_words": 166,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "0eb48821d60700acf62e36915756ae5feacad103785e9eae94a033d5b54bb4e4",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 45,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 most plausibly seeks to reduce direct exposure after an attack by breaking laterally, having approached the opposing formation northbound and then turning strongly eastward immediately after its missile count decreased; the sustained turn creates separation while the aircraft remains alive and fast.\",\n  \"A0200\": \"A0200 most plausibly seeks to maintain a head-on attack and favorable closing geometry by continuing northward through a steady descent and acceleration, then retaining that course after its missile count decreased; its trajectory shows continued pressure rather than a post-launch defensive break.\",\n  \"B0100\": \"B0100 most plausibly seeks to preserve a closing attack position against Team A by maintaining its southward course while descending and accelerating, including after its missile count decreased; the aircraft shows no sustained lateral disengagement and continues toward the opposing formation throughout the window.\",\n  \"B0200\": \"B0200 most plausibly seeks to sustain its southbound attack approach and missile engagement by holding nearly the same closing geometry while descending and accelerating; after its missile count decreased, it continues toward Team A without evidence of a defensive break or disengagement.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1197,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 947,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 49085,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 45856,
+        "cached_tokens": 3226
+      },
+      "total_tokens": 50282
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly seeks to reduce direct exposure after an attack by breaking laterally, having approached the opposing formation northbound and then turning strongly eastward immediately after its missile count decreased; the sustained turn creates separation while the aircraft remains alive and fast.",
+        "A0200": "A0200 most plausibly seeks to maintain a head-on attack and favorable closing geometry by continuing northward through a steady descent and acceleration, then retaining that course after its missile count decreased; its trajectory shows continued pressure rather than a post-launch defensive break.",
+        "B0100": "B0100 most plausibly seeks to preserve a closing attack position against Team A by maintaining its southward course while descending and accelerating, including after its missile count decreased; the aircraft shows no sustained lateral disengagement and continues toward the opposing formation throughout the window.",
+        "B0200": "B0200 most plausibly seeks to sustain its southbound attack approach and missile engagement by holding nearly the same closing geometry while descending and accelerating; after its missile count decreased, it continues toward Team A without evidence of a defensive break or disengagement."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 43,
+        "A0200": 42,
+        "B0100": 44,
+        "B0200": 42
+      },
+      "total_words": 171,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "c57e456599ae917f551bdadda378b9420456e6b735a312f56715153a06c13559",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 85,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reduce nose-on exposure after an earlier missile release by executing a sustained descending right break, then leveling eastbound; its missile is already outbound northward while opposing missiles advance south and curve east, and the maneuver rapidly creates lateral separation from the closing formation.\",\"A0200\":\"A0200 most plausibly seeks first to preserve pressure behind its already-outbound missile by continuing the northbound descent, then to reduce direct exposure as the formations close by committing to a hard right turn; the late lateral displacement sacrifices head-on closure while retaining speed.\",\"B0100\":\"B0100 most plausibly seeks to sustain its attack and keep favorable forward geometry by holding a nearly straight, accelerating southbound descent, given its missile is already ahead and both Team A aircraft are closing from the south; the absence of a defensive break suggests continued commitment despite opposing missiles in the corridor.\",\"B0200\":\"B0200 most plausibly seeks to press the closest nose-on approach by maintaining an accelerating southbound descent toward Team A’s western side, with its own missile already ahead; the steadily shrinking separation and minimal lateral maneuver suggest attack continuation rather than an attempt to disengage from the inbound exchange.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2322,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2048,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 62281,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 59052,
+        "cached_tokens": 3226
+      },
+      "total_tokens": 64603
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly seeks to reduce nose-on exposure after an earlier missile release by executing a sustained descending right break, then leveling eastbound; its missile is already outbound northward while opposing missiles advance south and curve east, and the maneuver rapidly creates lateral separation from the closing formation.",
+        "A0200": "A0200 most plausibly seeks first to preserve pressure behind its already-outbound missile by continuing the northbound descent, then to reduce direct exposure as the formations close by committing to a hard right turn; the late lateral displacement sacrifices head-on closure while retaining speed.",
+        "B0100": "B0100 most plausibly seeks to sustain its attack and keep favorable forward geometry by holding a nearly straight, accelerating southbound descent, given its missile is already ahead and both Team A aircraft are closing from the south; the absence of a defensive break suggests continued commitment despite opposing missiles in the corridor.",
+        "B0200": "B0200 most plausibly seeks to press the closest nose-on approach by maintaining an accelerating southbound descent toward Team A’s western side, with its own missile already ahead; the steadily shrinking separation and minimal lateral maneuver suggest attack continuation rather than an attempt to disengage from the inbound exchange."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 48,
+        "A0200": 43,
+        "B0100": 52,
+        "B0200": 48
+      },
+      "total_words": 191,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "4fc4a45b16584abc095f949e367e947bc25d2502330c98cd8192ef675983f772",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 85,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to reduce direct exposure to the oncoming B formation by cranking right from northbound to nearly easterly flight and then leveling off, creating lateral displacement while its already-recorded missile continues northward.\",\"A0200\":\"A0200 most plausibly seeks to close on the opposing formation for favorable attack geometry, continuing northward while progressively turning right and descending; it remains the A aircraft most closely aligned with B0200 as their separation contracts despite missiles already traveling between the formations.\",\"B0100\":\"B0100 most plausibly seeks to maintain a direct southbound attack approach against the advancing A formation, holding an almost due-south, descending track as range contracts; it makes no evident abrupt displacement while A0100's already-recorded missile continues northward.\",\"B0200\":\"B0200 most plausibly seeks to sustain a head-on approach on A0200 by holding a nearly due-south, descending track as A0200 advances northward on a closely similar longitude; the opposing missile tracks indicate an ongoing exchange but do not identify targets.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1767,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1521,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 62281,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 59052,
+        "cached_tokens": 3226
+      },
+      "total_tokens": 64048
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly seeks to reduce direct exposure to the oncoming B formation by cranking right from northbound to nearly easterly flight and then leveling off, creating lateral displacement while its already-recorded missile continues northward.",
+        "A0200": "A0200 most plausibly seeks to close on the opposing formation for favorable attack geometry, continuing northward while progressively turning right and descending; it remains the A aircraft most closely aligned with B0200 as their separation contracts despite missiles already traveling between the formations.",
+        "B0100": "B0100 most plausibly seeks to maintain a direct southbound attack approach against the advancing A formation, holding an almost due-south, descending track as range contracts; it makes no evident abrupt displacement while A0100's already-recorded missile continues northward.",
+        "B0200": "B0200 most plausibly seeks to sustain a head-on approach on A0200 by holding a nearly due-south, descending track as A0200 advances northward on a closely similar longitude; the opposing missile tracks indicate an ongoing exchange but do not identify targets."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 35,
+        "A0200": 43,
+        "B0100": 37,
+        "B0200": 40
+      },
+      "total_words": 155,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "b4541e89645b4438cf2149793ad92c8a1bf8cf2c9671e986ae46e5b777a9925e",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 85,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 most plausibly seeks to reduce direct exposure while preserving its missile engagement by converting the initial northward approach into a sustained eastward break and descent, given its missile was already outbound and B’s missiles continued south toward the A formation; the maneuver creates lateral separation without abandoning the engagement.\",\n  \"A0200\": \"A0200 most plausibly seeks a less head-on crossing position while retaining forward speed by turning from north toward northeast and descending, as its missile continued northward and opposing missiles approached from ahead; the sustained eastward displacement suggests repositioning for survival and a subsequent attack rather than direct closure.\",\n  \"B0100\": \"B0100 most plausibly seeks to maintain pressure and support its already outbound missile by continuing southward at high speed with only minor lateral change, while the missile advanced ahead and the A aircraft broke east; its trajectory is consistent with pressing the approach rather than reacting defensively.\",\n  \"B0200\": \"B0200 most plausibly seeks to remain behind and support its southbound missile while closing on the A side, maintaining a southward track with a modest eastward component and descent as the A aircraft displaced east; this preserves forward pressure and missile-support geometry without an observed defensive break.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1923,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1637,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 62281,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 59052,
+        "cached_tokens": 3226
+      },
+      "total_tokens": 64204
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly seeks to reduce direct exposure while preserving its missile engagement by converting the initial northward approach into a sustained eastward break and descent, given its missile was already outbound and B’s missiles continued south toward the A formation; the maneuver creates lateral separation without abandoning the engagement.",
+        "A0200": "A0200 most plausibly seeks a less head-on crossing position while retaining forward speed by turning from north toward northeast and descending, as its missile continued northward and opposing missiles approached from ahead; the sustained eastward displacement suggests repositioning for survival and a subsequent attack rather than direct closure.",
+        "B0100": "B0100 most plausibly seeks to maintain pressure and support its already outbound missile by continuing southward at high speed with only minor lateral change, while the missile advanced ahead and the A aircraft broke east; its trajectory is consistent with pressing the approach rather than reacting defensively.",
+        "B0200": "B0200 most plausibly seeks to remain behind and support its southbound missile while closing on the A side, maintaining a southward track with a modest eastward component and descent as the A aircraft displaced east; this preserves forward pressure and missile-support geometry without an observed defensive break."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 50,
+        "A0200": 48,
+        "B0100": 47,
+        "B0200": 47
+      },
+      "total_words": 192,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "ccaa9e5df0886bc17d7083d00b9417d0b18ccea22ad2d642517e362c727ba48e",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 145,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 most plausibly seeks post-launch standoff and reduced exposure by holding an accelerating eastward offset while its missile continues north toward the B formation; it maintains this separation after the missile disappears alongside B0200’s inactivation rather than turning back into the engagement.\",\"A0200\":\"A0200 most plausibly seeks to survive the missile exchange by combining a sustained descending right turn with acceleration, creating lateral and vertical separation as both B missiles close from the north; it maintains this defensive displacement after B0200 becomes inactive rather than re-entering directly.\",\"B0100\":\"B0100 most plausibly seeks to survive the incoming A-missile pass by changing from a straight southward descent into a hard, rolling southeast break as the missiles close on the B pair; it remains active after their removal and B0200’s simultaneous inactivation.\",\"B0200\":\"B0200 most plausibly seeks to spoil the closing A missiles’ geometry by steepening its descent and entering a hard left break as both approach from the south near its altitude; the attempt does not preserve it, as it becomes inactive when both missiles are removed.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2704,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2436,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 51873,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 48644,
+        "cached_tokens": 3226
+      },
+      "total_tokens": 54577
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly seeks post-launch standoff and reduced exposure by holding an accelerating eastward offset while its missile continues north toward the B formation; it maintains this separation after the missile disappears alongside B0200’s inactivation rather than turning back into the engagement.",
+        "A0200": "A0200 most plausibly seeks to survive the missile exchange by combining a sustained descending right turn with acceleration, creating lateral and vertical separation as both B missiles close from the north; it maintains this defensive displacement after B0200 becomes inactive rather than re-entering directly.",
+        "B0100": "B0100 most plausibly seeks to survive the incoming A-missile pass by changing from a straight southward descent into a hard, rolling southeast break as the missiles close on the B pair; it remains active after their removal and B0200’s simultaneous inactivation.",
+        "B0200": "B0200 most plausibly seeks to spoil the closing A missiles’ geometry by steepening its descent and entering a hard left break as both approach from the south near its altitude; the attempt does not preserve it, as it becomes inactive when both missiles are removed."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 42,
+        "A0200": 44,
+        "B0100": 41,
+        "B0200": 45
+      },
+      "total_words": 172,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "aaf59f8a36b1f8153b9c9b687f251a97346fc44097882249609a6f773c495c64",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 145,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to preserve speed and lateral separation from the northern opposition by holding a fast eastbound course, while its previously recorded missile continues northward; the aircraft neither turns toward the opponents nor reacts sharply as the opposing formation descends and crosses behind its track.\",\"A0200\":\"A0200 most plausibly seeks to reduce exposure while retaining an eastward escape or attack-support position by making a sustained descending right turn after its earlier missile was already in flight, creating separation from the northbound missile exchange as B0200 is subsequently removed.\",\"B0100\":\"B0100 most plausibly seeks to regain closing geometry against the eastbound A0200 by continuing its descent and progressively turning from south toward southeast, reducing the separation after B0200 is removed while its previously recorded missile remains in flight.\",\"B0200\":\"B0200 most plausibly seeks to press toward the lower A0200 by descending southward and then tightening into a southeastward turn, a path that closes from the northwest as A0200 moves east; B0200 is removed before any further purpose can be inferred.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1260,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1016,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 51873,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 51870,
+        "cached_tokens": 0
+      },
+      "total_tokens": 53133
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly seeks to preserve speed and lateral separation from the northern opposition by holding a fast eastbound course, while its previously recorded missile continues northward; the aircraft neither turns toward the opponents nor reacts sharply as the opposing formation descends and crosses behind its track.",
+        "A0200": "A0200 most plausibly seeks to reduce exposure while retaining an eastward escape or attack-support position by making a sustained descending right turn after its earlier missile was already in flight, creating separation from the northbound missile exchange as B0200 is subsequently removed.",
+        "B0100": "B0100 most plausibly seeks to regain closing geometry against the eastbound A0200 by continuing its descent and progressively turning from south toward southeast, reducing the separation after B0200 is removed while its previously recorded missile remains in flight.",
+        "B0200": "B0200 most plausibly seeks to press toward the lower A0200 by descending southward and then tightening into a southeastward turn, a path that closes from the northwest as A0200 moves east; B0200 is removed before any further purpose can be inferred."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 47,
+        "A0200": 42,
+        "B0100": 38,
+        "B0200": 41
+      },
+      "total_words": 168,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "eca217835a8444217b086bbcb0491af9b6c45ca8b0b2d209b3bc82251bf06eb0",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 145,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 most plausibly seeks to preserve an attacking position while supporting its already-active missile engagement by maintaining level, accelerating eastward flight, given that its missile remains in the B formation’s vicinity and the aircraft shows no defensive break before that missile is removed.\",\n  \"A0200\": \"A0200 most plausibly seeks to close and improve attack geometry against the opposing formation by sustained rightward turning, descent, and acceleration, while its missile is active; the maneuver continues toward the surviving B0100 after B0200 becomes inactive, consistent with continued offensive pressure.\",\n  \"B0100\": \"B0100 most plausibly seeks to reduce exposure and create lateral separation from the incoming A engagement by turning progressively eastward while descending, rather than continuing its initial southerly track; this defensive repositioning develops as A missiles approach the B formation and B0200 becomes inactive.\",\n  \"B0200\": \"B0200 most plausibly attempts to evade the approaching A missile engagement by initiating a sharp left break and changing its flight path, as two A missiles pass close to the B formation; it is subsequently removed from the record, although the data do not establish whether that removal was a hit.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1809,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1536,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 51873,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 51870,
+        "cached_tokens": 0
+      },
+      "total_tokens": 53682
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly seeks to preserve an attacking position while supporting its already-active missile engagement by maintaining level, accelerating eastward flight, given that its missile remains in the B formation’s vicinity and the aircraft shows no defensive break before that missile is removed.",
+        "A0200": "A0200 most plausibly seeks to close and improve attack geometry against the opposing formation by sustained rightward turning, descent, and acceleration, while its missile is active; the maneuver continues toward the surviving B0100 after B0200 becomes inactive, consistent with continued offensive pressure.",
+        "B0100": "B0100 most plausibly seeks to reduce exposure and create lateral separation from the incoming A engagement by turning progressively eastward while descending, rather than continuing its initial southerly track; this defensive repositioning develops as A missiles approach the B formation and B0200 becomes inactive.",
+        "B0200": "B0200 most plausibly attempts to evade the approaching A missile engagement by initiating a sharp left break and changing its flight path, as two A missiles pass close to the B formation; it is subsequently removed from the record, although the data do not establish whether that removal was a hit."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 43,
+        "A0200": 42,
+        "B0100": 44,
+        "B0200": 51
+      },
+      "total_words": 180,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "830f9ef56e519860353374d6ceb753f3d448396999ebf94d679d3fd67bbc8fac",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 245,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to re-enter the engagement against the lone active opponent by abandoning its long eastbound transit for a sustained hard left reversal and slight descent; B0100 remained several kilometres west, while the turn reduced their north-south offset and preserved A0100’s substantial altitude advantage.\",\"A0200\":\"A0200 most plausibly seeks to survive the converging B01001 missile by sustaining a high-bank, descending turn from east toward northeast, generating lateral displacement rather than flying predictably ahead of B0100; the missile continued closing from the northwest while B0100 followed near A0200’s altitude.\",\"B0100\":\"B0100 most plausibly seeks to continue pursuing A0200 after earlier missile expenditure by turning from southeast toward east and descending to nearly A0200’s altitude; the maneuver removes their north-south offset while B01001’s path also converges on A0200, consistent with sustained pressure rather than disengagement.\",\"B0200\":\"B0200 remains inactive with invalid flight data throughout the window, so no tactical intention can be inferred.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2730,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2471,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 45287,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 42058,
+        "cached_tokens": 3226
+      },
+      "total_tokens": 48017
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly seeks to re-enter the engagement against the lone active opponent by abandoning its long eastbound transit for a sustained hard left reversal and slight descent; B0100 remained several kilometres west, while the turn reduced their north-south offset and preserved A0100’s substantial altitude advantage.",
+        "A0200": "A0200 most plausibly seeks to survive the converging B01001 missile by sustaining a high-bank, descending turn from east toward northeast, generating lateral displacement rather than flying predictably ahead of B0100; the missile continued closing from the northwest while B0100 followed near A0200’s altitude.",
+        "B0100": "B0100 most plausibly seeks to continue pursuing A0200 after earlier missile expenditure by turning from southeast toward east and descending to nearly A0200’s altitude; the maneuver removes their north-south offset while B01001’s path also converges on A0200, consistent with sustained pressure rather than disengagement.",
+        "B0200": "B0200 remains inactive with invalid flight data throughout the window, so no tactical intention can be inferred."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 46,
+        "A0200": 43,
+        "B0100": 44,
+        "B0200": 17
+      },
+      "total_words": 150,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "0e44ec7d7311de5b579493eb7b7e575baef4a814ee844b454cb0f4aef0870076",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 245,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to break exposure to B0100’s missile threat by abandoning its steady eastbound run for a sustained leftward, descending turn, creating a pronounced lateral offset while B01001 remains on a generally closing track from the west-northwest.\",\"A0200\":\"A0200 most plausibly seeks to disengage from B0100’s developing pursuit by maintaining fast east-northeast movement while descending and making repeated high-bank heading adjustments; B0100 initially points toward it and progressively aligns east as the separation narrows slightly.\",\"B0100\":\"B0100 most plausibly seeks to retain intercept pressure on A0200 by descending and turning from a southeast approach onto an increasingly eastbound course, closely matching the bearing to A0200 as that aircraft continues away; its own commands are not recorded.\",\"B0200\":\"B0200 remains inactive throughout the window, so no tactical intention can be inferred.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2503,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2278,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 45287,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 42058,
+        "cached_tokens": 3226
+      },
+      "total_tokens": 47790
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly seeks to break exposure to B0100’s missile threat by abandoning its steady eastbound run for a sustained leftward, descending turn, creating a pronounced lateral offset while B01001 remains on a generally closing track from the west-northwest.",
+        "A0200": "A0200 most plausibly seeks to disengage from B0100’s developing pursuit by maintaining fast east-northeast movement while descending and making repeated high-bank heading adjustments; B0100 initially points toward it and progressively aligns east as the separation narrows slightly.",
+        "B0100": "B0100 most plausibly seeks to retain intercept pressure on A0200 by descending and turning from a southeast approach onto an increasingly eastbound course, closely matching the bearing to A0200 as that aircraft continues away; its own commands are not recorded.",
+        "B0200": "B0200 remains inactive throughout the window, so no tactical intention can be inferred."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 39,
+        "A0200": 37,
+        "B0100": 40,
+        "B0200": 13
+      },
+      "total_words": 129,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "1daf413dca5f42a7ad62b17cad30dadb6bd5ffd5d793a643d26f50e07d9d96f4",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 245,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 most plausibly seeks a favorable intercept position against B0100 by maintaining a fast high-altitude eastward approach before making a sustained left turn toward the opposing track, as the turn reduces its eastward separation while bringing its northward motion toward B0100 without recorded missile expenditure.\",\n  \"A0200\": \"A0200 most plausibly seeks to close and establish attack geometry on B0100 by descending toward the opponent’s altitude while maintaining high speed and an east-northeast trajectory; its separation from B0100 steadily narrows despite an active B-team missile remaining nearby, with no abrupt break indicating a primary defensive maneuver.\",\n  \"B0100\": \"B0100 most plausibly attempts to preserve an ongoing close engagement and improve its firing position by continuing southeastward toward the A formation, then turning toward an easterly track as A0200 converges; its carried missile activity and steady high-speed maneuvering are consistent with continued pressure while B0200 is inactive.\",\n  \"B0200\": \"B0200 is inactive with invalid state data throughout the window, so no tactical intention can be inferred from the supplied recording.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1799,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1536,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 45287,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 42058,
+        "cached_tokens": 3226
+      },
+      "total_tokens": 47086
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly seeks a favorable intercept position against B0100 by maintaining a fast high-altitude eastward approach before making a sustained left turn toward the opposing track, as the turn reduces its eastward separation while bringing its northward motion toward B0100 without recorded missile expenditure.",
+        "A0200": "A0200 most plausibly seeks to close and establish attack geometry on B0100 by descending toward the opponent’s altitude while maintaining high speed and an east-northeast trajectory; its separation from B0100 steadily narrows despite an active B-team missile remaining nearby, with no abrupt break indicating a primary defensive maneuver.",
+        "B0100": "B0100 most plausibly attempts to preserve an ongoing close engagement and improve its firing position by continuing southeastward toward the A formation, then turning toward an easterly track as A0200 converges; its carried missile activity and steady high-speed maneuvering are consistent with continued pressure while B0200 is inactive.",
+        "B0200": "B0200 is inactive with invalid state data throughout the window, so no tactical intention can be inferred from the supplied recording."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 45,
+        "A0200": 48,
+        "B0100": 48,
+        "B0200": 21
+      },
+      "total_words": 162,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "97e4d34f7bb9c6efd7db17b638989137fa2e4198330a9d8c9ec115fc4fa9c4fa",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 310,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 most plausibly sought a firing solution on B0100 by descending through a sustained left turn that rapidly closed the lone opponent, then expending its last missile and reversing toward a right turn as the missile converged; B0100 and the missile became inactive together, consistent with completion of that attack.\",\"A0200\":\"A0200 most plausibly sought to survive B0100’s already-airborne missile by maintaining high speed and arcing from northeast toward north, dragging the weapon without allowing meaningful closure rather than spending its own remaining missile; the threat continued following even after B0100 became inactive.\",\"B0100\":\"B0100 most plausibly sought initially to sustain pressure behind its already-airborne missile by advancing northeast toward A0200, but after A0100 launched from the northeast it shifted into a steep climbing turn, apparently seeking vertical and lateral separation from the converging weapon; it became inactive when that missile was removed.\",\"B0200\":\"B0200 remained inactive with no valid flight state throughout the window, so no tactical intention can be inferred.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2743,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2487,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 42016,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 42013,
+        "cached_tokens": 0
+      },
+      "total_tokens": 44759
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly sought a firing solution on B0100 by descending through a sustained left turn that rapidly closed the lone opponent, then expending its last missile and reversing toward a right turn as the missile converged; B0100 and the missile became inactive together, consistent with completion of that attack.",
+        "A0200": "A0200 most plausibly sought to survive B0100’s already-airborne missile by maintaining high speed and arcing from northeast toward north, dragging the weapon without allowing meaningful closure rather than spending its own remaining missile; the threat continued following even after B0100 became inactive.",
+        "B0100": "B0100 most plausibly sought initially to sustain pressure behind its already-airborne missile by advancing northeast toward A0200, but after A0100 launched from the northeast it shifted into a steep climbing turn, apparently seeking vertical and lateral separation from the converging weapon; it became inactive when that missile was removed.",
+        "B0200": "B0200 remained inactive with no valid flight state throughout the window, so no tactical intention can be inferred."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 50,
+        "A0200": 42,
+        "B0100": 49,
+        "B0200": 18
+      },
+      "total_words": 159,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "cac90c47c33c16a21f4377c16da972a340314beb24c2c6c1015c3597b70a895b",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 310,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 most plausibly seeks to defeat B0100 by maneuvering into a descending westward firing geometry and expending its final missile, then turning away to create separation; the missile closes near B0100 before both disappear from the record together.\",\"A0200\":\"A0200 most plausibly seeks to extend away from B0100 and its already airborne missile by sustaining a fast northeastward-to-northerly turn, keeping the missile behind and offset as it continues along a broadly convergent track rather than committing toward B0100.\",\"B0100\":\"B0100 most plausibly seeks to maintain pressure on A0200 by continuing northeast behind it while climbing, consistent with supporting its pre-existing missile's pursuit; this continued exposure ends when B0100 disappears as A0100's missile is removed nearby.\",\"B0200\":\"B0200 remains inactive throughout the window, so no tactical intention can be inferred.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1460,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1247,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 42016,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 38787,
+        "cached_tokens": 3226
+      },
+      "total_tokens": 43476
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly seeks to defeat B0100 by maneuvering into a descending westward firing geometry and expending its final missile, then turning away to create separation; the missile closes near B0100 before both disappear from the record together.",
+        "A0200": "A0200 most plausibly seeks to extend away from B0100 and its already airborne missile by sustaining a fast northeastward-to-northerly turn, keeping the missile behind and offset as it continues along a broadly convergent track rather than committing toward B0100.",
+        "B0100": "B0100 most plausibly seeks to maintain pressure on A0200 by continuing northeast behind it while climbing, consistent with supporting its pre-existing missile's pursuit; this continued exposure ends when B0100 disappears as A0100's missile is removed nearby.",
+        "B0200": "B0200 remains inactive throughout the window, so no tactical intention can be inferred."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 38,
+        "A0200": 39,
+        "B0100": 36,
+        "B0200": 13
+      },
+      "total_words": 126,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "a29a806c34c9a27658e973fb0a8daa38dc55bf15cc4a62fd6b5bab96e3d9f48f",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 310,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 most plausibly seeks to reduce exposure after launching against B0100 by descending into a sustained lateral break, given its missile count falls as the missile departs westward and B0100 is subsequently removed; the later turn reversal appears to preserve separation rather than continue a direct approach.\",\n  \"A0200\": \"A0200 most plausibly seeks a close firing geometry against the remaining opposing aircraft by maintaining a fast northeastward approach with gradual descent and heading adjustments, as it steadily closes the B0100 area while retaining its missile and continues advancing after A0100’s launch.\",\n  \"B0100\": \"B0100 most plausibly attempts to press an attack or improve intercept geometry while its previously launched missile remains in flight, turning from eastward travel toward the opposing formation and climbing sharply; its continued approach is followed by removal, although the recording does not establish the cause.\",\n  \"B0200\": \"B0200’s intention cannot be inferred within this window because it is inactive and has no valid flight state.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2208,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1963,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 42016,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 38787,
+        "cached_tokens": 3226
+      },
+      "total_tokens": 44224
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 most plausibly seeks to reduce exposure after launching against B0100 by descending into a sustained lateral break, given its missile count falls as the missile departs westward and B0100 is subsequently removed; the later turn reversal appears to preserve separation rather than continue a direct approach.",
+        "A0200": "A0200 most plausibly seeks a close firing geometry against the remaining opposing aircraft by maintaining a fast northeastward approach with gradual descent and heading adjustments, as it steadily closes the B0100 area while retaining its missile and continues advancing after A0100’s launch.",
+        "B0100": "B0100 most plausibly attempts to press an attack or improve intercept geometry while its previously launched missile remains in flight, turning from eastward travel toward the opposing formation and climbing sharply; its continued approach is followed by removal, although the recording does not establish the cause.",
+        "B0200": "B0200’s intention cannot be inferred within this window because it is inactive and has no valid flight state."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 47,
+        "A0200": 42,
+        "B0100": 46,
+        "B0200": 18
+      },
+      "total_words": 153,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  }
+]

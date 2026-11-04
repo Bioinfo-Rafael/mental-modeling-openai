@@ -108,6 +108,14 @@ def save_plan(plan, directory):
         write_json(path, plan)
     previews = directory / "prompts"
     previews.mkdir(exist_ok=True)
+    if plan.get('prompt_spec'):
+        from .prompts import snapshot_artifacts
+        for relative, content in snapshot_artifacts(plan['prompt_spec']).items():
+            snapshot = previews / relative
+            if snapshot.exists() and snapshot.read_text(encoding='utf-8') != content:
+                raise ValueError(f'Prompt snapshot was edited: {snapshot}')
+            snapshot.parent.mkdir(parents=True, exist_ok=True)
+            snapshot.write_text(content, encoding='utf-8')
     for sample in plan["samples"].values():
         # One file per distinct input, shared by models and repeats.
         text = "\n\n".join(f"[{m['role'].upper()}]\n{m['content']}" for m in sample["messages"])
@@ -178,25 +186,36 @@ def execute(plan, directory, *, repository_root, resume=False, client_factory=No
         for query in pending:
             qid = query["query_id"]
             request = request_for(plan, query)
-            started, clock = _now(), time.perf_counter()
-            append_journal(api / "requests.jsonl", {"query_id": qid, "started_at": started, "request": request})
+            reserved = _now()
+            append_journal(api / "requests.jsonl", {"query_id": qid, "started_at": reserved, "request": request})
             attempted.add(qid)
             print(f"[{len(attempted)}/{len(lookup)}] {query['condition_id']} sample={query['sample_id']} repeat={query['repeat_id']}", flush=True)
+            started, clock = _now(), time.perf_counter()
             try:
                 result = client.chat.completions.create(**request)
+                elapsed = time.perf_counter()-clock
+                finished = _now()
                 raw = result.model_dump(mode="json")
             except BaseException as exc:
                 append_journal(api / "responses.jsonl", {
                     "query_id": qid, "raw_response": None, "started_at": started,
+                    "finished_at": _now(),
                     "elapsed_seconds": time.perf_counter()-clock,
                     "error_type": type(exc).__name__, "error": _redact_error(exc, api_key),
                 })
                 raise
             append_journal(api / "responses.jsonl", {
                 "query_id": qid, "raw_response": raw, "started_at": started,
-                "finished_at": _now(), "elapsed_seconds": time.perf_counter()-clock,
+                "finished_at": finished, "elapsed_seconds": elapsed,
+                "measurement": "client_sdk_call_wall_seconds_nonstreaming",
+                "request_id": getattr(result, '_request_id', None),
                 "error_type": None, "error": None,
             })
+            print(f"Received {query['sample_id']}: {elapsed:.3f} seconds", flush=True)
+    except Exception as exc:
+        if api_key:
+            raise RuntimeError(_redact_error(exc, api_key)) from None
+        raise
     finally:
         if client is not None:
             client.close()

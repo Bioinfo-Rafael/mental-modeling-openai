@@ -1,0 +1,9 @@
+--- tactical_short_batch_v2/user.txt
++++ tactical_short_counttime_v1_user.txt
+@@ -21,5 +21,5 @@
+ END WINDOW DATA
+ 
+ Analyze the supplied window and return the tactical intention
+-explanation for each aircraft, following the analysis and output
++explanation for the requested aircraft, following the analysis and output
+ requirements in the system message.

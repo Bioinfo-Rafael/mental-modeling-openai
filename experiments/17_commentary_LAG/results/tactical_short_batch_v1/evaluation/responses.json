@@ -1,0 +1,947 @@
+[
+  {
+    "query_id": "0f7096f5c003ec25d21479d1c6a8ac271f046a6be9f03dcf2e710bd7c044913d",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 45,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"Initially, A0100 accelerated northward in a sustained descent, closing the southbound B pair and preserving a direct firing line. Around step 47 it expended a missile and immediately entered a hard, sustained right turn toward the northeast while the missile continued north; this most plausibly was a post-launch crank to retain pressure but create lateral separation from the head-on exchange and newly airborne B missiles. Late altitude-hold commands began easing the descent, suggesting an effort to preserve maneuvering margin during the offset.\",\"A0200\":\"A0200 accelerated and descended almost directly north throughout the approach, maintaining rapid closure with the B formation. Around step 50 it expended a missile but, unlike A0100, made no substantial post-launch offset and continued pressing north while its weapon advanced; this most plausibly reflects continued attack commitment intended to sustain favorable geometry and pressure. Even after both B aircraft launched southbound missiles, its only heading changes remained small rather than developing into a defensive break.\",\"B0100\":\"B0100 maintained a fast southbound descent toward Team A, steadily preserving the head-on attack geometry. After both A aircraft had launched, it expended a missile around step 52 and continued almost straight south rather than turning away; this suggests an offensive commitment intended to keep closure and maintain pressure while its missile advanced. The absence of a meaningful lateral response to the northbound A missiles makes immediate disengagement or missile avoidance less consistent with its observed behavior.\",\"B0200\":\"B0200 continuously accelerated southward in a descending approach, holding a nearly direct line toward Team A. Around step 47 it expended a missile during the opening exchange with A0100, then continued south without a significant defensive turn; this most plausibly served to preserve attack geometry and maintain pressure while the missile traveled ahead. Its continued commitment despite the simultaneous opposing launch indicates that reducing exposure was secondary to sustaining the engagement during this window.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2179,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1761,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 48743,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 45856,
+        "cached_tokens": 2884
+      },
+      "total_tokens": 50922
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "Initially, A0100 accelerated northward in a sustained descent, closing the southbound B pair and preserving a direct firing line. Around step 47 it expended a missile and immediately entered a hard, sustained right turn toward the northeast while the missile continued north; this most plausibly was a post-launch crank to retain pressure but create lateral separation from the head-on exchange and newly airborne B missiles. Late altitude-hold commands began easing the descent, suggesting an effort to preserve maneuvering margin during the offset.",
+        "A0200": "A0200 accelerated and descended almost directly north throughout the approach, maintaining rapid closure with the B formation. Around step 50 it expended a missile but, unlike A0100, made no substantial post-launch offset and continued pressing north while its weapon advanced; this most plausibly reflects continued attack commitment intended to sustain favorable geometry and pressure. Even after both B aircraft launched southbound missiles, its only heading changes remained small rather than developing into a defensive break.",
+        "B0100": "B0100 maintained a fast southbound descent toward Team A, steadily preserving the head-on attack geometry. After both A aircraft had launched, it expended a missile around step 52 and continued almost straight south rather than turning away; this suggests an offensive commitment intended to keep closure and maintain pressure while its missile advanced. The absence of a meaningful lateral response to the northbound A missiles makes immediate disengagement or missile avoidance less consistent with its observed behavior.",
+        "B0200": "B0200 continuously accelerated southward in a descending approach, holding a nearly direct line toward Team A. Around step 47 it expended a missile during the opening exchange with A0100, then continued south without a significant defensive turn; this most plausibly served to preserve attack geometry and maintain pressure while the missile traveled ahead. Its continued commitment despite the simultaneous opposing launch indicates that reducing exposure was secondary to sustaining the engagement during this window."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 82,
+        "A0200": 75,
+        "B0100": 77,
+        "B0200": 74
+      },
+      "total_words": 308,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "560765197341cc815c19004f0f9606ad688cf9a0eeade5990493ef0cc0f26936",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 45,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 spent the first half of the window descending and accelerating northward with A0200, closing the southbound B formation rather than maneuvering for separation. When its missile count fell and an A0100 missile appeared at 9.4 seconds, it began a sustained hard right turn while continuing down, carrying it east of the original approach line; this most plausibly was a post-launch crank or defensive break to reduce direct exposure while its missile continued northward.\",\"A0200\":\"A0200 maintained the northern approach beside and slightly west of A0100, descending and accelerating as the formations converged. It continued broadly northward through the simultaneous A0100/B0200 launch exchange, then expended a missile at 10.0 seconds and kept pressing ahead with only a modest rightward bias; this suggests an effort to sustain forward attack geometry or support its shot rather than immediately disengage, despite the B0200 missile already being recorded southbound.\",\"B0100\":\"B0100 descended steadily southward from the opposing formation throughout the window, preserving a nearly constant southerly track while the A aircraft approached from below its flight path. Its ammunition decrease and the first appearance of a B0100 missile at 10.4 seconds indicate it joined the missile exchange after A0100 and A0200 had fired; continuing straight afterward most plausibly maintained pressure and launch geometry rather than signaling an evasive withdrawal.\",\"B0200\":\"B0200 initially held a southbound, descending approach west of B0100, broadly aligned against the western A aircraft. At 9.4 seconds it expended a missile as an A0100 missile also appeared, then continued south with little lateral displacement while descending; this is most consistent with remaining committed to the head-on engagement and preserving attack pressure after launch, rather than executing an immediate defensive turn.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 791,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 402,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 48743,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 45856,
+        "cached_tokens": 2884
+      },
+      "total_tokens": 49534
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 spent the first half of the window descending and accelerating northward with A0200, closing the southbound B formation rather than maneuvering for separation. When its missile count fell and an A0100 missile appeared at 9.4 seconds, it began a sustained hard right turn while continuing down, carrying it east of the original approach line; this most plausibly was a post-launch crank or defensive break to reduce direct exposure while its missile continued northward.",
+        "A0200": "A0200 maintained the northern approach beside and slightly west of A0100, descending and accelerating as the formations converged. It continued broadly northward through the simultaneous A0100/B0200 launch exchange, then expended a missile at 10.0 seconds and kept pressing ahead with only a modest rightward bias; this suggests an effort to sustain forward attack geometry or support its shot rather than immediately disengage, despite the B0200 missile already being recorded southbound.",
+        "B0100": "B0100 descended steadily southward from the opposing formation throughout the window, preserving a nearly constant southerly track while the A aircraft approached from below its flight path. Its ammunition decrease and the first appearance of a B0100 missile at 10.4 seconds indicate it joined the missile exchange after A0100 and A0200 had fired; continuing straight afterward most plausibly maintained pressure and launch geometry rather than signaling an evasive withdrawal.",
+        "B0200": "B0200 initially held a southbound, descending approach west of B0100, broadly aligned against the western A aircraft. At 9.4 seconds it expended a missile as an A0100 missile also appeared, then continued south with little lateral displacement while descending; this is most consistent with remaining committed to the head-on engagement and preserving attack pressure after launch, rather than executing an immediate defensive turn."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 74,
+        "A0200": 70,
+        "B0100": 69,
+        "B0200": 63
+      },
+      "total_words": 276,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "4a3b472b419df1102f54a315e0cb91814810b4651741e098213e312e7c79a108",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 45,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 initially pressed northward toward the opposing pair while descending and accelerating, consistent with closing for an attack. Immediately after its recorded ammunition reduction and missile appearance at step 47, it shifted into a sustained right-hand break, carrying it eastward and away from the direct approach line; this most plausibly served post-launch lateral separation and reduced exposure, although the simultaneous opposing missile activity prevents attributing the turn to a confirmed defensive reaction.\",\n  \"A0200\": \"A0200 maintained a largely northbound, accelerating approach throughout the window while descending, with only modest heading adjustments, suggesting continued pressure toward the opposing formation rather than disengagement. A missile object associated with A0200 appeared later, but its first appearance and unchanged ammunition count do not establish a launch in this window; the aircraft nevertheless continued advancing while A0100 separated, plausibly sustaining the team's forward attack geometry.\",\n  \"B0100\": \"B0100 continued a southbound, descending and accelerating approach toward Team A for the entire window, with no clear transition into a defensive break or disengagement. Its persistent closure while A0100 turned away is most consistent with maintaining offensive pressure and preserving an opportunity to engage the remaining forward threat, though no recorded action or ammunition change identifies a specific attack decision or target.\",\n  \"B0200\": \"B0200 likewise maintained a southbound approach while descending and increasing speed, remaining committed to closing the opposing formation rather than maneuvering away. Its ammunition count decreased and an associated missile appeared at step 47, supporting a missile expenditure during the exchange; the subsequent continued approach suggests it was pressing the engagement or supporting that missile rather than immediately executing a defensive reaction, with no hit or target attribution available.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 876,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 512,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 48743,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 48740,
+        "cached_tokens": 0
+      },
+      "total_tokens": 49619
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 initially pressed northward toward the opposing pair while descending and accelerating, consistent with closing for an attack. Immediately after its recorded ammunition reduction and missile appearance at step 47, it shifted into a sustained right-hand break, carrying it eastward and away from the direct approach line; this most plausibly served post-launch lateral separation and reduced exposure, although the simultaneous opposing missile activity prevents attributing the turn to a confirmed defensive reaction.",
+        "A0200": "A0200 maintained a largely northbound, accelerating approach throughout the window while descending, with only modest heading adjustments, suggesting continued pressure toward the opposing formation rather than disengagement. A missile object associated with A0200 appeared later, but its first appearance and unchanged ammunition count do not establish a launch in this window; the aircraft nevertheless continued advancing while A0100 separated, plausibly sustaining the team's forward attack geometry.",
+        "B0100": "B0100 continued a southbound, descending and accelerating approach toward Team A for the entire window, with no clear transition into a defensive break or disengagement. Its persistent closure while A0100 turned away is most consistent with maintaining offensive pressure and preserving an opportunity to engage the remaining forward threat, though no recorded action or ammunition change identifies a specific attack decision or target.",
+        "B0200": "B0200 likewise maintained a southbound approach while descending and increasing speed, remaining committed to closing the opposing formation rather than maneuvering away. Its ammunition count decreased and an associated missile appeared at step 47, supporting a missile expenditure during the exchange; the subsequent continued approach suggests it was pressing the engagement or supporting that missile rather than immediately executing a defensive reaction, with no hit or target attribution available."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 72,
+        "A0200": 66,
+        "B0100": 63,
+        "B0200": 69
+      },
+      "total_words": 270,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "2c054896f836c16e345b644260e979e1f7b526c80c63713f30ca739011c6496a",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 85,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 was already in a hard right, descending break at the window’s start, turning from north toward east while its previously launched missile continued north and Team B’s missiles advanced from that direction. It then stopped tightening the turn and settled into fast, nearly level eastbound flight, most plausibly converting a post-launch defensive maneuver into lateral disengagement that reduced head-on exposure, opened separation from the opposing formation and inbound missile paths, and preserved energy.\",\"A0200\":\"A0200 initially continued a fast northbound descent toward Team B while its own missile flew ahead, suggesting it was sustaining attack pressure rather than immediately following A0100’s lateral break. Late in the window it began a hard right turn toward the east while continuing down; with both Team B missiles now much closer from the north, this most plausibly marks a delayed defensive break intended to leave the head-on corridor and create lateral separation after the missile exchange.\",\"B0100\":\"B0100 continued almost straight south throughout, descending and accelerating behind its already outbound missile while maintaining closure with Team A’s initially northbound tracks. Even after A0100 displaced east and the northbound Team A missiles drew substantially closer, B0100 showed no meaningful lateral defense; the behavior therefore most plausibly reflects continued commitment to the attack axis, preserving pressure on the opposing pair and carrying the engagement forward rather than disengaging.\",\"B0200\":\"B0200 maintained a steady southbound descent and gained speed behind its previously launched missile, remaining particularly well aligned with A0200 while the formations closed. When A0200 eventually began turning east and the Team A missiles approached from the south, B0200 still did not break laterally, suggesting its primary intention remained to press the central attack corridor and sustain closure rather than react defensively or immediately follow the opponent’s lateral maneuver.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2743,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2337,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 61939,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 61936,
+        "cached_tokens": 0
+      },
+      "total_tokens": 64682
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 was already in a hard right, descending break at the window’s start, turning from north toward east while its previously launched missile continued north and Team B’s missiles advanced from that direction. It then stopped tightening the turn and settled into fast, nearly level eastbound flight, most plausibly converting a post-launch defensive maneuver into lateral disengagement that reduced head-on exposure, opened separation from the opposing formation and inbound missile paths, and preserved energy.",
+        "A0200": "A0200 initially continued a fast northbound descent toward Team B while its own missile flew ahead, suggesting it was sustaining attack pressure rather than immediately following A0100’s lateral break. Late in the window it began a hard right turn toward the east while continuing down; with both Team B missiles now much closer from the north, this most plausibly marks a delayed defensive break intended to leave the head-on corridor and create lateral separation after the missile exchange.",
+        "B0100": "B0100 continued almost straight south throughout, descending and accelerating behind its already outbound missile while maintaining closure with Team A’s initially northbound tracks. Even after A0100 displaced east and the northbound Team A missiles drew substantially closer, B0100 showed no meaningful lateral defense; the behavior therefore most plausibly reflects continued commitment to the attack axis, preserving pressure on the opposing pair and carrying the engagement forward rather than disengaging.",
+        "B0200": "B0200 maintained a steady southbound descent and gained speed behind its previously launched missile, remaining particularly well aligned with A0200 while the formations closed. When A0200 eventually began turning east and the Team A missiles approached from the south, B0200 still did not break laterally, suggesting its primary intention remained to press the central attack corridor and sustain closure rather than react defensively or immediately follow the opponent’s lateral maneuver."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 74,
+        "A0200": 78,
+        "B0100": 69,
+        "B0200": 70
+      },
+      "total_words": 291,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "a24b95d7711ae100d64adb6e1b1897d9f3c500f8a548a2d8897771b9c285433c",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 85,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 began a sustained right turn while descending, moving from a northbound approach into an easterly run; by the middle of the window it stopped further descent and stabilized on that easterly heading. With its own earlier-fired missile continuing north while both B missiles progressively angled toward A0100's side of the formation, this most plausibly represents a lateral defensive break to increase offset from the opposing pair and preserve separation rather than continuing directly into the head-on geometry.\",\"A0200\":\"A0200 initially stayed near a northbound approach while descending, then progressively turned right and accelerated into a northeastward track, remaining below the opposing aircraft. Its previously present missile continued generally north, while the aircraft's widening eastward displacement from A0100 appears intended to avoid presenting the B formation with a compact, head-on pair and to retain an approach lane toward the western B aircraft rather than fully disengaging.\",\"B0100\":\"B0100 maintained a steady southbound, descending advance throughout the window, broadly preserving its position as the eastern member of the B pair while accelerating. Its missile was already airborne and increasingly steered southeast as A0100 moved east, so the aircraft's continued approach most plausibly reflects sustained offensive pressure on the southern formation rather than a defensive withdrawal; no recorded maneuver indicates a change in that commitment.\",\"B0200\":\"B0200 likewise continued a largely straight southbound descent and acceleration, holding the western side of the B formation rather than turning away as A0200 closed from the south. Its already-recorded missile also bent southeast over time, consistent with the ongoing exchange, while B0200's stable course appears intended to maintain forward pressure and preserve a useful opposing flank geometry rather than chase A0200 with a major aircraft maneuver.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1524,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1142,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 61939,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 61936,
+        "cached_tokens": 0
+      },
+      "total_tokens": 63463
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 began a sustained right turn while descending, moving from a northbound approach into an easterly run; by the middle of the window it stopped further descent and stabilized on that easterly heading. With its own earlier-fired missile continuing north while both B missiles progressively angled toward A0100's side of the formation, this most plausibly represents a lateral defensive break to increase offset from the opposing pair and preserve separation rather than continuing directly into the head-on geometry.",
+        "A0200": "A0200 initially stayed near a northbound approach while descending, then progressively turned right and accelerated into a northeastward track, remaining below the opposing aircraft. Its previously present missile continued generally north, while the aircraft's widening eastward displacement from A0100 appears intended to avoid presenting the B formation with a compact, head-on pair and to retain an approach lane toward the western B aircraft rather than fully disengaging.",
+        "B0100": "B0100 maintained a steady southbound, descending advance throughout the window, broadly preserving its position as the eastern member of the B pair while accelerating. Its missile was already airborne and increasingly steered southeast as A0100 moved east, so the aircraft's continued approach most plausibly reflects sustained offensive pressure on the southern formation rather than a defensive withdrawal; no recorded maneuver indicates a change in that commitment.",
+        "B0200": "B0200 likewise continued a largely straight southbound descent and acceleration, holding the western side of the B formation rather than turning away as A0200 closed from the south. Its already-recorded missile also bent southeast over time, consistent with the ongoing exchange, while B0200's stable course appears intended to maintain forward pressure and preserve a useful opposing flank geometry rather than chase A0200 with a major aircraft maneuver."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 78,
+        "A0200": 67,
+        "B0100": 66,
+        "B0200": 67
+      },
+      "total_words": 278,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "7d7878c5291028871c2b9d7176e492348316f123ab0cdf8cf4df8bc99ce332ee",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 85,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 begins by closing northward toward the opposing formation, then sustains a broad right-hand turn that carries it eastward while descending; after the turn is established, it largely holds the resulting course. With its own missile already in flight and both B aircraft plus their inbound missiles ahead, this appears intended to create lateral separation and reduce direct exposure while preserving speed and keeping pressure on the engagement. The later stabilized eastward leg suggests repositioning rather than continued nose-on pursuit.\",\n  \"A0200\": \"A0200 continues the northward approach initially, then progressively commits to a strong rightward, northeastward maneuver with substantial descent and maintained or increasing speed. The geometry is consistent with seeking a more favorable offset against the southbound B formation while avoiding a direct collision path, possibly supporting the already-launched missile from a different angle. Its increasingly steep bank and continued turn indicate an active repositioning or defensive-attack maneuver rather than simple formation travel.\",\n  \"B0100\": \"B0100 maintains a largely steady southbound advance throughout the window, gradually descending while its speed remains available, with no recorded evidence of a major evasive or lateral maneuver. The aircraft is moving toward the A formation while its own missile continues southward ahead of it, so the most plausible objective is to sustain an intercept and support the ongoing missile engagement by closing behind the weapon. The absence of a sharp course change suggests no clearly supported defensive reaction within the window.\",\n  \"B0200\": \"B0200 likewise continues south toward Team A, but its descent and energy state develop more aggressively than B0100's while it remains broadly aligned with the engagement axis. Its missile is also progressing toward the A side, making continued forward pressure and maintenance of a useful intercept position the best-supported intention. The relatively straight course, despite changing pitch and speed, suggests it is preserving pursuit geometry behind the missile rather than responding to a confirmed threat or disengaging.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1411,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 997,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 61939,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 59052,
+        "cached_tokens": 2884
+      },
+      "total_tokens": 63350
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 begins by closing northward toward the opposing formation, then sustains a broad right-hand turn that carries it eastward while descending; after the turn is established, it largely holds the resulting course. With its own missile already in flight and both B aircraft plus their inbound missiles ahead, this appears intended to create lateral separation and reduce direct exposure while preserving speed and keeping pressure on the engagement. The later stabilized eastward leg suggests repositioning rather than continued nose-on pursuit.",
+        "A0200": "A0200 continues the northward approach initially, then progressively commits to a strong rightward, northeastward maneuver with substantial descent and maintained or increasing speed. The geometry is consistent with seeking a more favorable offset against the southbound B formation while avoiding a direct collision path, possibly supporting the already-launched missile from a different angle. Its increasingly steep bank and continued turn indicate an active repositioning or defensive-attack maneuver rather than simple formation travel.",
+        "B0100": "B0100 maintains a largely steady southbound advance throughout the window, gradually descending while its speed remains available, with no recorded evidence of a major evasive or lateral maneuver. The aircraft is moving toward the A formation while its own missile continues southward ahead of it, so the most plausible objective is to sustain an intercept and support the ongoing missile engagement by closing behind the weapon. The absence of a sharp course change suggests no clearly supported defensive reaction within the window.",
+        "B0200": "B0200 likewise continues south toward Team A, but its descent and energy state develop more aggressively than B0100's while it remains broadly aligned with the engagement axis. Its missile is also progressing toward the A side, making continued forward pressure and maintenance of a useful intercept position the best-supported intention. The relatively straight course, despite changing pitch and speed, suggests it is preserving pursuit geometry behind the missile rather than responding to a confirmed threat or disengaging."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 80,
+        "A0200": 72,
+        "B0100": 82,
+        "B0200": 77
+      },
+      "total_words": 311,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "fdbc6f1c414ef8474cee362f420f880b4ead122d6bf09564772d60b97073348d",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 145,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 maintained a nearly level eastbound offset and steadily accelerated rather than turning back toward the southbound opponents. With its previously launched missile advancing north toward Team B, this perpendicular extension most plausibly preserved post-launch pressure while reducing exposure to the two opposing missiles; when the A missile disappeared as B0200 became inactive, A0100 continued east, consistent with energy preservation and repositioning rather than immediate recommitment.\",\"A0200\":\"A0200 continued an already-established hard right, descending turn, shifting from northeast toward southeast while accelerating; around mid-window it moderated the turn but sustained the dive and lateral escape. The two Team B missiles remained north of it and progressed southeastward, making this most consistent with dragging or beaming those threats while its own earlier-launched missile continued north. B0200’s loss did not end the maneuver because B0100 and both B missiles remained active.\",\"B0100\":\"B0100 initially pressed almost straight south in a steep descent, closing on A0200 while its previously launched missile also advanced southeast. After A0200 displaced east and B0200 became inactive, B0100 made a pronounced left turn toward the southeast and continued descending, most plausibly converting the head-on approach into a trailing pursuit of A0200 and maintaining pressure behind the outbound missile. The decreasing separation and increasingly matched direction support pursuit more strongly than disengagement.\",\"B0200\":\"B0200 began southbound and descending, then progressively rolled into a hard left break that added substantial eastward displacement while continuing downward. Two Team A missiles were approaching northward from directly ahead and closed to its immediate vicinity, so the maneuver most plausibly attempted to spoil their geometry through a lateral defensive turn while retaining speed. B0200 became inactive as both A missiles were removed; the timing is consistent with an unsuccessful defense but does not establish a specific hit.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2364,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1955,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 51531,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 48644,
+        "cached_tokens": 2884
+      },
+      "total_tokens": 53895
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 maintained a nearly level eastbound offset and steadily accelerated rather than turning back toward the southbound opponents. With its previously launched missile advancing north toward Team B, this perpendicular extension most plausibly preserved post-launch pressure while reducing exposure to the two opposing missiles; when the A missile disappeared as B0200 became inactive, A0100 continued east, consistent with energy preservation and repositioning rather than immediate recommitment.",
+        "A0200": "A0200 continued an already-established hard right, descending turn, shifting from northeast toward southeast while accelerating; around mid-window it moderated the turn but sustained the dive and lateral escape. The two Team B missiles remained north of it and progressed southeastward, making this most consistent with dragging or beaming those threats while its own earlier-launched missile continued north. B0200’s loss did not end the maneuver because B0100 and both B missiles remained active.",
+        "B0100": "B0100 initially pressed almost straight south in a steep descent, closing on A0200 while its previously launched missile also advanced southeast. After A0200 displaced east and B0200 became inactive, B0100 made a pronounced left turn toward the southeast and continued descending, most plausibly converting the head-on approach into a trailing pursuit of A0200 and maintaining pressure behind the outbound missile. The decreasing separation and increasingly matched direction support pursuit more strongly than disengagement.",
+        "B0200": "B0200 began southbound and descending, then progressively rolled into a hard left break that added substantial eastward displacement while continuing downward. Two Team A missiles were approaching northward from directly ahead and closed to its immediate vicinity, so the maneuver most plausibly attempted to spoil their geometry through a lateral defensive turn while retaining speed. B0200 became inactive as both A missiles were removed; the timing is consistent with an unsuccessful defense but does not establish a specific hit."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 66,
+        "A0200": 72,
+        "B0100": 73,
+        "B0200": 79
+      },
+      "total_words": 290,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "2b593166e64fb729435b614ef8d158da6c78731ccc8b91d1647b41015f532ea5",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 145,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 maintained an almost straight eastbound, level acceleration throughout the window rather than turning toward either opponent. With its missile already in flight and both B aircraft initially north of its track, this most plausibly preserved separation and energy while allowing the pre-existing missile exchange to develop, rather than pursuing a new close-in attack. It continued this escape/repositioning line after B0200 became inactive; its ammunition count did not change within the window.\",\"A0200\":\"A0200 began in a descending right turn from a northeastward course toward an east-southeast track, then made small heading corrections while continuing a sustained descent. This is most consistent with opening lateral and vertical separation during the ongoing reciprocal missile exchange, particularly as the two B missiles were traveling southeastward from ahead; it was not a direct pursuit of the northbound B formation. Its already-present missile converged near B0200 before both A missiles disappeared as B0200 became inactive, but the record cannot attribute that loss to a specific missile.\",\"B0100\":\"B0100 initially held a nearly due-south, descending approach while its previously launched missile continued southeastward toward Team A. As B0200 disappeared and the two A missiles were removed, B0100 progressively curved left toward the southeast and continued descending, suggesting a break away from the original head-on geometry to gain lateral separation and survive after losing its teammate. Its missile remained recorded through the end, so the maneuver does not clearly indicate immediate disengagement from the missile exchange.\",\"B0200\":\"B0200 descended rapidly while turning from south toward the southeast during the established missile exchange, a maneuver most plausibly intended to alter its exposure and relative geometry against the northbound A missiles while its own missile continued toward Team A. The turn did not produce a visible recovery: B0200 became inactive at 27.2 seconds as both A missiles were removed nearby. That timing is consistent with a terminal missile event, but does not establish the responsible missile or a confirmed hit mechanism.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1373,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 948,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 51531,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 48644,
+        "cached_tokens": 2884
+      },
+      "total_tokens": 52904
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 maintained an almost straight eastbound, level acceleration throughout the window rather than turning toward either opponent. With its missile already in flight and both B aircraft initially north of its track, this most plausibly preserved separation and energy while allowing the pre-existing missile exchange to develop, rather than pursuing a new close-in attack. It continued this escape/repositioning line after B0200 became inactive; its ammunition count did not change within the window.",
+        "A0200": "A0200 began in a descending right turn from a northeastward course toward an east-southeast track, then made small heading corrections while continuing a sustained descent. This is most consistent with opening lateral and vertical separation during the ongoing reciprocal missile exchange, particularly as the two B missiles were traveling southeastward from ahead; it was not a direct pursuit of the northbound B formation. Its already-present missile converged near B0200 before both A missiles disappeared as B0200 became inactive, but the record cannot attribute that loss to a specific missile.",
+        "B0100": "B0100 initially held a nearly due-south, descending approach while its previously launched missile continued southeastward toward Team A. As B0200 disappeared and the two A missiles were removed, B0100 progressively curved left toward the southeast and continued descending, suggesting a break away from the original head-on geometry to gain lateral separation and survive after losing its teammate. Its missile remained recorded through the end, so the maneuver does not clearly indicate immediate disengagement from the missile exchange.",
+        "B0200": "B0200 descended rapidly while turning from south toward the southeast during the established missile exchange, a maneuver most plausibly intended to alter its exposure and relative geometry against the northbound A missiles while its own missile continued toward Team A. The turn did not produce a visible recovery: B0200 became inactive at 27.2 seconds as both A missiles were removed nearby. That timing is consistent with a terminal missile event, but does not establish the responsible missile or a confirmed hit mechanism."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 72,
+        "A0200": 89,
+        "B0100": 77,
+        "B0200": 82
+      },
+      "total_words": 320,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "32c4e4948f000eadcf644c7a0652f46e3bc19c5c62f62b565e6fc779df9871e3",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 145,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 maintains a nearly level, high-altitude eastward run while steadily increasing speed, rather than joining A0200's descending turn. This appears most plausibly intended to preserve energy and create a separated northern approach or supporting position against the southbound B formation; the aircraft remains alive and retains its recorded missile count, with no observed transition requiring a more aggressive commitment.\",\n  \"A0200\": \"A0200 commits to a sustained descending turn toward the opposing formation, driving eastward across the engagement while trading altitude for turning geometry and speed. The maneuver is most consistent with an aggressive attack approach or close-pass repositioning against the converging B aircraft; the simultaneous removal of both recorded A missiles and B0200's subsequent inactivity marks an exchange, but does not establish a launch, target, or hit. A0200 then continues descending and turning after that exchange.\",\n  \"B0100\": \"B0100 initially presses southward toward the A formation, but during the middle of the window transitions into a pronounced bank that changes its motion toward the southeast while continuing to lose altitude. This appears most plausibly to be a defensive break or lateral repositioning as the engagement passes through close geometry, potentially after B0200 becomes inactive; the aircraft survives and continues maneuvering as A0200 descends away, although the data do not establish whether a missile specifically triggered the turn.\",\n  \"B0200\": \"B0200 becomes inactive and loses valid flight data at approximately 27.2 seconds, so no tactical intention can be inferred for its behavior during the remainder of the window.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1331,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 986,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 51531,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 48644,
+        "cached_tokens": 2884
+      },
+      "total_tokens": 52862
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 maintains a nearly level, high-altitude eastward run while steadily increasing speed, rather than joining A0200's descending turn. This appears most plausibly intended to preserve energy and create a separated northern approach or supporting position against the southbound B formation; the aircraft remains alive and retains its recorded missile count, with no observed transition requiring a more aggressive commitment.",
+        "A0200": "A0200 commits to a sustained descending turn toward the opposing formation, driving eastward across the engagement while trading altitude for turning geometry and speed. The maneuver is most consistent with an aggressive attack approach or close-pass repositioning against the converging B aircraft; the simultaneous removal of both recorded A missiles and B0200's subsequent inactivity marks an exchange, but does not establish a launch, target, or hit. A0200 then continues descending and turning after that exchange.",
+        "B0100": "B0100 initially presses southward toward the A formation, but during the middle of the window transitions into a pronounced bank that changes its motion toward the southeast while continuing to lose altitude. This appears most plausibly to be a defensive break or lateral repositioning as the engagement passes through close geometry, potentially after B0200 becomes inactive; the aircraft survives and continues maneuvering as A0200 descends away, although the data do not establish whether a missile specifically triggered the turn.",
+        "B0200": "B0200 becomes inactive and loses valid flight data at approximately 27.2 seconds, so no tactical intention can be inferred for its behavior during the remainder of the window."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 59,
+        "A0200": 75,
+        "B0100": 79,
+        "B0200": 28
+      },
+      "total_words": 241,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "c257b4e61b00df43465f5541af1d997f188b5e16403e4746a60c7f54798e624f",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 245,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 initially maintained a fast, level eastbound extension without firing or reacting sharply to missiles passing well to its north. From about 48.6 seconds it entered a sustained hard left turn and later descended, curving north and reducing separation from B0100; this most plausibly began a reversal to regain attack geometry against the lone active opponent and potentially relieve A0200, rather than missile evasion, because the recorded missiles were not converging on A0100.\",\"A0200\":\"A0200 spent the window in a descending, heavily banked east-to-northeast arc, repeatedly adjusting its turn rather than settling into an attack run. This most plausibly attempted to drag and laterally displace B01001, whose near-altitude southeastward path remained behind and north while closing, and to deny pursuit geometry to B0100; by the end A0200 had extended northeast, but neither threat had been decisively separated.\",\"B0100\":\"B0100 descended on a southeast course toward A0200, then progressively turned east and reduced its sink as the relative bearing shifted, remaining in pursuit behind the Team A aircraft. With no missiles remaining and its already-airborne B01001 following geometry consistent with A0200, this most plausibly maintained pressure and supported the missile engagement rather than disengaging; separation narrowed only modestly as A0200 dragged northeast.\",\"B0200\":\"B0200 remained inactive with no valid flight state throughout the window, so no tactical intention can be inferred.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 3365,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 3014,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 44945,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 42058,
+        "cached_tokens": 2884
+      },
+      "total_tokens": 48310
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 initially maintained a fast, level eastbound extension without firing or reacting sharply to missiles passing well to its north. From about 48.6 seconds it entered a sustained hard left turn and later descended, curving north and reducing separation from B0100; this most plausibly began a reversal to regain attack geometry against the lone active opponent and potentially relieve A0200, rather than missile evasion, because the recorded missiles were not converging on A0100.",
+        "A0200": "A0200 spent the window in a descending, heavily banked east-to-northeast arc, repeatedly adjusting its turn rather than settling into an attack run. This most plausibly attempted to drag and laterally displace B01001, whose near-altitude southeastward path remained behind and north while closing, and to deny pursuit geometry to B0100; by the end A0200 had extended northeast, but neither threat had been decisively separated.",
+        "B0100": "B0100 descended on a southeast course toward A0200, then progressively turned east and reduced its sink as the relative bearing shifted, remaining in pursuit behind the Team A aircraft. With no missiles remaining and its already-airborne B01001 following geometry consistent with A0200, this most plausibly maintained pressure and supported the missile engagement rather than disengaging; separation narrowed only modestly as A0200 dragged northeast.",
+        "B0200": "B0200 remained inactive with no valid flight state throughout the window, so no tactical intention can be inferred."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 73,
+        "A0200": 63,
+        "B0100": 63,
+        "B0200": 18
+      },
+      "total_words": 217,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "1a19e516047856ad338a991d678e5b90cfde482fb32292d8b31266d2667af295",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 245,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 initially maintained a fast, nearly level eastbound extension while the active B missiles remained northwest of it, without expending its own remaining weapon. From about 48.6 seconds it committed to a sustained left-hand turn, first climbing slightly and then descending sharply, which most plausibly represents a defensive lateral repositioning to reduce exposure and preserve separation rather than a direct attack: it did not turn toward a clear firing geometry or launch, while the opposing missile track was still in the area before disappearing.\",\"A0200\":\"A0200 spent the entire window accelerating in a descending, increasingly northward-curving maneuver rather than holding its initial eastbound course. This is most plausibly an extended defensive response to B01001: that missile approached from the northwest, descended toward A0200's altitude band, and remained close behind its route through the end of the window; the turn and descent appear intended to create changing lateral and vertical geometry while escaping east-northeast, not to set up an attack.\",\"B0100\":\"B0100 entered already out of missiles and continued descending southeast before progressively turning toward an easterly heading, bringing it onto a more direct pursuit line behind the withdrawing A aircraft. Its surviving missile, B01001, continued toward A0200 while B0100's own turn reduced the offset to that aircraft, suggesting an effort to maintain pressure and support the existing engagement rather than disengage; no outcome is established within the window.\",\"B0200\":\"B0200 remained inactive with no valid flight data throughout the window, so no tactical intention can be inferred.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1860,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1514,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 44945,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 42058,
+        "cached_tokens": 2884
+      },
+      "total_tokens": 46805
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 initially maintained a fast, nearly level eastbound extension while the active B missiles remained northwest of it, without expending its own remaining weapon. From about 48.6 seconds it committed to a sustained left-hand turn, first climbing slightly and then descending sharply, which most plausibly represents a defensive lateral repositioning to reduce exposure and preserve separation rather than a direct attack: it did not turn toward a clear firing geometry or launch, while the opposing missile track was still in the area before disappearing.",
+        "A0200": "A0200 spent the entire window accelerating in a descending, increasingly northward-curving maneuver rather than holding its initial eastbound course. This is most plausibly an extended defensive response to B01001: that missile approached from the northwest, descended toward A0200's altitude band, and remained close behind its route through the end of the window; the turn and descent appear intended to create changing lateral and vertical geometry while escaping east-northeast, not to set up an attack.",
+        "B0100": "B0100 entered already out of missiles and continued descending southeast before progressively turning toward an easterly heading, bringing it onto a more direct pursuit line behind the withdrawing A aircraft. Its surviving missile, B01001, continued toward A0200 while B0100's own turn reduced the offset to that aircraft, suggesting an effort to maintain pressure and support the existing engagement rather than disengage; no outcome is established within the window.",
+        "B0200": "B0200 remained inactive with no valid flight data throughout the window, so no tactical intention can be inferred."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 84,
+        "A0200": 74,
+        "B0100": 68,
+        "B0200": 18
+      },
+      "total_words": 244,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "3f15493b97a36cbdab37225c820bb631a3d6dd52628a33d2325431ee71901a3d",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 245,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 initially maintained a fast, nearly level eastward run while staying well above the opposing aircraft, then began a sustained hard left turn with a gradual descent and speed reduction. The change most plausibly represents lateral repositioning toward the evolving engagement rather than a confirmed missile-evasion response: no launch or threat event directly implicates A0100, while B0100 remained offset to its north-west and A0200 was closing the same fight from below. The turn continued through the window, establishing a new northward-facing attack or support position.\",\n  \"A0200\": \"A0200 began low and descending while turning left from an eastward course, then continued across the engagement with a strong north-easterly component before making smaller heading corrections. This is most consistent with an aggressive pursuit or attack-positioning maneuver against B0100, which lay ahead and north-west initially; the aircraft's changing relative position suggests an attempt to cross into a favorable firing geometry rather than disengage. Its later leveling of the turn and sustained forward motion indicate continued pressure after the initial intercept setup.\",\n  \"B0100\": \"B0100 spent the window descending while turning from a south-easterly course toward nearly east, with its motion gradually becoming less southward as A0200 approached from behind and south-west. The pattern most plausibly reflects defensive repositioning intended to preserve separation and avoid presenting a stable engagement geometry, possibly while supporting missiles already in flight; its recorded ammunition was already zero, and the surviving missile activity does not identify a target or launch within this window. It remained active and alive as the aircraft crossed the engagement area.\",\n  \"B0200\": \"B0200 was inactive with invalid flight state throughout the entire recording window, so no tactical intention can be inferred from the supplied data.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1411,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 44945,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 42058,
+        "cached_tokens": 2884
+      },
+      "total_tokens": 46356
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 initially maintained a fast, nearly level eastward run while staying well above the opposing aircraft, then began a sustained hard left turn with a gradual descent and speed reduction. The change most plausibly represents lateral repositioning toward the evolving engagement rather than a confirmed missile-evasion response: no launch or threat event directly implicates A0100, while B0100 remained offset to its north-west and A0200 was closing the same fight from below. The turn continued through the window, establishing a new northward-facing attack or support position.",
+        "A0200": "A0200 began low and descending while turning left from an eastward course, then continued across the engagement with a strong north-easterly component before making smaller heading corrections. This is most consistent with an aggressive pursuit or attack-positioning maneuver against B0100, which lay ahead and north-west initially; the aircraft's changing relative position suggests an attempt to cross into a favorable firing geometry rather than disengage. Its later leveling of the turn and sustained forward motion indicate continued pressure after the initial intercept setup.",
+        "B0100": "B0100 spent the window descending while turning from a south-easterly course toward nearly east, with its motion gradually becoming less southward as A0200 approached from behind and south-west. The pattern most plausibly reflects defensive repositioning intended to preserve separation and avoid presenting a stable engagement geometry, possibly while supporting missiles already in flight; its recorded ammunition was already zero, and the surviving missile activity does not identify a target or launch within this window. It remained active and alive as the aircraft crossed the engagement area.",
+        "B0200": "B0200 was inactive with invalid flight state throughout the entire recording window, so no tactical intention can be inferred from the supplied data."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 85,
+        "A0200": 82,
+        "B0100": 86,
+        "B0200": 23
+      },
+      "total_words": 276,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "aa05efa7807e981c159ac3f41cf8ffeff403462b0151f18b784e37e2ec0f2f71",
+    "model": "gpt-5.6-sol",
+    "repeat": 1,
+    "center_step": 310,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 descended through a sustained left turn toward B0100, closing from above and expending its final missile once favorable westward attack geometry had developed. It continued the descending turn briefly, then reversed right to avoid remaining committed through the merge and reposition after firing; the missile subsequently converged with B0100, and both were removed together, consistent with the attack defeating B0100 although no hit attribution is recorded.\",\"A0200\":\"A0200 maintained high speed while arcing from northeast toward north and gradually descending, extending away from B0100 rather than turning back to engage. This most plausibly served as a defensive drag against B0100’s missile, which followed the same northeast corridor behind it throughout the window without clearly closing; A0200 retained its missile and continued the extension even after B0100 became inactive.\",\"B0100\":\"With its ammunition already exhausted and a missile continuing northeast behind A0200, B0100 initially pursued eastward and progressively turned northeast, plausibly maintaining pressure while its missile engagement developed. After A0100 launched from higher altitude, B0100 transitioned into a steep climbing turn as that missile descended and converged from the northeast, consistent with an attempt to spoil the intercept vertically; B0100 became inactive when the missile was removed, though the record does not independently confirm a hit.\",\"B0200\":\"B0200 remained inactive with no valid flight state throughout the window, so no tactical intention can be inferred.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1858,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1536,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 41674,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 38787,
+        "cached_tokens": 2884
+      },
+      "total_tokens": 43532
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 descended through a sustained left turn toward B0100, closing from above and expending its final missile once favorable westward attack geometry had developed. It continued the descending turn briefly, then reversed right to avoid remaining committed through the merge and reposition after firing; the missile subsequently converged with B0100, and both were removed together, consistent with the attack defeating B0100 although no hit attribution is recorded.",
+        "A0200": "A0200 maintained high speed while arcing from northeast toward north and gradually descending, extending away from B0100 rather than turning back to engage. This most plausibly served as a defensive drag against B0100’s missile, which followed the same northeast corridor behind it throughout the window without clearly closing; A0200 retained its missile and continued the extension even after B0100 became inactive.",
+        "B0100": "With its ammunition already exhausted and a missile continuing northeast behind A0200, B0100 initially pursued eastward and progressively turned northeast, plausibly maintaining pressure while its missile engagement developed. After A0100 launched from higher altitude, B0100 transitioned into a steep climbing turn as that missile descended and converged from the northeast, consistent with an attempt to spoil the intercept vertically; B0100 became inactive when the missile was removed, though the record does not independently confirm a hit.",
+        "B0200": "B0200 remained inactive with no valid flight state throughout the window, so no tactical intention can be inferred."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 67,
+        "A0200": 61,
+        "B0100": 76,
+        "B0200": 18
+      },
+      "total_words": 222,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "f28442f7ffa60e21f124d3aaa278b012dfcd7df916eba85eef5cf82ddf3a4684",
+    "model": "gpt-5.6-terra",
+    "repeat": 1,
+    "center_step": 310,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\"A0100\":\"A0100 spent the first half of the window in a sustained descending left-hand reposition, curving from a northerly course toward the west while separating from the lower engagement. Once B0100 lay to its southwest, A0100 expended its final missile and then reversed into a sustained rightward turn, most plausibly breaking laterally away while the weapon continued toward B0100. The missile and B0100 were removed together later, which is consistent with the attack reaching its end but does not confirm a hit.\",\"A0200\":\"A0200 maintained a fast, low-level northeastward displacement throughout, repeatedly commanding rightward adjustments that progressively curved its route rather than committing toward B0100. B0100's pre-existing missile remained behind and west of A0200 on a roughly similar northeast track, so this sustained maneuver most plausibly preserved lateral separation and denied a simple closing geometry while retaining speed. It continued this evasive or disengaging reposition after B0100 disappeared from the record.\",\"B0100\":\"B0100 began with no missiles remaining but with one of its missiles already in flight, and initially flew east before settling onto a northeast course broadly toward Team A's lower aircraft, consistent with continuing or supporting that prior missile engagement. After A0100 launched, B0100 maintained its northeast escape while climbing sharply, a change most plausibly intended to create vertical separation from the incoming weapon. A0100's missile subsequently converged near B0100 before both records were removed, though the removal does not establish the cause.\",\"B0200\":\"B0200 remained inactive with no valid flight data throughout the window, so no tactical intention can be inferred.\"}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1801,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1437,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 41674,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 38787,
+        "cached_tokens": 2884
+      },
+      "total_tokens": 43475
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 spent the first half of the window in a sustained descending left-hand reposition, curving from a northerly course toward the west while separating from the lower engagement. Once B0100 lay to its southwest, A0100 expended its final missile and then reversed into a sustained rightward turn, most plausibly breaking laterally away while the weapon continued toward B0100. The missile and B0100 were removed together later, which is consistent with the attack reaching its end but does not confirm a hit.",
+        "A0200": "A0200 maintained a fast, low-level northeastward displacement throughout, repeatedly commanding rightward adjustments that progressively curved its route rather than committing toward B0100. B0100's pre-existing missile remained behind and west of A0200 on a roughly similar northeast track, so this sustained maneuver most plausibly preserved lateral separation and denied a simple closing geometry while retaining speed. It continued this evasive or disengaging reposition after B0100 disappeared from the record.",
+        "B0100": "B0100 began with no missiles remaining but with one of its missiles already in flight, and initially flew east before settling onto a northeast course broadly toward Team A's lower aircraft, consistent with continuing or supporting that prior missile engagement. After A0100 launched, B0100 maintained its northeast escape while climbing sharply, a change most plausibly intended to create vertical separation from the incoming weapon. A0100's missile subsequently converged near B0100 before both records were removed, though the removal does not establish the cause.",
+        "B0200": "B0200 remained inactive with no valid flight data throughout the window, so no tactical intention can be inferred."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 81,
+        "A0200": 68,
+        "B0100": 83,
+        "B0200": 18
+      },
+      "total_words": 250,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  },
+  {
+    "query_id": "943766f8345d8a60d3092331192685a6e1be21a43100615482e1da07e29acd1e",
+    "model": "gpt-5.6-luna",
+    "repeat": 1,
+    "center_step": 310,
+    "status": "received",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "annotations": [],
+          "content": "{\n  \"A0100\": \"A0100 began in a high, descending left-hand repositioning that progressively aligned it toward the lower opposing aircraft, most plausibly to establish launch geometry rather than immediately close for a gun engagement. Its missile count fell at step 312, after which it continued the broad turn while accelerating and eventually eased the turn, consistent with a post-launch break intended to reduce exposure and reposition; the missile was removed when B0100 became inactive, although that does not independently confirm a hit.\",\n  \"A0200\": \"A0200 maintained a fast approach through the opposing aircraft's vicinity, repeatedly adjusting its heading while descending only modestly, suggesting an attempt to preserve an intercept or attack position on B0100. As A0100 launched and B0100 continued moving away and climbing, A0200 kept pressing forward rather than disengaging, consistent with sustaining pressure and exploiting the remaining opponent; B0100 later became inactive, but A0200's unchanged ammunition does not establish that it fired.\",\n  \"B0100\": \"B0100 entered the window with no recorded missiles remaining and an already-present missile, then continued toward the engagement while gradually turning and climbing. The later climb and changing heading are most plausibly an attempt to create separation or improve survivability as A0200 approached and A0100's missile appeared on a converging southwestward path, though the telemetry cannot establish whether this was a deliberate defensive reaction; B0100 became inactive as the A missile was removed.\",\n  \"B0200\": \"B0200 was inactive throughout the entire window, with invalid state data and no recorded flight activity, so its tactical intention cannot be inferred.\"\n}",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1678,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1315,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 41674,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 38787,
+        "cached_tokens": 2884
+      },
+      "total_tokens": 43352
+    },
+    "error": null,
+    "intention_format": {
+      "valid": true,
+      "narratives": {
+        "A0100": "A0100 began in a high, descending left-hand repositioning that progressively aligned it toward the lower opposing aircraft, most plausibly to establish launch geometry rather than immediately close for a gun engagement. Its missile count fell at step 312, after which it continued the broad turn while accelerating and eventually eased the turn, consistent with a post-launch break intended to reduce exposure and reposition; the missile was removed when B0100 became inactive, although that does not independently confirm a hit.",
+        "A0200": "A0200 maintained a fast approach through the opposing aircraft's vicinity, repeatedly adjusting its heading while descending only modestly, suggesting an attempt to preserve an intercept or attack position on B0100. As A0100 launched and B0100 continued moving away and climbing, A0200 kept pressing forward rather than disengaging, consistent with sustaining pressure and exploiting the remaining opponent; B0100 later became inactive, but A0200's unchanged ammunition does not establish that it fired.",
+        "B0100": "B0100 entered the window with no recorded missiles remaining and an already-present missile, then continued toward the engagement while gradually turning and climbing. The later climb and changing heading are most plausibly an attempt to create separation or improve survivability as A0200 approached and A0100's missile appeared on a converging southwestward path, though the telemetry cannot establish whether this was a deliberate defensive reaction; B0100 became inactive as the A missile was removed.",
+        "B0200": "B0200 was inactive throughout the entire window, with invalid state data and no recorded flight activity, so its tactical intention cannot be inferred."
+      },
+      "error": null
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 79,
+        "A0200": 70,
+        "B0100": 73,
+        "B0200": 23
+      },
+      "total_words": 245,
+      "max_words_per_aircraft": 90,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    }
+  }
+]

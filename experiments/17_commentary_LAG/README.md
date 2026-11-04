@@ -1,3 +1,23 @@
+#@Rafaメモ：
+- results/commentary_batch_v1が初発の実験。これを踏まえてプロンプトを調整して提出した結果がtactical_batch_v1
+- tactical_short_batch_v1, v2は出力を短くさせるためにpromptを改良したものでv2を採用してexperimentsの18,19,20に用いている。tactical_short_CountTime_v1はv2のpromptで時間を計測するためだけに送信したもの。
+- tactical_batch_v1は以下を説明させるようになっている。
+```sh
+* 窓内の行動と重要な変化
+* 戦術的な目的
+* 機動を開始・変更した理由
+* 敵・味方・ミサイルとの関係
+* 意図と行動の推移、その後の結果
+原文：
+/Users/cls-lab/Git/Matsuo/mental-modeling-openai/experiments/17_commentary_LAG/commentary_experiment/tactical_user.txt
+
+
+```
+また、" 「窓の最初から最後まで」「重要な変化の状況・行動・目的・結果」「正確なstep」「約90〜160語」を指定"
+
+/Users/cls-lab/Git/Matsuo/mental-modeling-openai/experiments/17_commentary_LAG/commentary_experiment/tactical_system.txt
+
+- 
 # Experiment 17: LAGの場面・行動意図の解説
 
 作成日: 2026-10-17 JST。抽出・プロンプト生成・Batch実行コードを実装。2026-10-20にユーザー共有の実験概要・結果を追記。以下の実装・計画と、共有結果の条件の差分は概要末尾に記載する。
@@ -424,3 +444,40 @@ window and the missing evidence that prevents a stronger conclusion.
 # 収録対象を指定する場合（最後に指定した実験を初期表示）
 .venv/bin/python experiments/17_commentary_LAG/build_results_viewer.py --run commentary_batch_v1 tactical_batch_v1 --overwrite
 ```
+
+## 行動と理由を短縮する条件（tactical_short_v1）
+
+修正版をAPI未送信のv1へ上書きした。system/userにはアノテーションの存在や中心時点が変化点であるというヒントを与えない。 分析・出力の詳細指示はsystem側に集約し、userは対象窓・実データ・systemに従う短い依頼だけに整理した。
+
+`results/tactical_batch_v1/` の保存済み入力を出発点に、窓全体の主要行動・変化と、その目的・根拠となる状況へ説明を絞る。原則1機2〜3文、目安60〜90英単語、上限90語。情報が少ない場合は短くてよい。前後30ステップの61時点、5窓、3モデル、各1回、`reasoning_effort=medium`は維持する。
+
+変更前後と変更理由は [プロンプト変更一覧](commentary_experiment/prompt_changes/tactical_short_v1/README.md) に記載した。
+[system.diff](commentary_experiment/prompt_changes/tactical_short_v1/system.diff) と [user.diff](commentary_experiment/prompt_changes/tactical_short_v1/user.diff) は、保存済み入力に照合した原文と新テンプレートのunified diffである。元のtacticalテンプレート・結果は編集しない。
+
+| CLI variant | Prompt version | 既定保存先 | テンプレート |
+|---|---|---|---|
+| `commentary` | `lag-commentary-v2` | `results/commentary_batch_v1/` | `system.txt` / `user.txt` |
+| `tactical` | `lag-tactical-v1` | `results/tactical_batch_v1/` | `tactical_system.txt` / `tactical_user.txt` |
+| `tactical_short_v1` | `lag-tactical-short-v1` | `results/tactical_short_batch_v1/` | `tactical_short_v1_system.txt` / `tactical_short_v1_user.txt` |
+
+対応は `commentary_experiment/prompts.py` の `VARIANTS` で管理する。新しい計画ではmanifestの `prompt_spec` に本文・ハッシュ・出力条件を保存する。短縮版では原文・diff・出典も含める。`prompts/templates/` に新本文、`prompts/changes/` に原文・diff・変更理由を保存し、`prompts/` 直下には各窓の実際の入力全文を残す。
+
+```sh
+# 入力と計画15件を生成（API送信なし）
+.venv/bin/python experiments/17_commentary_LAG/run.py --prompt-variant tactical_short_v1
+# 確認済みの条件を送信
+.venv/bin/python experiments/17_commentary_LAG/run.py --prompt-variant tactical_short_v1 --execute
+# 保存済み条件で回収／状態確認
+.venv/bin/python experiments/17_commentary_LAG/run.py --output tactical_short_batch_v1 --collect --wait
+.venv/bin/python experiments/17_commentary_LAG/run.py --output tactical_short_batch_v1 --status
+# 同じプロンプトで別試行を計画
+.venv/bin/python experiments/17_commentary_LAG/run.py --prompt-variant tactical_short_v1 --output tactical_short_batch_v1_repeat02
+# 3条件を比較できるビューアー（既存HTMLを保持）
+.venv/bin/python experiments/17_commentary_LAG/build_results_viewer.py --run commentary_batch_v1 tactical_batch_v1 tactical_short_batch_v1 --output experiments/17_commentary_LAG/view_rawdata_tactical_short.html
+```
+
+今回はユーザーの指定に従い、未送信のv1を上書きして計画を再生成した。送信済み結果を伴う条件の改訂では別の保存先を使用する。別の計画で同じディレクトリを上書きするとエラーになる。旧manifestに `prompt_spec` がなくても閲覧・結果回収は可能。ビューアーはディレクトリ名ではなくmanifestのvariant・説明を使う。
+
+JSON回答は回収時に検証し、`evaluation/responses.json` の `length_metrics` に空白区切りの機体別語数・合計・90語超過を記録する。回答の切り詰めや再生成は行わない。変化前後、目的と根拠、解釈を左右する結果、推測の留保が残ったかは人手で確認する。
+
+この比較は語数の短縮と説明内容の選別の両方を含む。結果の差を語数制限だけの効果とは解釈できない。また、T以降の履歴も読む振り返り条件であり、リアルタイム性能の検証ではない。
