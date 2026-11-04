@@ -201,7 +201,7 @@ def target_key(target: dict[str, Any]) -> tuple[str, str]:
 
 # --- config ---------------------------------------------------------------------------------------
 
-CONFIG_SCHEMA_VERSION = 1
+CONFIG_SCHEMA_VERSION = 2  # v2: per-criterion level anchors (D65) replace scale.levels
 CONFIG_KEYS = {"schema_version", "rubric_version", "timing", "future_evidence", "leakage", "judge"}
 CONFIG_KEYS |= {"open_items", "scale", "criteria", "output"}
 POSITIVE = (lambda value: is_number(value) and value > 0, "a number > 0")
@@ -235,6 +235,8 @@ JUDGE_SPEC = {
 OPEN_ITEM_KEYS = {"tactic_vocabulary", "annotated_units", "expected_raters", "overall_aggregation"}
 OPEN_ITEM_KEYS |= {"judge_substitution_agreement"}
 CRITERIA_SECTIONS = (ASPECT_ELEMENTS, *POINT_KINDS)
+CRITERION_OPTIONAL = {"conditional", "reference", "cannot_judge", "not_applicable"}
+CRITERION_KEYS = {"id", "text", "levels", *CRITERION_OPTIONAL}
 CRITERION_ID_PATTERN = re.compile(rf"(?:{'|'.join(ASPECTS)})\.[a-z0-9_]{{1,64}}")  # fullmatch only
 
 
@@ -275,7 +277,10 @@ class Criterion:
     aspect: str  # the id prefix
     text: str
     reference: str | None  # correctness only: observable_records | future_behaviour
-    conditional: bool  # elements only: "not_applicable" is accepted
+    conditional: bool  # "not_applicable" is accepted (the scene lacks the element, or no PREVIOUS)
+    levels: dict[str, str]  # every scale value -> its anchor (D65), in scale order
+    cannot_judge: str | None  # criterion-specific boundary; None => only the scale's general wording
+    not_applicable: str | None  # set exactly when conditional
 
 
 @dataclass(frozen=True)
@@ -283,7 +288,6 @@ class ScaleConfig:
     values: tuple[str, ...]  # ordered, e.g. "1".."5"
     cannot_judge: str
     not_applicable: str
-    levels: dict[str, dict[str, str]]  # aspect -> value -> wording
 
 
 @dataclass(frozen=True)
@@ -310,7 +314,7 @@ def _section(raw: object, spec: dict[str, tuple[Check, str]], name: str, *, allo
 
 
 def _scale(raw: object) -> ScaleConfig:
-    section = exact_keys(raw, {"values", "cannot_judge", "not_applicable", "levels"}, "scale")
+    section = exact_keys(raw, {"values", "cannot_judge", "not_applicable"}, "scale")
     values = section["values"]
     if not list_of(lambda v: isinstance(v, str) and v.isdigit())(values) or len(values) < 2:
         raise ConfigError('scale.values must list at least two integers as strings, e.g. ["1", "2"]')
@@ -318,41 +322,50 @@ def _scale(raw: object) -> ScaleConfig:
         raise ConfigError("scale.values must be strictly increasing")
     if not is_text(section["cannot_judge"]) or not is_text(section["not_applicable"]):
         raise ConfigError("scale.cannot_judge and scale.not_applicable must be non-blank")
-    levels = exact_keys(section["levels"], set(ASPECTS), "scale.levels")
-    for aspect in ASPECTS:
-        if not all(map(is_text, exact_keys(levels[aspect], set(values), f"scale.levels.{aspect}").values())):
-            raise ConfigError(f"scale.levels.{aspect} texts must be non-blank")
-    wording = {aspect: {value: levels[aspect][value] for value in values} for aspect in ASPECTS}
-    return ScaleConfig(tuple(values), section["cannot_judge"], section["not_applicable"], wording)
+    return ScaleConfig(tuple(values), section["cannot_judge"], section["not_applicable"])
 
 
-def _criterion(raw: object, section: str, name: str) -> Criterion:
-    if not is_dict(raw) or not {"id", "text"} <= set(raw) <= {"id", "text", "conditional", "reference"}:
-        raise ConfigError(f"{name} must have id and text, and optionally conditional or reference")
+def _levels(raw: object, values: tuple[str, ...], name: str) -> dict[str, str]:
+    """D65: exactly one non-blank anchor per scale value."""
+    levels = exact_keys(raw, set(values), f"{name}.levels")
+    if not all(map(is_text, levels.values())):
+        raise ConfigError(f"{name}.levels anchors must be non-blank")
+    return {value: levels[value] for value in values}
+
+
+def _criterion(raw: object, section: str, name: str, values: tuple[str, ...]) -> Criterion:
+    if not is_dict(raw) or not {"id", "text", "levels"} <= set(raw) <= CRITERION_KEYS:
+        raise ConfigError(f"{name} must have id, text and levels, and optionally {sorted(CRITERION_OPTIONAL)}")
     criterion_id, conditional, reference = raw["id"], raw.get("conditional", False), raw.get("reference")
     if not isinstance(criterion_id, str) or not CRITERION_ID_PATTERN.fullmatch(criterion_id):
         raise ConfigError(f"{name}.id must be <aspect>.<name> with aspect one of {list(ASPECTS)}")
     aspect = criterion_id.split(".", 1)[0]
     if (section == ASPECT_ELEMENTS) != (aspect == ASPECT_ELEMENTS):
         raise ConfigError(f"{name}: elements.* criteria belong in criteria.elements, and only there")
-    if not is_bool(conditional) or (conditional and aspect != ASPECT_ELEMENTS):
-        raise ConfigError(f"{name}.conditional must be a boolean, true only for elements criteria")
+    if not is_bool(conditional):
+        raise ConfigError(f"{name}.conditional must be a boolean")
     bad_reference = reference is not None and reference not in REFERENCES
     if (aspect == ASPECT_CORRECTNESS) != ("reference" in raw) or bad_reference:
         raise ConfigError(f"{name}.reference ({list(REFERENCES)}) is required for correctness criteria, and only there")
     if not is_text(raw["text"]):
         raise ConfigError(f"{name}.text must be non-blank")
-    return Criterion(criterion_id, aspect, raw["text"], reference, conditional)
+    cannot_judge, not_applicable = raw.get("cannot_judge"), raw.get("not_applicable")
+    if "cannot_judge" in raw and not is_text(cannot_judge):
+        raise ConfigError(f"{name}.cannot_judge must be non-blank when given")
+    if conditional != ("not_applicable" in raw) or ("not_applicable" in raw and not is_text(not_applicable)):
+        raise ConfigError(f"{name}.not_applicable (non-blank) is required for conditional criteria, and only there")
+    levels = _levels(raw["levels"], values, name)
+    return Criterion(criterion_id, aspect, raw["text"], reference, conditional, levels, cannot_judge, not_applicable)
 
 
-def _criteria(raw: object) -> dict[str, tuple[Criterion, ...]]:
+def _criteria(raw: object, values: tuple[str, ...]) -> dict[str, tuple[Criterion, ...]]:
     section = exact_keys(raw, set(CRITERIA_SECTIONS), "criteria")
     parsed: dict[str, tuple[Criterion, ...]] = {}
     defined: dict[str, Criterion] = {}  # an id listed in several sections must be defined the same way
     for name in CRITERIA_SECTIONS:
         if not isinstance(section[name], list) or not section[name]:
             raise ConfigError(f"criteria.{name} must be a non-empty list")
-        items = tuple(_criterion(item, name, f"criteria.{name}[{i}]") for i, item in enumerate(section[name]))
+        items = tuple(_criterion(item, name, f"criteria.{name}[{i}]", values) for i, item in enumerate(section[name]))
         if len({item.criterion_id for item in items}) != len(items):
             raise ConfigError(f"criteria.{name} repeats a criterion id")
         parsed[name] = items
@@ -378,6 +391,7 @@ def parse_config(raw: object, *, path: Path, sha256: str, root: Path = paths.ROO
     judge = _section(section["judge"], JUDGE_SPEC, "judge")
     pricing = _section(judge["pricing"], PRICE_SPEC, "judge.pricing")
     output_root = Path(output["root"])
+    scale = _scale(section["scale"])
     return AssessConfig(
         path=Path(path),
         sha256=sha256,
@@ -387,8 +401,8 @@ def parse_config(raw: object, *, path: Path, sha256: str, root: Path = paths.ROO
         allow_action_at_t=leakage["allow_action_at_t"],
         judge=JudgeSettings(**{**judge, "timeout_s": float(judge["timeout_s"]), "pricing": dict(pricing)}),
         open_items=dict.fromkeys(sorted(open_items)),
-        scale=_scale(section["scale"]),
-        criteria=_criteria(section["criteria"]),
+        scale=scale,
+        criteria=_criteria(section["criteria"], scale.values),
         output_root=output_root if output_root.is_absolute() else root / output_root,
     )
 

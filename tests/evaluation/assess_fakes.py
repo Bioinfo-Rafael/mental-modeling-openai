@@ -371,7 +371,7 @@ def rating(rating_id: str, event: str, criterion_id: str, judgement: str, **chan
         "criterion_id": criterion_id,
         "judgement": judgement,
         "rationale": "[PLACEHOLDER] 根拠",
-        "rubric_version": "pilot-1",
+        "rubric_version": config_raw()["rubric_version"],  # follows the committed assess.yaml
         "rated_at": "2026-11-05T09:00:00+00:00",
         "supersedes": None,
     }

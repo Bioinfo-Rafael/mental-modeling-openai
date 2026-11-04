@@ -107,10 +107,95 @@ def test_config_rejects_invalid_values(dotted: str, value: object, message: str)
 
 def test_correctness_criterion_without_observable_reference_is_rejected() -> None:
     raw = config_raw()
-    start = [*raw["criteria"]["start"], {"id": "correctness.internal_reason", "text": "RL の内的理由と一致するか"}]
+    internal = {"id": "correctness.internal_reason", "text": "RL の内的理由と一致するか", "levels": LEVELS}
+    start = [*raw["criteria"]["start"], internal]
 
-    with pytest.raises(ConfigError, match="reference"):
+    with pytest.raises(ConfigError, match="reference .* is required for correctness criteria"):
         parse_config(with_value(raw, "criteria.start", start), path=Path("assess.yaml"), sha256="x")
+
+
+# --- score anchors (D65) ----------------------------------------------------------------------------
+
+LEVELS = {value: f"レベル{value}の条件" for value in ("1", "2", "3", "4", "5")}
+
+
+def test_every_committed_criterion_has_one_non_blank_anchor_per_level() -> None:
+    config = load_config()
+
+    criteria = {c.criterion_id: c for items in config.criteria.values() for c in items}
+
+    assert config.rubric_version == "pilot-2" and config.scale.values == ("1", "2", "3", "4", "5")
+    assert len(criteria) == 24
+    for criterion in criteria.values():
+        assert list(criterion.levels) == ["1", "2", "3", "4", "5"], criterion.criterion_id
+        assert all(anchor.strip() for anchor in criterion.levels.values()), criterion.criterion_id
+        assert len(set(criterion.levels.values())) == len(LEVELS), criterion.criterion_id  # no copied level
+        assert (criterion.not_applicable is not None) == criterion.conditional, criterion.criterion_id
+    conditional = {c.criterion_id for c in criteria.values() if c.conditional}
+    assert conditional == {
+        "elements.target",
+        "elements.wingman_role",
+        "elements.instruction_relation",
+        "elements.priority",
+        "correctness.change_delta",  # no PREVIOUS (first explanation of the target) => not_applicable
+        "correctness.consistent_with_latest",
+    }
+    for criterion_id in ("correctness.change_delta", "correctness.consistent_with_latest"):
+        assert criteria[criterion_id].not_applicable == "PREVIOUS が無い（この対象の最初の説明）"
+        assert criteria[criterion_id].cannot_judge is None  # no PREVIOUS is no longer cannot_judge
+
+
+def _with_first_criterion(**changes: object) -> dict:
+    raw = config_raw()
+    first = {**raw["criteria"]["elements"][0], **changes}
+    return with_value(raw, "criteria.elements", [first, *raw["criteria"]["elements"][1:]])
+
+
+@pytest.mark.parametrize(
+    ("changes", "message"),
+    [
+        ({"levels": {k: v for k, v in LEVELS.items() if k != "3"}}, r"levels must have exactly"),
+        ({"levels": {**LEVELS, "6": "x"}}, r"levels must have exactly"),
+        ({"levels": {**LEVELS, "2": "  "}}, "anchors must be non-blank"),
+        ({"levels": {1: "a", 2: "b", 3: "c", 4: "d", 5: "e"}}, "levels"),  # unquoted YAML keys are integers
+        ({"levels": None}, "levels"),
+        ({"not_applicable": "場面に無い"}, "not_applicable .* required for conditional criteria, and only there"),
+        ({"cannot_judge": " "}, "cannot_judge must be non-blank"),
+    ],
+)
+def test_config_rejects_incomplete_or_misplaced_anchors(changes: dict, message: str) -> None:
+    raw = _with_first_criterion(**changes)
+
+    with pytest.raises(ConfigError, match=message):
+        parse_config(raw, path=Path("assess.yaml"), sha256="x")
+
+
+def test_config_rejects_a_criterion_without_levels_and_a_conditional_without_not_applicable() -> None:
+    raw = config_raw()
+    no_levels = {k: v for k, v in raw["criteria"]["elements"][0].items() if k != "levels"}
+    target = {k: v for k, v in raw["criteria"]["elements"][2].items() if k != "not_applicable"}
+
+    with pytest.raises(ConfigError, match="must have id, text and levels"):
+        parse_config(with_value(raw, "criteria.elements", [no_levels]), path=Path("a.yaml"), sha256="x")
+    with pytest.raises(ConfigError, match="not_applicable"):
+        parse_config(with_value(raw, "criteria.elements", [target]), path=Path("a.yaml"), sha256="x")
+
+
+def test_config_rejects_the_old_per_aspect_scale_levels() -> None:
+    raw = with_value(config_raw(), "scale.levels", {"elements": LEVELS})
+
+    with pytest.raises(ConfigError, match="scale"):
+        parse_config(raw, path=Path("assess.yaml"), sha256="x")
+
+
+def test_a_shared_criterion_with_different_anchors_is_rejected() -> None:
+    raw = config_raw()
+    request = raw["criteria"]["request"]
+    delegation = next(c for c in request if c["id"] == "contribution.delegation")
+    changed = [c if c is not delegation else {**c, "levels": LEVELS} for c in request]
+
+    with pytest.raises(ConfigError, match="defined differently"):
+        parse_config(with_value(raw, "criteria.request", changed), path=Path("assess.yaml"), sha256="x")
 
 
 # --- leakage check (request: 未来情報の混入を検出できる) ---------------------------------------------
