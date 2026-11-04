@@ -1,8 +1,10 @@
 """The shared comparison config (``configs/intent_compare/compare.yaml``, owned by method A's session).
 
 Only the keys method B needs are read and validated; other keys (e.g. ``clip_half_width_s`` for the
-viewer) are ignored, so the shared file can grow without breaking B. The file's sha256 goes into
-the run record.
+viewer) are ignored, so the shared file can grow without breaking B. The optional ``output_language``
+(``en`` default, ``ja``) selects the language of the final answer. The file's sha256 goes into the
+run record. The optional ``max_intent_chars`` (default 1000), ``max_evidence_items`` and
+``max_evidence_chars`` (default unlimited) shorten the answers; absent keys change nothing.
 """
 
 from __future__ import annotations
@@ -14,9 +16,12 @@ from pathlib import Path
 import yaml
 
 from weightreading.config import REASONING_EFFORTS, ConfigError
+from weightreading.intent_protocol import MAX_INTENT_CHARS, AnswerLimits
 from weightreading.provenance import sha256_file
 
 RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
+DEFAULT_LANGUAGE = "en"
+OUTPUT_LANGUAGES = ("en", "ja")
 
 
 @dataclass(frozen=True)
@@ -33,6 +38,8 @@ class CompareConfig:
     reasoning_effort: str
     instruction: str
     output_root: Path
+    output_language: str = DEFAULT_LANGUAGE
+    answer_limits: AnswerLimits = AnswerLimits()
 
 
 def _int(raw: dict, key: str, minimum: int) -> int:
@@ -74,6 +81,29 @@ def _step_seconds(raw: dict) -> float:
     return float(value)
 
 
+def _output_language(raw: dict) -> str:
+    """Optional ``output_language``; absent means ``en`` (existing configs and their hashes stay valid)."""
+    value = raw.get("output_language", DEFAULT_LANGUAGE)
+    if value not in OUTPUT_LANGUAGES:
+        raise ConfigError(f"compare.output_language must be one of {list(OUTPUT_LANGUAGES)}")
+    return value
+
+
+def _optional_positive(raw: dict, key: str, default: int | None) -> int | None:
+    """Optional positive integer key; absent means ``default`` (today's behaviour)."""
+    if key not in raw:
+        return default
+    return _int(raw, key, 1)
+
+
+def _answer_limits(raw: dict) -> AnswerLimits:
+    return AnswerLimits(
+        max_intent_chars=_optional_positive(raw, "max_intent_chars", MAX_INTENT_CHARS),
+        max_evidence_items=_optional_positive(raw, "max_evidence_items", None),
+        max_evidence_chars=_optional_positive(raw, "max_evidence_chars", None),
+    )
+
+
 def parse_compare(raw: object, path: Path, sha256: str, root: Path) -> CompareConfig:
     """Validate a decoded compare.yaml mapping; relative paths are resolved against ``root``."""
     if not isinstance(raw, dict):
@@ -94,6 +124,8 @@ def parse_compare(raw: object, path: Path, sha256: str, root: Path) -> CompareCo
         reasoning_effort=effort,
         instruction=_text(raw, "instruction"),
         output_root=root / _text(raw, "output_root"),
+        output_language=_output_language(raw),
+        answer_limits=_answer_limits(raw),
     )
 
 

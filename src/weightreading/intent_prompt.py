@@ -10,7 +10,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from weightreading.intent_protocol import MAX_INTENT_CHARS, IntentAnswer
+from weightreading.intent_config import DEFAULT_LANGUAGE, OUTPUT_LANGUAGES
+from weightreading.intent_protocol import DEFAULT_LIMITS, AnswerLimits, IntentAnswer, limits_sentence
 from weightreading.intent_trace import ActivationDoc
 from weightreading.prompt import ExecutorLimits, spec_sections
 from weightreading.spec import Spec
@@ -35,6 +36,8 @@ class IntentRequest:
     step_seconds: float
     instruction: str
     previous: PreviousTranslation | None  # None: first translation for this aircraft
+    output_language: str = DEFAULT_LANGUAGE  # language of the final intent / evidence fields
+    limits: AnswerLimits = DEFAULT_LIMITS  # length limits of the final answer
 
 
 RULES = """\
@@ -57,6 +60,15 @@ RULES = """\
 - Do not import torch, any other deep-learning or automatic-differentiation library, or search
   for anything. Your code is audited for these rules.
 - Base every evidence item on named A/W keys, absolute steps and numbers you computed."""
+
+
+LANGUAGE_INSTRUCTIONS = {
+    "en": "Write both fields in English.",
+    "ja": (
+        "Write both fields in natural Japanese (technical identifiers such as A['gru.h_new'], W keys and "
+        "head names may stay as they are)."
+    ),
+}
 
 
 def _intro(spec: Spec, request: IntentRequest) -> str:
@@ -123,15 +135,23 @@ def _activations_section(docs: tuple[ActivationDoc, ...], window_length: int) ->
     )
 
 
-def _final_answer_section() -> str:
+def _limits_line(limits: AnswerLimits) -> str:
+    """The limits sentence plus its line break, only when a limit differs from the default."""
+    sentence = limits_sentence(limits)
+    return f"{sentence}\n" if sentence else ""
+
+
+def _final_answer_section(output_language: str, limits: AnswerLimits) -> str:
+    if output_language not in OUTPUT_LANGUAGES:
+        raise ValueError(f"output_language must be one of {list(OUTPUT_LANGUAGES)}")
     return f"""\
 # Final answer
 When you are done, reply WITHOUT any ```python block and with exactly one ```json block:
-{{"intent": "<the aircraft's current intent: what it is trying to achieve and how, at most {MAX_INTENT_CHARS} characters>",
+{{"intent": "<the aircraft's current intent: what it is trying to achieve and how, at most {limits.max_intent_chars} characters>",
  "evidence": ["<short observation from the weights or activations that supports the intent, citing steps,
  activation names and values>", ...]}}
-Treat the intent as a hypothesis supported by evidence; do not invent missile targets, hits,
-cooperation or outcomes. Write both fields in English. Text outside the ```json block is ignored."""
+{_limits_line(limits)}Treat the intent as a hypothesis supported by evidence; do not invent missile targets, hits,
+cooperation or outcomes. {LANGUAGE_INSTRUCTIONS[output_language]} Text outside the ```json block is ignored."""
 
 
 def intent_message(
@@ -156,6 +176,6 @@ def intent_message(
         shown["outputs"],
         _activations_section(docs, window_length),
         shown["parameters"],
-        _final_answer_section(),
+        _final_answer_section(request.output_language, request.limits),
     ]
     return "\n\n".join(sections) + "\n"

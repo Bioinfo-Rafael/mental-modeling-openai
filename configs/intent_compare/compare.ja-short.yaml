@@ -1,0 +1,38 @@
+# Shared configuration for the intent-translation comparison.
+# Short-answer Japanese variant of compare.ja.yaml: identical except for the three length limits
+# `max_intent_chars: 200`, `max_evidence_items: 4`, `max_evidence_chars: 80` (counted in characters).
+# Use it with RUN_ID=seed100601-ja-short so the runs `seed100601` and `seed100601-ja` stay untouched.
+# Both methods state the same length-limit sentence in their prompt and apply the same validation
+# (characters, not bytes): an answer over a limit gets a `skipped` cue with the reason, the chain keeps the
+# last valid answer, and the run continues.
+# All three limits are optional (defaults: 1000 / unlimited / unlimited = the earlier configs).
+#
+# Read by: method A (scripts/intent_compare_run_a.py), method B (src/weightreading/), the viewer.
+#
+# Output contract (both methods write to it; the viewer reads it):
+#   outputs/intent_compare/<run_id>/cues_<method>.jsonl   method in {A, B}
+#   one JSON object per line, one line per (step, aircraft):
+#     {"seed": int, "step": int, "t_s": float, "aircraft": str,
+#      "method": "A"|"B", "model": str, "reasoning_effort": str,
+#      "intent": str, "evidence": [str], "source_run": str}
+#   A target that is not alive at `step` gets a line with
+#     "skipped": "<reason>" and no "intent"/"evidence" keys.
+#   t_s = step * step_seconds. The translation window is
+#   steps [max(0, step - window_steps + 1), step] (inclusive).
+#   Each method chains its OWN previous translation per target.
+
+seed: 100601
+rollout_dir: outputs/weightreading/rollouts/mhi-v1.3-20261104T010525Z
+steps: [45, 145, 245, 315]
+targets: [A0100, A0200]
+window_steps: 60
+step_seconds: 0.2
+model: gpt-6.1-sol
+reasoning_effort: high
+instruction: "No operator instruction was given. Team A is flying its default 2v2 air-combat mission against the rule-based enemy team B."
+clip_half_width_s: 30
+output_root: outputs/intent_compare
+output_language: ja
+max_intent_chars: 200
+max_evidence_items: 4
+max_evidence_chars: 80

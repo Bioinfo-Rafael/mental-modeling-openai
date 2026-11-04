@@ -1,8 +1,10 @@
 """Shared configuration and paths for the intent-translation comparison (method A, video, viewer).
 
 ``configs/intent_compare/compare.yaml`` is the single source of the fixed decisions (seed, steps,
-targets, window, model, reasoning effort, instruction, clip width, output root). Method B reads
-the same file. This module only parses it and derives paths; it never writes anything.
+targets, window, model, reasoning effort, instruction, clip width, output root) plus the optional
+``output_language`` (``en`` default, ``ja``) and the optional answer-length limits ``max_intent_chars``
+(default 1000), ``max_evidence_items`` and ``max_evidence_chars`` (default unlimited). Method B reads the
+same file. This module only parses it and derives paths; it never writes anything.
 """
 
 from __future__ import annotations
@@ -29,6 +31,9 @@ REQUIRED_KEYS = (
     "clip_half_width_s",
     "output_root",
 )
+DEFAULT_LANGUAGE = "en"
+OUTPUT_LANGUAGES = ("en", "ja")
+DEFAULT_MAX_INTENT_CHARS = 1000
 METHODS = ("A", "B")
 EPISODE_DIR_NAME = "episode"
 CLIPS_DIR_NAME = "clips"
@@ -56,6 +61,10 @@ class CompareConfig:
     clip_half_width_s: float
     output_root: Path
     source_path: Path
+    output_language: str = DEFAULT_LANGUAGE
+    max_intent_chars: int = DEFAULT_MAX_INTENT_CHARS
+    max_evidence_items: int | None = None
+    max_evidence_chars: int | None = None
 
     @property
     def npz_path(self) -> Path:
@@ -105,6 +114,24 @@ def _require_int_list(raw: Any, name: str) -> tuple[int, ...]:
     return tuple(raw)
 
 
+def _output_language(raw: dict[str, Any]) -> str:
+    """Optional ``output_language`` (``en`` when absent, so existing configs and runs are unchanged)."""
+    language = raw.get("output_language", DEFAULT_LANGUAGE)
+    if language not in OUTPUT_LANGUAGES:
+        raise CompareConfigError(f"output_language must be one of {list(OUTPUT_LANGUAGES)}")
+    return language
+
+
+def _optional_positive(raw: dict[str, Any], key: str, default: int | None) -> int | None:
+    """Optional positive integer key; absent means ``default`` (today's behaviour)."""
+    if key not in raw:
+        return default
+    value = raw[key]
+    if type(value) is not int or value < 1:
+        raise CompareConfigError(f"{key} must be a positive integer")
+    return value
+
+
 def parse_config(raw: dict[str, Any], source_path: Path) -> CompareConfig:
     missing = [key for key in REQUIRED_KEYS if key not in raw]
     if missing:
@@ -132,6 +159,10 @@ def parse_config(raw: dict[str, Any], source_path: Path) -> CompareConfig:
         clip_half_width_s=float(raw["clip_half_width_s"]),
         output_root=_resolve(str(raw["output_root"])),
         source_path=source_path,
+        output_language=_output_language(raw),
+        max_intent_chars=_optional_positive(raw, "max_intent_chars", DEFAULT_MAX_INTENT_CHARS),
+        max_evidence_items=_optional_positive(raw, "max_evidence_items", None),
+        max_evidence_chars=_optional_positive(raw, "max_evidence_chars", None),
     )
 
 

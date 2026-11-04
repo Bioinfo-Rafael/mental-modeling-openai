@@ -31,7 +31,13 @@ from weightreading.intent_cues import CUES_FILE, CueContext, CueWriter, read_cue
 from weightreading.intent_episode import PlannedSession
 from weightreading.intent_inputs import PRELOAD, SessionInputs
 from weightreading.intent_prompt import PreviousTranslation
-from weightreading.intent_protocol import IntentAnswer, IntentAnswerError, parse_answer, parse_intent_reply
+from weightreading.intent_protocol import (
+    AnswerLimits,
+    IntentAnswer,
+    IntentAnswerError,
+    parse_answer,
+    parse_intent_reply,
+)
 from weightreading.intent_run import (
     EXIT_OK,
     EXIT_REFUSED,
@@ -70,12 +76,12 @@ def _hidden(prepared: IntentPrepared, inputs: SessionInputs) -> list[Path]:
     return hidden_paths(inputs.bundle.path, prepared.checkpoint.path.parent, prepared.episode.path.parent)
 
 
-def _answer(session_dir: Path, stop_reason: str | None) -> tuple[IntentAnswer | None, str | None]:
+def _answer(session_dir: Path, stop_reason: str | None, limits: AnswerLimits) -> tuple[IntentAnswer | None, str | None]:
     """(answer, None) or (None, why there is no answer)."""
     if stop_reason != "final_answer":
         return None, f"session ended without a final answer ({stop_reason})"
     try:
-        return parse_answer((session_dir / FINAL_ANSWER).read_text(encoding="utf-8")), None
+        return parse_answer((session_dir / FINAL_ANSWER).read_text(encoding="utf-8"), limits), None
     except IntentAnswerError as exc:
         return None, f"invalid final answer: {exc}"
 
@@ -110,7 +116,7 @@ def _run_one(
     )
     verify_bundle(inputs.bundle.path, inputs.bundle.manifest_sha256)
     audit = write_intent_audit(session_dir)
-    answer, reason = _answer(session_dir, state.stop_reason)
+    answer, reason = _answer(session_dir, state.stop_reason, prepared.compare.answer_limits)
     summary = {
         **record,
         "status": "complete",

@@ -25,7 +25,7 @@ from weightreading.intent_episode import Episode, PlannedSession, load_episode, 
 from weightreading.intent_estimate import session_estimate
 from weightreading.intent_inputs import SessionInputs, write_inputs
 from weightreading.intent_prompt import PROMPT_VERSION, IntentRequest, PreviousTranslation, intent_message
-from weightreading.intent_protocol import MAX_INTENT_CHARS, IntentAnswer
+from weightreading.intent_protocol import AnswerLimits, IntentAnswer
 from weightreading.intent_trace import TraceError, activation_docs, trace_episode, validate_trace, window_arrays
 from weightreading.reference import ReferencePolicy, build_policy
 from weightreading.session import SessionLimits
@@ -109,6 +109,8 @@ def _request(prepared: IntentPrepared, planned: PlannedSession, previous: Previo
         step_seconds=compare.step_seconds,
         instruction=compare.instruction,
         previous=previous,
+        output_language=compare.output_language,
+        limits=compare.answer_limits,
     )
 
 
@@ -160,6 +162,8 @@ def common_record(prepared: IntentPrepared) -> dict:
         "steps": list(compare.steps),
         "targets": list(compare.targets),
         "window_steps": compare.window_steps,
+        "output_language": compare.output_language,
+        "answer_limits": asdict(compare.answer_limits),
         "model": prepared.config.model,
         "reasoning_effort": prepared.config.reasoning_effort,
         "inputs": input_record(prepared),
@@ -172,13 +176,25 @@ def _placeholder(label: str, chars: int) -> str:
     return label.ljust(chars, ".")
 
 
-def _preview_previous(planned: PlannedSession, chained: dict[str, int]) -> PreviousTranslation | None:
+def _preview_evidence(limits: AnswerLimits) -> tuple[str, ...]:
+    """Full-size evidence stand-in: the configured maximum when both limits are set, else one reserve."""
+    label = "[PREVIEW: its evidence goes here]"
+    if limits.max_evidence_items is None or limits.max_evidence_chars is None:
+        return (_placeholder(label, PREVIOUS_EVIDENCE_RESERVE_CHARS),)
+    return (_placeholder(label, limits.max_evidence_chars),) * limits.max_evidence_items
+
+
+def _preview_previous(
+    planned: PlannedSession, chained: dict[str, int], limits: AnswerLimits
+) -> PreviousTranslation | None:
     """Run-time stand-in: a full-length intent and evidence reserve, so the estimate is an upper bound."""
     if planned.aircraft not in chained:
         return None
     placeholder = IntentAnswer(
-        intent=_placeholder("[PREVIEW: method B's previous intent for this aircraft goes here]", MAX_INTENT_CHARS),
-        evidence=(_placeholder("[PREVIEW: its evidence goes here]", PREVIOUS_EVIDENCE_RESERVE_CHARS),),
+        intent=_placeholder(
+            "[PREVIEW: method B's previous intent for this aircraft goes here]", limits.max_intent_chars
+        ),
+        evidence=_preview_evidence(limits),
     )
     return PreviousTranslation(step=chained[planned.aircraft], answer=placeholder)
 
@@ -195,7 +211,7 @@ def write_preview(prepared: IntentPrepared, directory: Path) -> dict:
             continue
         session_dir = directory / "sessions" / planned.name
         inputs = write_session_inputs(prepared, planned, session_dir / "inputs")
-        previous = _preview_previous(planned, chained)
+        previous = _preview_previous(planned, chained, prepared.compare.answer_limits)
         message = message_for(prepared, planned, previous)
         (session_dir / "message.txt").write_text(message, encoding="utf-8")
         chained[planned.aircraft] = planned.step

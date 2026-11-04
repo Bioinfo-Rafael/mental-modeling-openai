@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
 import pytest
+import yaml
 
 from weightreading import cli, intent_execute
 from weightreading.bundle import verify_bundle
@@ -254,3 +256,26 @@ def test_resume_refuses_changed_inputs(intent_files, monkeypatch) -> None:
     intent_files.compare.write_text(intent_files.compare.read_text().replace("window_steps: 4", "window_steps: 3"))
 
     assert cli.main([*args, "--resume"], Factory(ScriptedClient([]))) == 1
+
+
+def test_intent_preview_with_ja_compare_requests_japanese_and_records_language(
+    intent_files: IntentFiles, capsys
+) -> None:
+    raw = yaml.safe_load(intent_files.compare.read_text(encoding="utf-8"))
+    ja_compare = intent_files.compare.with_name("compare.ja.yaml")
+    ja_compare.write_text(yaml.safe_dump({**raw, "output_language": "ja"}), encoding="utf-8")
+
+    assert cli.main(_args(intent_files, "intent-preview"), client_factory=Factory()) == 0
+    english_dir = Path(json.loads(capsys.readouterr().out)["preview_dir"])
+    # A separate output root: preview directories are named with a one-second timestamp.
+    ja_files = replace(intent_files, compare=ja_compare, output_root=intent_files.output_root.with_name("wr_ja"))
+    assert cli.main(_args(ja_files, "intent-preview"), client_factory=Factory()) == 0
+    japanese_dir = Path(json.loads(capsys.readouterr().out)["preview_dir"])
+
+    session = f"s{STEPS[0]:04d}_A0100"
+    english = (english_dir / "sessions" / session / "message.txt").read_text()
+    japanese = (japanese_dir / "sessions" / session / "message.txt").read_text()
+    assert "Write both fields in English." in english and "natural Japanese" not in english
+    assert "Write both fields in natural Japanese" in japanese
+    assert json.loads((japanese_dir / "preview.json").read_text()).get("output_language") == "ja"
+    assert json.loads((english_dir / "preview.json").read_text()).get("output_language") == "en"
