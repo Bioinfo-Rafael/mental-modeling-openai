@@ -61,6 +61,29 @@ preflight pass. The SDK client uses `max_retries=0`; `retry.py` retries instead,
 "Transient API errors" below). Paid runs belong on compute nodes (see
 `scripts/weightreading_run.sbatch`); the login node is for tests and previews.
 
+### Intent translation, method B (weights + activations)
+
+Method B of the intent-translation comparison (`configs/intent_compare/compare.yaml`, shared with
+method A): for each (step, aircraft) an LLM session gets the weights `W` and, preloaded read-only as
+`A`, that aircraft's validated replay activations over the window `[max(0, t-59), t]` (`x`,
+`h_prev`, `base.a1/a2`, `gru.r/z/n/h_new`, `gru_norm.y`, `act_mlp.a1/a2`, `heads.logits_k/probs_k`,
+`action`, `step`). No world trajectory. The episode is replayed free-running from `h = 0` on the
+recorded observations and refused unless it matches the recording (logits, `h'`, `h_prev` vs
+`rnn_in` <= 1e-4, all actions). Final answer: one ```json `{"intent", "evidence"}` (the Translator
+schema); a JSON attempt ends the session even when invalid. Each aircraft's latest valid B
+translation is chained into its next session; the first session per aircraft has none.
+
+```bash
+uv run --no-sync python -m weightreading intent-preview                 # local: messages, inputs, cost bound
+INTENT_COMPARE_CONFIRM_PAID=yes RUN_ID=seed100601 sbatch --export=ALL scripts/intent_compare_run_b.sbatch  # PAID
+```
+
+Artifacts: `outputs/weightreading/intent/{previews,runs}/...` (gitignored; inputs, transcripts,
+`audit.json` with `mode: intent-b`) and `outputs/intent_compare/<run_id>/cues_B.jsonl` (exclusive;
+`--resume` continues an interrupted run after re-checking its inputs). Limits and prices:
+`configs/weightreading/intent_b.yaml` (model and effort must equal compare.yaml). Code:
+`intent_*.py`. Notes: `.claude/docs/research/intent-compare-b.md` (workspace root).
+
 ### Transient API errors
 
 `retry.py` retries a request only when it almost certainly was not processed (so not billed): an
@@ -80,6 +103,9 @@ retry:
   initial_backoff_s: 10
   backoff_factor: 3          # waits 10 s, then 30 s
 ```
+
+The shipped configs carry no `retry` block on purpose: `intent_b.yaml` is hashed into the `inputs`
+that `intent-run --resume` compares, so editing it would block resuming an interrupted run.
 
 ## Files
 

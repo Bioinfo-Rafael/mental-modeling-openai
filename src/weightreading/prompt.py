@@ -206,3 +206,13 @@ def protocol_error_message(problems: tuple[str, ...], runs_remaining: int) -> st
 
 def budget_exhausted_message() -> str:
     return "The code-execution budget is used up. Reply with your final answer now, with no ```python block."
+
+
+def spec_sections(spec: Spec, tensors: tuple[Tensor, ...], task_mode: str) -> dict[str, str]:
+    """The whitelisted spec renderings (architecture, inputs, outputs, parameters) for other prompts."""
+    return {
+        "architecture": _architecture_section(spec),
+        "inputs": _inputs_section(spec, task_mode),
+        "outputs": _outputs_section(spec, task_mode),
+        "parameters": _parameters_section(tensors),
+    }

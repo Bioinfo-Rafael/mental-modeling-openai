@@ -18,13 +18,16 @@ from typing import Protocol
 
 from weightreading.backends import BackendReply, ChatBackend, user_item
 from weightreading.prompt import budget_exhausted_message, protocol_error_message, run_result_message
-from weightreading.protocol import KIND_ERROR, KIND_FINAL, parse_reply
+from weightreading.protocol import KIND_ERROR, KIND_FINAL, ParsedReply, parse_reply
 from weightreading.sandbox import ExecResult
 
 TRANSCRIPT = "transcript.jsonl"
 TOOL_CALLS = "tool_calls.jsonl"
 STATE = "state.json"
 FINAL_ANSWER = "final_answer.md"
+
+
+ReplyParser = Callable[[str], ParsedReply]
 
 
 class Executor(Protocol):
@@ -36,6 +39,15 @@ class SessionLimits:
     max_runs: int
     max_total_tokens: int
     max_protocol_errors: int
+    # Optional soft budget: once the session total reaches it, code is no longer run and the model is
+    # asked for its final answer (like an exhausted max_runs), instead of the hard stop at
+    # max_total_tokens that ends a session without an answer. None keeps the old behaviour.
+    answer_at_total_tokens: int | None = None
+
+    def answer_now(self, state: SessionState) -> bool:
+        if state.runs >= self.max_runs:
+            return True
+        return self.answer_at_total_tokens is not None and state.total_tokens >= self.answer_at_total_tokens
 
 
 @dataclass(frozen=True)
@@ -139,15 +151,23 @@ def _reply_items(reply: BackendReply) -> tuple[dict, ...]:
 
 
 def run_session(
-    backend: ChatBackend, executor: Executor, first_message: str, limits: SessionLimits, log: RunLog
+    backend: ChatBackend,
+    executor: Executor,
+    first_message: str,
+    limits: SessionLimits,
+    log: RunLog,
+    parse: ReplyParser = parse_reply,
 ) -> SessionState:
-    """Drive one session to a final answer or a cap. Backend/executor exceptions are recorded, then re-raised."""
+    """Drive one session to a final answer or a cap. Backend/executor exceptions are recorded, then re-raised.
+
+    ``parse`` decides what a well-formed final answer is (default: the weight-reading claims format).
+    """
     state = SessionState()
     history: tuple[dict, ...] = (user_item(first_message),)
     log.state(state)
     try:
         while not state.done:
-            state, history = _turn(backend, executor, history, state, limits, log)
+            state, history = _turn(backend, executor, history, state, limits, log, parse)
             log.state(state)
     except Exception as exc:
         log.state(_stop(state, f"error: {type(exc).__name__}"))
@@ -162,6 +182,7 @@ def _turn(
     state: SessionState,
     limits: SessionLimits,
     log: RunLog,
+    parse: ReplyParser,
 ) -> tuple[SessionState, tuple[dict, ...]]:
     reply = backend.respond(history)
     state = _with_usage(state, reply)
@@ -169,7 +190,7 @@ def _turn(
     history = history + _reply_items(reply)
     if reply.status != "completed":
         return _stop(state, f"response_{reply.status}"), history
-    parsed = parse_reply(reply.text)
+    parsed = parse(reply.text)
     if parsed.kind == KIND_FINAL:
         log.final_answer(reply.text)
         return _stop(state, "final_answer"), history
@@ -182,7 +203,7 @@ def _turn(
         message = protocol_error_message(parsed.problems, limits.max_runs - state.runs)
         return state, history + (user_item(message),)
     state = replace(state, protocol_errors=0)
-    if state.runs >= limits.max_runs:
+    if limits.answer_now(state):
         if state.budget_notice_sent:
             return _stop(state, "max_runs"), history
         return replace(state, budget_notice_sent=True), history + (user_item(budget_exhausted_message()),)

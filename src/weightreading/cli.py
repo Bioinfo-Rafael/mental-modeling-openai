@@ -1,7 +1,7 @@
 """``python -m weightreading <command>``.
 
 Commands: ``inspect``, ``validate-spec``, ``bundle``, ``preview``, ``run``, ``audit``,
-``sandbox-selftest``. Nothing here calls a paid API unless ``run`` gets BOTH ``--execute`` and
+``sandbox-selftest``, ``evaluate``, ``intent-preview``, ``intent-run``. Nothing here calls a paid API unless ``run`` gets BOTH ``--execute`` and
 ``--confirm-paid-api``; without them ``run`` writes the same local preview as ``preview``. The
 API key is read from the environment only after both flags and the sandbox preflight pass.
 """
@@ -16,11 +16,15 @@ from pathlib import Path
 from typing import Any
 
 from mtd_rl_xavier import paths
-from weightreading import commands, eval_cli
+from weightreading import commands, eval_cli, intent_cli
 from weightreading.audit import write_audit
 from weightreading.backends import make_openai_client
 from weightreading.bundle import BundleError
 from weightreading.config import TASK_MODES, ConfigError, load_config
+from weightreading.intent_episode import EpisodeError
+from weightreading.intent_execute import PreflightRefused
+from weightreading.intent_protocol import IntentAnswerError
+from weightreading.intent_trace import TraceError
 from weightreading.sandbox import SandboxError
 from weightreading.spec import SpecError
 from weightreading.torch_reader import CheckpointError
@@ -74,6 +78,7 @@ def build_parser() -> argparse.ArgumentParser:
     selftest.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     selftest.add_argument("--bundle", type=Path, help="existing bundle dir (default: a tiny throwaway bundle)")
     eval_cli.add_parser(sub)
+    intent_cli.add_parsers(sub)
     return parser
 
 
@@ -127,6 +132,8 @@ def _dispatch(args: argparse.Namespace, client_factory: Callable[[], Any]) -> in
         return EXIT_OK
     if args.command == "evaluate":
         return eval_cli.run(args, _print)
+    if args.command in intent_cli.COMMANDS:
+        return intent_cli.run(args, _print, client_factory)
     result = commands.sandbox_selftest(load_config(args.config, paths.ROOT), args.bundle)
     _print(result.to_dict())
     return EXIT_OK if result.ok else EXIT_REFUSED
@@ -135,10 +142,13 @@ def _dispatch(args: argparse.Namespace, client_factory: Callable[[], Any]) -> in
 def main(argv: list[str] | None = None, client_factory: Callable[[], Any] = make_openai_client) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    if args.command == "run" and args.execute != args.confirm_paid_api:
+    if args.command in ("run", "intent-run") and args.execute != args.confirm_paid_api:
         parser.error("Paid execution requires BOTH --execute and --confirm-paid-api")
     try:
         return _dispatch(args, client_factory)
     except (CheckpointError, SpecError, ConfigError, BundleError, SandboxError, FileExistsError) as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return EXIT_REFUSED
+    except (EpisodeError, TraceError, IntentAnswerError, PreflightRefused) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return EXIT_REFUSED

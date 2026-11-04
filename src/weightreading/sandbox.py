@@ -176,13 +176,25 @@ def build_argv(interp: Interpreter, staging: Path, work: Path, weights: Path, li
     ]
 
 
-def wrap_code(code: str, run_label: str, limits: SandboxLimits) -> str:
+def _preload_lines(preload: tuple[tuple[str, str], ...]) -> str:
+    """``NAME = {key: array}`` from ``/work/weights/<subdir>/index.json`` for every (NAME, subdir)."""
+    lines = []
+    for name, subdir in preload:
+        root = f"{SANDBOX_WEIGHTS}/{subdir}"
+        lines.append(f"with open({root + '/' + INDEX_FILE!r}) as _index:\n    _keys = json.load(_index)\n")
+        lines.append(f"{name} = {{_k: np.load({root!r} + '/' + _k + '.npy', mmap_mode='r') for _k in _keys}}\n")
+    return "".join(lines)
+
+
+def wrap_code(code: str, run_label: str, limits: SandboxLimits, preload: tuple[tuple[str, str], ...] = ()) -> str:
     """Prelude that caps processes/CPU, loads ``W`` from the read-only bundle, then runs the model's code.
 
+    ``preload`` adds read-only array dicts from subdirectories of the bundle (e.g. ``("A", "activations")``).
     RLIMIT_NPROC is counted per (user namespace, uid) on this kernel, so it bounds only sandbox
     tasks; the code has no capability in the initial namespace and cannot raise hard limits.
     """
     tasks = limits.threads + EXTRA_TASKS
+    names = "".join(f", {name!r}: {name}" for name, _ in preload)
     return (
         "import os, resource, sys\n"
         f"resource.setrlimit(resource.RLIMIT_NPROC, ({tasks}, {tasks}))\n"
@@ -194,8 +206,9 @@ def wrap_code(code: str, run_label: str, limits: SandboxLimits) -> str:
         f"with open({SANDBOX_WEIGHTS + '/' + INDEX_FILE!r}) as _index:\n"
         "    _keys = json.load(_index)\n"
         f"W = {{_k: np.load({SANDBOX_WEIGHTS!r} + '/' + _k + '.npy') for _k in _keys}}\n"
+        f"{_preload_lines(preload)}"
         f"_source = {code!r}\n"
-        f"exec(compile(_source, {run_label!r}, 'exec'), {{'__name__': '__main__', 'np': np, 'json': json, 'W': W}})\n"
+        f"exec(compile(_source, {run_label!r}, 'exec'), {{'__name__': '__main__', 'np': np, 'json': json, 'W': W{names}}})\n"
     )
 
 
@@ -340,7 +353,14 @@ def _result(
 class SandboxExecutor:
     """Executor used by the session loop: one persistent ``/work`` dir, fresh process per run."""
 
-    def __init__(self, interp: Interpreter, work: Path, weights: Path, limits: SandboxLimits) -> None:
+    def __init__(
+        self,
+        interp: Interpreter,
+        work: Path,
+        weights: Path,
+        limits: SandboxLimits,
+        preload: tuple[tuple[str, str], ...] = (),
+    ) -> None:
         if not Path(UNSHARE).exists():
             raise SandboxError(f"{UNSHARE} not found; the sandbox cannot be built")
         (work / "weights").mkdir(parents=True, exist_ok=True)
@@ -348,15 +368,16 @@ class SandboxExecutor:
         self.work = work
         self.weights = weights
         self.limits = limits
+        self.preload = preload
 
     def with_stdout_cap(self, stdout_cap_chars: int) -> SandboxExecutor:
         """Same sandbox, different stdout cap (used by the preflight report)."""
         limits = dataclasses.replace(self.limits, stdout_cap_chars=stdout_cap_chars)
-        return SandboxExecutor(self.interp, self.work, self.weights, limits)
+        return SandboxExecutor(self.interp, self.work, self.weights, limits, self.preload)
 
     def run(self, code: str, run_index: int) -> ExecResult:
         """One sandboxed run. Fails closed if ``/work`` has grown past ``work_max_bytes``."""
-        script = wrap_code(code, f"<run {run_index}>", self.limits)
+        script = wrap_code(code, f"<run {run_index}>", self.limits, self.preload)
         result = run_sandboxed(script, self.interp, self.work, self.weights, self.limits)
         used = directory_bytes(self.work)
         if used > self.limits.work_max_bytes:
