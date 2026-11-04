@@ -1,0 +1,22 @@
+# Example reference annotation for python -m evaluation.assess_cli check|judge --points <file>.
+# PLACEHOLDER VALUES ONLY. Real annotations live under the gitignored private/evaluation/ directory.
+#
+# Reference points are evaluation input only (they may use hindsight); the Translator never reads them.
+# List every start (開始点) and change (変化点) point of each target you annotate. Requests (要求点)
+# are not annotated: they come from the scenario and match by request_id.
+# - A point's segment is [step, next start/change point of the same target); the last one ends at the
+#   target's down step or the episode end. It is matched by the first detector event of the same kind
+#   inside the segment (no tolerance window). No event in the segment => missed.
+# - A point at the target's forced first translation (trigger "initial") is not_evaluated/forced_trigger.
+# - action_onset_step (start points): the step the action itself begins; null => the lead before the
+#   action is not_evaluated/no_action_onset. It must be >= step.
+# - Ids are unique; at most one point per target and step; targets must appear in the Translator run.
+# These points match a run of the example scenario (initial at 0, detector start at 5, request at 10,
+# alarm at 12, detector change at 15).
+schema_version: 1
+scenario_id: placeholder-episode-01
+annotator: annotator-01            # pseudonymous id
+points:
+  - {point_id: p-start-000,  kind: start,  target: {kind: aircraft, id: A0100}, step: 0,  action_onset_step: null}
+  - {point_id: p-start-001,  kind: start,  target: {kind: aircraft, id: A0100}, step: 4,  action_onset_step: 7}
+  - {point_id: p-change-001, kind: change, target: {kind: aircraft, id: A0100}, step: 14, action_onset_step: null}

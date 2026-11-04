@@ -1,0 +1,95 @@
+# Evaluation of Translator output: 3 time points x 4 aspects (python -m evaluation.assess_cli).
+# Every editable evaluation value lives here; the code hard-codes none of them. Unknown or missing
+# keys fail, and so do duplicate keys.
+# null = undecided. The check that needs the value still reports the raw measurement, and records
+# not_evaluated/<key>_unset instead of a pass/fail verdict. No default is invented in code.
+# Translator-side values (detector question and threshold, messages_lookback_steps, text limits,
+# max_intent_chars) live in configs/translator/run.yaml, not here.
+schema_version: 1
+rubric_version: pilot-1          # bump whenever you edit criteria or scale wording below. Ratings
+                                 # and judge results carry it; the report compares one version at a time.
+
+timing:                          # machine measurements (evaluator "machine"); never merged with human/judge timing
+  request_deadline_s: 3.0        # D55. 要求点: processing_s <= this passes. null => processing_s reported, no verdict
+  min_question_interval_s: 10.0  # D55. Requests of one target closer than this => protocol warning. null => intervals reported, no check
+  start_min_lead_steps: null     # 開始点: explanation >= N steps before the annotated action_onset_step. null => lead reported only
+  change_max_delay_steps: null   # 変化点 "in time": delay <= N steps after the annotated point. null => delay reported only
+  max_events_per_segment: null   # "too many": same-kind detector events in one annotated segment. null => counts only
+  max_utterances_per_target: null  # translation events per target in one run. null => counts only
+
+future_evidence:                 # evaluation input only (start/change events); never shown to the Translator
+  # Telemetry columns of the episode CSV shown in the FUTURE block, rendered with lag-detector-compact.
+  fields: [alive, state_valid, lon_deg, lat_deg, alt_m, yaw_deg, tas_mps, vn_mps, ve_mps, vu_mps,
+           altitude_action_id, heading_action_id, speed_action_id]
+  stride_steps: 5                # one FUTURE line every N steps (5 steps = 1 s)
+  max_steps: 120                 # the window is cut here at the latest; the cut is recorded (future_end_step)
+  float_precision: 5             # decimals of float fields (1e-5 deg is about 1 m)
+
+leakage:
+  allow_action_at_t: true        # D58: the action recorded at step t counts as "<= t". false => an action shown at t is a leak
+
+judge:                           # LLM as a Judge for the same criteria humans rate
+  model: gpt-6.1-sol             # D8: the only accepted value
+  reasoning_effort: medium
+  max_output_tokens: 25000       # reasoning + visible output
+  timeout_s: 1800
+  max_calls: 100                 # D58: per judge invocation; the run stops before call max_calls + 1 (exit 4)
+  rationale_language: Japanese   # D57: every judge rationale is written in this language
+  pricing: {input: 2.00, cached_input: 0.10, output: 10.00}   # USD per 1M tokens; preview estimate only (verify)
+
+open_items:                      # D58: undecided items. Must stay null: no check uses a value yet.
+  tactic_vocabulary: null        # null => tactic names are not checked
+  annotated_units: null          # null => whatever targets the annotation lists (aircraft or team)
+  expected_raters: null          # null => agreement is computed over whatever ratings exist
+  overall_aggregation: null      # D54: null => every overall row is not_evaluated/aggregation_unset
+  judge_substitution_agreement: null  # null => the judge never replaces humans; it is only shown beside them
+
+scale:                           # D53 pilot, for you to review. Applies to judge and human criteria.
+  values: ["1", "2", "3", "4", "5"]   # ordered; also the categories of the weighted kappa
+  cannot_judge: 材料から判断できない（not_evaluated として記録し、0点とは扱わない）
+  not_applicable: 場面上不要、またはデータがない（条件付き要素のみ。not_evaluated として記録）
+  levels:
+    elements:      {"5": 明確かつ具体的に述べている, "4": 述べているが一部あいまい, "3": 部分的・間接的にしか読み取れない, "2": ほとんど読み取れない, "1": 述べていない}
+    correctness:   {"5": 参照できる記録と完全に整合し根拠のない断定がない, "4": おおむね整合し軽微な不正確さのみ, "3": 一部が整合しない、または重要な点が不確か, "2": 大部分が記録と整合しない, "1": 記録と矛盾する、または別の目的を述べている}
+    timing:        {"5": 十分な余裕をもって説明された, "4": 対応できる時点で説明された, "3": ぎりぎり間に合った、または軽微な出しすぎ, "2": 遅れた、または出しすぎで読みにくい, "1": 間に合わなかった、見落とした、または過剰に繰り返した}
+    contribution:  {"5": 判断が大きく容易になる, "4": かなり容易になる, "3": いくらか役立つ, "2": ほとんど役立たない, "1": 役立たない、または誤解を招く}
+
+criteria:   # judge and humans rate every criterion of an event's point kinds (elements: every kind).
+            # The aspect is the id prefix. reference (correctness only): observable_records | future_behaviour.
+            # FUTURE may be used only by future_behaviour criteria and timing.* criteria.
+            # An id listed under several kinds must have the same text; it is asked once per event.
+            # The RL model's unobservable internal reason is never a reference (request: 正しさ).
+  elements:                      # every point kind; certainty expressions are deliberately not a criterion
+    - {id: elements.what_now, text: 今何をしているかが述べられているか}
+    - {id: elements.why, text: なぜそうするか（近い将来に実現したい状況を含めてよい）が述べられているか}
+    - {id: elements.target, conditional: true, text: 誰を狙っているか}
+    - {id: elements.wingman_role, conditional: true, text: 僚機との役割分担}
+    - {id: elements.instruction_relation, conditional: true, text: 指示との関係}
+    - {id: elements.priority, conditional: true, text: 重視点}
+  start:                         # 開始点 (also the forced first translation, trigger "initial")
+    - {id: correctness.start_plan, reference: observable_records, text: これから何を、何のためにするかが説明されているか}
+    - {id: correctness.start_future, reference: future_behaviour, text: 説明した計画と FUTURE ブロック内の実際の行動が一致するか（FUTURE は次の外的要因・変化点の前で切れている）}
+    - {id: timing.start_in_time, text: AIが行動する前、または人が介入できる余裕を残して説明できたか（TIMELINE と FUTURE を参照）}
+    - {id: contribution.intent_gap, text: 自分の意図とAIの意図のずれに気づきやすくなるか}
+    - {id: contribution.next_plan, text: 次の計画を理解しやすくなるか}
+    - {id: contribution.delegation, text: 任せる・確認する・指示するの判断がしやすくなるか}
+  change:                        # 変化点
+    - {id: correctness.change_cause, reference: observable_records, text: 何が起きたかが警報・指示・観測の記録と一致するか}
+    - {id: correctness.change_delta, reference: observable_records, text: 以前の計画から何を変更したかが説明されているか}
+    - {id: correctness.change_future, reference: future_behaviour, text: 新しい計画が FUTURE ブロックの記録と矛盾しないか}
+    - {id: timing.change_in_time, text: 人が対応できる時点までに説明でき、短い揺れや重複を報告しすぎていないか（TIMELINE と FUTURE を参照）}
+    - {id: contribution.change_reason, text: 変化の理由を理解しやすくなるか}
+    - {id: contribution.next_plan, text: 次の計画を理解しやすくなるか}
+    - {id: contribution.instruction_reflected, text: 指示が反映されたか確認しやすくなるか}
+    - {id: contribution.delegation, text: 任せる・確認する・指示するの判断がしやすくなるか}
+  request:                       # 要求点 (never gets a FUTURE block)
+    - {id: correctness.question_granularity, reference: observable_records, text: 質問に対応する粒度で答えているか}
+    - {id: correctness.records_to_t, reference: observable_records, text: 回答が時刻 t 以前の記録と一致するか}
+    - {id: correctness.unknown_not_asserted, reference: observable_records, text: 記録から判断できない内容を断定せず「分からない」と扱えているか}
+    - {id: correctness.consistent_with_latest, reference: observable_records, text: 最新の説明と不必要に矛盾していないか}
+    - {id: timing.request_in_time, text: 問いを受けてから十分速く応答できたか（processing_s を参照）}
+    - {id: contribution.question_resolved, text: 疑問が解消されるか}
+    - {id: contribution.delegation, text: 任せる・確認する・指示するの判断がしやすくなるか}
+
+output:
+  root: outputs/evaluation/assess  # relative to the repository root; gitignored; one 0700 directory per Translator run
