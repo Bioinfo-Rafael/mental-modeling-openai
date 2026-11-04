@@ -101,7 +101,7 @@ block in this order:
 The model never sees the episode id, the scenario id or an event id. A request also never carries
 `temperature` or any sampling parameter; `store` is false. No file written to disk contains base64 (see "Video block").
 
-Prompt-injection envelope (prompt version `judge-text-v2`, D38): every free text the judge did not
+Prompt-injection envelope (since prompt version `judge-text-v2`, D38): every free text the judge did not
 write (the intent, each evidence item, instruction texts and key-point texts) is rendered as one
 JSON string literal in double quotes, with U+0085, U+2028 and U+2029 escaped too. Such a text can
 never contain a raw line break, so it cannot open a `## ...` section or end the window data. The
@@ -183,9 +183,14 @@ video:
 
 - Per key point (D29): **2** = the translated intent reproduces the key point's core purpose and
   main action; **1** = partially; **0** = missing, or a different purpose.
-- Overall: **1-5** for the translation as a whole (anchors in `rendering.JUDGE_SYSTEM_PROMPT`;
-  provisional wording, not fixed by D29).
-- Every score comes with a rationale, written before the score (D13).
+- Overall: **1-5** for the translation as a whole. Since `judge-text-v3` (D66) each level is
+  anchored to the key-point scores (5 = every key point 2 and no contradiction; 4 = exactly one 1;
+  1 = empty, or the main purpose contradicted). Without key points the judge applies the same
+  levels to two implied key points: the main action the material shows, and what it observably
+  works toward. The score is the lowest level whose condition holds. Wording:
+  `rendering.JUDGE_SYSTEM_PROMPT`.
+- Every score comes with a rationale, written before the score (D13). It names the level that
+  holds and says which part of the next level's condition does not (D67).
 
 The output schema is built per event and sent as strict `json_schema` `judge_verdict`:
 `key_points` is an array of exactly N items whose `key_point_id` is an enum of that event's ids,
@@ -325,7 +330,10 @@ uv run python -m evaluation.assess_cli report --translator-run $RUN
   uncertain call is never resent and a capped run resumes where it stopped. Events of a target whose
   generation input is invalid are never sent.
 - Ratings format: `evaluation/examples/human-ratings.example.jsonl`. `judgement` is `"1"`..`"5"`,
-  `cannot_judge`, or `not_applicable` (conditional elements only). A re-rating names the replaced
+  `cannot_judge`, or `not_applicable` (conditional criteria only: four elements, plus
+  `correctness.change_delta` and `correctness.consistent_with_latest` when there is no PREVIOUS). Raters score against the
+  anchors and the rating rule printed in every packet of `packets-<batch>.md`, the same text the
+  judge gets (D65, D67). A re-rating names the replaced
   `rating_id` in `supersedes`. The whole file is validated before anything is appended.
 - Exit codes: 0 done or preview; 1 deterministic failure, including a `leak` or `error` found by
   `check` (its files are still written); 2 usage or gate misuse; 3 uncertain judge call; 4 judge cap.
@@ -385,9 +393,22 @@ behaviour is written next to each key. Unknown, missing or duplicate keys fail. 
 values (detector question and threshold, text limits, `max_intent_chars`) stay in
 `configs/translator/run.yaml`.
 
+Score anchors (schema 2, `pilot-2`, judge prompt `assess-judge-v2`; D65-D67): every criterion has its
+own anchor for each level, rendered under the criterion in the packet from 5 down to 1, followed
+by its own `cannot_judge` / `not_applicable` boundary when it has one. Each packet ends with the
+rating rule, which the judge's system prompt repeats word for word. The score is the lowest level
+whose condition holds. The rationale names that level and says which part of the next level's
+condition does not hold. A criterion shared by several point kinds is written once with a YAML
+anchor (`&name`) and repeated as an alias (`*name`). The start and change timing anchors use only
+orderings and counts visible in the packet; their undecided thresholds stay in the machine checks.
+`timing.request_in_time` quotes the decided 3.0 s and 10.0 s in its anchor text, so editing
+`timing.request_deadline_s` or `timing.min_question_interval_s` means editing that anchor too. The
+system prompt treats only the last CRITERIA block and the SCALE block that close the packet as
+rubric; anything before them is material.
+
 | Key | Default | When `null` |
 |---|---|---|
-| `rubric_version` | `pilot-1` | Required. Bump it after editing criteria or scale wording; ratings must match it |
+| `rubric_version` | `pilot-2` | Required. Bump it after editing criteria, anchors or scale wording; ratings must match it |
 | `timing.request_deadline_s` | 3.0 (D55) | `processing_s` reported, `not_evaluated/request_deadline_s_unset` |
 | `timing.min_question_interval_s` | 10.0 (D55) | Intervals reported, no verdict |
 | `timing.start_min_lead_steps` | null | Lead before the annotated action onset reported only |
@@ -398,7 +419,7 @@ values (detector question and threshold, text limits, `max_intent_chars`) stay i
 | `leakage.allow_action_at_t` | true (D58) | Required; `false` makes an action shown at t a leak |
 | `judge.*` | `gpt-6.1-sol` (fixed), effort medium, 25000 tokens, 1800 s, 100 calls, Japanese rationale, pricing | Required |
 | `open_items.*` | null | Must stay null until decided (tactic vocabulary, annotated units, rater count, overall aggregation, judge-substitution agreement) |
-| `scale`, `criteria` | Pilot 1-5 wording and criteria per kind (D53) | Required; `correctness.*` needs `reference: observable_records` or `future_behaviour` |
+| `scale`, `criteria` | Pilot 1-5 scale (D53); criteria per kind, each with anchors for levels 1-5 (D65) | Required; every criterion needs `levels` with exactly one non-blank anchor per `scale.values`; `correctness.*` needs `reference`; `conditional: true` criteria need `not_applicable`; `cannot_judge` is optional |
 
 Tests: `uv run pytest tests/evaluation/test_assess_checks.py tests/evaluation/test_assess_judge.py
 tests/evaluation/test_assess_data_report.py tests/evaluation/test_assess_e2e.py -q`, offline. The
