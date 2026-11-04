@@ -6,18 +6,16 @@
 
 ## 1. 実行方法
 
-既存のPython環境を使います。追加インストールは不要です。
+repository rootから `uv run` で実行します（環境は `uv sync --all-extras`）。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python workspace/03_gpt35_history_n30/analysis/plot_metrics.py
+uv run python workspace/03_gpt35_history_n30/analysis/plot_metrics.py
 ```
 
 既に生成物がある場合は上書きを拒否します。別の解析結果として保存するには、例えば以下です。
 
 ```bash
-python workspace/03_gpt35_history_n30/analysis/plot_metrics.py \
+uv run python workspace/03_gpt35_history_n30/analysis/plot_metrics.py \
   --output-dir workspace/03_gpt35_history_n30/analysis/recheck
 ```
 
@@ -26,7 +24,7 @@ python workspace/03_gpt35_history_n30/analysis/plot_metrics.py \
 テスト：
 
 ```bash
-python -m pytest workspace/03_gpt35_history_n30/analysis/test_plot_metrics.py -q
+uv run python -m pytest workspace/03_gpt35_history_n30/analysis/test_plot_metrics.py -q
 ```
 
 ## 2. 入力元と今回の実データ

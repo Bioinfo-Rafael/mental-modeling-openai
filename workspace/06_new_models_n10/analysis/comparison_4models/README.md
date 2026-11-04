@@ -5,13 +5,11 @@
 ## 実行方法・入力元・出力先
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python experiments/06_new_models_n10/analysis/compare_models.py --allow-api-failures
+uv run python workspace/06_new_models_n10/analysis/compare_models.py --allow-api-failures
 ```
 
-保存先：`experiments/06_new_models_n10/analysis/comparison_4models/`。
-既存directoryは上書きしない。再実行は`--output-dir experiments/06_new_models_n10/analysis/comparison_4models_v2`など新しい場所を指定する。
+保存先：`workspace/06_new_models_n10/analysis/comparison_4models/`。
+既存directoryは上書きしない。再実行は`--output-dir workspace/06_new_models_n10/analysis/comparison_4models_v2`など新しい場所を指定する。
 `--allow-api-failures`は「全件試行済みのAPIエラーを欠損として残し、有効応答だけで指標を計算する」明示指定。未指定ならAPI失敗がある結果の評価を拒否する。API呼出し・再送・補充抽出は一切しない。
 
 入力は03_1の取得済みGPT-3.5結果と、05および06の完了/全件試行済みbatch。退避batch・probeは使わない。
@@ -79,13 +77,13 @@ Pendulum Actionの10-bin混同行列は元図にないため追加しない。
 
 | ファイル | 関数 | 処理 |
 |---|---|---|
-| experiments/06_new_models_n10/analysis/compare_models.py | mainの呼出し | 実行入口 |
-| experiments/common_analysis/comparison.py | main | 読込み・統合・モデルごとの抽出/集計、CSV/JSON/RESULTSと図の出力、hash検証 |
-| experiments/common_analysis/joint_data.py | load_and_parse | 応答のmarkerを解析、rawからGT算出。明示許可時のみAPI失敗を欠損として保持 |
+| workspace/06_new_models_n10/analysis/compare_models.py | mainの呼出し | 実行入口 |
+| src/mtd_rl_xavier/experiment/common_analysis/comparison.py | main | 読込み・統合・モデルごとの抽出/集計、CSV/JSON/RESULTSと図の出力、hash検証 |
+| src/mtd_rl_xavier/experiment/common_analysis/joint_data.py | load_and_parse | 応答のmarkerを解析、rawからGT算出。明示許可時のみAPI失敗を欠損として保持 |
 | 同上 | select_subsets | 03_1と同一のseed=42抽出 |
-| experiments/common_analysis/joint_aggregate.py | aggregate_all | モデルごとに同じ評価式を実行。モデルをpoolしない |
-| experiments/common_analysis/joint_metrics.py | nrmse_statistics等 | 既存の数値評価・bootstrap |
-| experiments/common_analysis/comparison_plots.py | make_comparison_figures | long tableだけを使い65図の構成を作る |
+| src/mtd_rl_xavier/experiment/common_analysis/joint_aggregate.py | aggregate_all | モデルごとに同じ評価式を実行。モデルをpoolしない |
+| src/mtd_rl_xavier/experiment/common_analysis/joint_metrics.py | nrmse_statistics等 | 既存の数値評価・bootstrap |
+| src/mtd_rl_xavier/experiment/common_analysis/comparison_plots.py | make_comparison_figures | long tableだけを使い65図の構成を作る |
 | 同上 | draw_models / confusion_figure / save_png | 固定色4系列 / モデル別混同行列 / PNGのみ新規保存 |
 
 CSVは`tables/`に13種類。`all_metrics_long.csv`等にモデル名、値、std、有効件数があり、`condition_coverage.csv`はAPI失敗と有効回答の件数。

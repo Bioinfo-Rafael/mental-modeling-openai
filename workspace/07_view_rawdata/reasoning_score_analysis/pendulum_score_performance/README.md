@@ -53,8 +53,7 @@ binは回答に明示された0〜9の予測binと正解binを使用する。予
 - `figures/{指標}_{3.5,luna,terra,sol,all}.png`：25枚。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-.venv/bin/python workspace/07_view_rawdata/reasoning_score_analysis/pendulum_score_performance/plot_heatmaps.py \
+uv run python workspace/07_view_rawdata/reasoning_score_analysis/pendulum_score_performance/plot_heatmaps.py \
   --output-dir /tmp/pendulum_score_performance_new
 ```
 

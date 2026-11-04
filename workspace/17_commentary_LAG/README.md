@@ -30,7 +30,7 @@
 録画と状態・行動のグラフは、13_LAGの試合ビューアーで確認できる。リポジトリルートから実行する（pandas、ffmpeg、ffprobeが必要）。
 
 ```sh
-.venv/bin/python workspace/13_LAG/viewer/serve.py
+uv run python workspace/13_LAG/viewer/serve.py
 ```
 
 ブラウザで <http://127.0.0.1:8130/viewer/> が開く。自動で開かない場合は、このURLにアクセスする。終了はターミナルで `Ctrl+C`。初回起動時は録画から表示用フレームを生成する。
@@ -361,17 +361,17 @@ window and the missing evidence that prevents a stronger conclusion.
 
 ```sh
 # 5窓のプロンプト、可視データ、評価票、15リクエストのBatch入力をローカル生成
-.venv/bin/python workspace/17_commentary_LAG/run.py
+uv run python workspace/17_commentary_LAG/run.py
 # 本番送信（モデルの利用可否を確認して実行）
-.venv/bin/python workspace/17_commentary_LAG/run.py --execute
+uv run python workspace/17_commentary_LAG/run.py --execute
 # 結果を回収、原文とレビュー用JSONを保存
-.venv/bin/python workspace/17_commentary_LAG/run.py --collect --wait
+uv run python workspace/17_commentary_LAG/run.py --collect --wait
 # ローカルの実行状況
-.venv/bin/python workspace/17_commentary_LAG/run.py --status
+uv run python workspace/17_commentary_LAG/run.py --status
 # 保存済み回答からレビュー用JSONを再生成（API不要）
-.venv/bin/python workspace/17_commentary_LAG/run.py --export
+uv run python workspace/17_commentary_LAG/run.py --export
 # オフラインテスト
-.venv/bin/python -m pytest workspace/17_commentary_LAG/tests -q
+uv run python -m pytest workspace/17_commentary_LAG/tests -q
 ```
 
 既定モデルIDは15・16と同じ`gpt-5.6-sol / gpt-5.6-terra / gpt-5.6-luna`。利用可否は今回API照会していない。`--models`で任意の実モデルIDも指定可能。`--repeats`の既定は1。`reasoning_effort=medium`。変更した条件は`--output`で別名に保存する。Batch送信・再開・重複防止は15の実装を複製して利用する。`--adopt --job ... --batch-id ...`で応答不明の投入を回復できる。
@@ -383,9 +383,9 @@ window and the missing evidence that prevents a stronger conclusion.
 [view_rawdata.html](view_rawdata.html)は16のRaw dataビューアーを参考にした、外部通信なしで開ける単一HTML。回答全文、system/user入力、モデル・中心step・反復・状態による絞り込み、全文検索、同じ窓のモデル比較、token使用量、API応答JSON、回答のJSON保存に対応する。正解シートは参照リンクとして表示し、自動採点値は表示しない。
 
 ```sh
-.venv/bin/python workspace/17_commentary_LAG/build_results_viewer.py
+uv run python workspace/17_commentary_LAG/build_results_viewer.py
 # 回答回収後にHTMLだけ更新
-.venv/bin/python workspace/17_commentary_LAG/build_results_viewer.py --overwrite
+uv run python workspace/17_commentary_LAG/build_results_viewer.py --overwrite
 ```
 
 生成時に計画と送信記録の一致を検証する。実験データとAPI記録は変更しない。HTMLは生成時点のスナップショットなので、追加回答の回収後には再生成する。
@@ -401,14 +401,14 @@ window and the missing evidence that prevents a stronger conclusion.
 
 ```sh
 # 新プロンプトの生成・確認（API不要）
-.venv/bin/python workspace/17_commentary_LAG/run.py --prompt-variant tactical
+uv run python workspace/17_commentary_LAG/run.py --prompt-variant tactical
 # 新条件の15件を送信
-.venv/bin/python workspace/17_commentary_LAG/run.py --prompt-variant tactical --execute
+uv run python workspace/17_commentary_LAG/run.py --prompt-variant tactical --execute
 # 回収／状態確認は出力名を明示
-.venv/bin/python workspace/17_commentary_LAG/run.py --output tactical_batch_v1 --collect --wait
-.venv/bin/python workspace/17_commentary_LAG/run.py --output tactical_batch_v1 --status
+uv run python workspace/17_commentary_LAG/run.py --output tactical_batch_v1 --collect --wait
+uv run python workspace/17_commentary_LAG/run.py --output tactical_batch_v1 --status
 # 既存ビューアーを保持して新しいHTMLへ出力
-.venv/bin/python workspace/17_commentary_LAG/build_results_viewer.py --run tactical_batch_v1 --output workspace/17_commentary_LAG/view_rawdata_tactical.html
+uv run python workspace/17_commentary_LAG/build_results_viewer.py --run tactical_batch_v1 --output workspace/17_commentary_LAG/view_rawdata_tactical.html
 ```
 
 新条件の保存先は`results/tactical_batch_v1/`。`--prompt-variant`未指定では従来プロンプトを選ぶ。コード更新前の既存計画は上書きせず、従来条件を再生成する場合も新しい`--output`名を指定する。保存済み旧結果の閲覧・回収は元manifestを使用できる。
@@ -420,7 +420,7 @@ window and the missing evidence that prevents a stronger conclusion.
 生成コマンドは既定で`results/`直下のmanifestがある全実験を読み込む。
 
 ```sh
-.venv/bin/python workspace/17_commentary_LAG/build_results_viewer.py --overwrite
+uv run python workspace/17_commentary_LAG/build_results_viewer.py --overwrite
 # 収録対象を指定する場合（最後に指定した実験を初期表示）
-.venv/bin/python workspace/17_commentary_LAG/build_results_viewer.py --run commentary_batch_v1 tactical_batch_v1 --overwrite
+uv run python workspace/17_commentary_LAG/build_results_viewer.py --run commentary_batch_v1 tactical_batch_v1 --overwrite
 ```

@@ -7,7 +7,7 @@
 採点を行うCodexの会話に、次をそのまま貼り付ける。
 
 ```text
-/Users/cls-lab/Git/Matsuo/mental-modeling-openai/experiments/10_ICRL/reasoning_score_analysis/Prompt.md
+workspace/10_ICRL/reasoning_score_analysis/Prompt.md
 を読み、その指示に従って10_ICRLのreasoning_for_scoring.csv全72行を、あなた自身がJudgeとして評価してください。
 score以外の列・本文・改行・行順は保持し、元CSVを上書きせず、
 workspace/10_ICRL/reasoning_for_scoring_scored_astra_high.csv に保存してください。
@@ -52,8 +52,7 @@ method・K・Eやモデル名、最終回答の正誤から採点を推測しな
 抽出専用スクリプトの初回実行コマンド（採点は行わない）：
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-.venv/bin/python -B workspace/10_ICRL/reasoning_score_analysis/prepare_scoring.py
+uv run python -B workspace/10_ICRL/reasoning_score_analysis/prepare_scoring.py
 ```
 
 CSV・検証ファイル・採点済みCSVのいずれかが存在する場合は上書きせず停止する。今回の準備ファイルは作成済みなので、採点時は再抽出せず上の依頼文を使う。

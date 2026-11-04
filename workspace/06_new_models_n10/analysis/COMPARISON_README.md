@@ -5,9 +5,7 @@
 ## 実行方法・入力元・出力先
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python workspace/06_new_models_n10/analysis/compare_models.py --allow-api-failures
+uv run python workspace/06_new_models_n10/analysis/compare_models.py --allow-api-failures
 ```
 
 保存先：`workspace/06_new_models_n10/analysis/comparison_4models/`。

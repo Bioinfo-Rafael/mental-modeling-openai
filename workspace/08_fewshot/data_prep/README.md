@@ -50,7 +50,7 @@ HTML本体は `07_view_rawdata/view_rawdata.html`。編集元は同ディレク�
 - 各Task・各モデル内で選び、足りない分を別Task・モデルから埋めない。異なるH／モデルの回答はquery_idが異なれば別例。
 
 ```bash
-.venv/bin/python -B workspace/08_fewshot/data_prep/select_by_id.py
+uv run python -B workspace/08_fewshot/data_prep/select_by_id.py
 ```
 
 既定出力は `selected_examples_by_id.json`（既存exportと同じcandidate_pool形式）。選択根拠は `selection_policy.selection_audit`、各例の `note` に保存する。07での読み込みと08のrun.pyの自動検出に対応する。
@@ -77,7 +77,7 @@ HTML本体は `07_view_rawdata/view_rawdata.html`。編集元は同ディレク�
 リポジトリのルートで実行する。`selected_examples_....json` は実際に出力したファイル名に置き換える。
 
 ```bash
-.venv/bin/python -B workspace/08_fewshot/data_prep/prepare_prompt.py \
+uv run python -B workspace/08_fewshot/data_prep/prepare_prompt.py \
   workspace/08_fewshot/data_prep/selected_examples_....json \
   --task Pendulum-v1 --metric next-action \
   --scores 1 2 --correct 3 --incorrect 2 \
@@ -123,8 +123,8 @@ subset = df[(df['task'] == 'Pendulum-v1')
 ## 再生成・検証
 
 ```bash
-.venv/bin/python -B workspace/08_fewshot/data_prep/build_examples.py
-.venv/bin/python -B -m pytest workspace/08_fewshot/data_prep/test_data_prep.py -q -p no:cacheprovider
+uv run python -B workspace/08_fewshot/data_prep/build_examples.py
+uv run python -B -m pytest workspace/08_fewshot/data_prep/test_data_prep.py -q -p no:cacheprovider
 ```
 
 再生成にはローカルの元results、runs、raw episodes、スコアCSVが必要。06の元snapshotを変更する場合は `--source06` を明示する。共通データ・検証JSON・生成HTMLを更新し、選択済みファイル、元結果、採点CSV、Notebookは変更しない。

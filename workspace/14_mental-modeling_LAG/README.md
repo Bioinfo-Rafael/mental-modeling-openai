@@ -164,18 +164,18 @@ LAG固有の文面・履歴をここで変更する。systemは環境説明を�
 
 ## 4. 実行方法
 
-すべてリポジトリルートから実行する。既存`.venv`を使用する。
-新しい環境なら`python -m pip install -e '.[data,test]'`でpandas等とテスト依存を導入する。
+すべてリポジトリルートから`uv run`で実行する。
+新しい環境なら`uv sync --all-extras`でpandas等とテスト依存（dev group）を導入する。
 
 ```sh
 # 全720条件・3,600件の計画と1,200件のプロンプトを保存。API不要。
-.venv/bin/python workspace/14_mental-modeling_LAG/run.py
+uv run python workspace/14_mental-modeling_LAG/run.py
 
 # プロンプトを更新した後は、出力名も変更する。
-.venv/bin/python workspace/14_mental-modeling_LAG/run.py --output prompt_v2
+uv run python workspace/14_mental-modeling_LAG/run.py --output prompt_v2
 
 # 小さい条件でプロンプトを確認する例。これもAPI不要。
-.venv/bin/python workspace/14_mental-modeling_LAG/run.py \
+uv run python workspace/14_mental-modeling_LAG/run.py \
   --models sol --histories 2 --episodes mhi_v1.3_ic100601_win \
   --targets A0100 --tasks next-action --n 2 --output smoke
 ```
@@ -184,13 +184,13 @@ LAG固有の文面・履歴をここで変更する。systemは環境説明を�
 `OPENAI_API_KEY`がなければ非表示入力を求める。キーを設定ファイルやmanifestへ保存しない。
 
 ```sh
-.venv/bin/python workspace/14_mental-modeling_LAG/run.py --execute
+uv run python workspace/14_mental-modeling_LAG/run.py --execute
 
 # 中断後：一度も送信を試みていないリクエストだけを続行する。
-.venv/bin/python workspace/14_mental-modeling_LAG/run.py --execute --resume
+uv run python workspace/14_mental-modeling_LAG/run.py --execute --resume
 
 # 採点の更新だけ。保存済み回答を利用し、APIを呼ばない。
-.venv/bin/python workspace/14_mental-modeling_LAG/run.py --rescore
+uv run python workspace/14_mental-modeling_LAG/run.py --rescore
 ```
 
 上の`smoke`など条件を絞った実験を実行・再開する場合、`--execute` / `--resume`に加え同じ条件引数を指定する。
@@ -271,8 +271,8 @@ manifestの`samples`はモデル共通の問題と正解、`queries`はモデル
 共通に使えるCSV操作を追加するときだけ13へ置く。
 
 ```sh
-.venv/bin/python workspace/13_LAG/run.py --check
-.venv/bin/python -m pytest workspace/13_LAG/tests workspace/14_mental-modeling_LAG/tests -q
+uv run python workspace/13_LAG/run.py --check
+uv run python -m pytest workspace/13_LAG/tests workspace/14_mental-modeling_LAG/tests -q
 ```
 
 テストは実データでの全条件数・時間選択・正解非混入・死亡と終端欠損、回答形式・集計、仮のAPIクライアントでの記録・再開を検証する。外部APIは呼ばない。
@@ -292,10 +292,10 @@ repository rootから実行する。`OPENAI_API_KEY`を設定済みなら利用�
 
 ```bash
 # オフライン準備・分割内容の確認（API送信なし）
-.venv/bin/python workspace/14_mental-modeling_LAG/batch_run.py prepare --output sliding_window_v1
+uv run python workspace/14_mental-modeling_LAG/batch_run.py prepare --output sliding_window_v1
 
 # 残りを送信 → 完了を待つ → 結果回収・採点。中断後も同じコマンドで再開。
-.venv/bin/python workspace/14_mental-modeling_LAG/batch_run.py run --output sliding_window_v1
+uv run python workspace/14_mental-modeling_LAG/batch_run.py run --output sliding_window_v1
 ```
 
 `run`は終了まで起動しておく。Ctrl+Cでローカル処理を止めても、送信済みBatchはサーバーで継続する。
@@ -316,13 +316,13 @@ repository rootから実行する。`OPENAI_API_KEY`を設定済みなら利用�
 
 ```bash
 # ローカルに保存済みの状況を表示（APIなし）
-.venv/bin/python workspace/14_mental-modeling_LAG/batch_run.py status
+uv run python workspace/14_mental-modeling_LAG/batch_run.py status
 
 # サーバーの状態確認・結果回収後、各モデルで空いた枠に1 Batchずつ送信し終了
-.venv/bin/python workspace/14_mental-modeling_LAG/batch_run.py submit
+uv run python workspace/14_mental-modeling_LAG/batch_run.py submit
 
 # 状態確認・結果回収・採点のみ。新しいBatchは送信しない
-.venv/bin/python workspace/14_mental-modeling_LAG/batch_run.py collect
+uv run python workspace/14_mental-modeling_LAG/batch_run.py collect
 ```
 
 `api/batch/`に分割入力、状態ファイル、Batch情報、出力・エラー原文を保存する。
@@ -336,7 +336,7 @@ SDKの自動再送は無効。Batch作成前に予約・送信意図を永続化
 一意に特定できなければ自動再送せず停止する。Dashboardで該当Batch IDを確認できた場合は、次で関連付ける。
 
 ```bash
-.venv/bin/python workspace/14_mental-modeling_LAG/batch_run.py adopt --job terra_000 --batch-id batch_...
+uv run python workspace/14_mental-modeling_LAG/batch_run.py adopt --job terra_000 --batch-id batch_...
 ```
 
 関連付け時には入力file ID・endpoint・metadataも検証する。
@@ -353,7 +353,7 @@ Batchは通常API比50%割引、処理枠24h。実際の利用料金はLAGの入
 不足分を送信して終了する。後続の未着手条件へは進まない。
 
 ```bash
-.venv/bin/python workspace/14_mental-modeling_LAG/batch_run.py complete-prefix --output sliding_window_v1
+uv run python workspace/14_mental-modeling_LAG/batch_run.py complete-prefix --output sliding_window_v1
 ```
 
 現在の対象は`mhi_v1.3_ic100601_win/A0100/H5/last-state/self`の不足5件
@@ -363,7 +363,7 @@ Batchは通常API比50%割引、処理枠24h。実際の利用料金はLAGの入
 送信せずに準備だけする場合：
 
 ```bash
-.venv/bin/python workspace/14_mental-modeling_LAG/batch_run.py prepare --completion-only --output sliding_window_v1
+uv run python workspace/14_mental-modeling_LAG/batch_run.py prepare --completion-only --output sliding_window_v1
 ```
 
 結果回収・採点は`batch_run.py collect --output sliding_window_v1`を使う。
@@ -374,7 +374,7 @@ Batchは通常API比50%割引、処理枠24h。実際の利用料金はLAGの入
 ### 30件セットを最大4組、完了ごとに補充する（推奨）
 
 ```bash
-.venv/bin/python workspace/14_mental-modeling_LAG/batch_run.py rolling \
+uv run python workspace/14_mental-modeling_LAG/batch_run.py rolling \
   --output sliding_window_v1 --parallel-sets 4 --poll-seconds 30
 ```
 
@@ -408,7 +408,7 @@ Batchはサーバー側で非同期処理されるが、待機時間もある。
 送信側を止めず、別ターミナルで次を実行する。APIキーは不要。
 
 ```bash
-.venv/bin/python workspace/14_mental-modeling_LAG/batch_watch.py \
+uv run python workspace/14_mental-modeling_LAG/batch_watch.py \
   --output sliding_window_v1 --interval 10
 ```
 
@@ -426,7 +426,7 @@ API処理の完了予想であり、最後のローカル回収・採点に要�
 ### Question前後の状態・行動の時系列
 
 ```bash
-.venv/bin/python workspace/14_mental-modeling_LAG/plot_question_timelines.py
+uv run python workspace/14_mental-modeling_LAG/plot_question_timelines.py
 ```
 
 `analysis/question_timelines_<日時>/index.html`から試合・機体・問題番号・H・課題を選択する。
@@ -446,7 +446,7 @@ PNGは`<試合>/<機体>/question_01〜05/H02_next-action.png`のように分類
 ### 隣接する実測値との比較（コピー傾向の確認）
 
 ```bash
-.venv/bin/python workspace/14_mental-modeling_LAG/plot_neighbor_differences.py
+uv run python workspace/14_mental-modeling_LAG/plot_neighbor_differences.py
 ```
 
 既存の`analysis/comparison_plots_v1/`に次の12図（3指標×pool・試合別3組）を追加する。

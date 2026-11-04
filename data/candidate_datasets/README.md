@@ -53,9 +53,9 @@ Calculated Movesの元mirrorは到達できず、DOIから同名の公式配布�
 ## 再現
 
 ```bash
-.venv/bin/python tools/inventory_candidates.py
-.venv/bin/python tools/audit_dataset_relationships.py
-.venv/bin/python tools/render_schema_docs.py
+uv run python -m mtd_rl_xavier.tools.inventory_candidates
+uv run python -m mtd_rl_xavier.tools.audit_dataset_relationships
+uv run python -m mtd_rl_xavier.tools.render_schema_docs
 ```
 
 JSONには全filename、型/shape、missing/unique、sampling、ZIP全entry、エラー一覧、source size/mtime不変性を保存。「なし」は配布schemaにfieldがないこと、「未確認」は内部を読めない/確認不足、「一意に特定できない」は複数解釈や識別子不足を表す。

@@ -199,20 +199,20 @@ Experiment 14では、対象機体の無効状態を含む履歴窓・正解を�
 
 ## 5. 再生成と検証
 
-以下のコマンドはリポジトリルート`mental-modeling-openai`から実行する。
+以下のコマンドはリポジトリルートから実行する。
 
 ```sh
 # 生成。同じ内容の既存ファイルは書き換えない。
-.venv/bin/python experiments/13_LAG/run.py
+uv run python workspace/13_LAG/run.py
 
 # 書き込みなし。元データから再計算し、3つのCSVとmanifestをバイト単位で照合。
-.venv/bin/python experiments/13_LAG/run.py --check
+uv run python workspace/13_LAG/run.py --check
 
 # 入力または変換コードを変更した場合だけ、派生CSVとmanifestを更新。
-.venv/bin/python experiments/13_LAG/run.py --overwrite
+uv run python workspace/13_LAG/run.py --overwrite
 
 # ソース保持、時刻境界、欠損、抽出のテスト。
-.venv/bin/python -m pytest experiments/13_LAG/tests -q
+uv run python -m pytest workspace/13_LAG/tests -q
 ```
 
 生成器は全試合の変換と検証をメモリ内で完了してから保存する。変更済みの出力があり`--overwrite`がなければ、書き込み前に停止する。
@@ -241,8 +241,8 @@ manifestの`generator`は`lag_data/prepare.py`と`lag_data/definitions.py`の相
 from importlib import import_module
 from pathlib import Path
 
-lag = import_module("experiments.13_LAG.lag_data.dataset")
-path = Path("experiments/13_LAG/data/processed/ours_seed100100_ic100606_win.csv")
+lag = import_module("workspace.13_LAG.lag_data.dataset")
+path = Path("workspace/13_LAG/data/processed/ours_seed100100_ic100606_win.csv")
 df = lag.load_episode(path)
 
 print(df.shape)  # (3016, 64)

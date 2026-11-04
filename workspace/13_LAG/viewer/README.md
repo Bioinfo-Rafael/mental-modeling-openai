@@ -4,10 +4,10 @@
 
 ## 起動
 
-リポジトリルートから、既存のPython環境で実行する（pandas、ffmpeg、ffprobeが必要）。
+リポジトリルートから `uv run` で実行する（pandas、ffmpeg、ffprobeが必要）。
 
 ```sh
-.venv/bin/python workspace/13_LAG/viewer/serve.py
+uv run python workspace/13_LAG/viewer/serve.py
 ```
 
 ブラウザで <http://127.0.0.1:8130/viewer/> が開く。終了はターミナルでCtrl+C。
@@ -51,5 +51,5 @@ HTMLファイルの直接オープンではなく、このサーバーを使う�
 
 ```sh
 node --test workspace/13_LAG/viewer/test_model.mjs
-.venv/bin/python -m pytest workspace/13_LAG/tests -q
+uv run python -m pytest workspace/13_LAG/tests -q
 ```

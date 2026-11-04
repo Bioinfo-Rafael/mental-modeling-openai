@@ -10,9 +10,7 @@ directory名の `single` は互換性のため残すが、現在はN=1ではな�
 [01と同じ環境](../01_prompt_preview/README.md)を使用する。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-source .venv/bin/activate
-python workspace/05_new_models_single/run.py
+uv run python workspace/05_new_models_single/run.py
 ```
 
 フラグなしはdry-run、API 0。計画は `results/dry_run/manifest.json/csv` に保存する。
@@ -21,14 +19,14 @@ python workspace/05_new_models_single/run.py
 確認後、`OPENAI_API_KEY` を環境変数に設定し、**ユーザーが有料実行するときだけ**：
 
 ```bash
-python workspace/05_new_models_single/run.py --execute --confirm-paid-api
+uv run python workspace/05_new_models_single/run.py --execute --confirm-paid-api
 ```
 
 既定retry=0で、新規送信は120件。2つのフラグが揃わないと送信しない。
 ### 完了後の費用・時間見積もり
 
 05完了後のtoken・金額・時間の集計と06追加分（×7）の概算は、[解析README](analysis/README.md#05の実測から06のtoken金額時間を概算する)を参照。
-`python workspace/05_new_models_single/analysis/estimate_exp06.py`で、`analysis/cost_estimates/<日時>_<識別子>/RESULTS.md`と`estimate.json`を新規保存する。API再送信はしない。
+`uv run python workspace/05_new_models_single/analysis/estimate_exp06.py`で、`analysis/cost_estimates/<日時>_<識別子>/RESULTS.md`と`estimate.json`を新規保存する。API再送信はしない。
 
 ### APIの生成設定（05・06共通）
 
@@ -88,7 +86,7 @@ questionの対応は [../joint_questions.py](../../src/mtd_rl_xavier/experiment/
 05がcompleteになった後：
 
 ```bash
-python workspace/05_new_models_single/analysis/analyze.py
+uv run python workspace/05_new_models_single/analysis/analyze.py
 ```
 
 APIは呼ばず、[共通解析](../../src/mtd_rl_xavier/experiment/common_analysis/README.md)で各モデルのN=10のCSVを作る。

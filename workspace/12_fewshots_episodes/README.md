@@ -56,11 +56,11 @@ Pendulumのpath順でepisode_0を除いた先頭8本を、action / rewardを読�
 リポジトリルートで実行（今回実行するのはtestsとdry-runのみ）：
 
 ```sh
-.venv/bin/python -m pytest -q workspace/12_fewshots_episodes/tests
-.venv/bin/python workspace/12_fewshots_episodes/run.py --dry-run
+uv run python -m pytest -q workspace/12_fewshots_episodes/tests
+uv run python workspace/12_fewshots_episodes/run.py --dry-run
 # 以下は実API送信を行う操作。今回の実装検証では実行しない。
-.venv/bin/python workspace/12_fewshots_episodes/run.py
-.venv/bin/python workspace/12_fewshots_episodes/run.py --resume
+uv run python workspace/12_fewshots_episodes/run.py
+uv run python workspace/12_fewshots_episodes/run.py --resume
 ```
 
 既存API結果がある場合は`--resume`必須。resumeは未試行queryのみ送信し、失敗・不確実な試行を再送しない。
@@ -85,7 +85,7 @@ Pendulumのpath順でepisode_0を除いた先頭8本を、action / rewardを読�
 正解率とbin MAEのエラーバーはquery間の標本標準偏差（ddof=1）。NRMSE / Pearsonには付けない。
 
 ```sh
-.venv/bin/python workspace/12_fewshots_episodes/plot_results.py
+uv run python workspace/12_fewshots_episodes/plot_results.py
 ```
 
 追加API送信なし。11の集計・描画コードを直接再利用する。

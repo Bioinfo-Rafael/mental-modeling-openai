@@ -1,8 +1,15 @@
 # Migration from `rafael/mental-modeling-openai`
 
-`develop` holds a snapshot of `origin/rafael/mental-modeling-openai` at `a232376`, reorganised into
-the current layout. Rafael's commit history stays on that branch. Use the original branch to
-resume saved runs (see "Compatibility with saved results" below).
+`main` holds a snapshot of `origin/rafael/mental-modeling-openai` at `a232376`, reorganised into
+the current layout (ported in `9657427` on `develop`, merged into `main` by PR #1, `31ca410`).
+`main` is the source of truth; `origin/develop` has not moved since that merge and is stale.
+Rafael's commit history stays on the legacy branch. Use the original branch to resume saved runs
+(see "Compatibility with saved results" below).
+
+The legacy branch kept moving after the snapshot: it added experiments `18_desicion_LAG`,
+`19_RealTime_LAG`, `19_RealTime_Lag_v2` and `20_foresight_LAG` and changed `13_LAG` and
+`17_commentary_LAG`. None of that is ported. Numbers 18–20 are reserved for it, so new experiments
+on `main` start at `21_` (see [workspace/README.md](../workspace/README.md)).
 
 ## Path mapping
 

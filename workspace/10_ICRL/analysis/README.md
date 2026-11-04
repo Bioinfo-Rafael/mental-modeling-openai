@@ -57,9 +57,8 @@ HTMLは生成時点のスナップショット。採点完了後の内容を反�
 repo rootで以下を実行する。実験APIは送信しない。
 
 ```bash
-cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
-.venv/bin/python -B workspace/10_ICRL/analysis/plot_comparisons.py
-.venv/bin/python -B workspace/10_ICRL/analysis/build_results_viewer.py
+uv run python -B workspace/10_ICRL/analysis/plot_comparisons.py
+uv run python -B workspace/10_ICRL/analysis/build_results_viewer.py
 ```
 
 作図出力は `results/analysis/comparisons/`：`figures/` に7 PNG、`joined_samples.csv`、`prompt_summary.csv`、`episode_summary.csv`、`matrix_summary.csv`、入力SHA256・n・検証結果を記した `validation.json` を保存する。集計CSVの `model=pooled` はモデルを統合した行。
@@ -67,13 +66,13 @@ cd /Users/cls-lab/Git/Matsuo/mental-modeling-openai
 既存の出力は上書きしない。再生成時は新しい保存先を指定する（相対pathは実行時のcwd基準）：
 
 ```bash
-.venv/bin/python -B workspace/10_ICRL/analysis/plot_comparisons.py \
+uv run python -B workspace/10_ICRL/analysis/plot_comparisons.py \
   --output-dir workspace/10_ICRL/results/analysis/comparisons_v2
-.venv/bin/python -B workspace/10_ICRL/analysis/build_results_viewer.py \
+uv run python -B workspace/10_ICRL/analysis/build_results_viewer.py \
   --output workspace/10_ICRL/view_rawdata_v2.html
 ```
 
-コードのテストは `.venv/bin/python -B -m pytest workspace/10_ICRL/tests/test_analysis.py -q`。テスト用scoreは一時ディレクトリ内だけに作成し、実験の採点CSVは変更しない。
+コードのテストは `uv run python -B -m pytest workspace/10_ICRL/tests/test_analysis.py -q`。テスト用scoreは一時ディレクトリ内だけに作成し、実験の採点CSVは変更しない。
 
 Codexに生成・確認まで依頼する場合：
 
