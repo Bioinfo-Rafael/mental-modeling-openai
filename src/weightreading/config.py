@@ -7,10 +7,12 @@ from pathlib import Path
 
 import yaml
 
+from weightreading.retry import DEFAULT_RETRY_POLICY, MAX_ALLOWED_RETRIES, RetryPolicy
+
 BACKENDS = ("openai-responses",)
 TASK_MODES = ("shown", "blind")
 REASONING_EFFORTS = ("none", "minimal", "low", "medium", "high", "xhigh")
-TOP_LEVEL_KEYS = {"backend", "model", "reasoning_effort", "task_mode", "limits", "sandbox", "pricing"}
+TOP_LEVEL_KEYS = {"backend", "model", "reasoning_effort", "task_mode", "limits", "sandbox", "pricing", "retry"}
 LIMIT_KEYS = {"max_runs", "max_output_tokens", "max_total_tokens", "max_protocol_errors"}
 SANDBOX_KEYS = {
     "python",
@@ -24,6 +26,8 @@ SANDBOX_KEYS = {
     "work_max_bytes",
 }
 PRICE_KEYS = {"input", "cached_input", "output"}
+RETRY_KEYS = {"max_retries", "initial_backoff_s", "backoff_factor"}
+MIN_BACKOFF_FACTOR = 1.0
 
 
 class ConfigError(ValueError):
@@ -67,6 +71,7 @@ class RunConfig:
     limits: Limits
     sandbox: SandboxConfig
     pricing: tuple[tuple[str, Price], ...]
+    retry: RetryPolicy = DEFAULT_RETRY_POLICY
 
     def price(self) -> Price | None:
         return dict(self.pricing).get(self.model)
@@ -111,6 +116,26 @@ def _pricing(raw: object) -> tuple[tuple[str, Price], ...]:
     return tuple(entries)
 
 
+def _is_number(value: object) -> bool:
+    return isinstance(value, int | float) and not isinstance(value, bool)
+
+
+def _retry(raw: object) -> RetryPolicy:
+    """Optional ``retry`` block; absent means the defaults of ``RetryPolicy``."""
+    if raw is None:
+        return DEFAULT_RETRY_POLICY
+    if not isinstance(raw, dict) or set(raw) != RETRY_KEYS:
+        raise ConfigError(f"retry must have exactly {sorted(RETRY_KEYS)}")
+    max_retries = raw["max_retries"]
+    if type(max_retries) is not int or not 0 <= max_retries <= MAX_ALLOWED_RETRIES:
+        raise ConfigError(f"retry.max_retries must be an integer in 0..{MAX_ALLOWED_RETRIES} (0 disables retries)")
+    if not _is_number(raw["initial_backoff_s"]) or raw["initial_backoff_s"] < 0:
+        raise ConfigError("retry.initial_backoff_s must be a non-negative number")
+    if not _is_number(raw["backoff_factor"]) or raw["backoff_factor"] < MIN_BACKOFF_FACTOR:
+        raise ConfigError(f"retry.backoff_factor must be a number >= {MIN_BACKOFF_FACTOR:g}")
+    return RetryPolicy(max_retries, float(raw["initial_backoff_s"]), float(raw["backoff_factor"]))
+
+
 def parse_config(raw: object, root: Path) -> RunConfig:
     """Validate a decoded YAML mapping. Relative sandbox.python is resolved against ``root``."""
     if not isinstance(raw, dict):
@@ -136,6 +161,7 @@ def parse_config(raw: object, root: Path) -> RunConfig:
         limits=limits,
         sandbox=sandbox,
         pricing=_pricing(raw.get("pricing", {})),
+        retry=_retry(raw.get("retry")),
     )
 
 

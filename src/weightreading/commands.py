@@ -195,7 +195,7 @@ def execute_run(
         return 1, record
     write_json(run_dir / "run.json", record)
     backend = OpenAIResponsesBackend(
-        client_factory(), config.model, config.reasoning_effort, config.limits.max_output_tokens
+        client_factory(), config.model, config.reasoning_effort, config.limits.max_output_tokens, config.retry
     )
     limits = SessionLimits(config.limits.max_runs, config.limits.max_total_tokens, config.limits.max_protocol_errors)
     try:

@@ -11,11 +11,15 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Protocol
 
+from weightreading.retry import DEFAULT_RETRY_POLICY, RetryEvent, RetryPolicy, call_with_retry, log_to_stderr
+
 API_KEY_ENV = "OPENAI_API_KEY"
-SDK_MAX_RETRIES = 0  # a retried paid request may be billed twice
+SDK_MAX_RETRIES = 0  # retries are done in weightreading.retry, where each attempt is logged
 REQUEST_TIMEOUT_S = 1800.0
 
 
@@ -39,6 +43,7 @@ class BackendReply:
     status: str  # "completed" or "incomplete"
     response_id: str | None
     request_record: dict  # request options + input hash (never credentials)
+    retries: tuple[dict, ...] = ()  # failed attempts that preceded this reply (RetryEvent.to_dict)
 
 
 class ChatBackend(Protocol):
@@ -77,9 +82,21 @@ def _dump_item(item: Any) -> dict:
 class OpenAIResponsesBackend:
     """Responses API backend. ``client`` is any object with ``responses.create`` (a fake in tests)."""
 
-    def __init__(self, client: Any, model: str, reasoning_effort: str, max_output_tokens: int) -> None:
+    def __init__(
+        self,
+        client: Any,
+        model: str,
+        reasoning_effort: str,
+        max_output_tokens: int,
+        retry: RetryPolicy = DEFAULT_RETRY_POLICY,
+        sleep: Callable[[float], None] = time.sleep,
+        log: Callable[[RetryEvent], None] = log_to_stderr,
+    ) -> None:
         self.client = client
         self.model = model
+        self.retry = retry
+        self.sleep = sleep
+        self.log = log
         self.options = {
             "model": model,
             "reasoning": {"effort": reasoning_effort},
@@ -89,7 +106,12 @@ class OpenAIResponsesBackend:
         }
 
     def respond(self, history: tuple[dict, ...]) -> BackendReply:
-        response = self.client.responses.create(input=list(history), **self.options)
+        response, failed_attempts = call_with_retry(
+            lambda: self.client.responses.create(input=list(history), **self.options),
+            self.retry,
+            self.sleep,
+            self.log,
+        )
         items = tuple(_dump_item(item) for item in (getattr(response, "output", None) or []))
         return BackendReply(
             text=getattr(response, "output_text", "") or "",
@@ -103,6 +125,7 @@ class OpenAIResponsesBackend:
                 "input_sha256": history_sha256(history),
                 "tools": None,
             },
+            retries=tuple(event.to_dict() for event in failed_attempts),
         )
 
 

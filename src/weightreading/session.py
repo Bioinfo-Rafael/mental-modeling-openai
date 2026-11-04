@@ -82,6 +82,8 @@ class RunLog:
                 "response_id": reply.response_id,
                 "status": reply.status,
                 "usage": {**asdict(reply.usage), "total_tokens": reply.usage.total_tokens},
+                "retry_count": len(reply.retries),
+                "retries": list(reply.retries),
                 "text": reply.text,
                 "output_items": list(reply.output_items),
             },

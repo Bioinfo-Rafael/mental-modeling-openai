@@ -57,8 +57,29 @@ skip unless they exist under `WEIGHTREADING_MHI_MODEL_DIR` (default `mtd-rl-lag/
 
 `run` without both paid flags writes the same local preview as `preview`; one flag alone is an
 argparse error. The API key is read from the environment only after both flags and the sandbox
-preflight pass. The SDK client uses `max_retries=0`. Paid runs belong on compute nodes (see
+preflight pass. The SDK client uses `max_retries=0`; `retry.py` retries instead, narrowly and visibly (see
+"Transient API errors" below). Paid runs belong on compute nodes (see
 `scripts/weightreading_run.sbatch`); the login node is for tests and previews.
+
+### Transient API errors
+
+`retry.py` retries a request only when it almost certainly was not processed (so not billed): an
+HTTP 5xx answer, or a connection error that is not a timeout (`openai.APITimeoutError` may have been
+processed, so it is re-raised). 4xx answers (including 429, which also covers insufficient quota),
+bad requests, auth errors and non-`openai` exceptions are never retried. Default: at most 2 retries
+(3 attempts; the config can lower but not raise this), waiting 10 s then 30 s. Each failed attempt is printed to stderr (attempt, error class,
+status code, request id; never the key, message or request body), and the retries that preceded a
+reply are stored in its `transcript.jsonl` line as `retry_count` and `retries`. When the retries are
+exhausted the last error is re-raised unchanged, so `--resume` works as before. Override with an
+optional `retry` block in the config (all three keys; `max_retries: 0` disables retrying); without it
+the defaults apply:
+
+```yaml
+retry:
+  max_retries: 2
+  initial_backoff_s: 10
+  backoff_factor: 3          # waits 10 s, then 30 s
+```
 
 ## Files
 
