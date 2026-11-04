@@ -40,3 +40,8 @@ workspace/**/results/**/*.partial
 .env
 # weightreading bundles and runs (weights derived from checkpoints, transcripts)
 outputs/weightreading/
+
+# Translator / judge: customer scenarios, key points, and run outputs stay out of git (whole trees).
+/private/
+/outputs/translator/
+/outputs/evaluation/

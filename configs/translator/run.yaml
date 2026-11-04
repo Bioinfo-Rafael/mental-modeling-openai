@@ -1,0 +1,65 @@
+# Translator run configuration (python -m mtd_rl_xavier.translator.cli --config <this file> --scenario ...).
+# Every key is required and every value is explicit: the code has no default model. Unknown keys fail.
+# Preview is the default; --execute calls the layers, and the paid translation layer also needs
+# --confirm-paid-api. See src/mtd_rl_xavier/translator/README.md.
+schema_version: 1
+
+pipeline:
+  tick_interval_steps: 5            # detector tick every 5 steps (1 s) on the fixed episode grid (D28)
+  visibility:
+    mode: online                    # online only in this phase; retrospective is LATER (L2) and rejected
+    future_steps: 0                 # must be 0 for online
+
+limits:                             # per run; the run stops with cap_reached before call cap+1
+  max_detector_calls: 500
+  max_translation_calls: 250
+
+detector:
+  backend: system_one               # POST /v1/systemone (vLLM clef-flash or OpenJev wev serve)
+  model: Cloudflare/clef-flash      # Hugging Face id (provenance)
+  revision: fb4417d31c1d0f9e7e77f1141b40aaede7491e00
+  served_model_name: clef-flash     # the "model" field sent to the server (vllm serve --served-model-name)
+  connection:                       # exactly one of uds_path (default) or base_url (loopback TCP)
+    # Unix socket in a per-user 0700 directory; {user} (the only placeholder) becomes your user name.
+    # Before the server starts: mkdir -m 700 /tmp/$USER-vllm  (preview needs neither the directory
+    # nor the socket). TCP opt-in: base_url: http://127.0.0.1:8000 and uds_path: null; only on a node
+    # allocated to this job, because any other user on a shared node can bind a free loopback port.
+    base_url: null
+    uds_path: /tmp/{user}-vllm/clef-flash.sock
+    api_key_env: VLLM_API_KEY       # variable NAME only (A-Z, 0-9, _); required for TCP, optional (null) over UDS
+  timeout_s: 30
+  threshold: 0.65                   # changed = p(yes) >= threshold; provisional until a labelled LAG check
+  input_token_budget: 16384         # MUST equal the serving cap min(16384, --max-model-len); 4096 for wev serve
+  question:
+    id: unexplained_change
+    type: noul
+    instructions: >-
+      The motion in the trajectory window is NOT explained by the previous
+      natural-language intent translation.
+    criteria:
+      "true": There is a material motion change requiring a new intent explanation.
+      "false": The previous intent still explains the observed motion.
+  window:
+    past_steps: 10                  # D27 short window: [step-9, step]
+    entity_scope: target_and_opponents   # the target's aircraft first, then the opposing team
+    fields: [alive, state_valid, lon_deg, lat_deg, alt_m, yaw_deg, tas_mps, vn_mps, ve_mps, vu_mps]
+    float_precision: 5              # 1e-5 deg ~ 1 m; 3 decimals (~100 m) cannot resolve ~50 m of motion per step
+
+translation:
+  backend: openai_responses         # the only backend in this phase; vllm_chat is LATER (L2) and rejected
+  connection: null                  # must be null for openai_responses
+  model: gpt-6.1-terra              # D18; must have a pricing entry below
+  reasoning_effort: medium
+  output_language: Japanese         # D42 (was English, D23); clef-flash stays English-only and sees the previous translation
+  max_output_tokens: 4000           # reasoning + visible output
+  max_intent_chars: 1000            # longer intents fail the run; bounds the next detector state (budget fit)
+  timeout_s: 1800
+  window:
+    past_steps: 60                  # D32: [step-59, step]
+    renderer: lag17-jsonl           # D22
+
+output:
+  root: outputs/translator          # relative to the repository root; gitignored as a whole tree
+
+pricing:                            # USD per 1M tokens, preview cost estimate only (provisional; re-check)
+  gpt-6.1-terra: {input: 1.00, cached_input: null, output: 5.00}   # null = priced at the input rate

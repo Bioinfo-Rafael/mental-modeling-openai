@@ -1,0 +1,56 @@
+# Text-only LLM-as-a-judge config (python -m evaluation.cli --config <this file> ...).
+# Every key is required and every value is explicit; unknown or duplicate keys fail.
+# One gpt-6.1-sol call per judged translation event (D20). The judge always calls a paid API:
+# --execute --confirm-paid-api are both required. See evaluation/README.md.
+schema_version: 1
+model: gpt-6.1-sol                  # D8: the only accepted value
+reasoning_effort: medium            # low | medium | high | xhigh | max
+max_output_tokens: 25000            # reasoning + visible output; an incomplete response fails the run
+timeout_s: 1800                     # per call; a timeout is "uncertain" (exit 3) and is never resent
+
+limits:
+  max_judged_events: 250            # counts only events that have key points; checked in preflight and at run time
+
+inputs:                             # exactly these six blocks (D15); include: false removes the block from the request
+  instructions:                     # the event's instructions_in_effect; the target's own one is marked primary
+    include: true
+    renderer: chronological         # issue step, then instruction id
+    show_ids: true
+    show_targets: true
+    show_issue_steps: true
+  video:                            # L3: include: true is rejected in this phase (no frames are extracted)
+    include: false
+    renderer: sampled-jpeg
+    source: scenario_action_video   # workspace/13_LAG/data/viz/action_videos (D30)
+    mapping: {step_offset: 0, frame_offset: 0, steps_per_frame: 1}   # 20 fps: frame = step
+    sampling: {strategy: event_window, before_steps: 10, after_steps: 10, stride_steps: 5, max_frames: 8}
+    resize: {max_width: 960, max_height: 540, jpeg_quality: 85}
+    detail: high
+  timestamps:                       # episode start, the target's earlier translation events, this event + triggers
+    include: true
+    renderer: chronological
+    scope: through_event            # never anything after the judged event
+    show_sim_seconds: true
+    show_sources: true              # trigger source labels and detector probabilities
+  trajectory:
+    include: true
+    renderer: translation_input_verbatim   # input.trajectory.text of the event, byte for byte
+    show_window_metadata: true
+  translated_intent:                # the output being judged
+    include: true
+    renderer: intent-and-evidence
+  key_points:                       # include: false judges the overall score only
+    include: true
+    renderer: numbered-with-fixed-rubric   # D29 anchors fixed in code: 2 / 1 / 0
+
+output:
+  root: outputs/evaluation          # relative to the repository root; gitignored as a whole tree
+
+pricing:                            # USD per 1M tokens; list price, verify before paid runs (preview estimate only)
+  gpt-6.1-sol:
+    input: 2.00
+    cached_input: 0.10
+    output: 10.00
+    long_context_threshold_tokens: 272000   # a request above this many input tokens is billed at the multipliers
+    long_input_multiplier: 2.0
+    long_output_multiplier: 1.5
