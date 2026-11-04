@@ -6,6 +6,9 @@ usage error. This module is the only composition root: it alone builds the OpenA
 Exit codes: 0 preview written or run completed; 1 deterministic failure; 2 usage or gate misuse;
 3 a call has an uncertain outcome (may have been billed; never resent); 4 ``cap_reached``.
 Run it from the repository root only (a stray ``evaluation.py`` on ``sys.path`` would shadow it).
+With ``inputs.video.include`` the frames of every judged event are decoded while the inputs are
+loaded (preview and run alike): a missing video fails before any client exists, and no file written
+here contains base64.
 """
 
 from __future__ import annotations
@@ -18,6 +21,7 @@ import sys
 from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
+from importlib import metadata
 from pathlib import Path
 from typing import Any
 
@@ -34,6 +38,7 @@ from mtd_rl_xavier.tools.output_safety import derived_path
 from mtd_rl_xavier.translator.schema import SAFE_ID_PATTERN, redacted_error, sha256_text
 
 from .configuration import JudgeConfig, JudgeConfigError, JudgePrice, load_config
+from .frames import CachingFrameSource, FrameSource, PyAVFrameSource
 from .judge import (
     INTERRUPTIONS,
     STATUS_CAP_REACHED,
@@ -53,10 +58,20 @@ from .rendering import (
     JUDGE_PROMPT_VERSION,
     JUDGE_SYSTEM_PROMPT,
     KEY_POINT_RUBRIC,
+    VideoContext,
     approx_input_tokens,
+    approx_text_tokens,
     build_judge_request,
+    redact_images,
 )
-from .schemas import EventKeyPoints, TranslatorRun, load_key_points, load_translator_run, match_key_points
+from .schemas import (
+    EventKeyPoints,
+    TranslatorRun,
+    load_key_points,
+    load_translator_run,
+    match_key_points,
+    run_episode,
+)
 
 DEFAULT_CONFIG = Path(__file__).resolve().parent / "config" / "judge-text.yaml"
 EXIT_OK = 0
@@ -128,8 +143,23 @@ def build_parser() -> argparse.ArgumentParser:
 # --- inputs and preflight -------------------------------------------------------------------------
 
 
-def load_inputs(config_path: Path, run_dir: Path, key_points_path: Path) -> Inputs:
-    """Config, event log, key points, matching, cap and every request. No client, no credential."""
+def _video_context(config: JudgeConfig, run: TranslatorRun, frame_source: FrameSource | None) -> VideoContext | None:
+    """The video block's frame source and episode, or ``None`` when the block is excluded."""
+    if not config.inputs.video.include:
+        return None
+    episode = run_episode(run)
+    source = frame_source if frame_source is not None else CachingFrameSource(PyAVFrameSource())
+    return VideoContext(frame_source=source, episode_id=episode.episode_id, last_step=episode.last_complete_step)
+
+
+def load_inputs(
+    config_path: Path, run_dir: Path, key_points_path: Path, *, frame_source: FrameSource | None = None
+) -> Inputs:
+    """Config, event log, key points, matching, cap and every request. No client, no credential.
+
+    With the video block included this also decodes the frames of every judged event, so a missing
+    or unreadable video fails here, before any client exists.
+    """
     config = load_config(config_path)
     run = load_translator_run(run_dir)
     entries = load_key_points(key_points_path)
@@ -139,11 +169,12 @@ def load_inputs(config_path: Path, run_dir: Path, key_points_path: Path) -> Inpu
             f"{len(matched)} events have key points; limits.max_judged_events is {config.max_judged_events}"
         )
     events = run.translation_events
+    video = _video_context(config, run, frame_source) if matched else None
     planned = tuple(
         PlannedEvent(
             event=event,
             request=build_judge_request(
-                event=event, event_log=events, key_points=matched[event["event_id"]], config=config
+                event=event, event_log=events, key_points=matched[event["event_id"]], config=config, video=video
             )
             if event["event_id"] in matched
             else None,
@@ -166,11 +197,18 @@ def _estimate(inputs: Inputs) -> dict[str, Any]:
         _priced(t, price.input, price.long_input_multiplier, long) for t, long in zip(tokens, long_flags, strict=True)
     )
     output_cost = sum(_priced(max_out, price.output, price.long_output_multiplier, long) for long in long_flags)
+    requests = [item.request for item in inputs.planned if item.request is not None]
+    video = inputs.config.inputs.video
     return {
         "approximate": f"text tokens ~= ceil(chars / {CHARS_PER_TOKEN}) of instructions, user text and schema; "
         "no cache hits assumed; output priced at max_output_tokens per call (upper bound)",
         "pricing_note": "list price, verify before paid runs",
         "judge_calls": len(tokens),
+        "images_total": sum(len(request.frames) for request in requests),
+        "image_tokens_total": sum(request.image_tokens for request in requests),
+        "image_tokens_per_image": video.image_tokens.per_image if video.include else 0,
+        "image_tokens_status": video.image_tokens.status if video.include else None,
+        "text_tokens_total": sum(approx_text_tokens(request) for request in requests),
         "input_tokens_total": sum(tokens),
         "input_tokens_max_per_call": max(tokens, default=0),
         "long_context_calls": sum(long_flags),
@@ -198,9 +236,37 @@ def _warnings(inputs: Inputs, estimate: dict[str, Any]) -> list[str]:
         warnings.append("inputs.translated_intent is excluded: the judge cannot see the output it scores")
     if not inputs.config.inputs.key_points.include:
         warnings.append("inputs.key_points is excluded: only the overall score is requested")
+    video = inputs.config.inputs.video
+    if video.include:
+        warnings.append(
+            "inputs.video is included: the judge sees A-team actions and outcomes after the judged step that the "
+            "Translator never saw (evaluation input only)"
+        )
+        if video.image_tokens.status != "verified":
+            warnings.append(
+                f"image token estimate ({video.image_tokens.per_image} per image) is {video.image_tokens.status}: "
+                "check it against the model's real usage before trusting the cost"
+            )
     if estimate["long_context_calls"]:
         warnings.append(f"{estimate['long_context_calls']} calls exceed the long-context threshold (billed higher)")
     return warnings
+
+
+def _frames_json(item: PlannedEvent) -> dict[str, Any]:
+    """Frame summaries of one event: steps, count and sizes. Never image bytes or base64."""
+    if item.request is None or not item.request.frames:
+        return {}
+    frames = item.request.frames
+    return {
+        "frames": {
+            "count": len(frames),
+            "steps": [frame.step for frame in frames],
+            "frame_indices": [frame.frame_index for frame in frames],
+            "sizes": sorted({f"{frame.width}x{frame.height}" for frame in frames}),
+            "jpeg_bytes_total": sum(frame.jpeg_bytes for frame in frames),
+            "image_tokens": item.request.image_tokens,
+        }
+    }
 
 
 def _plan_json(inputs: Inputs) -> dict[str, Any]:
@@ -212,6 +278,7 @@ def _plan_json(inputs: Inputs) -> dict[str, Any]:
             "planned": "judged" if item.request is not None else "not_judged",
             "key_points": len(item.request.key_points) if item.request is not None else 0,
             "approx_input_tokens": approx_input_tokens(item.request) if item.request is not None else 0,
+            **_frames_json(item),
         }
         for item in inputs.planned
     ]
@@ -258,6 +325,28 @@ def _translator_field(run_json: dict[str, Any], key: str) -> str | None:
     return value if isinstance(value, str) else None
 
 
+def _package_version(name: str) -> str | None:
+    try:
+        return metadata.version(name)
+    except metadata.PackageNotFoundError:
+        return None
+
+
+def _video_provenance(inputs: Inputs) -> dict[str, Any] | None:
+    """The video files and decoder builds behind the frames (the request hash depends on them)."""
+    video = inputs.config.inputs.video
+    if not video.include:
+        return None
+    files = {
+        episode_id: {
+            "path": str(episode.path),
+            "sha256": _sha256_file(episode.path) if episode.path.is_file() else None,
+        }
+        for episode_id, episode in sorted(video.videos.items())
+    }
+    return {"videos": files, "av": _package_version("av"), "pillow": _package_version("Pillow")}
+
+
 def _run_record(inputs: Inputs, *, mode: str, status: str) -> dict[str, Any]:
     run = inputs.run
     return {
@@ -290,6 +379,7 @@ def _run_record(inputs: Inputs, *, mode: str, status: str) -> dict[str, Any]:
             "sdk_environment_set": set_provenance_env_names(),  # names only; proxy URLs can hold credentials
             "system_prompt_sha256": sha256_text(JUDGE_SYSTEM_PROMPT),
             "key_point_rubric_sha256": sha256_text(KEY_POINT_RUBRIC),
+            "video": _video_provenance(inputs),
         },
         "config": json.loads(json.dumps(asdict(inputs.config), default=str)),
         "plan": {key: value for key, value in _plan_json(inputs).items() if key != "events"},
@@ -337,7 +427,8 @@ def _preview(args: argparse.Namespace, inputs: Inputs) -> int:
     _write_json(run_dir / "preview.json", preview)
     first = next((item.request for item in inputs.planned if item.request is not None), None)
     if first is not None:
-        _write_json(run_dir / "example_judge_request.json", build_responses_body(first.openai_request))
+        example = redact_images(build_responses_body(first.openai_request))  # never base64 on disk
+        _write_json(run_dir / "example_judge_request.json", example)
     plan = preview["plan"]
     _print(
         {
@@ -411,13 +502,18 @@ def _execute(args: argparse.Namespace, inputs: Inputs, openai_client_factory: Op
     return _finish(run_dir, record, summary, inputs.config.price)
 
 
-def main(argv: list[str] | None = None, *, openai_client_factory: OpenAIClientFactory = make_openai_client) -> int:
+def main(
+    argv: list[str] | None = None,
+    *,
+    openai_client_factory: OpenAIClientFactory = make_openai_client,
+    frame_source: FrameSource | None = None,
+) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     if args.execute != args.confirm_paid_api:
         parser.error(GATE_MESSAGE)
     try:
-        inputs = load_inputs(args.config, args.translator_run, args.key_points)
+        inputs = load_inputs(args.config, args.translator_run, args.key_points, frame_source=frame_source)
         if not args.execute:
             return _preview(args, inputs)
         return _execute(args, inputs, openai_client_factory)

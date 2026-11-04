@@ -4,8 +4,13 @@ The user message is one ``input_text`` item per part: a fixed header naming the 
 then each included block in ``INPUT_BLOCKS`` order. An excluded block is absent from the request
 entirely (heading, text and, for key points, the output-schema ids). The trajectory is the event's
 ``input.trajectory.text`` copied verbatim, so the judge sees exactly what the translation layer saw
-(D1, D20). Nothing names the episode id, the scenario id or an event id. Video frames are L3:
-the config rejects ``video.include: true``, and no frame is extracted here.
+(D1, D20). Nothing names the episode id, the scenario id or an event id.
+
+Video block (L3, D30): selected frames of the episode's action video, in time order, each image item
+immediately preceded by one text item holding its configured label (step and time). The video is
+evaluation input only: it shows A-team actions and outcomes after the current step that the online
+Translator never saw. ``redact_images`` is what every file written to disk uses instead of the
+base64 payload.
 
 Prompt-injection envelope (D38): every free text the judge did not write (the translated intent,
 its evidence, instruction texts, key-point texts) is rendered as one JSON string literal
@@ -16,6 +21,7 @@ trajectory must be JSON lines. The system prompt tells the judge that all of it 
 
 from __future__ import annotations
 
+import copy
 import json
 import math
 from collections.abc import Callable
@@ -23,8 +29,8 @@ from dataclasses import dataclass
 from typing import Any
 
 from mtd_rl_xavier.lag.rendering import LAG17_RENDERER
-from mtd_rl_xavier.llm.openai_responses import OpenAIRequest, input_text
-from mtd_rl_xavier.translator.schema import canonical_json, step_time_s
+from mtd_rl_xavier.llm.openai_responses import OpenAIRequest, input_image, input_text
+from mtd_rl_xavier.translator.schema import canonical_json, sha256_text, step_time_s
 
 from .configuration import (
     BLOCK_INSTRUCTIONS,
@@ -33,10 +39,12 @@ from .configuration import (
     BLOCK_TRAJECTORY,
     BLOCK_TRANSLATED_INTENT,
     BLOCK_VIDEO,
-    VIDEO_NOT_IN_THIS_PHASE,
     JudgeConfig,
     JudgeInputs,
+    VideoEpisode,
+    VideoInput,
 )
+from .frames import TIME_DECIMALS, FrameSource, plan_frames
 from .schemas import OUTPUT_SCHEMA_NAME, EventKeyPoints, KeyPoint, build_judge_output_schema
 
 JUDGE_PROMPT_VERSION = "judge-text-v2"  # v2: free texts quoted as JSON strings, data-not-instructions clause
@@ -93,19 +101,47 @@ missile's launcher, not its target.""",
 }
 
 HEADING_INSTRUCTIONS = "## INSTRUCTIONS IN EFFECT"
+HEADING_VIDEO = "## VIDEO FRAMES"
 HEADING_TIMESTAMPS = "## TIMESTAMPS"
 HEADING_TRAJECTORY = "## TRAJECTORY"
 HEADING_TRANSLATED_INTENT = "## TRANSLATED INTENT"
 HEADING_KEY_POINTS = "## KEY POINTS"
 WINDOW_BEGIN = "BEGIN WINDOW DATA"
 WINDOW_END = "END WINDOW DATA"
+VIDEO_INTRO = (
+    "Frames of the recorded action video of this episode, oldest first; each frame is preceded by its label. "
+    "The video shows the aircraft's actions and what happened in the engagement. Frames after the current "
+    "step show events that came after the moment being translated; the Translator never saw them."
+)
+IMAGE_OMITTED = "image data omitted"
 PRIMARY_MARK = "[primary] "
 # Characters str.splitlines() and many readers treat as line breaks that json.dumps leaves raw.
 UNICODE_LINE_BREAK_ESCAPES = {"\x85": "\\u0085", "\u2028": "\\u2028", "\u2029": "\\u2029"}
 
 
 class JudgeRenderError(ValueError):
-    """A judge request cannot be rendered from the event (unknown renderer, video requested)."""
+    """A judge request cannot be rendered from the event (unknown renderer, no video for the episode)."""
+
+
+@dataclass(frozen=True)
+class FrameSummary:
+    """One image of the request, without its bytes (what the preview and the run record may show)."""
+
+    step: int
+    time_s: float
+    frame_index: int
+    width: int
+    height: int
+    jpeg_bytes: int
+
+
+@dataclass(frozen=True)
+class VideoContext:
+    """What the video block needs besides the config: a frame source and the run's episode."""
+
+    frame_source: FrameSource
+    episode_id: str
+    last_step: int  # last complete step of the episode; frames after it are never shown
 
 
 @dataclass(frozen=True)
@@ -114,6 +150,8 @@ class JudgeRequest:
     openai_request: OpenAIRequest
     key_points: tuple[KeyPoint, ...]  # what the verdict must score; () when the key-point block is excluded
     blocks: tuple[str, ...]  # included block names, in request order
+    frames: tuple[FrameSummary, ...] = ()  # the images, in request order; () without the video block
+    image_tokens: int = 0  # estimate from the config (status "unverified" until checked)
 
 
 # --- blocks ---------------------------------------------------------------------------------------
@@ -240,6 +278,73 @@ EVENT_BLOCK_RENDERERS: dict[str, BlockRenderer] = {
 }
 
 
+# --- video ----------------------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class VideoBlock:
+    items: tuple[dict[str, Any], ...]  # intro text, then (label text, image) pairs
+    frames: tuple[FrameSummary, ...]
+
+
+def frame_time_s(step: int, episode: VideoEpisode) -> float:
+    return round(step * episode.step_seconds, TIME_DECIMALS)
+
+
+def frame_label(options: VideoInput, episode: VideoEpisode, step: int, event_step: int) -> str:
+    relative = step - event_step
+    return options.label_format.format(
+        step=step,
+        time_s=frame_time_s(step, episode),
+        relative_step=f"{relative:+d}" if relative else "0",
+    )
+
+
+def render_video(event: dict[str, Any], options: VideoInput, context: VideoContext) -> VideoBlock:
+    """Frames around the event: ``before_steps`` .. ``after_steps`` clipped to the episode and the video."""
+    episode = options.videos.get(context.episode_id)
+    if episode is None:
+        raise JudgeRenderError(f"inputs.video.videos has no video for episode {context.episode_id!r}")
+    source = context.frame_source
+    plan = plan_frames(
+        event_step=event["step"],
+        last_step=context.last_step,
+        info=source.info(episode.path),
+        episode=episode,
+        sampling=options.sampling,
+    )
+    if not plan.steps:
+        raise JudgeRenderError(
+            f"no video frame of episode {context.episode_id!r} lies in the window of step {event['step']}"
+        )
+    encoded = source.frames(episode.path, plan.frame_indices, options.resize)
+    if tuple(frame.frame_index for frame in encoded) != plan.frame_indices:
+        raise JudgeRenderError("the frame source returned other frames than requested")
+    items: list[dict[str, Any]] = [input_text(f"{HEADING_VIDEO}\n{VIDEO_INTRO}")]
+    for step, frame in zip(plan.steps, encoded, strict=True):
+        items.append(input_text(frame_label(options, episode, step, event["step"])))
+        items.append(input_image(frame.data_url, detail=options.detail))
+    frames = tuple(
+        FrameSummary(step, frame_time_s(step, episode), frame.frame_index, frame.width, frame.height, len(frame.jpeg))
+        for step, frame in zip(plan.steps, encoded, strict=True)
+    )
+    return VideoBlock(items=tuple(items), frames=frames)
+
+
+def redact_images(body: dict[str, Any]) -> dict[str, Any]:
+    """A copy of a Responses body whose image data URLs are replaced by their length and sha256.
+
+    The only form in which a request body is written to disk or shown: no base64 and no image bytes.
+    """
+    redacted = copy.deepcopy(body)
+    for message in redacted.get("input", []):
+        for part in message.get("content", []):
+            if part.get("type") == "input_image":
+                url = part["image_url"]
+                part["image_url"] = f"[{IMAGE_OMITTED}: {len(url)} chars, sha256 {sha256_text(url)}]"
+    return redacted
+
+
 # --- request --------------------------------------------------------------------------------------
 
 
@@ -250,38 +355,65 @@ def _block_text(
     key_points: EventKeyPoints,
     inputs: JudgeInputs,
 ) -> str:
-    if block == BLOCK_VIDEO:
-        raise JudgeRenderError(VIDEO_NOT_IN_THIS_PHASE)
     if block == BLOCK_KEY_POINTS:
         return render_key_points(key_points.key_points)
     return EVENT_BLOCK_RENDERERS[block](event, event_log, inputs)
 
 
 def build_judge_request(
-    *, event: dict[str, Any], event_log: tuple[dict[str, Any], ...], key_points: EventKeyPoints, config: JudgeConfig
+    *,
+    event: dict[str, Any],
+    event_log: tuple[dict[str, Any], ...],
+    key_points: EventKeyPoints,
+    config: JudgeConfig,
+    video: VideoContext | None = None,
 ) -> JudgeRequest:
-    """One request for one translation event. ``event_log`` holds the run's translation events."""
+    """One request for one translation event. ``event_log`` holds the run's translation events.
+
+    ``video`` is required exactly when the video block is included; otherwise it is never touched.
+    """
     if key_points.event_id != event["event_id"]:
         raise JudgeRenderError("key points belong to a different event")
     inputs = config.inputs
     blocks = inputs.included()
-    texts = [render_header(event), *(_block_text(block, event, event_log, key_points, inputs) for block in blocks)]
+    items: list[dict[str, Any]] = [input_text(render_header(event))]
+    frames: tuple[FrameSummary, ...] = ()
+    for block in blocks:
+        if block != BLOCK_VIDEO:
+            items.append(input_text(_block_text(block, event, event_log, key_points, inputs)))
+            continue
+        if video is None:
+            raise JudgeRenderError("the video block is included but no frame source was given")
+        rendered = render_video(event, inputs.video, video)
+        items.extend(rendered.items)
+        frames = rendered.frames
     scored = key_points.key_points if inputs.key_points.include else ()
     request = OpenAIRequest(
         model=config.model,
         instructions=JUDGE_SYSTEM_PROMPT,
-        input_items=tuple(input_text(text) for text in texts),
+        input_items=tuple(items),
         schema_name=OUTPUT_SCHEMA_NAME,
         schema=build_judge_output_schema(scored),
         reasoning_effort=config.reasoning_effort,
         max_output_tokens=config.max_output_tokens,
     )
-    return JudgeRequest(event_id=event["event_id"], openai_request=request, key_points=scored, blocks=blocks)
+    return JudgeRequest(
+        event_id=event["event_id"],
+        openai_request=request,
+        key_points=scored,
+        blocks=blocks,
+        frames=frames,
+        image_tokens=len(frames) * inputs.video.image_tokens.per_image,
+    )
 
 
 def approx_input_tokens(request: JudgeRequest) -> int:
-    """ceil(chars / 4) over the instructions, every text item and the output schema (approximate)."""
+    """Text tokens ``ceil(chars / 4)`` over the instructions, text items and schema, plus the image estimate."""
+    return approx_text_tokens(request) + request.image_tokens
+
+
+def approx_text_tokens(request: JudgeRequest) -> int:
     openai_request = request.openai_request
     chars = len(openai_request.instructions) + len(canonical_json(openai_request.schema))
-    chars += sum(len(item["text"]) for item in openai_request.input_items)
+    chars += sum(len(item["text"]) for item in openai_request.input_items if item["type"] == "input_text")
     return math.ceil(chars / CHARS_PER_TOKEN)

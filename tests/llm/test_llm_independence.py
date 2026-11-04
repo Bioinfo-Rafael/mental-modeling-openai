@@ -54,6 +54,12 @@ def test_package_contains_the_phase_one_parts() -> None:
     assert {"__init__", "openai_responses", "system_one"} <= names
 
 
+def test_package_contains_the_local_runtime_parts_so_the_scan_covers_them() -> None:
+    names = {path.stem for path in _llm_modules()}
+
+    assert {"vllm_chat", "vllm_server"} <= names
+
+
 @pytest.mark.parametrize("path", _llm_modules(), ids=lambda path: path.name)
 def test_llm_module_imports_no_sibling(path: Path) -> None:
     module_name = PACKAGE if path.stem == "__init__" else f"{PACKAGE}.{path.stem}"
@@ -85,6 +91,8 @@ def test_checker_detects_absolute_relative_and_nested_sibling_imports(source: st
     [
         "import httpx",
         "from mtd_rl_xavier import paths",
+        "from mtd_rl_xavier import local_endpoint",
+        "from mtd_rl_xavier.local_endpoint import LocalEndpointError",
         "from .. import paths",
         "from ..lag import dataset",
         "import mtd_rl_xavier.llmx",

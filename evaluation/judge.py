@@ -5,6 +5,8 @@
 - ``run_judge`` walks the translation events in log order. An event without key points becomes a
   ``not_judged`` result with no call (D36). For a judged event: cap check -> request line (fsync)
   -> one call -> raw response line (fsync, kept even when parsing fails) -> strict parse -> result.
+- ``requests.jsonl`` holds the payload with every image replaced by its length and sha256
+  (``redact_images``); ``request_sha256`` is over the real payload, images included.
 - Any failure stops the run; nothing is repaired or retried. A call whose outcome is unknown
   (timeout, 5xx, unreadable response, unexpected exception) is ``uncertain`` and is never resent.
 - Error records carry the exception class name and only messages this project or the LLM part
@@ -24,7 +26,7 @@ from typing import Any, Protocol, TextIO
 from mtd_rl_xavier.llm.openai_responses import OpenAIClientError, OpenAIResponsesClient, build_responses_body
 from mtd_rl_xavier.translator.schema import UNEXPECTED_ERROR_MESSAGE, canonical_json, redacted_error, sha256_text
 
-from .rendering import JudgeRequest
+from .rendering import JudgeRequest, redact_images
 from .schemas import JudgeSchemaError, JudgeVerdict, parse_judge_output
 
 RECORD_SCHEMA_VERSION = 1
@@ -312,9 +314,14 @@ def _call_failed(progress: _Progress, event: dict[str, Any], request_sha256: str
 def _judge_one(progress: _Progress, event: dict[str, Any], request: JudgeRequest, model: JudgeModel) -> None:
     event_id = event["event_id"]
     payload = model.request_payload(request)
-    request_sha256 = sha256_text(canonical_json(payload))
-    progress.sink.write_request(
-        {"schema_version": RECORD_SCHEMA_VERSION, "call_id": event_id, "layer": JUDGE_LAYER, "payload": payload}
+    request_sha256 = sha256_text(canonical_json(payload))  # over the real payload, images included
+    progress.sink.write_request(  # the journal keeps each image as its length and sha256, not as base64
+        {
+            "schema_version": RECORD_SCHEMA_VERSION,
+            "call_id": event_id,
+            "layer": JUDGE_LAYER,
+            "payload": redact_images(payload),
+        }
     )
     progress.bump("attempted")
     progress.in_flight = event_id

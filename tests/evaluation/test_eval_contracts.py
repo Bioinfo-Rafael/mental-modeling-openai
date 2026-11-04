@@ -103,9 +103,11 @@ def test_each_of_the_six_blocks_is_required(block: str) -> None:
         parse_config(with_value(judge_config_raw(), f"inputs.{block}", DELETE))
 
 
-def test_video_include_true_is_not_implemented_in_this_phase() -> None:
-    with pytest.raises(JudgeConfigError, match="not implemented in this phase"):
-        make_judge_config(inputs__video__include=True)
+def test_video_include_true_is_accepted_now_that_frames_are_implemented() -> None:
+    # L3 replaced the "not implemented in this phase" error; the video options are tested in test_eval_video.py
+    config = make_judge_config(inputs__video__include=True)
+
+    assert config.inputs.video.include and "video" in config.inputs.included()
 
 
 @pytest.mark.parametrize("block", INPUT_BLOCKS)
@@ -126,8 +128,7 @@ def test_unknown_renderer_is_rejected(block: str) -> None:
     [
         ("inputs__video__resize__jpeg_quality", 0),
         ("inputs__video__resize__jpeg_quality", 101),
-        ("inputs__video__mapping__steps_per_frame", 0),
-        ("inputs__video__mapping__frame_offset", -1),
+        # the global video.mapping block became per-episode entries (frames_per_step, frame_offset): test_eval_video.py
         ("inputs__video__sampling__max_frames", True),
         ("inputs__video__sampling__strategy", "whole_video"),
         ("inputs__video__detail", "ultra"),

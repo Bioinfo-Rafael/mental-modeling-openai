@@ -2,9 +2,10 @@
 
 Exact key sets everywhere: unknown, missing or wrong-typed keys fail, booleans never count as
 numbers, and duplicate YAML keys fail. The model is fixed to ``gpt-6.1-sol`` (D8); there is no
-default model in code. The ``video`` block keeps its full schema so L3 can enable it, but
-``include: true`` is rejected in this phase. Named ``configuration.py`` so it does not collide
-with the ``evaluation/config/`` directory.
+default model in code. The ``video`` block (L3, D30) maps each episode id to its video and sets
+the frame window, sampling, resize, JPEG quality, image ``detail``, the label format and the
+(unverified) image-token estimate; every key is required, so there are no hidden defaults. Named
+``configuration.py`` so it does not collide with the ``evaluation/config/`` directory.
 """
 
 from __future__ import annotations
@@ -12,12 +13,14 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 from pathlib import Path
+from string import Formatter
 from typing import Any
 
 import yaml
 
 from mtd_rl_xavier import paths
 from mtd_rl_xavier.llm.openai_responses import IMAGE_DETAILS, REASONING_EFFORTS
+from mtd_rl_xavier.translator.schema import SAFE_ID_PATTERN
 
 CONFIG_SCHEMA_VERSION = 1
 JUDGE_MODEL = "gpt-6.1-sol"  # D8: the only accepted judge model
@@ -47,7 +50,13 @@ VIDEO_SOURCE = "scenario_action_video"
 VIDEO_STRATEGY = "event_window"
 TIMESTAMP_SCOPE = "through_event"
 MAX_JPEG_QUALITY = 100
-VIDEO_NOT_IN_THIS_PHASE = "inputs.video.include: true is not implemented in this phase (video frames are L3)"
+LABEL_FIELD_STEP = "step"
+LABEL_FIELD_TIME = "time_s"
+LABEL_FIELD_RELATIVE = "relative_step"
+LABEL_FIELDS = (LABEL_FIELD_STEP, LABEL_FIELD_TIME, LABEL_FIELD_RELATIVE)
+LABEL_FIELDS_TEXT = ", ".join("{" + field + "}" for field in LABEL_FIELDS)
+LABEL_REQUIRED_FIELDS = (LABEL_FIELD_STEP, LABEL_FIELD_TIME)
+TOKEN_STATUSES = ("unverified", "verified")
 
 TOP_KEYS = {
     "schema_version",
@@ -62,8 +71,19 @@ TOP_KEYS = {
 }
 LIMIT_KEYS = {"max_judged_events"}
 INSTRUCTIONS_KEYS = {"include", "renderer", "show_ids", "show_targets", "show_issue_steps"}
-VIDEO_KEYS = {"include", "renderer", "source", "mapping", "sampling", "resize", "detail"}
-MAPPING_KEYS = {"step_offset", "frame_offset", "steps_per_frame"}
+VIDEO_KEYS = {
+    "include",
+    "renderer",
+    "source",
+    "videos",
+    "sampling",
+    "resize",
+    "detail",
+    "label_format",
+    "image_tokens",
+}
+VIDEO_EPISODE_KEYS = {"path", "fps", "frame_offset", "frames_per_step", "step_seconds"}
+IMAGE_TOKEN_KEYS = {"per_image", "status"}
 SAMPLING_KEYS = {"strategy", "before_steps", "after_steps", "stride_steps", "max_frames"}
 RESIZE_KEYS = {"max_width", "max_height", "jpeg_quality"}
 TIMESTAMPS_KEYS = {"include", "renderer", "scope", "show_sim_seconds", "show_sources"}
@@ -81,7 +101,7 @@ PRICE_KEYS = {
 
 
 class JudgeConfigError(ValueError):
-    """The judge configuration is malformed or asks for something this phase does not implement."""
+    """The judge configuration is malformed."""
 
 
 @dataclass(frozen=True)
@@ -94,10 +114,14 @@ class InstructionsInput:
 
 
 @dataclass(frozen=True)
-class VideoMapping:
-    step_offset: int
+class VideoEpisode:
+    """One episode's video: frame ``frame_offset + step * frames_per_step`` shows simulation step ``step``."""
+
+    path: Path
+    fps: float  # the video's own frame rate; checked against the file when it is opened
     frame_offset: int
-    steps_per_frame: int
+    frames_per_step: int
+    step_seconds: float  # simulation seconds per step, for the time shown in a label
 
 
 @dataclass(frozen=True)
@@ -117,14 +141,24 @@ class VideoResize:
 
 
 @dataclass(frozen=True)
+class ImageTokens:
+    """Preview-only estimate of the input tokens one image costs. ``status`` says whether it was checked."""
+
+    per_image: int
+    status: str
+
+
+@dataclass(frozen=True)
 class VideoInput:
-    include: bool  # always False in this phase (L3)
+    include: bool
     renderer: str
     source: str
-    mapping: VideoMapping
+    videos: dict[str, VideoEpisode]  # episode id -> video; never mutated after parsing
     sampling: VideoSampling
     resize: VideoResize
     detail: str
+    label_format: str  # text item put right before each image; fields {step} {time_s} {relative_step}
+    image_tokens: ImageTokens
 
 
 @dataclass(frozen=True)
@@ -295,24 +329,80 @@ def _instructions(raw: object) -> InstructionsInput:
     )
 
 
-def _video(raw: object) -> VideoInput:
+def _positive_number(value: object, name: str) -> float:
+    number = _number_at_least(value, 0, name)
+    if number <= 0:
+        raise JudgeConfigError(f"{name} must be a finite number > 0")
+    return number
+
+
+def _video_episode(raw: object, root: Path, name: str) -> VideoEpisode:
+    section = _mapping(raw, VIDEO_EPISODE_KEYS, name)
+    path = section["path"]
+    if not isinstance(path, str) or not path.strip():
+        raise JudgeConfigError(f"{name}.path must be a non-empty path")
+    return VideoEpisode(
+        path=Path(path) if Path(path).is_absolute() else root / path,
+        fps=_positive_number(section["fps"], f"{name}.fps"),
+        frame_offset=_int_at_least(section["frame_offset"], 0, f"{name}.frame_offset"),
+        frames_per_step=_int_at_least(section["frames_per_step"], 1, f"{name}.frames_per_step"),
+        step_seconds=_positive_number(section["step_seconds"], f"{name}.step_seconds"),
+    )
+
+
+def _videos(raw: object, root: Path, include: bool, name: str) -> dict[str, VideoEpisode]:
+    if not isinstance(raw, dict) or not all(isinstance(key, str) for key in raw):
+        raise JudgeConfigError(f"{name} must be a mapping of episode id to video")
+    if include and not raw:
+        raise JudgeConfigError(f"{name} must name at least one episode when the video block is included")
+    for episode_id in raw:
+        if not SAFE_ID_PATTERN.fullmatch(episode_id):
+            raise JudgeConfigError(f"{name} keys must match {SAFE_ID_PATTERN.pattern}")
+    return {episode_id: _video_episode(item, root, f"{name}.{episode_id}") for episode_id, item in raw.items()}
+
+
+def _label_format(value: object, name: str) -> str:
+    if not isinstance(value, str) or not value.strip() or "\n" in value or "\r" in value:
+        raise JudgeConfigError(f"{name} must be a non-empty single-line string")
+    try:
+        parsed = list(Formatter().parse(value))
+    except ValueError as exc:
+        raise JudgeConfigError(f"{name} is not a valid format string: {exc}") from exc
+    fields = []
+    for _, field, spec, conversion in parsed:
+        if field is None:
+            continue
+        if field not in LABEL_FIELDS or spec or conversion:
+            raise JudgeConfigError(f"{name} may only use the plain fields {LABEL_FIELDS_TEXT}")
+        fields.append(field)
+    missing = [field for field in LABEL_REQUIRED_FIELDS if field not in fields]
+    if missing:
+        raise JudgeConfigError(f"{name} must contain the fields {missing}")
+    return value
+
+
+def _image_tokens(raw: object, name: str) -> ImageTokens:
+    section = _mapping(raw, IMAGE_TOKEN_KEYS, name)
+    return ImageTokens(
+        per_image=_int_at_least(section["per_image"], 0, f"{name}.per_image"),
+        status=_choice(section["status"], TOKEN_STATUSES, f"{name}.status"),
+    )
+
+
+def _video(raw: object, root: Path) -> VideoInput:
     name = f"inputs.{BLOCK_VIDEO}"
     section = _mapping(raw, VIDEO_KEYS, name)
-    mapping = _mapping(section["mapping"], MAPPING_KEYS, f"{name}.mapping")
     sampling = _mapping(section["sampling"], SAMPLING_KEYS, f"{name}.sampling")
     resize = _mapping(section["resize"], RESIZE_KEYS, f"{name}.resize")
     quality = _int_at_least(resize["jpeg_quality"], 1, f"{name}.resize.jpeg_quality")
     if quality > MAX_JPEG_QUALITY:
         raise JudgeConfigError(f"{name}.resize.jpeg_quality must be <= {MAX_JPEG_QUALITY}")
-    video = VideoInput(
-        include=_flag(section["include"], f"{name}.include"),
+    include = _flag(section["include"], f"{name}.include")
+    return VideoInput(
+        include=include,
         renderer=_choice(section["renderer"], (RENDERER_SAMPLED_JPEG,), f"{name}.renderer"),
         source=_choice(section["source"], (VIDEO_SOURCE,), f"{name}.source"),
-        mapping=VideoMapping(
-            step_offset=_int(mapping["step_offset"], f"{name}.mapping.step_offset"),
-            frame_offset=_int_at_least(mapping["frame_offset"], 0, f"{name}.mapping.frame_offset"),
-            steps_per_frame=_int_at_least(mapping["steps_per_frame"], 1, f"{name}.mapping.steps_per_frame"),
-        ),
+        videos=_videos(section["videos"], root, include, f"{name}.videos"),
         sampling=VideoSampling(
             strategy=_choice(sampling["strategy"], (VIDEO_STRATEGY,), f"{name}.sampling.strategy"),
             before_steps=_int_at_least(sampling["before_steps"], 0, f"{name}.sampling.before_steps"),
@@ -326,10 +416,9 @@ def _video(raw: object) -> VideoInput:
             jpeg_quality=quality,
         ),
         detail=_choice(section["detail"], IMAGE_DETAILS, f"{name}.detail"),
+        label_format=_label_format(section["label_format"], f"{name}.label_format"),
+        image_tokens=_image_tokens(section["image_tokens"], f"{name}.image_tokens"),
     )
-    if video.include:
-        raise JudgeConfigError(VIDEO_NOT_IN_THIS_PHASE)
-    return video
 
 
 def _timestamps(raw: object) -> TimestampsInput:
@@ -360,11 +449,11 @@ def _renderer_only(raw: object, block: str, renderer: str) -> tuple[bool, str]:
     return _flag(section["include"], f"{name}.include"), _choice(section["renderer"], (renderer,), f"{name}.renderer")
 
 
-def _inputs(raw: object) -> JudgeInputs:
+def _inputs(raw: object, root: Path) -> JudgeInputs:
     section = _mapping(raw, set(INPUT_BLOCKS), "inputs")
     return JudgeInputs(
         instructions=_instructions(section[BLOCK_INSTRUCTIONS]),
-        video=_video(section[BLOCK_VIDEO]),
+        video=_video(section[BLOCK_VIDEO], root),
         timestamps=_timestamps(section[BLOCK_TIMESTAMPS]),
         trajectory=_trajectory(section[BLOCK_TRAJECTORY]),
         translated_intent=TranslatedIntentInput(
@@ -415,7 +504,7 @@ def parse_config(raw: object, *, root: Path = paths.ROOT) -> JudgeConfig:
         max_output_tokens=_int_at_least(section["max_output_tokens"], 1, "max_output_tokens"),
         timeout_s=_positive_timeout(section["timeout_s"]),
         max_judged_events=_int_at_least(limits["max_judged_events"], 1, "limits.max_judged_events"),
-        inputs=_inputs(section["inputs"]),
+        inputs=_inputs(section["inputs"], root),
         output_root=_output_root(section["output"], root),
         price=_price(section["pricing"], JUDGE_MODEL),
     )

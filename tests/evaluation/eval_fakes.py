@@ -6,14 +6,17 @@ Nothing here touches the network, a GPU, a decoder, a real key or a paid API.
 from __future__ import annotations
 
 import json
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
 import pandas as pd
 import yaml
 
-from evaluation.configuration import JudgeConfig, parse_config
+from evaluation.configuration import JudgeConfig, VideoResize, parse_config
+from evaluation.frames import EncodedFrame, FrameSourceError, VideoInfo
 from mtd_rl_xavier import paths
+from mtd_rl_xavier.lag.dataset import last_complete_step
 from mtd_rl_xavier.lag.rendering import render_detector_compact, render_lag17_jsonl
 from mtd_rl_xavier.translator.cli import JsonlRunSink
 from mtd_rl_xavier.translator.config import load_scenario
@@ -21,6 +24,7 @@ from mtd_rl_xavier.translator.pipeline import TranslatorSummary
 from tests.llm.llm_fakes import DumpableResponse, ScriptedResponsesClient, message_item, responses_body
 from tests.translator.tr_fakes import (
     EXAMPLE_SCENARIO,
+    WIN01,
     FakeDetectionModel,
     FakeIntentModel,
     make_config,
@@ -29,6 +33,7 @@ from tests.translator.tr_fakes import (
 )
 
 JUDGE_CONFIG = paths.ROOT / "evaluation" / "config" / "judge-text.yaml"
+VIDEO_CONFIG = paths.ROOT / "evaluation" / "config" / "judge-text-video.yaml"
 EXAMPLE_KEY_POINTS = paths.ROOT / "evaluation" / "examples" / "key-points.example.yaml"
 SCENARIO_ID = "placeholder-episode-01"
 A1_START = f"{SCENARIO_ID}:aircraft:A0100:000000"
@@ -51,6 +56,58 @@ def make_judge_config(**overrides: Any) -> JudgeConfig:
     for dotted, value in overrides.items():
         raw = with_value(raw, dotted.replace("__", "."), value)
     return parse_config(raw)
+
+
+def video_config_raw() -> dict[str, Any]:
+    return yaml.safe_load(VIDEO_CONFIG.read_text(encoding="utf-8"))
+
+
+def with_video(raw: dict[str, Any], **changes: Any) -> dict[str, Any]:
+    """``raw`` with top-level keys of ``inputs.video`` replaced (episode ids contain dots, so no dotted paths)."""
+    video = {**raw["inputs"]["video"], **changes}
+    return {**raw, "inputs": {**raw["inputs"], "video": video}}
+
+
+def make_video_config(**video_changes: Any) -> JudgeConfig:
+    """The committed judge-text-video.yaml with some ``inputs.video`` keys replaced."""
+    return parse_config(with_video(video_config_raw(), **video_changes))
+
+
+FAKE_FRAME_WIDTH, FAKE_FRAME_HEIGHT = 960, 540
+
+
+class FakeFrameSource:
+    """A ``FrameSource`` with no decoder: ``jpeg`` bytes are ``b"FAKEJPEG-<index>"``; calls are recorded.
+
+    ``videos`` maps a video file name to its frame count and fps; any other path is "not found".
+    """
+
+    def __init__(self, videos: dict[str, VideoInfo]) -> None:
+        self._videos = videos
+        self.info_calls: list[Path] = []
+        self.frame_calls: list[tuple[Path, tuple[int, ...], VideoResize]] = []
+
+    @classmethod
+    def for_committed_videos(cls, frame_count: int = 400, fps: float = 20) -> FakeFrameSource:
+        names = (f"{episode}_with_actions.mp4" for episode in ("mhi_v1.3_ic100601_win",))
+        return cls({name: VideoInfo(frame_count, fps) for name in names})
+
+    def info(self, path: Path) -> VideoInfo:
+        self.info_calls.append(path)
+        if path.name not in self._videos:
+            raise FrameSourceError(f"video file not found: {path}")
+        return self._videos[path.name]
+
+    def frames(self, path: Path, frame_indices: Sequence[int], resize: VideoResize) -> tuple[EncodedFrame, ...]:
+        self.frame_calls.append((path, tuple(frame_indices), resize))
+        return tuple(
+            EncodedFrame(index, f"FAKEJPEG-{index}".encode(), FAKE_FRAME_WIDTH, FAKE_FRAME_HEIGHT)
+            for index in frame_indices
+        )
+
+    @property
+    def untouched(self) -> bool:
+        return not self.info_calls and not self.frame_calls
 
 
 def write_yaml(path: Path, raw: object) -> Path:
@@ -96,7 +153,8 @@ def write_translator_run(
     )
     with JsonlRunSink(run_dir) as sink:
         summary = translator.run(frame=frame, scenario=load_scenario(EXAMPLE_SCENARIO), config=make_config(), sink=sink)
-    run_json = {"schema_version": 1, "mode": "execute", "status": summary.status}
+    episode = {"episode_id": WIN01, "last_complete_step": last_complete_step(frame)}  # what the video block reads
+    run_json = {"schema_version": 1, "mode": "execute", "status": summary.status, "inputs": {"episode": episode}}
     (run_dir / "run.json").write_text(json.dumps(run_json), encoding="utf-8")
     return summary
 

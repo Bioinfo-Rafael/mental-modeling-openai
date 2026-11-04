@@ -18,14 +18,41 @@ inputs:                             # exactly these six blocks (D15); include: f
     show_ids: true
     show_targets: true
     show_issue_steps: true
-  video:                            # L3: include: true is rejected in this phase (no frames are extracted)
+  video:                            # include: false removes the block; the rest is used once it is true
     include: false
     renderer: sampled-jpeg
-    source: scenario_action_video   # workspace/13_LAG/data/viz/action_videos (D30)
-    mapping: {step_offset: 0, frame_offset: 0, steps_per_frame: 1}   # 20 fps: frame = step
-    sampling: {strategy: event_window, before_steps: 10, after_steps: 10, stride_steps: 5, max_frames: 8}
-    resize: {max_width: 960, max_height: 540, jpeg_quality: 85}
-    detail: high
+    source: scenario_action_video
+    videos:                         # episode id (run.json inputs.episode.episode_id) -> its video (D30)
+      mhi_v1.3_ic100601_win:
+        path: workspace/13_LAG/data/viz/action_videos/mhi_v1.3_ic100601_win_with_actions.mp4   # relative to the repo root
+        fps: 20                     # the file's own frame rate; a mismatch is a preflight error
+        frame_offset: 0             # video frame that shows step 0
+        frames_per_step: 1          # frame = frame_offset + step * frames_per_step (D30: frame = step)
+        step_seconds: 0.2           # simulation seconds per step (time shown in the label)
+      ours_seed100100_ic100601_loss:
+        path: workspace/13_LAG/data/viz/action_videos/ours_seed100100_ic100601_loss_with_actions.mp4
+        fps: 20
+        frame_offset: 0
+        frames_per_step: 1
+        step_seconds: 0.2
+      ours_seed100100_ic100606_win:
+        path: workspace/13_LAG/data/viz/action_videos/ours_seed100100_ic100606_win_with_actions.mp4
+        fps: 20
+        frame_offset: 0
+        frames_per_step: 1
+        step_seconds: 0.2
+    sampling:                       # frames at event step +- k * stride_steps, clipped to the episode and the video
+      strategy: event_window
+      before_steps: 10            # window start, steps before the judged step
+      after_steps: 10             # window end, steps after it (the Translator never saw these)
+      stride_steps: 5
+      max_frames: 8                # more candidates: the ones closest to the event are kept
+    resize: {max_width: 960, max_height: 540, jpeg_quality: 85}   # fit inside the box, keep the aspect ratio, never upscale
+    detail: high                    # low | high | original | auto
+    label_format: "Video frame at step {step} ({time_s} s, {relative_step} steps from the judged step):"   # put right before each image
+    image_tokens:                   # preview estimate only
+      per_image: 1105               # 85 + 170 * 6 tiles of 512 px at 960x540 (gpt-4o-style high detail)
+      status: unverified            # unverified | verified; the formula for gpt-6.1-sol is not checked
   timestamps:                       # episode start, the target's earlier translation events, this event + triggers
     include: true
     renderer: chronological

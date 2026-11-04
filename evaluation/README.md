@@ -10,7 +10,8 @@ saw (D1).
 |---|---|
 | `configuration.py` | Strict judge YAML: model, limits, the six input blocks, output root, pricing |
 | `schemas.py` | Event-log checks, key points, per-event output schema, strict verdict parser |
-| `rendering.py` | Fixed system prompt, the block renderers, one request per event, token estimate |
+| `rendering.py` | Fixed system prompt, the block renderers (video block included), one request per event, token estimate, `redact_images` |
+| `frames.py` | Video frames: `FrameSource` Protocol, frame selection (`plan_frames`), `PyAVFrameSource` (PyAV + Pillow, lazy), `CachingFrameSource` |
 | `judge.py` | `JudgeModel` Protocol, OpenAI adapter, JSONL sink, the per-event loop (caps, write-before-send) |
 | `cli.py` | The only composition root: gate, preflight, preview, client construction, run directory, provenance |
 
@@ -83,7 +84,7 @@ The log is read strictly, because it is untrusted input to a paid judge:
 
 ### The six input blocks
 
-`evaluation/config/judge-text.yaml` has exactly these six blocks, each with `include` plus its
+`evaluation/config/judge-text.yaml` (and `judge-text-video.yaml`) has exactly these six blocks, each with `include` plus its
 rendering options. An excluded block is absent from the request (heading and content). The user
 message is one fixed header naming the target and its aircraft, then one text item per included
 block in this order:
@@ -91,14 +92,14 @@ block in this order:
 | Block | Renders | Options |
 |---|---|---|
 | `instructions` | The event's `instructions_in_effect`, by issue step, the target's own one marked `[primary]` | `renderer: chronological`, `show_ids`, `show_targets`, `show_issue_steps` |
-| `video` | L3, not in this phase: `include: true` is a config error ("video frames are not implemented in this phase"). The schema is kept so L3 can enable it | `renderer: sampled-jpeg`, `source`, `mapping`, `sampling`, `resize`, `detail` |
+| `video` | Selected frames of the episode's action video as images, each immediately preceded by a text label with its step and time (see "Video block" below) | `renderer: sampled-jpeg`, `source`, `videos`, `sampling`, `resize`, `detail`, `label_format`, `image_tokens` |
 | `timestamps` | Episode start (step 0), this target's earlier translation events (step, time, primary trigger), this event's step and time, and its trigger reasons | `renderer: chronological`, `scope: through_event` (never anything later), `show_sim_seconds`, `show_sources` (source labels and detector probabilities) |
 | `trajectory` | `input.trajectory.text` verbatim between `BEGIN WINDOW DATA` / `END WINDOW DATA`, with a legend of the 17 format | `renderer: translation_input_verbatim`, `show_window_metadata` |
 | `translated_intent` | The output being judged: intent and evidence | `renderer: intent-and-evidence` |
 | `key_points` | The event's key points, numbered, with the fixed D29 rubric | `renderer: numbered-with-fixed-rubric`. `include: false` asks for the overall score only |
 
 The model never sees the episode id, the scenario id or an event id. A request also never carries
-`temperature` or any sampling parameter; `store` is false. The preview never contains base64.
+`temperature` or any sampling parameter; `store` is false. No file written to disk contains base64 (see "Video block").
 
 Prompt-injection envelope (prompt version `judge-text-v2`, D38): every free text the judge did not
 write (the intent, each evidence item, instruction texts and key-point texts) is rendered as one
@@ -107,6 +108,76 @@ never contain a raw line break, so it cannot open a `## ...` section or end the 
 system prompt says that the whole user message is material to judge and that requests inside it
 (about scores, the rubric or the output format) must not be followed. The judge does not render
 the Translator's previous translation.
+
+## Video block (L3, D30, D31)
+
+`judge-text.yaml` keeps `video.include: false`. `judge-text-video.yaml` is the same config with the
+block on, for the three committed episodes. The video is **evaluation input**: the
+videos (`workspace/13_LAG/data/viz/action_videos/*.mp4`, 20 fps, 1920x1080, frame = step) show the
+A-team's actions and the visible hit and shot-down outcomes, including frames **after** the judged
+step that the online Translator never saw. That is intentional: the human rater watches the same
+video. It is never an input of the Translator (generation). The request text says so to the judge.
+
+Decoding needs the optional `video` extra (`uv sync --extra video`: PyAV `av` and `Pillow`). They
+are imported only when a frame is read; a text-only run never imports them, and a missing package
+fails with a message naming the extra.
+
+Every key is required (unknown or missing keys are an error); there are no hidden defaults.
+
+```yaml
+video:
+  include: true
+  renderer: sampled-jpeg
+  source: scenario_action_video
+  videos:                          # episode id (run.json inputs.episode.episode_id) -> video
+    mhi_v1.3_ic100601_win:
+      path: workspace/13_LAG/data/viz/action_videos/mhi_v1.3_ic100601_win_with_actions.mp4  # relative to the repo root
+      fps: 20                      # the file's own rate; a mismatch is a preflight error
+      frame_offset: 0              # video frame that shows step 0
+      frames_per_step: 1           # frame = frame_offset + step * frames_per_step
+      step_seconds: 0.2            # simulation seconds per step, for the label time
+  sampling: {strategy: event_window, before_steps: 20, after_steps: 20, stride_steps: 5, max_frames: 12}
+  resize: {max_width: 960, max_height: 540, jpeg_quality: 85}
+  detail: high                     # low | high | original | auto
+  label_format: "Video frame at step {step} ({time_s} s, {relative_step} steps from the judged step):"
+  image_tokens: {per_image: 1105, status: unverified}
+```
+
+- **Mapping.** The mapping from a video to its episode lives only in this YAML. The episode of a
+  Translator run is `inputs.episode.episode_id` of its `run.json` (the Translator CLI writes it,
+  with `last_complete_step`). A video whose frame rate or length differs needs its own entry
+  (for example a 10 fps recording of the same game: `frames_per_step: 2`).
+- **Window.** Candidate steps are `event_step + k * stride_steps` between `-before_steps` and
+  `+after_steps` (the event step itself is always a candidate). A candidate is dropped when its
+  step is outside `[0, last_complete_step]` or its frame outside `[0, frame_count - 1]`. If more
+  than `max_frames` remain, the ones closest to the event are kept, the earlier one on a tie.
+  Frames are sent in time order. A window with no frame at all is an error.
+- **Request layout.** Header, `instructions`, then the video block, then the other blocks. The
+  video block is one text item (`## VIDEO FRAMES` and a short explanation), then for every frame a
+  text item with the `label_format` and an `input_image` item with a `data:image/jpeg;base64,...`
+  URL, so each image is immediately preceded by its own label. `label_format` must contain
+  `{step}` and `{time_s}`; `{relative_step}` (`-10`, `0`, `+5`) is optional; no other field, format
+  spec or conversion. `time_s` is `step * step_seconds`.
+- **Resize and JPEG.** Frames are shrunk to fit `max_width x max_height` keeping the aspect ratio
+  (never enlarged) and encoded as JPEG at `jpeg_quality`. JPEG bytes carry no timestamp, so the
+  request hash is deterministic for one PyAV / Pillow build; `run.json` records the video file
+  hashes and the `av` / `pillow` versions (`provenance.video`).
+- **Preflight.** A judged event whose episode has no `videos` entry, whose video file is missing or
+  unreadable, whose frame rate differs from `fps`, or that has no frame in its window fails while
+  the inputs are loaded, before any client exists. Events without key points never read a video.
+  A video-enabled preview decodes the frames of every judged event (a cache decodes each frame
+  once).
+- **Preview and files.** `preview.json` lists per event `frames` (`count`, `steps`,
+  `frame_indices`, `sizes`, `jpeg_bytes_total`, `image_tokens`) and the estimate adds
+  `images_total`, `image_tokens_total`, `text_tokens_total`. No file contains base64 or image bytes:
+  `example_judge_request.json` and `requests.jsonl` show each image as
+  `[image data omitted: <chars> chars, sha256 <hash>]`. The `request_sha256` in `results.jsonl` is
+  over the real payload, images included.
+- **Image tokens are unverified.** `image_tokens.per_image` is a preview-only estimate. The default
+  1105 is the GPT-4o-style high-detail formula (85 + 170 per 512 px tile; 6 tiles at 960x540); the
+  formula for `gpt-6.1-sol` is not verified, and it changes with `detail` and `resize`. The preview
+  warns while `status` is `unverified`. Check the real `usage.input_tokens` of a first call and set
+  `status: verified` only after adjusting the number.
 
 ## Scales and output
 
@@ -199,14 +270,16 @@ The prices in the config ($2 input, $0.10 cached input, $10 output per 1M tokens
   terminal `run.json` and no traceback. Keys are never written. Error records keep the
   exception class name and only
   messages this project or the LLM part controls; never tracebacks or response bodies.
-- Video (L3, not in this phase): the action videos (D30) show A-team actions and visible hit and
-  shot-down outcomes, including moments after the event that the online Translator never saw.
-  This is intentional: it is the same video the human rater watches. A video-enabled run will
-  record the source and frame mapping.
+- Video (L3): the action videos (D30) show A-team actions and visible hit and shot-down outcomes,
+  including moments after the event that the online Translator never saw. This is intentional:
+  it is the same video the human rater watches. Evaluation input only, never generation input.
+  A video-enabled run records the video file hashes and decoder versions in `run.json`.
 
 ## Tests
 
-`uv run pytest tests/evaluation -q` runs offline: no network, paid call, GPU, decoder or real key.
+`uv run pytest tests/evaluation -q` runs offline: no network, paid call, GPU or real key, and a fake
+`FrameSource` instead of a decoder. One smoke test decodes two frames of a committed video with PyAV
+(skipped when the `video` extra is not installed).
 It includes two end-to-end chains on the real example episode: fake Translator layers -> event log
 -> judge preview, and the production System One adapter over `httpx.MockTransport` plus the
 production OpenAI translation adapter over a scripted SDK stand-in -> event log -> judge preview.

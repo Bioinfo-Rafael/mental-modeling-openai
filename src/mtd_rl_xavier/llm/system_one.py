@@ -17,7 +17,9 @@
 - No retries. Error messages never contain the request body, the response body or the key; the
   parsed error body is kept on ``SystemOneError.raw`` for the caller's private records.
 
-This module imports no sibling module of ``mtd_rl_xavier.llm`` (the LLM parts stay independent).
+The endpoint and key checks live in ``mtd_rl_xavier.local_endpoint`` (shared with the other local
+parts); this module re-raises their fixed messages as ``SystemOneConfigError``. This module imports
+no sibling module of ``mtd_rl_xavier.llm`` (the LLM parts stay independent).
 """
 
 from __future__ import annotations
@@ -25,15 +27,18 @@ from __future__ import annotations
 import hashlib
 import json
 import math
-import os
-import re
-import stat
+import os  # noqa: F401  kept: tests patch ``system_one.os`` (the shared checks read ``os`` at call time)
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
-from urllib.parse import urlsplit
+from typing import Any, TypeVar
 
 import httpx
+
+from mtd_rl_xavier import local_endpoint
+from mtd_rl_xavier.local_endpoint import LocalEndpointError
+
+T = TypeVar("T")
 
 SYSTEMONE_PATH = "/v1/systemone"
 MODELS_PATH = "/v1/models"
@@ -46,15 +51,6 @@ CHOICE_OPTION_FIELDS = 2  # (name, description)
 FIXED_FRAMING_RESERVE_TOKENS = 1024
 # Not configurable: per-question labels the server adds (FIELD n / ID / TYPE / OPTIONS ...).
 PER_QUESTION_FRAMING_RESERVE_TOKENS = 64
-LOOPBACK_HOSTS = frozenset({"127.0.0.1", "::1"})
-ALLOWED_SCHEMES = frozenset({"http", "https"})
-UDS_BASE_URL = "http://localhost"
-SECURE_DIR_MODE = 0o700
-ROOT_UID = 0
-# POSIX portable environment variable name (uppercase letters, digits, underscore). Typical keys
-# (hex, base64, "sk-...") contain lowercase letters or punctuation, so a pasted value is rejected.
-ENV_NAME_PATTERN = re.compile(r"[A-Z_][A-Z0-9_]{0,63}")  # used with fullmatch only
-HEADER_SAFE_KEY_PATTERN = re.compile(r"[\x21-\x7e]+")  # used with fullmatch only
 HTTP_OK = 200
 HTTP_UNAUTHORIZED = 401
 HTTP_NOT_FOUND = 404
@@ -390,101 +386,34 @@ def _checked_budget(budget: object, questions: tuple[SystemOneQuestion, ...]) ->
     return budget
 
 
+def _as_config_error(check: Callable[[], T]) -> T:
+    """Run a shared endpoint check; its ``LocalEndpointError`` becomes ``SystemOneConfigError`` with the
+    same fixed message, raised outside the ``except`` clause so no exception is chained."""
+    try:
+        return check()
+    except LocalEndpointError as exc:
+        message = str(exc)
+    raise SystemOneConfigError(message)
+
+
 def _checked_endpoint(base_url: str | None, uds_path: Path | None) -> str:
     """Validate the endpoint and return the httpx base URL (a fixed placeholder for UDS)."""
-    if (base_url is None) == (uds_path is None):
-        raise SystemOneConfigError("set exactly one of base_url (loopback TCP) or uds_path")
-    if uds_path is not None:
-        _check_uds_parent(Path(uds_path))
-        return UDS_BASE_URL
-    return checked_tcp_url(base_url)
+    return _as_config_error(lambda: local_endpoint.checked_endpoint(base_url, uds_path))
 
 
 def checked_tcp_url(base_url: object) -> str:
     """The loopback server root ``scheme://host:port``. Pure; messages are fixed and never echo the URL."""
-    if not isinstance(base_url, str) or not base_url:
-        raise SystemOneConfigError("base_url must be a non-empty string")
-    if any(char.isspace() or not char.isprintable() for char in base_url):
-        raise SystemOneConfigError("base_url must not contain whitespace or control characters")
-    try:
-        parts = urlsplit(base_url)
-        hostname, port = parts.hostname, parts.port
-    except ValueError:
-        raise SystemOneConfigError("base_url is not a valid URL") from None
-    if parts.scheme not in ALLOWED_SCHEMES:
-        raise SystemOneConfigError("base_url must start with http:// or https://")
-    if "@" in parts.netloc:
-        raise SystemOneConfigError("base_url must not contain credentials (userinfo)")
-    if hostname == "0.0.0.0":
-        raise SystemOneConfigError("base_url must not use 0.0.0.0; use 127.0.0.1 or ::1")
-    if hostname not in LOOPBACK_HOSTS:
-        raise SystemOneConfigError("base_url host must be literally 127.0.0.1 or ::1; remote hosts are rejected")
-    if port == 0:
-        raise SystemOneConfigError("base_url has an invalid port")
-    if parts.path not in ("", "/") or parts.query or parts.fragment:
-        raise SystemOneConfigError("base_url must be the server root (no path, query or fragment)")
-    return f"{parts.scheme}://{parts.netloc}"
-
-
-def _check_uds_parent(uds_path: Path) -> None:
-    """Parent: real directory, owned by the user, mode 0700. Ancestors: no symlink or ``..``, owned
-    by root or the user, and not writable by others unless sticky, so no other user can swap a
-    component between this check and the connection."""
-    if not uds_path.is_absolute():
-        raise SystemOneConfigError("uds_path must be absolute")
-    parent = uds_path.parent
-    info = _lstat_or_none(parent)
-    if info is None:
-        raise SystemOneConfigError("uds_path parent directory does not exist")
-    if os.path.realpath(parent) != str(parent):
-        raise SystemOneConfigError("uds_path must be canonical: no symlink or '..' components")
-    if not stat.S_ISDIR(info.st_mode):
-        raise SystemOneConfigError("uds_path parent must be a real directory, not a symlink or file")
-    if info.st_uid != os.getuid():
-        raise SystemOneConfigError("uds_path parent directory must be owned by the current user")
-    if stat.S_IMODE(info.st_mode) != SECURE_DIR_MODE:
-        raise SystemOneConfigError("uds_path parent directory must have mode 0700")
-    for ancestor in parent.parents:
-        _check_uds_ancestor(ancestor)
-
-
-def _check_uds_ancestor(directory: Path) -> None:
-    info = _lstat_or_none(directory)
-    if info is None or info.st_uid not in (ROOT_UID, os.getuid()):
-        raise SystemOneConfigError("every directory above uds_path must be owned by root or the current user")
-    writable_by_others = info.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
-    if writable_by_others and not info.st_mode & stat.S_ISVTX:
-        raise SystemOneConfigError("a directory above uds_path is writable by other users without the sticky bit")
-
-
-def _lstat_or_none(path: Path) -> os.stat_result | None:
-    try:
-        return os.lstat(path)
-    except OSError:
-        return None
+    return _as_config_error(lambda: local_endpoint.checked_tcp_url(base_url))
 
 
 def checked_env_name(api_key_env: object) -> str:
     """A POSIX environment variable NAME (``[A-Z_][A-Z0-9_]{0,63}``). Pure; the message never echoes it."""
-    if not isinstance(api_key_env, str) or not ENV_NAME_PATTERN.fullmatch(api_key_env):
-        raise SystemOneConfigError(
-            "api_key_env must be an environment variable NAME (A-Z, 0-9, _; at most 64), not a key value"
-        )
-    return api_key_env
+    return _as_config_error(lambda: local_endpoint.checked_env_name(api_key_env))
 
 
 def _read_api_key(api_key_env: str | None, *, required: bool) -> str | None:
     """Read the Bearer key from the named variable. Messages never echo the name or the value."""
-    if not api_key_env:
-        if required:
-            raise SystemOneConfigError("TCP endpoints require api_key_env (the env variable holding the Bearer key)")
-        return None
-    value = os.environ.get(checked_env_name(api_key_env))
-    if not value:
-        raise SystemOneConfigError("the environment variable named by api_key_env is unset or empty")
-    if not HEADER_SAFE_KEY_PATTERN.fullmatch(value):
-        raise SystemOneConfigError("the Bearer key must be printable ASCII without whitespace")
-    return value
+    return _as_config_error(lambda: local_endpoint.read_api_key(api_key_env, required=required))
 
 
 # --- response handling ----------------------------------------------------------------------------

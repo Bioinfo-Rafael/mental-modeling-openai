@@ -91,6 +91,28 @@ class TranslatorRun:
         return tuple(event["event_id"] for event in self.translation_events)
 
 
+@dataclass(frozen=True)
+class RunEpisode:
+    """The episode a Translator run covered, as its ``run.json`` records it."""
+
+    episode_id: str
+    last_complete_step: int
+
+
+def run_episode(run: TranslatorRun) -> RunEpisode:
+    """``inputs.episode`` of ``run.json``. Needed only to find an episode's video (judge ``video`` block)."""
+    inputs = run.run_json.get("inputs")
+    episode = inputs.get("episode") if isinstance(inputs, dict) else None
+    if not isinstance(episode, dict):
+        raise EventLogError(f"{RUN_JSON} has no inputs.episode (the video block needs the episode id)")
+    episode_id, last_step = episode.get("episode_id"), episode.get("last_complete_step")
+    if not isinstance(episode_id, str) or not SAFE_ID_PATTERN.fullmatch(episode_id):
+        raise EventLogError(f"{RUN_JSON} inputs.episode.episode_id must be a safe id")
+    if not isinstance(last_step, int) or isinstance(last_step, bool) or last_step < 0:
+        raise EventLogError(f"{RUN_JSON} inputs.episode.last_complete_step must be a non-negative integer")
+    return RunEpisode(episode_id=episode_id, last_complete_step=last_step)
+
+
 def jsonl_lines(text: str) -> list[str]:
     """The lines of a JSONL text: split on ``"\\n"`` only, without the empty tail after the last one."""
     lines = text.split(JSONL_SEPARATOR)

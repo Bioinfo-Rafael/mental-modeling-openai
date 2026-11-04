@@ -2,15 +2,21 @@
 
 Independent clients for the two layers of the Translator and for the judge. Each part is one
 module. No part imports another (`tests/llm/test_llm_independence.py` checks this with an AST scan).
-Protocols live on the consumer side (`translator/`, `evaluation/`), and only the composition roots
-(`translator/cli.py`, `evaluation/cli.py`) build concrete clients.
+The endpoint rules the local parts share live outside this package, in
+`mtd_rl_xavier/local_endpoint.py`, and each part re-raises their fixed messages as its own
+configuration error. Protocols live on the consumer side (`translator/`, `evaluation/`), and only
+the composition roots (`translator/cli.py`, `evaluation/cli.py`) build concrete clients.
 
 | Module | Part | Phase |
 |---|---|---|
 | `openai_responses.py` | Paid OpenAI Responses API: strict JSON-schema output, text + image input | PHASE-1 |
 | `system_one.py` | Local `POST /v1/systemone` (vLLM `clef-flash`, OpenJev `wev serve`) | PHASE-1 |
-| `vllm_chat.py` | Local OpenAI-compatible chat client | LATER |
-| `vllm_server.py` | vLLM launcher (argv builder, health wait, teardown) | LATER |
+| `vllm_chat.py` | Local OpenAI-compatible `chat.completions` client (generative models) | L1 (not wired into the Translator; L2) |
+| `vllm_server.py` | `vllm serve` launcher: allowlisted argv, health wait, teardown, CLI | L1 |
+
+The SLURM template `scripts/translator_vllm.sbatch` runs the launcher and the Translator CLI in one
+one-GPU job. Nothing in L1 has been run against a real server: see
+[Unverified vLLM facts](#unverified-vllm-facts) and [Still needs approval](#still-needs-approval-d49).
 
 ## `openai_responses.py`
 
@@ -79,6 +85,176 @@ Protocols live on the consumer side (`translator/`, `evaluation/`), and only the
   Nothing is retried. Messages carry only the path and the HTTP status. When a response was
   received, its parsed body is kept on `.raw` and never copied into the message.
 
+## `vllm_chat.py`
+
+- For a GENERATIVE model served by `vllm serve`. clef-flash is a pooling model that answers only
+  `/v1/systemone` (use `system_one.py` for it); it does not serve chat completions.
+- `make_vllm_chat_client(base_url=..., uds_path=..., api_key_env=..., timeout_s=...)` validates the
+  endpoint with the same rules as `SystemOneClient` (exactly one of a Unix socket or a literal
+  loopback TCP root) and then builds an `openai.OpenAI` client with:
+  - `base_url` = `http://localhost/v1` over the socket, or `<loopback root>/v1` over TCP;
+  - the Bearer key read from the variable named by `api_key_env`. The key is required here even
+    over UDS, because the launcher always protects `/v1`;
+  - `max_retries=0`, and its own httpx client and transport with `trust_env=False` (no proxy,
+    `.netrc` or CA variables), no redirects, no transport retries, and `uds=` for a socket;
+  - no `OpenAI-Organization` / `OpenAI-Project` headers, even if `OPENAI_ORG_ID` /
+    `OPENAI_PROJECT_ID` are set.
+
+  It refuses to start while `OPENAI_LOG` or `OPENAI_CUSTOM_HEADERS` is set, or while the `openai`
+  SDK logger is enabled for DEBUG (at DEBUG the SDK logs the request, including the messages).
+  `OPENAI_API_KEY` and `OPENAI_BASE_URL` are never used, because the key and URL are passed
+  explicitly.
+- `VLLMChatClient(client).complete(VLLMChatRequest(...))` sends `model`, `messages`
+  (`ChatMessage(role, content)`, roles `system|user|assistant`) and `max_tokens`, plus
+  `temperature` and `seed` only when set. `schema_name` + `schema` add `response_format` =
+  `json_schema` with `strict: true` (unverified on vLLM, see below). `build_chat_body(request)`
+  returns the exact body, so a preview needs no client.
+- A response must be a `chat.completion` with exactly one choice (index 0) from the `assistant`
+  role. The result keeps `content`, `finish_reason`, usage (`prompt_tokens`,
+  `completion_tokens`) and the full `raw` response.
+- Errors mirror `openai_responses`:
+  - `VLLMChatIncompleteError` when `finish_reason == "length"`;
+  - `VLLMChatRefusalError` on a refusal;
+  - `VLLMChatConfigError` before anything is sent;
+  - `VLLMChatError` for everything else. `.uncertain` is True for connection failures, timeouts,
+    HTTP 5xx and unreadable responses: do not resend.
+
+  Messages carry only the SDK error class, the HTTP status and fixed text. A `finish_reason` is
+  shown only if it is a known value, and as `other` otherwise. Unlike `openai_responses`, the SDK
+  exception is never chained: `__cause__` and `__context__` stay empty, because its message can
+  quote the response body and its `request` carries the Bearer key.
+- Nothing touches the network at import or construction. `health(model)` is an authenticated
+  `GET /v1/models` on demand.
+
+## `vllm_server.py`
+
+- `VLLMServerConfig` has one typed field per allowed flag, and `build_vllm_argv(config)` emits
+  exactly:
+
+  ```
+  <env>/bin/vllm serve <model> --revision <sha> --tokenizer-revision <sha>
+      --served-model-name <name> --max-model-len <n> --dtype bfloat16
+      (--uds <path> | --host 127.0.0.1 --port <1024-65535>)
+  ```
+
+  There is no passthrough. `--api-key`, `--enable-log-requests`, `--trust-remote-code` and
+  `0.0.0.0` can never appear. Values are pattern-checked (repo id, 40-hex sha, name), so none can
+  start with `-`. The CLI rejects unknown and abbreviated flags with exit 2, and its error messages
+  never echo a value: a mistaken `--api-key <key>` does not reach the job log.
+- The key never appears in argv. It is read from the variable named by `api_key_env` and handed to
+  the child only as `VLLM_API_KEY` in its environment.
+- Child environment:
+  - removed:
+    - every inherited `VLLM_*`, `OPENAI_*`, `HF_*`, `HUGGING_FACE_*`, `HUGGINGFACE_*` and
+      `TRANSFORMERS_*` variable;
+    - the `api_key_env` variable itself;
+    - every name containing `KEY`, `TOKEN`, `SECRET`, `PASSWORD`, `PASSWD` or `CREDENTIAL`;
+    - `PYTHONPATH`, `PYTHONHOME` and `VIRTUAL_ENV`.
+
+    This drops the paid key, a second copy of the server key, other credentials, the HF token, and
+    hidden vLLM debug or logging switches. It is a denylist, not an allowlist: what vLLM needs from
+    the environment is unverified, so a strict allowlist waits for the probe.
+  - set: `HF_HOME` (from the config), `HF_HUB_OFFLINE=1`, `VLLM_API_KEY`, and the usage-statistics
+    opt-outs `VLLM_NO_USAGE_STATS=1` and `DO_NOT_TRACK=1` (unverified names);
+  - the separate env is activated for the server only: `<env>/bin` first on `PATH`, and
+    `VIRTUAL_ENV` set to that env.
+- Budget: `client_input_token_budget` must equal `min(serving_cap_tokens, max_model_len)`
+  (clef-flash: `min(16384, max_model_len)`), otherwise the launcher refuses. That equality is
+  what lets `SystemOneClient` detect vLLM's silent truncation.
+- Socket (`mtd_rl_xavier.local_endpoint`):
+  - The parent directory is created with mode `0700` if it is missing. An existing parent that is
+    not owned by you with mode exactly `0700` is refused and never repaired.
+  - The path must fit in an AF_UNIX address (107 bytes).
+  - An exclusive `flock` on `<socket>.lock` is held for the server's whole lifetime. A second
+    launcher on the same path stops at once, instead of unlinking a live socket.
+  - An existing socket that still accepts connections is refused. One that refuses connections is
+    stale and is removed. Anything else at the path is refused. After the server stops, our socket
+    is removed and the lock is released.
+- `preflight(config)` runs the read-only checks: the key, the executable, the HF cache, the socket
+  path length, and an existing socket directory.
+- Lifecycle of `running_vllm_server(config, ...)`:
+  1. Preflight, create the socket directory and take the lock, then start the server in its own
+     session.
+  2. Poll the authenticated `GET /v1/models` every 2 s until the served name is listed.
+  3. Fail fast if the child exits, the key is rejected (401: another server may own the endpoint),
+     another model is listed, or `startup_timeout_s` passes.
+  4. On exit, SIGTERM the process group and wait up to `shutdown_timeout_s` until the child has
+     exited AND the group is empty (`killpg(pgid, 0)`). Then SIGKILL the group and wait up to 30 s.
+
+  The group is swept even if the child already exited, so leftover workers cannot keep the GPU.
+  `/health` is not used because vLLM leaves it unauthenticated.
+- CLI: `python -m mtd_rl_xavier.llm.vllm_server <flags> -- <client command>` runs the client
+  without a shell, in the same environment and in its own process group, once the server is ready.
+  - It exits with the client's code, where a death by signal N is reported as `128 + N`, or 1 on a
+    launcher error.
+  - The first SIGTERM (`scancel`, the time limit) or Ctrl-C unwinds through teardown; later ones
+    are ignored so they cannot cut the teardown short.
+  - The client's group first gets SIGINT, so a Python CLI can record its own interrupted status,
+    and SIGKILL after 10 s.
+  - `--dry-run` runs the preflight and prints the argv and the environment variable NAMES only.
+- The subprocess factory, clock, sleep, `killpg` and HTTP transport are injectable. The tests
+  need no vLLM, GPU or network.
+
+## SLURM template `scripts/translator_vllm.sbatch`
+
+- Directives: `-p 151-partition`, `--gres=gpu:1`, `--time=00:30:00`. The log goes to
+  `outputs/translator/slurm/`, which is gitignored.
+- Placeholders you set: `VLLM_ENV` (the separate env directory), `HF_CACHE_DIR` and `SCENARIO`.
+  Optional: `CONFIG`, `MAX_MODEL_LEN`, `STARTUP_TIMEOUT_S`, `SHUTDOWN_TIMEOUT_S` and `UV`. No
+  personal path is hardcoded.
+- The model, revision, served name, socket path and budget are read from the Translator config
+  (`detector.*`), so the server and the client cannot drift. The job requires a UDS endpoint and
+  `api_key_env: VLLM_API_KEY`. A failing config reader fails the job.
+- The job creates the socket directory (default `/tmp/$USER-vllm`) with mode `0700` if it is
+  missing; a concurrent job may create it first.
+- It generates a fresh per-job `VLLM_API_KEY` with Python `secrets`, and never prints it.
+- It runs the launcher `--dry-run` (preflight and argv), then `exec`s the launcher with the
+  project interpreter directly, so SIGTERM reaches it with no `uv` process in between. The client
+  is one of:
+  - default: a GPU probe (the detector client's authenticated `health()`), with no paid call;
+  - `TRANSLATOR_CONFIRM_PAID=yes`: the Translator CLI with `--execute --confirm-paid-api` (needs
+    `OPENAI_API_KEY`).
+- Two of your jobs on one node with the same config cannot share the socket: the second one stops
+  at the launcher's lock. A per-job socket path would need a Translator config placeholder (not in
+  L1).
+- It passes `bash -n`, and `tests/llm/test_llm_vllm_sbatch.py` runs it once offline: a stub `UV`
+  and a fake `vllm` record what the server would get, and the key is in its environment only. It
+  has never been submitted.
+
+## Unverified vLLM facts
+
+`.claude/docs/research/openjev-vllm.md` (section "Clef-Flash on vLLM") verified these against
+vLLM 0.33.0: `vllm serve <model>`, `--revision`, `--served-model-name`, `--max-model-len`,
+`--dtype bfloat16`, `--host`/`--port`, `--uds`, `VLLM_API_KEY`, the `/v1` key guard
+(`/v1/models` and `/v1/systemone` need the key; `/health` does not), request logging off unless
+`--enable-log-requests`, the budget `min(16384, max_model_len)`, `HF_HOME` and
+`HF_HUB_OFFLINE=1`. Everything below is NOT verified and must be checked during the approved probe:
+
+| Item | Where | Failure mode if wrong |
+|---|---|---|
+| `--tokenizer-revision <sha>` exists in vLLM 0.33.0 | `build_vllm_argv` | argparse error: the server exits, and the launcher reports "exited before it was ready" |
+| `vllm serve --uds` cannot bind over an existing socket file (so the launcher removes a stale one) | `_acquire_socket` | none expected; removal is limited to a refusing socket you own |
+| `/v1/models` refuses connections, or returns 5xx, until the model is loaded | `_probe_ready` | none expected; any other 4xx stops the start-up |
+| Every vLLM worker process stays in the server's process group | `stop_server` | a worker outside the group survives until SLURM ends the job |
+| `VLLM_NO_USAGE_STATS` / `DO_NOT_TRACK` are the usage-statistics opt-outs | child env | usage statistics may be sent if the compute node has egress |
+| The denylisted variables include nothing vLLM needs | child env | the server exits during start-up |
+| Chat request fields `max_tokens`, `temperature`, `seed` and `response_format` = `json_schema` (`strict`), and response fields `object`, `choices[0].{index,message.{role,content,refusal},finish_reason}` and `usage.{prompt_tokens,completion_tokens}`, on vLLM 0.33.0 | `vllm_chat.py` | a 400 (`VLLMChatError`) or an unreadable response (`uncertain`) |
+| A generative chat model to serve (none is chosen; clef-flash serves no chat) | `vllm_chat.py` | none until L2 wires it |
+| `HF_HUB_OFFLINE=1` alone resolves the pinned sha from `HF_HOME` (no `TRANSFORMERS_OFFLINE`) | child env | the server exits during start-up |
+| `/tmp` on the compute node is not a symlink (the socket path must be canonical) | `check_uds_parent` | the launcher refuses the socket path before start |
+
+## Still needs approval (D49)
+
+None of these ran:
+
+- Creating the separate vLLM env (vLLM >= 0.33.0, about 10 GB), outside the project `.venv`.
+- Downloading clef-flash at `fb4417d31c1d0f9e7e77f1141b40aaede7491e00` (about 19 GB) into the HF
+  cache, for example on `/lustre`.
+- One short `--gres=gpu:1` probe job on `151-partition` (`scripts/translator_vllm.sbatch` without
+  `TRANSLATOR_CONFIRM_PAID`), which checks the GPU, driver, memory, start-up time and the
+  unverified items above.
+- Any paid Translator run (`TRANSLATOR_CONFIRM_PAID=yes`).
+
 ## Gating
 
 - Every CLI previews by default. A preview builds no client and reads no credential.
@@ -114,3 +290,5 @@ Protocols live on the consumer side (`translator/`, `evaluation/`), and only the
 - Do not log request bodies: never set `--enable-log-requests`. Client error messages never
   contain the state, a response body or the key. The client ignores proxy and `.netrc` settings
   from the environment and never follows redirects.
+- The same endpoint rules (`mtd_rl_xavier.local_endpoint`) apply to `SystemOneClient`,
+  `make_vllm_chat_client` and the launcher, so all three accept and reject the same endpoints.
