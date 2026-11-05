@@ -1,7 +1,11 @@
 """Experiment settings and their validation, kept together for review."""
 from dataclasses import dataclass
+from pathlib import Path
 
-from lag_data.definitions import STATE_FEATURES
+from mtd_rl_xavier.lag.dataset import STATE_FEATURES
+
+# Committed LAG data (CSV + manifest) of Experiment 13; the loader is mtd_rl_xavier.lag.dataset.
+PROCESSED = Path(__file__).resolve().parents[2] / "13_LAG" / "data" / "processed"
 
 # The same aliases/model IDs and request options as Experiments 05/06/08-12.
 MODELS = {"sol": "gpt-5.6-sol", "terra": "gpt-5.6-terra", "luna": "gpt-5.6-luna"}

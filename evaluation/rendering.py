@@ -4,7 +4,7 @@ The user message is one ``input_text`` item per part: a fixed header naming the 
 then each included block in ``INPUT_BLOCKS`` order. An excluded block is absent from the request
 entirely (heading, text and, for key points, the output-schema ids). The trajectory is the event's
 ``input.trajectory.text`` copied verbatim, so the judge sees exactly what the translation layer saw
-(D1, D20). Nothing names the episode id, the scenario id or an event id.
+(D34). Nothing names the episode id, the scenario id or an event id.
 
 Video block (L3, D30): selected frames of the episode's action video, in time order, each image item
 immediately preceded by one text item holding its configured label (step and time). The video is

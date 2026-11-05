@@ -15,7 +15,6 @@ from mtd_rl_xavier import paths
 
 HERE = Path(__file__).resolve().parent
 ROOT = paths.ROOT
-sys.path.insert(0, str(ROOT))  # experiment specs are imported as workspace.<name>.run
 sys.dont_write_bytecode = True
 from mtd_rl_xavier.experiment import common
 from llm_x.data import Episode
@@ -95,9 +94,12 @@ def parse_response(text: str, task: str, metric: str) -> dict:
 
 
 def load_and_parse(source=None, spec=None, *, allow_api_failures=False) -> tuple[Path, dict, list[dict], dict]:
+    """``spec`` is the experiment's ``EXPERIMENT`` (``workspace/<name>/run.py``), passed in by the caller.
+
+    The library never imports ``workspace``; ``source`` defaults to that experiment's ``results/``.
+    """
     if spec is None:
-        from importlib import import_module
-        spec = import_module("workspace.03_1_gpt35_history_n30_joint.run").EXPERIMENT
+        raise TypeError("load_and_parse() needs the experiment spec (workspace/<name>/run.py EXPERIMENT)")
     source = Path(source) if source is not None else common.EXPERIMENTS / spec.name / "results"
     manifest = common.read_json(source / "manifest.json")
     summary = common.read_json(source / "summary.json")

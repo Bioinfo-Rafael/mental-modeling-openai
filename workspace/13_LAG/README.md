@@ -59,6 +59,8 @@ uv run python -m pytest workspace/13_LAG/tests -q
 - `lag_data/dataset.py`: 型付き読み込み、時刻・機体・特徴量の抽出。
 - `tests/test_dataset.py`: データ保持・時刻対応・抽出・再現性を検証。
 
+14〜17とTranslatorは、`lag_data`を昇格した`mtd_rl_xavier.lag`（`src/mtd_rl_xavier/lag/`）を使う。`lag_data/`は13自身（`run.py`・`viewer/prepare.py`・`tests/`）が使い、`data/processed/manifest.json`の`generator`が`prepare.py`と`definitions.py`のSHA-256を記録しているため残す。両者の一致は`tests/lag/test_lag_contract.py`が確認する。
+
 旧`prepare_data.py`は`run.py`へ、旧`dataset.py`のデータ処理は`lag_data/dataset.py`へ移動した。旧`make_query()`の実験固有処理は廃止し、14の`runner.build_query()`で4課題を構築する。保存CSVの内容は変更していない。
 
 出典: MTD-RL共有ドライブの `01_Vault/sources/YutaSawada/20261005_LAG_2v2_ACMI/`。

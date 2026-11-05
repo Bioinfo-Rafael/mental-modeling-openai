@@ -7,12 +7,12 @@ ROOT = HERE.parents[1]
 sys.dont_write_bytecode = True
 # All nonstandard import paths are configured once, at the entry point.
 from mtd_rl_xavier.paths import MENTALMODELING  # noqa: E402
-sys.path[:0] = [str(HERE.parent / "13_LAG"), str(MENTALMODELING)]
+sys.path[:0] = [str(MENTALMODELING)]
 
 from lag_experiment.config import Experiment
 from lag_experiment.runner import run
 
-# Edit the experiment grid here. Data definitions stay in 13_LAG/lag_data.
+# Edit the experiment grid here. Data definitions come from mtd_rl_xavier.lag; the CSVs stay in 13_LAG/data.
 EXPERIMENT = Experiment(
     name="sliding_window_v1",
     models=("sol", "terra", "luna"),

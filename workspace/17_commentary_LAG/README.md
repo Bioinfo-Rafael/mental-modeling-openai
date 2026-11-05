@@ -323,9 +323,8 @@ window and the missing evidence that prevents a stronger conclusion.
     dataset.py      # 61時点の抽出と入力マスク
     prompts.py      # 解説用system/user
     runner.py       # ローカル計画生成
-    execution.py    # 生回答保存・再開
-    batch.py        # Batch投入・回収・重複防止
     evaluation.py   # 人手評価用の回答エクスポート
+                    # 生回答保存・再開とBatch投入・回収は src/mtd_rl_xavier/lag/{execution,batch}.py
     system.txt      # 英語system本文
     user.txt        # 英語userテンプレート
   tests/            # 境界、61時点、欠損、全個体、入力範囲の検査
@@ -348,7 +347,7 @@ window and the missing evidence that prevents a stronger conclusion.
 
 ## ローカル参照先
 
-- [13の概要](../13_LAG/README.md)、[統合CSVの定義](../13_LAG/data/processed/README.md)、[読込API](../13_LAG/lag_data/dataset.py)
+- [13の概要](../13_LAG/README.md)、[統合CSVの定義](../13_LAG/data/processed/README.md)、[読込API](../../src/mtd_rl_xavier/lag/dataset.py)
 - [14の設計](../14_mental-modeling_LAG/README.md)、[プロンプト](../14_mental-modeling_LAG/lag_experiment/prompts.py)、[窓と可視データ](../14_mental-modeling_LAG/lag_experiment/runner.py)
 - [15の設計](../15_trajectory_LAG/README.md)
 - [16の設計](../16_dynamics_LAG/README.md)、[プロンプト](../16_dynamics_LAG/dynamics_experiment/prompts.py)

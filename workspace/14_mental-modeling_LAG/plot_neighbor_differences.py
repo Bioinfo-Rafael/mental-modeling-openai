@@ -10,7 +10,8 @@ import numpy as np
 import plot_results as plots
 from build_results_viewer import HERE, load_data
 from plot_question_timelines import recorded_window
-from lag_data.dataset import PROCESSED, load_episode, index_records
+from mtd_rl_xavier.lag.dataset import load_episode, index_records
+from lag_experiment.config import PROCESSED
 
 
 def anchor_step(task, target_step):

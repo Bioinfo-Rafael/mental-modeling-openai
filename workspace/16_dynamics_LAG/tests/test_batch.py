@@ -9,9 +9,10 @@ import pytest
 
 HERE = Path(__file__).resolve().parents[1]
 from mtd_rl_xavier.paths import MENTALMODELING  # noqa: E402
-sys.path[:0] = [str(HERE), str(HERE.parent / "13_LAG"), str(MENTALMODELING)]
-from dynamics_experiment import batch, execution as ex, evaluation, prompts
-from lag_data.definitions import STATE_FEATURES, ACTIONS
+sys.path[:0] = [str(HERE), str(MENTALMODELING)]
+from mtd_rl_xavier.lag import batch, execution as ex
+from dynamics_experiment import evaluation, prompts
+from mtd_rl_xavier.lag.dataset import STATE_FEATURES, ACTIONS
 
 
 def obj(data):
@@ -124,7 +125,7 @@ def test_full_lifecycle_out_of_order_and_idempotent_collection(run):
     before = (directory / 'api/responses.jsonl').read_bytes()
     batch.collect(client, plan, directory, state)
     assert (directory / 'api/responses.jsonl').read_bytes() == before
-    summary = batch.summarize(plan, directory, state)
+    summary = batch.summarize(plan, directory, state, evaluate=evaluation.evaluate_saved)
     assert summary['responses_saved'] == 10 and summary['status'] == 'complete'
     assert len(ex.read_journal(directory / 'api/requests.jsonl')) == 10
     assert len(ex.read_journal(directory / 'api/responses.jsonl')) == 10
@@ -165,7 +166,7 @@ def test_expired_partial_results_saved_and_not_resent(run, omit):
     batch.submit(client, plan, directory, state)
     client.finish(fail=not omit, omit=omit)
     batch.collect(client, plan, directory, state)
-    summary = batch.summarize(plan, directory, state)
+    summary = batch.summarize(plan, directory, state, evaluate=evaluation.evaluate_saved)
     assert summary['unresolved'] == 3
     assert summary['responses_saved'] == 7
     assert len(ex.read_journal(directory / 'api/responses.jsonl')) == 10
@@ -221,16 +222,16 @@ def test_modified_input_and_new_sync_attempt_are_rejected(run):
 def test_execute_submit_collect_resume_and_no_client_when_done(run):
     plan, directory = run
     client = FakeClient()
-    batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client)
+    batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client, evaluate=evaluation.evaluate_saved)
     assert len(client.created) == 3 and client.closed
-    batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client)
+    batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client, evaluate=evaluation.evaluate_saved)
     assert len(client.created) == 3
     client.finish()
     summary = batch.execute(plan, directory, repository_root=HERE.parents[1],
-                            submit_new=False, client_factory=lambda: client)
+                            submit_new=False, client_factory=lambda: client, evaluate=evaluation.evaluate_saved)
     assert summary['responses_saved'] == 10
     batch.execute(plan, directory, repository_root=HERE.parents[1], submit_new=False,
-                  client_factory=lambda: pytest.fail('Completed runs need no API'))
+                  client_factory=lambda: pytest.fail('Completed runs need no API'), evaluate=evaluation.evaluate_saved)
     assert len(client.created) == 3
 
 
@@ -241,7 +242,7 @@ def test_collect_never_submits_prepared_shards(run):
     batch.submit(client, plan, directory, state)
     client.finish()
     batch.execute(plan, directory, repository_root=HERE.parents[1], submit_new=False,
-                  wait=True, client_factory=lambda: client)
+                  wait=True, client_factory=lambda: client, evaluate=evaluation.evaluate_saved)
     assert len(client.created) == 3
     assert any(j['status'] == 'prepared' for j in batch.load_state(plan, directory)['jobs'])
 
@@ -251,7 +252,7 @@ def test_wait_collects_then_scores(run, monkeypatch):
     client = FakeClient()
     monkeypatch.setattr(batch.time, 'sleep', lambda seconds: client.finish())
     result = batch.execute(plan, directory, repository_root=HERE.parents[1], wait=True,
-                           client_factory=lambda: client)
+                           client_factory=lambda: client, evaluate=evaluation.evaluate_saved)
     assert result['status'] == 'complete'
     assert len(client.created) == 3
 
@@ -263,7 +264,7 @@ def test_terminal_failure_stops_new_submissions(run):
     batch.submit(client, plan, directory, state)
     client.finish(fail=True)
     with pytest.raises(RuntimeError, match='failures require review'):
-        batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client)
+        batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client, evaluate=evaluation.evaluate_saved)
     assert len(client.created) == 3
     assert (directory / 'analysis' / evaluation.SCORING_VERSION / 'per_query.json').exists()
 
@@ -276,7 +277,7 @@ def test_batch_source_integrity_and_sync_guard(run):
     ex.write_json(directory / 'manifest.json', plan)
     with pytest.raises(ValueError, match='Source changed'):
         batch.execute(plan, directory, repository_root=HERE.parents[1],
-                      client_factory=lambda: pytest.fail('API must not start'))
+                      client_factory=lambda: pytest.fail('API must not start'), evaluate=evaluation.evaluate_saved)
     plan['source_sha256'] = {}
     plan.pop('plan_id')
     plan['plan_id'] = ex.digest(plan)
@@ -308,4 +309,4 @@ def test_collect_before_submission_requires_no_client(run):
     batch.prepare(plan, directory)
     with pytest.raises(ValueError, match='use --execute first'):
         batch.execute(plan, directory, repository_root=HERE.parents[1], submit_new=False,
-                      client_factory=lambda: pytest.fail('No network for an unsubmitted run'))
+                      client_factory=lambda: pytest.fail('No network for an unsubmitted run'), evaluate=evaluation.evaluate_saved)

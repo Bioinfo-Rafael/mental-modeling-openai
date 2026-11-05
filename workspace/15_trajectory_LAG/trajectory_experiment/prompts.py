@@ -8,7 +8,7 @@ from dataclasses import dataclass
 import json
 from types import SimpleNamespace
 
-from lag_data.definitions import ACTION_LABELS, DT
+from mtd_rl_xavier.lag.dataset import ACTION_LABELS, DT
 from llm_x import prompting as llmx
 
 PROMPT_VERSION = "lag-trajectory-v1"

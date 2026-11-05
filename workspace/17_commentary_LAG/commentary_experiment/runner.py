@@ -3,12 +3,15 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-from lag_data.dataset import load_episode, PROCESSED
+from mtd_rl_xavier.lag.dataset import load_episode
+from .config import PROCESSED
 from .config import EPISODE, CENTERS, MODELS, REFERENCE_URL
 from .dataset import build_window
 from .prompts import build_messages, PROMPT_VERSION
-from . import execution as ex, batch, evaluation
+from mtd_rl_xavier.lag import batch, execution as ex
+from . import evaluation
 HERE = Path(__file__).resolve().parents[1]
+LAG_LIBRARY = Path(ex.__file__).resolve().parent
 ROOT = HERE.parents[1]
 
 
@@ -41,7 +44,8 @@ def make_plan(models=('sol', 'terra', 'luna'), repeats=1, variant='commentary'):
                               for i,a in enumerate(CENTERS) for b in CENTERS[i+1:]]
     paths = [HERE/'run.py', PROCESSED/f'{EPISODE}.csv', PROCESSED/'manifest.json']
     paths += sorted((HERE/'commentary_experiment').glob('*.py')) + sorted((HERE/'commentary_experiment').glob('*.txt'))
-    paths += sorted((HERE.parent/'13_LAG/lag_data').glob('*.py'))
+    # Shared LAG loader and transport (src/mtd_rl_xavier/lag), promoted from Experiments 13 and 15-17.
+    paths += [LAG_LIBRARY/name for name in ('dataset.py', 'execution.py', 'batch.py')]
     plan['source_sha256'] = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
     plan['counts'] = dict(samples=5, requests=len(plan['queries']), models=len(models), repeats=repeats)
     plan['plan_id'] = ex.digest(plan)
@@ -86,7 +90,7 @@ def run(argv=None):
             elif args.export:
                 evaluation.evaluate_saved(plan, directory)
             else:
-                batch.execute(plan, directory, repository_root=ROOT, submit_new=False, wait=args.wait,
+                batch.execute(plan, directory, repository_root=ROOT, evaluate=evaluation.evaluate_saved, submit_new=False, wait=args.wait,
                               poll_seconds=args.poll_seconds, adopt_job=args.job, batch_id=args.batch_id)
         else:
             plan = make_plan(args.models or tuple(MODELS), args.repeats if args.repeats is not None else 1, variant)
@@ -97,7 +101,8 @@ def run(argv=None):
             state = batch.prepare(plan, directory)
             print(json.dumps(plan['counts']), '\nSaved:', directory)
             if args.execute:
-                batch.execute(plan, directory, repository_root=ROOT, wait=args.wait, poll_seconds=args.poll_seconds)
+                batch.execute(plan, directory, repository_root=ROOT, evaluate=evaluation.evaluate_saved, wait=args.wait,
+                              poll_seconds=args.poll_seconds)
             else:
                 print(json.dumps(batch.local_status(state), indent=2))
                 print('No API calls made.')

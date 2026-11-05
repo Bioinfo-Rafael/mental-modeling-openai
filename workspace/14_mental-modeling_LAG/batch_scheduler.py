@@ -9,7 +9,8 @@ import json
 import time
 
 import batch_run as batch
-from lag_experiment import execution as ex, evaluation
+from mtd_rl_xavier.lag import execution as ex
+from lag_experiment import evaluation
 
 
 def comparison_sets(plan):

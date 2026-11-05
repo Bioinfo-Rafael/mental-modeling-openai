@@ -14,6 +14,8 @@ repository rootで既存の`.venv`を有効化して使う。
 | `python workspace/06_new_models_n10/analysis/analyze.py` | 新3モデルの全grid。N10だけのCSV・図をモデル別に出力 |
 | `python workspace/06_new_models_n10/analysis/compare_models.py --allow-api-failures` | GPT-3.5の既存N10 subsetと新3モデルを同じ図で比較。固定色、65 PNG、SVGなし |
 
+このpackageは`workspace`をimportしない。各入口が自分の`run.py`の`EXPERIMENT`をimportし、`runner.main(spec)`・`comparison.main(spec35, spec06)`・`joint_data.load_and_parse(source, spec)`へ引数で渡す。
+
 4モデル比較の仕様・実行方法・CM番号・出力は[比較README](../../../../workspace/06_new_models_n10/analysis/COMPARISON_README.md)。
 `comparison.py`はモデルごとに既存`aggregate_all()`を呼び、`comparison_plots.py`はモデルを系列にして作図する。モデル間で平均・bootstrapをpoolしない。
 この入口だけは明示的な`--allow-api-failures`で、全件試行済みのAPI失敗を欠損として保持できる。選択N=10は保ち、指標ごとの有効件数を図/CSVに明示する。従来の`analyze.py`の厳格な完了要件は変更しない。

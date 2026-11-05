@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 from collections import defaultdict
-from importlib import import_module
 import json
 from pathlib import Path
 import sys
@@ -16,9 +15,6 @@ from .joint_aggregate import aggregate_all
 from .comparison_plots import MODEL_ORDER, MODEL_COLORS, MODEL_LABELS, CM_GROUPS, make_comparison_figures
 from .runner import (digest, flatten_records, parse_summary, protected_files, validate_tables,
                      validate_saved_outputs, write_csv, write_json)
-
-BASE = common.EXPERIMENTS / "06_new_models_n10/analysis"
-
 
 def selected_records(records, subsets):
     ids = {q["query_id"] for group in subsets["conditions"].values() for q in group["10"]}
@@ -81,26 +77,27 @@ def results_markdown(tables, coverage, figures, repetitions=1000):
     return "\n".join(lines) + "\n"
 
 
-def main(argv=None):
+def main(spec35, spec06, argv=None):
+    """``spec35``/``spec06`` are the Exp.03_1 and Exp.06 ``EXPERIMENT`` specs, passed in by the caller
+    (``workspace/06_new_models_n10/analysis/compare_models.py``); Exp.05 is ``spec06.reuse_from``."""
+    base = common.EXPERIMENTS / spec06.name / "analysis"
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output-dir", type=Path, default=BASE / "comparison_4models")
+    parser.add_argument("--output-dir", type=Path, default=base / "comparison_4models")
     parser.add_argument("--seed", type=int, default=42, choices=(42,), help="Keep the existing Exp.03_1 seed-42 selection")
     parser.add_argument("--bootstrap", type=int, default=1000)
     parser.add_argument("--allow-api-failures", action="store_true",
                         help="Explicitly retain API failures as missing predictions; use valid-only estimates")
     args = parser.parse_args(argv)
     output = args.output_dir.absolute()
-    if not output.is_relative_to(BASE) or output.resolve() != output or output == BASE or output.exists():
+    if not output.is_relative_to(base) or output.resolve() != output or output == base or output.exists():
         parser.error("Choose a NEW output directory inside Exp.06/analysis; existing outputs are never overwritten")
     if args.bootstrap < 2:
         parser.error("--bootstrap must be at least 2")
     started = time.perf_counter()
-    spec35 = import_module("workspace.03_1_gpt35_history_n30_joint.run").EXPERIMENT
-    spec06 = import_module("workspace.06_new_models_n10.run").EXPERIMENT
     source35 = common.latest_results(common.EXPERIMENTS / spec35.name / "results")
     protected = {}
-    for source in (source35, common.EXPERIMENTS / "05_new_models_single/results",
-                   common.EXPERIMENTS / "06_new_models_n10/results/batches"):
+    for source in (source35, common.EXPERIMENTS / spec06.reuse_from / "results",
+                   common.EXPERIMENTS / spec06.name / "results/batches"):
         protected.update(protected_files(source))
     source06 = merge_results(spec06)  # No requests; preserves original batches/05.
     source35, manifest35, rows35, hashes35 = load_and_parse(source35, spec35)
@@ -124,7 +121,7 @@ def main(argv=None):
         tables["parse_summary"].extend(parse_summary(chosen))
         print(f"{alias}: selected {len(chosen)} queries; API errors {sum(r.get('api_error', False) for r in chosen)}", flush=True)
     # Verify that the default GPT-3.5 selection reproduces the existing notebook-era analysis.
-    old_subsets = common.EXPERIMENTS / "03_1_gpt35_history_n30_joint/analysis/query_subsets.json"
+    old_subsets = common.EXPERIMENTS / spec35.name / "analysis/query_subsets.json"
     if args.seed == 42 and old_subsets.exists():
         old = common.read_json(old_subsets)
         if any(v["10"] != old["conditions"][cid]["10"] for cid, v in subsets_by_model["3.5"]["conditions"].items()):
@@ -172,9 +169,9 @@ def main(argv=None):
                 "elapsed_seconds": time.perf_counter() - started}
     write_json(output / "analysis_metadata.json", metadata)
     (output / "RESULTS.md").write_text(results_markdown(tables, tables["condition_coverage"], figures, args.bootstrap), encoding="utf-8")
-    (output / "README.md").write_text((BASE / "COMPARISON_README.md").read_text(encoding="utf-8"), encoding="utf-8")
+    (output / "README.md").write_text((base / "COMPARISON_README.md").read_text(encoding="utf-8"), encoding="utf-8")
     print(f"Saved: {output}\nPNG: {len(figures)}; SVG: 0; API calls: 0; protected files unchanged", flush=True)
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit("Run workspace/06_new_models_n10/analysis/compare_models.py; it passes the experiment specs in.")

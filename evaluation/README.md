@@ -4,7 +4,7 @@ Scores the intent translations in a Translator run (`src/mtd_rl_xavier/translato
 `gpt-6.1-sol` (D8): one call per judged `translation_event` (D20). A YAML config decides which of
 six inputs the judge sees and how each one is rendered (D15). The judge reads the Translator's
 `events.jsonl` as is, so the trajectory it shows is byte-identical to what the translation layer
-saw (D1).
+saw (D34).
 
 `Dn` numbers refer to the requirement decision log
 [`.claude/docs/research/translator-requirements.md`](../.claude/docs/research/translator-requirements.md).

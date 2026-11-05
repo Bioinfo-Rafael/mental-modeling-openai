@@ -14,12 +14,14 @@ HERE = Path(__file__).resolve().parents[1]
 ROOT = HERE.parents[1]
 sys.dont_write_bytecode = True
 from mtd_rl_xavier.paths import MENTALMODELING  # noqa: E402
-sys.path[:0] = [str(HERE), str(HERE.parent / "13_LAG"), str(MENTALMODELING)]
+sys.path[:0] = [str(HERE), str(MENTALMODELING)]
 
-from lag_data.dataset import PROCESSED, index_records, load_episode
-from lag_data.definitions import ACTIONS, STATE_FEATURES
+from mtd_rl_xavier.lag.dataset import index_records, load_episode
+from lag_experiment.config import PROCESSED
+from mtd_rl_xavier.lag.dataset import ACTIONS, STATE_FEATURES
 from lag_experiment.config import Experiment, TASKS
-from lag_experiment import evaluation, execution, prompts, runner
+from mtd_rl_xavier.lag import execution
+from lag_experiment import evaluation, prompts, runner
 from llm_x.evaluation import _history_range
 
 

@@ -1,5 +1,6 @@
 """Offline layout and model/color contracts for PNG-only comparison figures."""
 import copy
+from importlib import import_module
 
 import matplotlib.pyplot as plt
 from matplotlib.colors import to_rgb
@@ -26,7 +27,7 @@ def test_model_colors_and_missing_values_break_lines():
 
 
 def test_all_65_layouts_separate_dimensions_and_preserve_model_colors(tmp_path, monkeypatch):
-    _, _, records, _ = data.load_and_parse()
+    _, _, records, _ = data.load_and_parse(None, import_module("workspace.03_1_gpt35_history_n30_joint.run").EXPERIMENT)
     subsets = data.select_subsets(records, 42, sizes=(10,))
     original = aggregate_all(records, subsets, repetitions=10, sizes=(10,))
     tables = {}

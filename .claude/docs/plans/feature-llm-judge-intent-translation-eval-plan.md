@@ -30,7 +30,7 @@ Overriding goal from the user: accurate and simple (正確にかつシンプル�
 
 One authoritative contract connects the two halves: the Translator event log. The judge consumes
 it instead of rebuilding inputs, so the judge's default trajectory is byte-identical to what the
-translation layer saw (D1, D20).
+translation layer saw.
 
 ```text
 13_LAG CSV + manifest

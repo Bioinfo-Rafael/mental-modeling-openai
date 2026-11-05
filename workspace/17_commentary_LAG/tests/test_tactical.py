@@ -3,7 +3,7 @@ from pathlib import Path
 import sys
 import pytest
 HERE = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(HERE), str(HERE.parent/'13_LAG')]
+sys.path[:0] = [str(HERE)]
 from commentary_experiment import runner, evaluation
 
 

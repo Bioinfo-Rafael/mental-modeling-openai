@@ -15,12 +15,16 @@ import pandas as pd
 
 from mtd_rl_xavier.paths import MENTALMODELING
 
-from lag_data.dataset import PROCESSED, index_records, load_episode
-from lag_data.definitions import ACTIONS, DT, STATE_FEATURES
+from mtd_rl_xavier.lag.dataset import index_records, load_episode
+from .config import PROCESSED
+from mtd_rl_xavier.lag.dataset import ACTIONS, DT, STATE_FEATURES
 from .config import EPISODES, MODELS, OBSERVATION_SCOPES, REQUEST_OPTIONS, TARGET_ACTION_FIELDS, TASKS
-from . import batch, dynamics, evaluation, execution, prompts
+from mtd_rl_xavier.lag import batch, execution
+
+from . import dynamics, evaluation, prompts
 
 HERE = Path(__file__).resolve().parents[1]
+LAG_LIBRARY = Path(execution.__file__).resolve().parent
 ROOT = HERE.parents[1]
 
 
@@ -145,7 +149,8 @@ def make_plan(experiment):
     sources = [PROCESSED / "manifest.json", HERE / "run.py", MENTALMODELING / "llm_x/prompting.py"]
     sources += sorted((HERE / "dynamics_experiment").glob("*.py"))
     sources += [dynamics.MODEL_PATH, dynamics.TEMPLATE_PATH, HERE / 'baseline_provenance.json']
-    sources += sorted((HERE.parent / "13_LAG/lag_data").glob("*.py"))
+    # Shared LAG loader and transport (src/mtd_rl_xavier/lag), promoted from Experiments 13 and 15-17.
+    sources += [LAG_LIBRARY / name for name in ("dataset.py", "execution.py", "batch.py")]
     for episode in experiment.episodes:
         path = PROCESSED / f"{episode}.csv"
         sources.append(path)
@@ -263,7 +268,8 @@ def run(experiment, argv=None):
             elif args.status:
                 print(json.dumps(batch.local_status(batch.load_state(plan, directory)), indent=2))
             else:
-                batch.execute(plan, directory, repository_root=ROOT, submit_new=False,
+                batch.execute(plan, directory, repository_root=ROOT, evaluate=evaluation.evaluate_saved,
+                              submit_new=False,
                               wait=args.wait, poll_seconds=args.poll_seconds,
                               adopt_job=args.job, batch_id=args.batch_id)
         else:
@@ -271,7 +277,7 @@ def run(experiment, argv=None):
             execution.save_plan(plan, directory)
             print(f"Plan: {plan['counts']}\nSaved: {directory}", flush=True)
             if args.execute:
-                batch.execute(plan, directory, repository_root=ROOT,
+                batch.execute(plan, directory, repository_root=ROOT, evaluate=evaluation.evaluate_saved,
                               wait=args.wait, poll_seconds=args.poll_seconds)
             else:
                 state = batch.prepare(plan, directory)

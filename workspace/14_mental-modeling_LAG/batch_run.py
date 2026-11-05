@@ -17,8 +17,9 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.dont_write_bytecode = True
 from mtd_rl_xavier.paths import MENTALMODELING  # noqa: E402
-sys.path[:0] = [str(HERE), str(HERE.parent / '13_LAG'), str(MENTALMODELING)]
-from lag_experiment import execution as ex, evaluation
+sys.path[:0] = [str(HERE), str(MENTALMODELING)]
+from mtd_rl_xavier.lag import execution as ex
+from lag_experiment import evaluation
 
 ENDPOINT = '/v1/chat/completions'
 TERMINAL = {'completed', 'failed', 'expired', 'cancelled'}

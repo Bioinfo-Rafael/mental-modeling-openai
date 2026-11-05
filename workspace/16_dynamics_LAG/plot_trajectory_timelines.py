@@ -11,7 +11,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.dont_write_bytecode = True
 from mtd_rl_xavier.paths import MENTALMODELING  # noqa: E402
-sys.path[:0] = [str(HERE), str(HERE.parent / '13_LAG'), str(MENTALMODELING)]
+sys.path[:0] = [str(HERE), str(MENTALMODELING)]
 
 import matplotlib
 matplotlib.use('Agg')
@@ -20,9 +20,11 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 import pandas as pd
 
-from lag_data.dataset import PROCESSED, load_episode, index_records
-from lag_data.definitions import ACTIONS, ACTION_LABELS, STATE_FEATURES, STATE_UNITS
-from dynamics_experiment import execution as ex, evaluation
+from mtd_rl_xavier.lag.dataset import load_episode, index_records
+from dynamics_experiment.config import PROCESSED
+from mtd_rl_xavier.lag.dataset import ACTIONS, ACTION_LABELS, STATE_FEATURES, STATE_UNITS
+from mtd_rl_xavier.lag import execution as ex
+from dynamics_experiment import evaluation
 
 COLORS = {'sol': '#d35417', 'terra': '#157f70', 'luna': '#8055bf'}
 MARKERS = {'sol': '^', 'terra': 's', 'luna': 'x'}

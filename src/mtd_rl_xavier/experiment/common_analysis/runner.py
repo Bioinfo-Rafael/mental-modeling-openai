@@ -187,10 +187,11 @@ def export_model(records, source, output, episode_hashes, spec, sizes, seed=42,
     return tables
 
 
-def main(experiment_name, *, sizes=(10, 20, 30), tables_only=False, argv=None):
-    from importlib import import_module
+def main(spec, *, sizes=(10, 20, 30), tables_only=False, argv=None):
+    """Offline analysis CLI for one experiment; ``spec`` is its ``workspace/<name>/run.py`` EXPERIMENT."""
     from mtd_rl_xavier.experiment import common
-    spec = import_module(f"workspace.{experiment_name}.run").EXPERIMENT
+    if isinstance(spec, str):
+        raise TypeError("main() needs the experiment spec (workspace/<name>/run.py EXPERIMENT), not its name")
     base = common.EXPERIMENTS / spec.name / "analysis"
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seed", type=int, default=42)

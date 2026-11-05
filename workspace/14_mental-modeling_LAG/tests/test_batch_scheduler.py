@@ -10,7 +10,8 @@ HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
 import batch_run as batch
 import batch_scheduler as rolling
-from lag_experiment import execution as ex, prompts
+from mtd_rl_xavier.lag import execution as ex
+from lag_experiment import prompts
 from test_batch import FakeClient
 
 

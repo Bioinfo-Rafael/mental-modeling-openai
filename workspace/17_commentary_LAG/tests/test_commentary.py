@@ -3,11 +3,13 @@ from pathlib import Path
 import sys
 import pytest
 HERE = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(HERE), str(HERE.parent/'13_LAG')]
-from commentary_experiment import runner, execution, evaluation, batch
+sys.path[:0] = [str(HERE)]
+from mtd_rl_xavier.lag import batch, execution
+from commentary_experiment import runner, evaluation
 from commentary_experiment.dataset import build_window
 from commentary_experiment.config import CENTERS, EPISODE, REFERENCE_URL
-from lag_data.dataset import load_episode, PROCESSED
+from mtd_rl_xavier.lag.dataset import load_episode
+from commentary_experiment.config import PROCESSED
 
 @pytest.fixture(scope='module')
 def frame():

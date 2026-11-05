@@ -13,6 +13,10 @@ from mtd_rl_xavier.experiment.common_analysis.joint_aggregate import aggregate_a
 from mtd_rl_xavier.experiment.common_analysis.runner import write_csv
 
 
+# The library never imports workspace specs; tests pass them in like the analysis entry points do.
+SPEC_03_1 = import_module("workspace.03_1_gpt35_history_n30_joint.run").EXPERIMENT
+
+
 @pytest.fixture(scope="module")
 def plans():
     specs = [import_module(f"workspace.{name}.run").EXPERIMENT for name in
@@ -393,7 +397,7 @@ def test_split_analysis_runner_automatically_merges(split_world, monkeypatch):
     monkeypatch.setattr(runner, "ROOT", common.ROOT)
     exported = Mock()
     monkeypatch.setattr(runner, "export_model", exported)
-    runner.main(spec.name, sizes=(10,), argv=[])
+    runner.main(spec, sizes=(10,), argv=[])
     assert exported.call_count == 3
     for call in exported.call_args_list:
         records, source = call.args[:2]
@@ -555,7 +559,7 @@ def test_required_cache_never_falls_back_to_send(prerequisite):
 
 
 def test_refactor_reproduces_all_previous_numeric_tables(tmp_path):
-    source, _, records, _ = data.load_and_parse()
+    source, _, records, _ = data.load_and_parse(None, SPEC_03_1)
     subsets = data.select_subsets(records, 42)
     saved_dir = source.parent / "analysis"
     assert subsets == json.loads((saved_dir / "query_subsets.json").read_text())
@@ -573,7 +577,7 @@ def test_refactor_reproduces_all_previous_numeric_tables(tmp_path):
 
 def test_n10_only_and_models_never_pool():
     from mtd_rl_xavier.experiment.common_analysis.runner import export_model
-    _, _, records, _ = data.load_and_parse()
+    _, _, records, _ = data.load_and_parse(None, SPEC_03_1)
     prefixes = [r for r in records if r["ordinal"] < 10]
     subsets = data.select_subsets(prefixes, 42, sizes=(10,), expected_n=10)
     assert all(set(group) == {"10"} for group in subsets["conditions"].values())
@@ -586,7 +590,7 @@ def test_n10_only_and_models_never_pool():
 def test_n10_plot_export(tmp_path):
     from mtd_rl_xavier.experiment.common_analysis.joint_plots import make_figures
     from mtd_rl_xavier.experiment.common_analysis.runner import validate_saved_outputs
-    _, _, records, _ = data.load_and_parse()
+    _, _, records, _ = data.load_and_parse(None, SPEC_03_1)
     prefixes = [r for r in records if r["ordinal"] < 10]
     subsets = data.select_subsets(prefixes, 42, sizes=(10,), expected_n=10)
     tables = aggregate_all(prefixes, subsets, sizes=(10,))
@@ -640,9 +644,9 @@ def test_modern_load_and_export_end_to_end_with_offline_fixtures(plans, tmp_path
     monkeypatch.setattr(runner, "ROOT", tmp_path)
     plots = Mock(return_value=[])  # Actual rendering is covered by test_n10_plot_export.
     monkeypatch.setattr(runner, "make_figures", plots)
-    runner.main(specs[0].name, sizes=(10,), tables_only=True, argv=[])
+    runner.main(specs[0], sizes=(10,), tables_only=True, argv=[])
     plots.assert_not_called()
-    runner.main(specs[1].name, sizes=(10,), argv=[])
+    runner.main(specs[1], sizes=(10,), argv=[])
     assert plots.call_count == 3
     for call in plots.call_args_list:
         assert call.kwargs["sizes"] == (10,)
