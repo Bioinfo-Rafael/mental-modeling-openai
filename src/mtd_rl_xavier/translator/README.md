@@ -16,7 +16,7 @@ Every model input holds only data issued at or before the current step t: the tr
 end at t, and instructions, alarms and questions are filtered to `step <= t` (D51).
 
 The authoritative output is `events.jsonl`. The judge (`evaluation/`) consumes it as is, so the
-trajectory the judge shows is byte-identical to what the translation layer saw (D1, D20).
+trajectory the judge shows is byte-identical to what the translation layer saw (D34).
 
 | Module | Responsibility |
 |---|---|

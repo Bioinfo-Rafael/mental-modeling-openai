@@ -20,6 +20,20 @@ import from `workspace/`. Nothing in this package imports `workspace/`.
   replacement loader for instruction-conditioned recordings has to satisfy (D12).
 - Errors: `LagDataError` (a `ValueError`; the workspace code raised plain `ValueError`).
 
+## Frozen-plan execution (`execution.py`, `batch.py`)
+
+Promoted from the byte-identical copies in `workspace/{15,16,17}_*/*_experiment/` (14 held the
+same `execution.py` without the batch-transport guard); 14-17 now import these modules.
+
+- `execution.py`: `canonical` / `digest` (they define every saved `plan_id`, `request_sha256` and
+  `query_id`, so they must stay byte-for-byte stable), `verify_plan`, `save_plan`, journals,
+  `run_lock`, and the synchronous `execute`.
+- `batch.py`: OpenAI Batch submit / recover / collect. The experiment's offline export is passed in
+  as `evaluate=` (`evaluate(plan, directory)`) to `execute` and `summarize`; everything else,
+  including `job_key` and the `lag_job_key` metadata, is unchanged.
+- Experiment 14's `batch_run.py` (Batch after a synchronous prefix) is a different adapter and
+  stays in `workspace/14_mental-modeling_LAG/`.
+
 ## Renderers (`rendering.py`)
 
 Both return a frozen `RenderedTrajectory` (renderer name and version, the steps actually rendered,

@@ -5,9 +5,10 @@ import sys
 from types import SimpleNamespace
 import pytest
 HERE = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(HERE), str(HERE.parent/'13_LAG')]
-from commentary_experiment import batch, execution as ex, evaluation
-from lag_data.definitions import STATE_FEATURES, ACTIONS
+sys.path[:0] = [str(HERE)]
+from mtd_rl_xavier.lag import batch, execution as ex
+from commentary_experiment import evaluation
+from mtd_rl_xavier.lag.dataset import STATE_FEATURES, ACTIONS
 
 def obj(data):
     return SimpleNamespace(**data, model_dump=lambda **kwargs: deepcopy(data))
@@ -86,13 +87,13 @@ class FakeClient:
 def test_submit_collect_idempotent(run):
     plan, directory = run
     client = FakeClient()
-    batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client)
+    batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client, evaluate=evaluation.evaluate_saved)
     assert len(client.created) == 3
     client.finish()
-    result = batch.execute(plan, directory, repository_root=HERE.parents[1], submit_new=False, client_factory=lambda: client)
+    result = batch.execute(plan, directory, repository_root=HERE.parents[1], submit_new=False, client_factory=lambda: client, evaluate=evaluation.evaluate_saved)
     assert result['responses_saved'] == 10
     before = (directory/'api/responses.jsonl').read_bytes()
-    batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client)
+    batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client, evaluate=evaluation.evaluate_saved)
     assert len(client.created) == 3
     assert (directory/'api/responses.jsonl').read_bytes() == before
     exported = ex.read_json(directory/'evaluation/responses.json')
@@ -104,19 +105,19 @@ def test_lost_submission_recovered(run):
     client = FakeClient()
     client.fail_create = True
     with pytest.raises(TimeoutError):
-        batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client)
+        batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client, evaluate=evaluation.evaluate_saved)
     assert len(client.created) == 1
     client.fail_create = False
-    batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client)
+    batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client, evaluate=evaluation.evaluate_saved)
     assert len(client.created) == 3
 
 
 def test_partial_failure_preserves_answers(run):
     plan, directory = run
     client = FakeClient()
-    batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client)
+    batch.execute(plan, directory, repository_root=HERE.parents[1], client_factory=lambda: client, evaluate=evaluation.evaluate_saved)
     client.finish(fail=True)
-    result = batch.execute(plan, directory, repository_root=HERE.parents[1], submit_new=False, client_factory=lambda: client)
+    result = batch.execute(plan, directory, repository_root=HERE.parents[1], submit_new=False, client_factory=lambda: client, evaluate=evaluation.evaluate_saved)
     assert result['responses_saved'] == 7 and result['unresolved'] == 3
     exported = ex.read_json(directory/'evaluation/responses.json')
     assert sum(x['status'] == 'error' for x in exported) == 3

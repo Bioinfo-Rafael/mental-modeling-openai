@@ -15,12 +15,16 @@ import pandas as pd
 
 from mtd_rl_xavier.paths import MENTALMODELING
 
-from lag_data.dataset import PROCESSED, index_records, load_episode
-from lag_data.definitions import ACTIONS, DT, STATE_FEATURES
+from mtd_rl_xavier.lag.dataset import index_records, load_episode
+from .config import PROCESSED
+from mtd_rl_xavier.lag.dataset import ACTIONS, DT, STATE_FEATURES
 from .config import EPISODES, MODELS, OBSERVATION_SCOPES, REQUEST_OPTIONS, TARGET_ACTION_FIELDS, TASKS
-from . import evaluation, execution, prompts
+from mtd_rl_xavier.lag import execution
+
+from . import evaluation, prompts
 
 HERE = Path(__file__).resolve().parents[1]
+LAG_LIBRARY = Path(execution.__file__).resolve().parent
 ROOT = HERE.parents[1]
 
 
@@ -149,7 +153,8 @@ def make_plan(experiment):
                 samples={}, queries=[], coverage=[], source_sha256={})
     sources = [PROCESSED / "manifest.json", HERE / "run.py", MENTALMODELING / "llm_x/prompting.py"]
     sources += sorted((HERE / "lag_experiment").glob("*.py"))
-    sources += sorted((HERE.parent / "13_LAG/lag_data").glob("*.py"))
+    # Shared LAG loader and transport (src/mtd_rl_xavier/lag), promoted from Experiments 13 and 15-17.
+    sources += [LAG_LIBRARY / name for name in ("dataset.py", "execution.py")]
     for episode in experiment.episodes:
         path = PROCESSED / f"{episode}.csv"
         sources.append(path)

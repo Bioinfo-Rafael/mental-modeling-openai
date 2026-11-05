@@ -1,6 +1,6 @@
 """Select exact recorded windows without fabricating actions or ammunition."""
 import pandas as pd
-from lag_data.definitions import STATE_FEATURES, AIRCRAFT
+from mtd_rl_xavier.lag.dataset import STATE_FEATURES, AIRCRAFT
 from .config import ACTION_FIELDS
 
 
