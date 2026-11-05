@@ -1,6 +1,8 @@
 # `mtd_rl_xavier.translator`: two-layer LLM Translator
 
 Turns a LAG trajectory into natural-language intent statements, one target at a time (D3, D7).
+`Dn` numbers refer to the requirement decision log
+[`.claude/docs/research/translator-requirements.md`](../../../.claude/docs/research/translator-requirements.md).
 Two layers alternate in time order (D9):
 
 - the **detector layer** asks a System One model, on a fixed tick grid, one `choice` question:
