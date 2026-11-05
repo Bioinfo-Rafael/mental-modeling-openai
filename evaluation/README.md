@@ -6,6 +6,9 @@ six inputs the judge sees and how each one is rendered (D15). The judge reads th
 `events.jsonl` as is, so the trajectory it shows is byte-identical to what the translation layer
 saw (D1).
 
+`Dn` numbers refer to the requirement decision log
+[`.claude/docs/research/translator-requirements.md`](../.claude/docs/research/translator-requirements.md).
+
 | Module | Responsibility |
 |---|---|
 | `configuration.py` | Strict judge YAML: model, limits, the six input blocks, output root, pricing |
