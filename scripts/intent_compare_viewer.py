@@ -20,8 +20,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from intent_compare_config import CLIPS_MANIFEST, DEFAULT_CONFIG, METHODS, REPO_ROOT, CompareConfig, load_config
 from intent_compare_labels import EN, LABELS, Labels
+
+from mtd_rl_xavier.intent_compare import CLIPS_MANIFEST, DEFAULT_CONFIG, METHODS, CompareConfig, load_compare
+from mtd_rl_xavier.paths import ROOT as REPO_ROOT
 
 HUMAN = "human"
 # Places a local copy of the workspace/17 human annotation would live; none exists today (the
@@ -236,7 +238,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--cues-b", type=Path, help="override path of cues_B.jsonl")
     parser.add_argument("--annotation", type=Path, help="local human annotation in the cue JSONL format")
     args = parser.parse_args(argv)
-    config = load_config(args.config)
+    config = load_compare(args.config)
     run_id = args.run_id or f"seed{config.seed}"
     page = build_html(config, run_id, {"A": args.cues_a, "B": args.cues_b}, args.annotation)
     out = config.run_dir(run_id) / "viewer.html"

@@ -1,12 +1,17 @@
 """OpenAI Responses API part: one strict-JSON-schema call per request, text and image input.
 
-- The SDK is imported lazily, and only ``make_openai_client`` reads ``OPENAI_API_KEY``.
-  Composition roots call it after the paid-call gate; previews and tests never import the SDK.
+- The SDK is imported lazily, and ``make_openai_client`` is the one OpenAI Responses client factory
+  of the library: the Translator, the judge, weightreading and both methods of the intent
+  comparison build their SDK client here, and it is their only reader of ``OPENAI_API_KEY``
+  (legacy chat-completions tools in ``experiment/``, ``tools/`` and ``lag/`` still read the key
+  themselves). Composition roots call it after the paid-call gate; previews and tests never
+  import the SDK.
 - ``OpenAIResponsesClient`` accepts any object with ``responses.create`` (a scripted fake in tests).
 - Every request sends ``store=False``, ``reasoning.effort`` and a strict ``json_schema`` text format.
   ``temperature``, ``top_p`` and ``top_logprobs`` are never sent (reasoning models reject or ignore
   them). ``max_output_tokens`` covers reasoning plus visible output.
-- No retries (SDK ``max_retries=0``): a retried paid call may be billed twice.
+- No retries here (SDK ``max_retries=0``): a retried paid call may be billed twice. The intent
+  comparison adds the narrow, logged retry of ``mtd_rl_xavier.llm.retry`` on top of this client.
 - The endpoint is pinned: ``make_openai_client`` passes ``base_url=API_BASE_URL`` explicitly, so
   ``OPENAI_BASE_URL`` in the environment cannot send the key or the prompts elsewhere, and it
   refuses to start while ``OPENAI_CUSTOM_HEADERS`` (the SDK would inject those headers) or
@@ -52,6 +57,9 @@ PROVENANCE_ENV = (
 )
 SDK_MAX_RETRIES = 0
 DEFAULT_TIMEOUT_S = 1800.0
+# The one reasoning-effort allowlist of the repo (Translator, judge, weightreading, both methods of
+# the intent comparison): the gpt-6.1-sol subset of the openai SDK ``ReasoningEffort`` literal
+# (which also has "none" and "minimal"; not all reasoning models support every value).
 REASONING_EFFORTS = frozenset({"low", "medium", "high", "xhigh", "max"})
 IMAGE_DETAILS = frozenset({"low", "high", "original", "auto"})
 IMAGE_URL_PREFIXES = ("data:image/", "https://")
@@ -206,7 +214,7 @@ def set_provenance_env_names() -> list[str]:
 
 
 def make_openai_client(*, timeout_s: float = DEFAULT_TIMEOUT_S) -> Any:
-    """Build the SDK client for ``API_BASE_URL``. The only reader of ``OPENAI_API_KEY``; call it after the paid gate."""
+    """Build the SDK client for ``API_BASE_URL`` (the library's only factory); call it after the paid gate."""
     if not _is_positive_finite(timeout_s):
         raise OpenAIClientError("timeout_s must be a positive finite number")
     refused = [name for name in REFUSED_SDK_ENV if name in os.environ]

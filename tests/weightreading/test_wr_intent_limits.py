@@ -8,9 +8,8 @@ from pathlib import Path
 import pytest
 import yaml
 
+from mtd_rl_xavier.intent_compare import CompareConfigError, parse_compare
 from weightreading import cli
-from weightreading.config import ConfigError
-from weightreading.intent_config import parse_compare
 from weightreading.intent_protocol import (
     DEFAULT_LIMITS,
     MAX_INTENT_CHARS,
@@ -56,7 +55,7 @@ def test_parse_compare_reads_the_three_limit_keys(tmp_path: Path) -> None:
 @pytest.mark.parametrize("key", LIMIT_KEYS)
 @pytest.mark.parametrize("value", [0, -1, 1.5, "200", None, True, [200]])
 def test_parse_compare_rejects_invalid_limit_values(tmp_path: Path, key: str, value: object) -> None:
-    with pytest.raises(ConfigError, match=key):
+    with pytest.raises(CompareConfigError, match=key):
         _parse({**_compare_raw(), key: value}, tmp_path)
 
 

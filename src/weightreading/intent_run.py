@@ -16,11 +16,12 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from mtd_rl_xavier import paths
+from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG as SHARED_COMPARE_CONFIG
+from mtd_rl_xavier.intent_compare import CompareConfig, load_compare
 from mtd_rl_xavier.tools.output_safety import derived_path
 from weightreading import provenance
 from weightreading.commands import DEFAULT_OUTPUT_ROOT, executor_limits, write_json
 from weightreading.config import ConfigError, RunConfig, load_config
-from weightreading.intent_config import CompareConfig, load_compare
 from weightreading.intent_episode import Episode, PlannedSession, load_episode, plan_sessions
 from weightreading.intent_estimate import session_estimate
 from weightreading.intent_inputs import SessionInputs, write_inputs
@@ -33,7 +34,7 @@ from weightreading.spec import Spec, check_against_tensors, load_spec
 from weightreading.torch_reader import Checkpoint, read_checkpoint
 
 INTENT_ROOT = DEFAULT_OUTPUT_ROOT / "intent"
-DEFAULT_COMPARE = paths.CONFIGS / "intent_compare" / "compare.yaml"
+DEFAULT_COMPARE = SHARED_COMPARE_CONFIG  # configs/intent_compare/compare.yaml, the same default as method A
 DEFAULT_CONFIG = paths.CONFIGS / "weightreading" / "intent_b.yaml"
 DEFAULT_SPEC = paths.CONFIGS / "weightreading" / "lag_mappo_2v2_33.spec.json"
 # Preview stand-in for a previous translation (filled at run time): a full-length intent plus this

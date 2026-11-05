@@ -14,7 +14,7 @@ from pathlib import Path
 
 import numpy as np
 
-from weightreading.intent_config import CompareConfig
+from mtd_rl_xavier.intent_compare import CompareConfig
 from weightreading.intent_trace import window_bounds
 from weightreading.provenance import sha256_file
 

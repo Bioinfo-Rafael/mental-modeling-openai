@@ -5,11 +5,13 @@ module. No part imports another (`tests/llm/test_llm_independence.py` checks thi
 The endpoint rules the local parts share live outside this package, in
 `mtd_rl_xavier/local_endpoint.py`, and each part re-raises their fixed messages as its own
 configuration error. Protocols live on the consumer side (`translator/`, `evaluation/`), and only
-the composition roots (`translator/cli.py`, `evaluation/cli.py`) build concrete clients.
+the composition roots (`translator/cli.py`, `evaluation/cli.py`, `evaluation/assess_cli.py`,
+`weightreading/cli.py`, `scripts/intent_compare_run_a.py`) build concrete clients.
 
 | Module | Part | Phase |
 |---|---|---|
 | `openai_responses.py` | Paid OpenAI Responses API: strict JSON-schema output, text + image input | PHASE-1 |
+| `retry.py` | Narrow, logged retry (HTTP 5xx and non-timeout connection errors) for the intent comparison (methods A and B, weightreading) | - |
 | `system_one.py` | Local `POST /v1/systemone` (vLLM `clef-flash`, OpenJev `wev serve`) | PHASE-1 |
 | `vllm_chat.py` | Local OpenAI-compatible `chat.completions` client (generative models) | L1 (not wired into the Translator; L2) |
 | `vllm_server.py` | `vllm serve` launcher: allowlisted argv, health wait, teardown, CLI | L1 |
@@ -22,7 +24,8 @@ one-GPU job. Nothing in L1 has been run against a real server: see
 
 - `OpenAIRequest`: model, instructions, `input_items` (built with `input_text(...)` and
   `input_image(url, detail=...)`), schema name and schema, `reasoning_effort`
-  (`low|medium|high|xhigh|max`), `max_output_tokens` (covers reasoning plus visible output).
+  (`REASONING_EFFORTS` = `low|medium|high|xhigh|max`, the repo's one allowlist: the gpt-6.1-sol
+  subset of the openai SDK `ReasoningEffort` type), `max_output_tokens` (covers reasoning plus visible output).
   The request is validated when it is constructed.
 - `build_responses_body(request)` returns the exact keyword arguments sent: `model`,
   `instructions`, one user message, `text.format` = `json_schema` with `strict: true`,
@@ -37,8 +40,10 @@ one-GPU job. Nothing in L1 has been run against a real server: see
     call as `uncertain`, and do not resend it.
   - Messages carry only the error class and HTTP status. The SDK error code is on `.error_code`;
     the SDK message (it can echo request text or a masked key) is never copied.
-- `make_openai_client()` is the only reader of `OPENAI_API_KEY`, and the only place that imports
-  the `openai` SDK. It sets `max_retries=0`. Call it after the paid-call gate.
+- `make_openai_client()` is the library's one OpenAI client factory: the Translator, the judge,
+  weightreading and both methods of the intent comparison build their client here, and it is their
+  only reader of `OPENAI_API_KEY` (legacy chat-completions code in `experiment/`, `tools/` and `lag/`
+  still reads the key itself). It sets `max_retries=0`. Call it after the paid-call gate.
 - The endpoint is pinned: it passes `base_url=API_BASE_URL` (`https://api.openai.com/v1`), so an
   `OPENAI_BASE_URL` exported for a local vLLM server cannot receive the key or the prompts. It
   refuses to build a client while `OPENAI_CUSTOM_HEADERS` is set (the SDK would add those headers
@@ -48,6 +53,18 @@ one-GPU job. Nothing in L1 has been run against a real server: see
   honoured by httpx; TLS to api.openai.com is still verified. `PROVENANCE_ENV` lists these
   honoured variables (plus `SSL_CERT_FILE` / `SSL_CERT_DIR`) and `set_provenance_env_names()`
   returns the names that are set, for run records (names only: proxy URLs can hold credentials).
+
+## `retry.py`
+
+- `call_with_retry(call, policy)` retries only HTTP 5xx answers and connection errors that are not
+  timeouts; timeouts, 4xx (429 included) and non-`openai` exceptions are re-raised at once. At most
+  `MAX_ALLOWED_RETRIES` (2) retries, backoff 10 s then 30 s by default; every failed attempt goes to
+  `log` (stderr by default: attempt, error class, status, request id; never the message or body).
+- `RetryingClient(sdk_client, policy)` wraps the client from `make_openai_client()` so that
+  `responses.create` goes through `call_with_retry` with the identical keyword arguments. Method A of
+  the intent comparison puts it under `OpenAIResponsesClient`; weightreading's backend calls
+  `call_with_retry` directly. The Translator and judge CLIs do not use it and keep treating a 5xx as
+  "outcome uncertain, not retried".
 
 ## `system_one.py`
 

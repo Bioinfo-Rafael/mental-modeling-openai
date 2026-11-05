@@ -33,8 +33,8 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from intent_compare_config import DEFAULT_CONFIG, load_config
 
+from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG, load_compare
 from mtd_rl_xavier.lag.dataset import (
     ACTION_LABELS,
     COLUMNS,
@@ -308,7 +308,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument("--acmi", type=Path, help="default: <episode_dir>/replay.txt.acmi")
     args = parser.parse_args(argv)
-    config = load_config(args.config)
+    config = load_compare(args.config)
     acmi = args.acmi or config.episode_dir / "replay.txt.acmi"
     manifest_path = config.rollout_dir / "manifest.json"
     rollout_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))

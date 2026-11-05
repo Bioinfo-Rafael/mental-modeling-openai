@@ -9,9 +9,8 @@ import numpy as np
 import pytest
 
 from mtd_rl_xavier import paths
+from mtd_rl_xavier.intent_compare import CompareConfigError, check_run_id, parse_compare
 from weightreading.architecture import expected_params
-from weightreading.config import ConfigError
-from weightreading.intent_config import check_run_id, parse_compare
 from weightreading.intent_cues import CueContext, CueWriter, skipped_cue, translated_cue
 from weightreading.intent_prompt import IntentRequest, PreviousTranslation, intent_message
 from weightreading.intent_protocol import (
@@ -262,7 +261,7 @@ def _compare_raw() -> dict:
     return {
         "seed": 1,
         "rollout_dir": "r",
-        "steps": [145, 45],
+        "steps": [45, 145],
         "targets": ["A0100"],
         "window_steps": 60,
         "step_seconds": 0.2,
@@ -274,17 +273,24 @@ def _compare_raw() -> dict:
     }
 
 
-def test_parse_compare_sorts_steps_and_ignores_unused_keys(tmp_path: Path) -> None:
-    compare = parse_compare(_compare_raw(), tmp_path / "c.yaml", "sha", tmp_path)
+def test_parse_compare_keeps_increasing_steps_and_ignores_unused_keys(tmp_path: Path) -> None:
+    compare = parse_compare({**_compare_raw(), "unused": 1}, tmp_path / "c.yaml", "sha", tmp_path)
 
     assert compare.steps == (45, 145) and compare.rollout_dir == tmp_path / "r"
 
 
 @pytest.mark.parametrize(
-    ("key", "value"), [("steps", [45, 45]), ("window_steps", 0), ("reasoning_effort", "max"), ("instruction", " ")]
+    ("key", "value"),
+    [
+        ("steps", [45, 45]),
+        ("steps", [145, 45]),  # B used to sort these; the shared parser rejects them like method A
+        ("window_steps", 0),
+        ("reasoning_effort", "turbo"),
+        ("instruction", " "),
+    ],
 )
 def test_parse_compare_rejects_bad_values(tmp_path: Path, key: str, value: object) -> None:
-    with pytest.raises(ConfigError):
+    with pytest.raises(CompareConfigError):
         parse_compare({**_compare_raw(), key: value}, tmp_path / "c.yaml", "sha", tmp_path)
 
 
@@ -298,11 +304,11 @@ def test_parse_compare_output_language_defaults_to_en_and_accepts_ja(tmp_path: P
 
 @pytest.mark.parametrize("language", ["fr", "", "JA", None, 1])
 def test_parse_compare_rejects_unknown_output_language(tmp_path: Path, language: object) -> None:
-    with pytest.raises(ConfigError, match="output_language"):
+    with pytest.raises(CompareConfigError, match="output_language"):
         parse_compare({**_compare_raw(), "output_language": language}, tmp_path / "c.yaml", "sha", tmp_path)
 
 
-@pytest.mark.parametrize("run_id", ["", "../x", "a/b", ".hidden", "a..b"])
+@pytest.mark.parametrize("run_id", ["", "../x", "a/b", ".hidden", "a..b", "run1\n", "run1\r\n"])
 def test_check_run_id_rejects_unsafe_names(run_id: str) -> None:
-    with pytest.raises(ConfigError):
+    with pytest.raises(CompareConfigError):
         check_run_id(run_id)

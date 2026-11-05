@@ -10,9 +10,10 @@ import httpx
 import openai
 import pytest
 
-from weightreading.backends import OpenAIResponsesBackend, make_openai_client, user_item
+from mtd_rl_xavier.llm.openai_responses import make_openai_client
+from mtd_rl_xavier.llm.retry import RetryEvent, RetryPolicy, call_with_retry, log_to_stderr
+from weightreading.backends import OpenAIResponsesBackend, user_item
 from weightreading.config import ConfigError, parse_config
-from weightreading.retry import RetryEvent, RetryPolicy, call_with_retry, log_to_stderr
 from weightreading.session import RunLog, SessionState
 
 REQUEST = httpx.Request("POST", "https://api.openai.com/v1/responses")

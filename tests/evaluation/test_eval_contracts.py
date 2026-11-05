@@ -155,6 +155,7 @@ def test_max_judged_events_of_one_is_accepted() -> None:
     ("dotted", "value"),
     [
         ("reasoning_effort", "minimal"),
+        ("reasoning_effort", "turbo"),
         ("max_output_tokens", 0),
         ("max_output_tokens", True),
         ("timeout_s", 0),

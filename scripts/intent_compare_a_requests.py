@@ -18,10 +18,13 @@ from typing import Any
 
 import pandas as pd
 import yaml
-from intent_compare_config import REPO_ROOT, CompareConfig
 
+from mtd_rl_xavier import paths
+from mtd_rl_xavier.intent_compare import AnswerLimits, CompareConfig, limits_sentence, payload_problem
 from mtd_rl_xavier.lag.dataset import load_episode
 from mtd_rl_xavier.lag.rendering import render_lag17_jsonl
+from mtd_rl_xavier.llm.openai_responses import API_BASE_URL
+from mtd_rl_xavier.llm.retry import DEFAULT_RETRY_POLICY
 from mtd_rl_xavier.translator.pipeline import EpisodeFacts, episode_facts
 from mtd_rl_xavier.translator.schema import TARGET_AIRCRAFT, Instruction, PreviousTranslation, TargetRef
 from mtd_rl_xavier.translator.translation import (
@@ -31,12 +34,12 @@ from mtd_rl_xavier.translator.translation import (
     build_openai_request,
     build_prompt,
 )
-from weightreading.intent_protocol import AnswerLimits, limits_sentence, payload_problem
 
 # The Translator's language mechanism is the ``output_language`` argument of ``build_prompt`` /
 # ``TranslationLayer`` (the "{output_language}" slot of its system prompt). Its run.yaml also sets a
 # value (now Japanese), but the comparison must not depend on it: ``compare.yaml`` decides.
 TRANSLATOR_LANGUAGE_NAMES = {"en": "English", "ja": "Japanese"}
+REPO_ROOT = paths.ROOT
 TRANSLATOR_RUN_CONFIG = REPO_ROOT / "configs" / "translator" / "run.yaml"
 JUDGE_CONFIG = REPO_ROOT / "evaluation" / "config" / "judge-text.yaml"
 EPISODE_ALIAS = "episode_01"  # neutral alias; the only episode name the model sees
@@ -47,8 +50,10 @@ CHARS_PER_TOKEN = 4  # the Translator CLI's own approximation
 EVIDENCE_ALLOWANCE_CHARS = 1000  # assumed size of the previous translation's evidence list
 TOKENS_PER_MILLION = 1_000_000
 PROVENANCE_PACKAGES = ("translator", "lag", "llm")
+# The same default policy as method B (configs/weightreading/intent_b.yaml has no `retry` override).
+RETRY_POLICY = DEFAULT_RETRY_POLICY
 OWN_SCRIPTS = (
-    "scripts/intent_compare_config.py",
+    "src/mtd_rl_xavier/intent_compare.py",
     "scripts/intent_compare_a_requests.py",
     "scripts/intent_compare_run_a.py",
     "scripts/intent_compare_convert.py",
@@ -102,11 +107,11 @@ def load_settings(config: CompareConfig, max_output_tokens: int) -> TranslationS
     translation = yaml.safe_load(TRANSLATOR_RUN_CONFIG.read_text(encoding="utf-8"))["translation"]
     return TranslationSettings(
         output_language=TRANSLATOR_LANGUAGE_NAMES[config.output_language],
-        max_intent_chars=config.max_intent_chars,
+        max_intent_chars=config.answer_limits.max_intent_chars,
         max_output_tokens=max_output_tokens,
         timeout_s=float(translation["timeout_s"]),
-        max_evidence_items=config.max_evidence_items,
-        max_evidence_chars=config.max_evidence_chars,
+        max_evidence_items=config.answer_limits.max_evidence_items,
+        max_evidence_chars=config.answer_limits.max_evidence_chars,
     )
 
 
@@ -264,7 +269,9 @@ def provenance(config: CompareConfig, frame: pd.DataFrame, settings: Translation
         "limits_sentence": settings.limits_sentence,
         "limits_sentence_sha256": sha256_text(settings.limits_sentence),
         "call_path": "render_lag17_jsonl -> TranslationModelRequest -> build_prompt -> OpenAIIntentModel "
-        "(OpenAIResponsesClient) -> parse_intent_output; Translator pipeline / detector bypassed",
+        "(OpenAIResponsesClient over RetryingClient) -> parse_intent_output; Translator pipeline / detector bypassed",
+        "openai_base_url": API_BASE_URL,
+        "retry_policy": asdict(RETRY_POLICY),
     }
 
 

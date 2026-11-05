@@ -27,7 +27,7 @@ from weightreading.bundle import verify_bundle
 from weightreading.commands import hidden_paths, make_executor, utc_stamp, write_json
 from weightreading.config import ConfigError
 from weightreading.intent_audit import write_intent_audit
-from weightreading.intent_cues import CUES_FILE, CueContext, CueWriter, read_cues, skipped_cue, translated_cue
+from weightreading.intent_cues import METHOD, CueContext, CueWriter, read_cues, skipped_cue, translated_cue
 from weightreading.intent_episode import PlannedSession
 from weightreading.intent_inputs import PRELOAD, SessionInputs
 from weightreading.intent_prompt import PreviousTranslation
@@ -207,7 +207,7 @@ def execute_run(
     resume: bool = False,
 ) -> tuple[int, dict]:
     run_dir = intent_root / "runs" / run_id
-    cues_path = prepared.compare.output_root / run_id / CUES_FILE
+    cues_path = prepared.compare.cues_path(run_id, METHOD)
     record = {
         **common_record(prepared),
         "run_id": run_id,

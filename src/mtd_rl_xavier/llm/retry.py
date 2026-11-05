@@ -1,11 +1,18 @@
-"""Narrow, logged retry for transient OpenAI server errors.
+"""Narrow, logged retry for transient OpenAI server errors: the one retry policy of the A/B intent comparison.
 
 A request is retried only when it almost certainly was not processed (so it was not billed):
 an HTTP 5xx answer, or a connection failure that is not a timeout. A timeout may have been
 processed and billed, so it is never retried; neither are 4xx answers (including 429, which also
 covers insufficient quota), bad requests, authentication errors or any non-``openai`` exception.
-The SDK's own retries stay off (``SDK_MAX_RETRIES = 0``) so that every attempt is visible here.
-The SDK is imported lazily, only after an exception has been raised.
+The SDK's own retries stay off (``make_openai_client`` sets ``max_retries=0``) so that every attempt
+is visible here. The SDK is imported lazily, only after an exception has been raised.
+
+Both methods of the intent comparison use it: method B through ``weightreading.backends`` and
+method A by wrapping its SDK client in ``RetryingClient`` (below the Translator, whose code is
+unchanged). The Translator and judge CLIs do not use it: they keep reporting a 5xx as
+"outcome uncertain, not retried" (``openai_responses``).
+
+This module imports no sibling module of ``mtd_rl_xavier.llm`` (the LLM parts stay independent).
 """
 
 from __future__ import annotations
@@ -15,7 +22,7 @@ import time
 from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
-from typing import TypeVar
+from typing import Any, TypeVar
 
 DEFAULT_MAX_RETRIES = 2  # 3 attempts in total
 DEFAULT_INITIAL_BACKOFF_S = 10.0
@@ -120,3 +127,42 @@ def call_with_retry(
             failed = failed + (event,)
             sleep(delay_s)
             attempt += 1
+
+
+class _RetryingResponses:
+    """``responses.create`` of a wrapped SDK client, sent through ``call_with_retry``."""
+
+    def __init__(
+        self,
+        responses: Any,
+        policy: RetryPolicy,
+        sleep: Callable[[float], None],
+        log: Callable[[RetryEvent], None],
+    ) -> None:
+        self._responses = responses
+        self._policy = policy
+        self._sleep = sleep
+        self._log = log
+
+    def create(self, **kwargs: Any) -> Any:
+        response, _ = call_with_retry(lambda: self._responses.create(**kwargs), self._policy, self._sleep, self._log)
+        return response
+
+
+class RetryingClient:
+    """SDK client stand-in whose ``responses.create`` retries like method B; the request body is untouched.
+
+    Wrap the client from ``make_openai_client`` before handing it to a caller that only needs
+    ``responses.create`` (e.g. ``OpenAIResponsesClient``). Exhausted retries re-raise the SDK error
+    unchanged, so the caller's own error handling still sees the original exception. ``log``
+    receives every failed attempt.
+    """
+
+    def __init__(
+        self,
+        client: Any,
+        policy: RetryPolicy = DEFAULT_RETRY_POLICY,
+        sleep: Callable[[float], None] = time.sleep,
+        log: Callable[[RetryEvent], None] = log_to_stderr,
+    ) -> None:
+        self.responses = _RetryingResponses(client.responses, policy, sleep, log)

@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from weightreading.intent_config import DEFAULT_LANGUAGE, OUTPUT_LANGUAGES
+from mtd_rl_xavier.intent_compare import DEFAULT_LANGUAGE, OUTPUT_LANGUAGES
 from weightreading.intent_protocol import DEFAULT_LIMITS, AnswerLimits, IntentAnswer, limits_sentence
 from weightreading.intent_trace import ActivationDoc
 from weightreading.prompt import ExecutorLimits, spec_sections

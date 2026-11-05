@@ -2,25 +2,22 @@
 
 ``OpenAIResponsesBackend`` replays the whole conversation statelessly (``store=False``) and keeps
 reasoning across turns through ``reasoning.encrypted_content`` items, like ``codex exec resume``.
-The ``openai`` SDK is imported lazily and the client is built only by ``make_openai_client``,
-which the CLI calls after the paid-call gate and the sandbox preflight have passed.
+The SDK client is built only by the shared ``mtd_rl_xavier.llm.openai_responses.make_openai_client``
+(endpoint pinned, SDK retries off, the only ``OPENAI_API_KEY`` reader), which the CLI calls after
+the paid-call gate and the sandbox preflight have passed. Retries follow the shared
+``mtd_rl_xavier.llm.retry`` policy, the same one method A of the intent comparison uses.
 """
 
 from __future__ import annotations
 
 import hashlib
 import json
-import os
 import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Protocol
 
-from weightreading.retry import DEFAULT_RETRY_POLICY, RetryEvent, RetryPolicy, call_with_retry, log_to_stderr
-
-API_KEY_ENV = "OPENAI_API_KEY"
-SDK_MAX_RETRIES = 0  # retries are done in weightreading.retry, where each attempt is logged
-REQUEST_TIMEOUT_S = 1800.0
+from mtd_rl_xavier.llm.retry import DEFAULT_RETRY_POLICY, RetryEvent, RetryPolicy, call_with_retry, log_to_stderr
 
 
 @dataclass(frozen=True)
@@ -127,13 +124,3 @@ class OpenAIResponsesBackend:
             },
             retries=tuple(event.to_dict() for event in failed_attempts),
         )
-
-
-def make_openai_client() -> Any:
-    """Build the SDK client. Reads the API key from the environment only; never logs it."""
-    api_key = os.environ.get(API_KEY_ENV)
-    if not api_key:
-        raise RuntimeError(f"{API_KEY_ENV} must be set in the environment")
-    import openai  # lazy: previews and tests never import the SDK
-
-    return openai.OpenAI(api_key=api_key, max_retries=SDK_MAX_RETRIES, timeout=REQUEST_TIMEOUT_S)
