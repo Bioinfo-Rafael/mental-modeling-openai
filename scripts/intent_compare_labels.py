@@ -111,4 +111,4 @@ JA = Labels(
     clock_suffix="）",
 )
 
-LABELS = {"en": EN, "ja": JA}  # keys == intent_compare_config.OUTPUT_LANGUAGES (checked by a test)
+LABELS = {"en": EN, "ja": JA}  # keys == mtd_rl_xavier.intent_compare.OUTPUT_LANGUAGES (checked by a test)

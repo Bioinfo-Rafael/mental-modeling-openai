@@ -19,7 +19,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from intent_compare_config import CLIPS_MANIFEST, DEFAULT_CONFIG, clip_bounds, load_config
+from mtd_rl_xavier.intent_compare import CLIPS_MANIFEST, DEFAULT_CONFIG, clip_bounds, load_compare
 
 FRAME_PATTERN = re.compile(r"frame=\s*(\d+)")
 FPS_PATTERN = re.compile(r"(\d+(?:\.\d+)?) fps")
@@ -104,7 +104,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument("--full", type=Path, required=True, help="full-episode mp4 from acmi_to_mp4.py")
     args = parser.parse_args(argv)
-    config = load_config(args.config)
+    config = load_compare(args.config)
     config.clips_dir.mkdir(parents=True, exist_ok=True)
     manifest = make_clips(args.full, config.clips_dir, config.steps, config)
     (config.clips_dir / CLIPS_MANIFEST).write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")

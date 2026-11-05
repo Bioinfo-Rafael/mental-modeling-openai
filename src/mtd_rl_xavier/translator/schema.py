@@ -169,6 +169,13 @@ class TriggerReason:
         }
 
 
+# The intent output contract, defined once: the Translator's strict parser and both methods of the
+# intent comparison (``mtd_rl_xavier.intent_compare.payload_problem``) accept exactly these keys.
+# The intent length cap is a parameter: the Translator CLI reads ``translation.max_intent_chars``,
+# the comparison defaults to ``intent_compare.MAX_INTENT_CHARS``.
+INTENT_OUTPUT_KEYS = frozenset({"intent", "evidence"})
+
+
 @dataclass(frozen=True)
 class IntentTranslation:
     intent: str

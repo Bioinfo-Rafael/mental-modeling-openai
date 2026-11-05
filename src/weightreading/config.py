@@ -2,16 +2,17 @@
 
 from __future__ import annotations
 
+from collections.abc import Collection
 from dataclasses import dataclass
 from pathlib import Path
 
 import yaml
 
-from weightreading.retry import DEFAULT_RETRY_POLICY, MAX_ALLOWED_RETRIES, RetryPolicy
+from mtd_rl_xavier.llm.openai_responses import REASONING_EFFORTS
+from mtd_rl_xavier.llm.retry import DEFAULT_RETRY_POLICY, MAX_ALLOWED_RETRIES, RetryPolicy
 
 BACKENDS = ("openai-responses",)
 TASK_MODES = ("shown", "blind")
-REASONING_EFFORTS = ("none", "minimal", "low", "medium", "high", "xhigh")
 TOP_LEVEL_KEYS = {"backend", "model", "reasoning_effort", "task_mode", "limits", "sandbox", "pricing", "retry"}
 LIMIT_KEYS = {"max_runs", "max_output_tokens", "max_total_tokens", "max_protocol_errors"}
 SANDBOX_KEYS = {
@@ -96,10 +97,10 @@ def _positive_ints(section: dict, keys: set[str], name: str) -> dict[str, int]:
     return values
 
 
-def _choice(raw: dict, key: str, choices: tuple[str, ...]) -> str:
+def _choice(raw: dict, key: str, choices: Collection[str]) -> str:
     value = raw.get(key)
-    if value not in choices:
-        raise ConfigError(f"{key} must be one of {list(choices)}")
+    if not isinstance(value, str) or value not in choices:
+        raise ConfigError(f"{key} must be one of {sorted(choices)}")
     return value
 
 

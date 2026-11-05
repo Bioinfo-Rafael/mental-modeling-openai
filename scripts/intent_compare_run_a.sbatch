@@ -11,8 +11,8 @@
 # Short Japanese answers (intent <= 200, <= 4 evidence items of <= 80 characters; new run id):
 #   INTENT_COMPARE_CONFIRM_PAID=yes RUN_ID=seed100601-ja-short COMPARE=configs/intent_compare/compare.ja-short.yaml \
 #     sbatch --export=ALL scripts/intent_compare_run_a.sbatch
-# OPENAI_API_KEY must already be in the submitting environment (read only by the Translator's
-# make_openai_client); this script never reads or sources a .env file.
+# OPENAI_API_KEY must already be in the submitting environment (read only by the shared
+# mtd_rl_xavier.llm make_openai_client, as in method B); this script never reads or sources a .env file.
 # Optional: RUN_ID (default seed<seed>), COMPARE (the shared compare config, same name as in
 # intent_compare_run_b.sbatch; CONFIG is accepted as an alias), MAX_OUTPUT_TOKENS, UV.
 #SBATCH -p 151-partition

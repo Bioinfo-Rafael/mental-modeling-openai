@@ -8,9 +8,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+import mtd_rl_xavier
 import weightreading
 
 GIT_TIMEOUT_S = 10
+SHARED_MODULES = ("intent_compare.py", "llm/openai_responses.py", "llm/retry.py", "translator/schema.py")
 
 
 def sha256_file(path: Path) -> str:
@@ -26,9 +28,16 @@ def sha256_text(text: str) -> str:
 
 
 def code_hashes() -> dict[str, str]:
-    """``weightreading/<file>.py`` -> sha256 for every module of this package."""
+    """``weightreading/<file>.py`` -> sha256 for every module of this package, plus the shared modules.
+
+    The shared modules (``SHARED_MODULES``) hold the compare.yaml parser, the answer contract, the
+    OpenAI client factory and the retry policy that method B uses together with method A.
+    """
     package = Path(weightreading.__file__).resolve().parent
-    return {f"weightreading/{p.name}": sha256_file(p) for p in sorted(package.glob("*.py"))}
+    own = {f"weightreading/{p.name}": sha256_file(p) for p in sorted(package.glob("*.py"))}
+    library = Path(mtd_rl_xavier.__file__).resolve().parent
+    shared = {f"mtd_rl_xavier/{name}": sha256_file(library / name) for name in SHARED_MODULES}
+    return {**own, **shared}
 
 
 def git_state(root: Path) -> dict[str, object]:

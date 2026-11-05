@@ -20,16 +20,16 @@ from intent_compare_a_requests import (
     provenance,
     sha256_text,
 )
-from intent_compare_config import DEFAULT_CONFIG, CompareConfig, load_config
 from intent_compare_run_a import EXIT_OK, RunPaths, execute
 
+from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG, DEFAULT_LIMITS, AnswerLimits, CompareConfig, limits_sentence
+from mtd_rl_xavier.intent_compare import load_compare as load_config
 from mtd_rl_xavier.translator.translation import (
     IntentModelOutput,
     TranslationPrompt,
     build_prompt,
 )
 from tests.weightreading.test_wr_intent_units import _mappo_message
-from weightreading.intent_protocol import DEFAULT_LIMITS, AnswerLimits, limits_sentence
 
 MAX_OUTPUT_TOKENS = 25_000
 JA_CONFIG = DEFAULT_CONFIG.with_name("compare.ja.yaml")

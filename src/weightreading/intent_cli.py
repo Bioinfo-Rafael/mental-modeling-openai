@@ -13,9 +13,9 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from mtd_rl_xavier.intent_compare import check_run_id
 from weightreading import intent_execute, intent_run
 from weightreading.commands import DEFAULT_OUTPUT_ROOT, utc_stamp
-from weightreading.intent_config import check_run_id
 from weightreading.intent_run import EXIT_OK
 
 COMMANDS = ("intent-preview", "intent-run")

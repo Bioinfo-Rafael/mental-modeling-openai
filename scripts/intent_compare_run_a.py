@@ -5,10 +5,13 @@ Preview by default (no client, no credential read, no network): writes every pro
 body plus a token / cost estimate under ``<output_root>/<run_id>/method_a/preview/``.
 ``--execute --confirm-paid-api`` sends one OpenAI Responses call per (step, aircraft) in
 chronological order; each target chains its own previous translation. Every request is journaled
-before it is sent and nothing is retried. An answer that violates the length limits (or the schema) gets a
+before it is sent. Like method B, the SDK call is retried only by the shared narrow policy of
+``mtd_rl_xavier.llm.retry`` (HTTP 5xx and non-timeout connection failures, bounded, every failed attempt
+logged to stderr and recorded under ``retries`` in ``responses.jsonl``); timeouts and 4xx are never resent.
+An answer that violates the length limits (or the schema) gets a
 ``skipped`` cue like in method B, the chain keeps the last valid answer, and the run goes on; the first
 API failure stops the run. The key comes only
-from the ``OPENAI_API_KEY`` environment variable (read by the Translator's ``make_openai_client``).
+from the ``OPENAI_API_KEY`` environment variable (read by the shared ``make_openai_client``, endpoint pinned).
 Exit codes: 0 ok; 1 failure; 2 usage / gate misuse; 3 a call's outcome is uncertain (may be billed).
 """
 
@@ -17,13 +20,14 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, TextIO
 
 import pandas as pd
 from intent_compare_a_requests import (
+    RETRY_POLICY,
     Slot,
     TranslationSettings,
     answer_problem,
@@ -40,8 +44,9 @@ from intent_compare_a_requests import (
     request_body,
     sha256_text,
 )
-from intent_compare_config import DEFAULT_CONFIG, CompareConfig, load_config
 
+from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG, CompareConfig, load_compare
+from mtd_rl_xavier.llm.retry import RetryEvent, log_to_stderr
 from mtd_rl_xavier.translator.schema import IntentTranslation, ModelCallError, PreviousTranslation
 from mtd_rl_xavier.translator.translation import (
     IntentModel,
@@ -70,6 +75,27 @@ class RunPaths:
     @property
     def source_run(self) -> str:
         return f"{self.run_dir.name}/{self.method_dir.name}"
+
+
+@dataclass
+class RetryJournal:
+    """Failed attempts of the call in flight: logged to stderr, then drained into its responses.jsonl line."""
+
+    pending: tuple[dict[str, Any], ...] = field(default=())
+
+    def record(self, event: RetryEvent) -> None:
+        log_to_stderr(event)
+        self.pending = (*self.pending, event.to_dict())
+
+    def drain(self) -> list[dict[str, Any]]:
+        events, self.pending = list(self.pending), ()
+        return events
+
+
+def attempts_of(retries: list[dict[str, Any]]) -> int:
+    """API attempts behind one logical call: every failed attempt plus the final one unless it gave up."""
+    gave_up = bool(retries) and retries[-1]["delay_s"] is None
+    return len(retries) + (0 if gave_up else 1)
 
 
 def utc_now() -> str:
@@ -131,18 +157,30 @@ def preview(config: CompareConfig, frame: pd.DataFrame, slots: list[Slot], paths
     return EXIT_OK
 
 
+def _retries_field(retries: list[dict[str, Any]]) -> dict[str, Any]:
+    """``{"retries": [...]}`` only when a call needed retries, so retry-free lines keep their old shape."""
+    return {"retries": retries} if retries else {}
+
+
 def _append(handle: TextIO, record: dict[str, Any]) -> None:
     handle.write(json_line(record) + "\n")
     handle.flush()
 
 
-def make_model(config: CompareConfig, settings: TranslationSettings) -> IntentModel:
-    """The real OpenAI Responses model; reads ``OPENAI_API_KEY`` (only called for a paid run)."""
+def make_model(config: CompareConfig, settings: TranslationSettings, journal: RetryJournal | None = None) -> IntentModel:  # fmt: skip
+    """The real OpenAI Responses model; reads ``OPENAI_API_KEY`` (only called for a paid run).
+
+    The SDK client is wrapped in ``RetryingClient`` below the Translator, so the Translator code and
+    its request body are unchanged and only transient failures are resent (method B's policy).
+    """
     from mtd_rl_xavier.llm.openai_responses import OpenAIResponsesClient, make_openai_client
+    from mtd_rl_xavier.llm.retry import RetryingClient
     from mtd_rl_xavier.translator.translation import OpenAIIntentModel
 
+    log = log_to_stderr if journal is None else journal.record
+    sdk_client = RetryingClient(make_openai_client(timeout_s=settings.timeout_s), RETRY_POLICY, log=log)
     return OpenAIIntentModel(
-        OpenAIResponsesClient(make_openai_client(timeout_s=settings.timeout_s)),
+        OpenAIResponsesClient(sdk_client),
         model=config.model,
         reasoning_effort=config.reasoning_effort,
         max_output_tokens=settings.max_output_tokens,
@@ -165,7 +203,7 @@ def invalid_answer_reason(layer: TranslationLayer, output: IntentModelOutput, se
     return translation, None
 
 
-def execute(config: CompareConfig, frame: pd.DataFrame, slots: list[Slot], paths: RunPaths, settings: TranslationSettings, model: IntentModel) -> int:  # fmt: skip
+def execute(config: CompareConfig, frame: pd.DataFrame, slots: list[Slot], paths: RunPaths, settings: TranslationSettings, model: IntentModel, journal: RetryJournal | None = None) -> int:  # fmt: skip
     if paths.cues.exists():
         print(f"refusing to overwrite {paths.cues}; choose a new --run-id", file=sys.stderr)
         return EXIT_USAGE
@@ -176,7 +214,7 @@ def execute(config: CompareConfig, frame: pd.DataFrame, slots: list[Slot], paths
     layer = TranslationLayer(
         model, output_language=settings.output_language, max_intent_chars=settings.max_intent_chars
     )
-    status, error, sent = "completed", None, 0
+    status, error, sent, attempts = "completed", None, 0, 0
     rejected: list[dict[str, str]] = []
     previous: dict[str, PreviousTranslation] = {}
     files = ("requests.jsonl", "responses.jsonl")
@@ -198,15 +236,24 @@ def execute(config: CompareConfig, frame: pd.DataFrame, slots: list[Slot], paths
                 except ModelCallError as exc:
                     status = "uncertain" if exc.uncertain else "failed"
                     error = {"call_id": call_id, "type": exc.error_type, "message": str(exc)}
-                    _append(responses, {"call_id": call_id, "status": status, "raw": exc.raw, "error": error})
+                    retries = journal.drain() if journal else []
+                    attempts += attempts_of(retries)
+                    _append(responses, {"call_id": call_id, "status": status, "raw": exc.raw, "error": error,
+                                        **_retries_field(retries)})  # fmt: skip
                     break
                 except Exception as exc:  # unknown outcome: the request may have reached the server
                     status = "uncertain"
                     error = {"call_id": call_id, "type": type(exc).__name__, "message": "details withheld"}
-                    _append(responses, {"call_id": call_id, "status": status, "raw": None, "error": error})
+                    retries = journal.drain() if journal else []
+                    attempts += attempts_of(retries)
+                    _append(responses, {"call_id": call_id, "status": status, "raw": None, "error": error,
+                                        **_retries_field(retries)})  # fmt: skip
                     break
+                retries = journal.drain() if journal else []
+                attempts += attempts_of(retries)
                 _append(responses, {"call_id": call_id, "status": "ok", "model": output.model,
-                                    "response_id": output.response_id, "usage": output.usage, "raw": output.raw})  # fmt: skip
+                                    "response_id": output.response_id, "usage": output.usage, "raw": output.raw,
+                                    **_retries_field(retries)})  # fmt: skip
                 translation, reason = invalid_answer_reason(layer, output, settings)
                 if translation is None:  # like method B: skipped cue, the chain keeps the last valid answer
                     rejected.append({"call_id": call_id, "reason": str(reason)})
@@ -214,8 +261,8 @@ def execute(config: CompareConfig, frame: pd.DataFrame, slots: list[Slot], paths
                     continue
                 previous = {**previous, slot.aircraft: PreviousTranslation(call_id, slot.step, translation)}
                 _append(cues, cue_record(config, slot, paths.source_run, translation.to_json()))
-    final = {**record, "status": status, "error": error, "api_requests_made": sent, "ended_at": utc_now(),
-             "rejected_answers": rejected}  # fmt: skip
+    final = {**record, "status": status, "error": error, "api_requests_made": sent, "api_attempts": attempts,
+             "ended_at": utc_now(), "rejected_answers": rejected}  # fmt: skip
     write_json(paths.method_dir / "run.json", final)
     print(json.dumps({"run_dir": str(paths.run_dir), "status": status, "api_requests_made": sent, "error": error,
                       "rejected_answers": rejected}))  # fmt: skip
@@ -241,7 +288,7 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    config = load_config(args.config)
+    config = load_compare(args.config)
     run_id = args.run_id or f"seed{config.seed}"
     run_dir = config.run_dir(run_id)
     paths = RunPaths(run_dir, run_dir / METHOD_DIR, config.cues_path(run_id, METHOD))
@@ -250,7 +297,8 @@ def main(argv: list[str] | None = None) -> int:
     slots = plan_slots(config, facts)
     if not args.execute:
         return preview(config, frame, slots, paths, settings)
-    return execute(config, frame, slots, paths, settings, make_model(config, settings))
+    journal = RetryJournal()
+    return execute(config, frame, slots, paths, settings, make_model(config, settings, journal), journal)
 
 
 if __name__ == "__main__":

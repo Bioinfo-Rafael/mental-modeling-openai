@@ -16,9 +16,10 @@ from pathlib import Path
 from typing import Any
 
 from mtd_rl_xavier import paths
+from mtd_rl_xavier.intent_compare import CompareConfigError
+from mtd_rl_xavier.llm.openai_responses import make_openai_client
 from weightreading import commands, eval_cli, intent_cli
 from weightreading.audit import write_audit
-from weightreading.backends import make_openai_client
 from weightreading.bundle import BundleError
 from weightreading.config import TASK_MODES, ConfigError, load_config
 from weightreading.intent_episode import EpisodeError
@@ -149,6 +150,6 @@ def main(argv: list[str] | None = None, client_factory: Callable[[], Any] = make
     except (CheckpointError, SpecError, ConfigError, BundleError, SandboxError, FileExistsError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return EXIT_REFUSED
-    except (EpisodeError, TraceError, IntentAnswerError, PreflightRefused) as exc:
+    except (CompareConfigError, EpisodeError, TraceError, IntentAnswerError, PreflightRefused) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return EXIT_REFUSED

@@ -25,6 +25,7 @@ from mtd_rl_xavier.llm.openai_responses import (
 )
 
 from .schema import (
+    INTENT_OUTPUT_KEYS,
     Alarm,
     Instruction,
     IntentTranslation,
@@ -38,7 +39,7 @@ from .schema import (
 
 PROMPT_VERSION = "translator-intent-v2"
 OUTPUT_SCHEMA_NAME = "intent_translation"
-OUTPUT_KEYS = frozenset({"intent", "evidence"})
+OUTPUT_KEYS = INTENT_OUTPUT_KEYS  # the shared intent output contract (schema.py)
 
 SYSTEM_PROMPT_TEMPLATE = """\
 You translate the recorded behaviour of aircraft in Light Aircraft Game (LAG), an aircraft combat

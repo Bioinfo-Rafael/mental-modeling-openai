@@ -7,8 +7,8 @@ from pathlib import Path
 
 import pytest
 
+from mtd_rl_xavier.llm.openai_responses import API_BASE_URL, OpenAIClientError, make_openai_client
 from weightreading import cli, commands
-from weightreading.backends import make_openai_client
 from weightreading.preflight import PreflightResult
 from weightreading.sandbox import Interpreter
 
@@ -126,8 +126,32 @@ def test_run_execute_with_fakes_produces_complete_run_dir(small_files, tmp_path,
 def test_make_openai_client_without_key_raises(monkeypatch) -> None:
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
 
-    with pytest.raises(RuntimeError, match="OPENAI_API_KEY"):
+    with pytest.raises(OpenAIClientError, match="OPENAI_API_KEY"):
         make_openai_client()
+
+
+def test_cli_default_client_factory_is_the_shared_pinned_factory() -> None:
+    assert cli.main.__defaults__[-1] is make_openai_client
+
+
+def test_cli_default_client_ignores_openai_base_url(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test-not-real")
+    monkeypatch.setenv("OPENAI_BASE_URL", "https://attacker.invalid/v1")
+    monkeypatch.delenv("OPENAI_LOG", raising=False)
+    monkeypatch.delenv("OPENAI_CUSTOM_HEADERS", raising=False)
+
+    client = cli.main.__defaults__[-1]()
+
+    assert str(client.base_url).rstrip("/") == API_BASE_URL
+    assert client.max_retries == 0
+
+
+def test_cli_default_client_refuses_openai_log(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test-not-real")
+    monkeypatch.setenv("OPENAI_LOG", "debug")
+
+    with pytest.raises(OpenAIClientError, match="OPENAI_LOG"):
+        cli.main.__defaults__[-1]()
 
 
 def test_inspect_with_tensor_hashes_prints_hash_map(small_files, capsys) -> None:

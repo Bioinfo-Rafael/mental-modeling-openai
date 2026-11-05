@@ -57,14 +57,16 @@ skip unless they exist under `WEIGHTREADING_MHI_MODEL_DIR` (default `mtd-rl-lag/
 
 `run` without both paid flags writes the same local preview as `preview`; one flag alone is an
 argparse error. The API key is read from the environment only after both flags and the sandbox
-preflight pass. The SDK client uses `max_retries=0`; `retry.py` retries instead, narrowly and visibly (see
+preflight pass. The SDK client is the shared `mtd_rl_xavier.llm.openai_responses.make_openai_client`
+(endpoint pinned to `https://api.openai.com/v1`, `OPENAI_LOG` / `OPENAI_CUSTOM_HEADERS` refused,
+`max_retries=0`); the shared `mtd_rl_xavier.llm.retry` retries instead, narrowly and visibly (see
 "Transient API errors" below). Paid runs belong on compute nodes (see
 `scripts/weightreading_run.sbatch`); the login node is for tests and previews.
 
 ### Intent translation, method B (weights + activations)
 
 Method B of the intent-translation comparison (`configs/intent_compare/compare.yaml`, shared with
-method A): for each (step, aircraft) an LLM session gets the weights `W` and, preloaded read-only as
+method A and parsed by the one shared parser `mtd_rl_xavier/intent_compare.py`): for each (step, aircraft) an LLM session gets the weights `W` and, preloaded read-only as
 `A`, that aircraft's validated replay activations over the window `[max(0, t-59), t]` (`x`,
 `h_prev`, `base.a1/a2`, `gru.r/z/n/h_new`, `gru_norm.y`, `act_mlp.a1/a2`, `heads.logits_k/probs_k`,
 `action`, `step`). No world trajectory. The episode is replayed free-running from `h = 0` on the
@@ -86,7 +88,7 @@ Artifacts: `outputs/weightreading/intent/{previews,runs}/...` (gitignored; input
 
 ### Transient API errors
 
-`retry.py` retries a request only when it almost certainly was not processed (so not billed): an
+`mtd_rl_xavier/llm/retry.py` (shared with method A of the intent comparison) retries a request only when it almost certainly was not processed (so not billed): an
 HTTP 5xx answer, or a connection error that is not a timeout (`openai.APITimeoutError` may have been
 processed, so it is re-raised). 4xx answers (including 429, which also covers insufficient quota),
 bad requests, auth errors and non-`openai` exceptions are never retried. Default: at most 2 retries

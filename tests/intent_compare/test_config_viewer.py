@@ -9,16 +9,17 @@ from pathlib import Path
 
 import pytest
 import yaml
-from intent_compare_config import (
+from intent_compare_labels import EN, JA, LABELS
+from intent_compare_viewer import build_html, cue_cell, load_cues, script
+
+from mtd_rl_xavier.intent_compare import (
     DEFAULT_CONFIG,
     OUTPUT_LANGUAGES,
     CompareConfigError,
     clip_bounds,
-    load_config,
-    parse_config,
+    parse_compare,
 )
-from intent_compare_labels import EN, JA, LABELS
-from intent_compare_viewer import build_html, cue_cell, load_cues, script
+from mtd_rl_xavier.intent_compare import load_compare as load_config
 
 SEED = 100601
 JA_CONFIG = DEFAULT_CONFIG.with_name("compare.ja.yaml")
@@ -33,9 +34,9 @@ def test_load_config_shared_file_has_fixed_decisions() -> None:
     assert config.t_s(315) == 63.0
 
 
-def test_parse_config_missing_key_raises() -> None:
+def test_parse_compare_missing_key_raises() -> None:
     with pytest.raises(CompareConfigError, match="missing"):
-        parse_config({"seed": 1}, Path("x.yaml"))
+        parse_compare({"seed": 1}, Path("x.yaml"), "sha")
 
 
 @pytest.mark.parametrize(
@@ -83,7 +84,7 @@ def test_output_language_absent_defaults_to_en_and_ja_file_differs_only_in_langu
     english, japanese = load_config(DEFAULT_CONFIG), load_config(JA_CONFIG)
 
     assert english.output_language == "en" and japanese.output_language == "ja"
-    same = dataclasses.replace(japanese, output_language="en", source_path=english.source_path)
+    same = dataclasses.replace(japanese, output_language="en", path=english.path, sha256=english.sha256)
     assert same == english
 
 
@@ -95,11 +96,11 @@ def test_ja_config_file_adds_only_output_language_to_the_shared_keys() -> None:
 
 
 @pytest.mark.parametrize("language", ["fr", "", "EN", None, 1, ["ja"]])
-def test_parse_config_invalid_output_language_raises(language: object) -> None:
+def test_parse_compare_invalid_output_language_raises(language: object) -> None:
     raw = {**yaml.safe_load(DEFAULT_CONFIG.read_text(encoding="utf-8")), "output_language": language}
 
     with pytest.raises(CompareConfigError, match="output_language"):
-        parse_config(raw, Path("x.yaml"))
+        parse_compare(raw, Path("x.yaml"), "sha")
 
 
 def test_label_tables_cover_exactly_the_supported_languages() -> None:

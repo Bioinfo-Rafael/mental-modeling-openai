@@ -13,8 +13,9 @@ from intent_compare_a_requests import (
     plan_slots,
     prompt_for,
 )
-from intent_compare_config import DEFAULT_CONFIG, CompareConfigError, load_config, parse_config
 
+from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG, CompareConfigError, parse_compare
+from mtd_rl_xavier.intent_compare import load_compare as load_config
 from mtd_rl_xavier.translator.pipeline import EpisodeFacts
 from mtd_rl_xavier.translator.translation import system_prompt
 
@@ -73,11 +74,11 @@ def test_ja_short_config_is_the_ja_config_plus_exactly_the_three_limits() -> Non
 
 @pytest.mark.parametrize("key", ["max_intent_chars", "max_evidence_items", "max_evidence_chars"])
 @pytest.mark.parametrize("value", [0, -3, 1.5, "80", None, True])
-def test_parse_config_rejects_invalid_limit_values(key: str, value: object) -> None:
+def test_parse_compare_rejects_invalid_limit_values(key: str, value: object) -> None:
     raw = {**yaml.safe_load(DEFAULT_CONFIG.read_text(encoding="utf-8")), key: value}
 
     with pytest.raises(CompareConfigError, match=key):
-        parse_config(raw, DEFAULT_CONFIG)
+        parse_compare(raw, DEFAULT_CONFIG, "sha")
 
 
 def test_translator_prompt_has_no_evidence_limit_slot() -> None:

@@ -127,6 +127,8 @@ def test_request_accepts_every_supported_reasoning_effort(effort: str) -> None:
     [
         {"reasoning_effort": "none"},
         {"reasoning_effort": "minimal"},
+        {"reasoning_effort": "turbo"},  # not in the SDK's ReasoningEffort set
+        {"reasoning_effort": "High"},  # matching is exact
         {"model": ""},
         {"instructions": "   "},
         {"schema_name": "has space"},
