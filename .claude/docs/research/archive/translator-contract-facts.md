@@ -112,7 +112,7 @@ No code anywhere implements change-point detection or a "request point". The ter
 | Swap time | `order_role_swap_spec.md` | Mid-episode instruction change at step 100; O-L1/O-L2/O-L3 = probability change / executed action change / approach to the new target after the swap |
 | Family O columns | `instruction_evaluation_readiness.md` (manabe/dev) | "instruction ID start, end, cancel, residual window" listed as needed but not implemented |
 | Human-picked centre steps | `mtd-rl-xavier/workspace/17_commentary_LAG/README.md` | User picked steps "where motion changed most" (45, 145, 245, 315 in the shared run; repo fixes 45, 85, 145, 245, 310) with a ±30-step window; LLM explains intent per aircraft (`A0100..B0200` JSON) |
-| Judge timestamps | `mtd-rl-xavier/.claude/docs/research/feature-llm-judge-intent-translation-eval-brief.md` | Start/change/request points are judge inputs, stored in simulation steps (0.2 s) with a `source` label (human / video_llm / translator); how to detect the change point is explicitly open |
+| Judge timestamps | `mtd-rl-xavier/.claude/docs/research/archive/feature-llm-judge-intent-translation-eval-brief.md` | Start/change/request points are judge inputs, stored in simulation steps (0.2 s) with a `source` label (human / video_llm / translator); how to detect the change point is explicitly open |
 
 ## vLLM / Local Serving Found
 

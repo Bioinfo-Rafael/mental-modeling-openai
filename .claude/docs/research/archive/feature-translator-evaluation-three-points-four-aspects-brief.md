@@ -1,9 +1,9 @@
 ## Feature Brief: Translator evaluation, 3 time points x 4 aspects
 
 Mode: /feature MODE=existing. Requirement (authoritative, verbatim Japanese):
-`.claude/docs/research/eval-3points-4aspects-request.md`. Decisions D1-D49:
+`.claude/docs/research/archive/eval-3points-4aspects-request.md`. Decisions D1-D49:
 `.claude/docs/research/translator-requirements.md`. Codebase scan:
-`.claude/docs/research/feature-translator-evaluation-three-points-four-aspects-codebase.md`.
+`.claude/docs/research/archive/feature-translator-evaluation-three-points-four-aspects-codebase.md`.
 Plan: `.claude/docs/plans/feature-translator-evaluation-three-points-four-aspects-plan.md`.
 
 ### Current State

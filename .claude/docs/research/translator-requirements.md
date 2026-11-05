@@ -88,7 +88,7 @@ truncated from the END (budget min(16384, max_model_len)) so the client must bud
 
 | # | Topic | Decision |
 |---|-------|----------|
-| D38 | Review fix scope | Fix the recommended set before any paid run: explicit OpenAI base_url, judge prompt-injection fencing, JSONL split on "\n" only + duplicate-key rejection, config URL/secret leak, uncertain status kept on interrupt/final-write failure, High test gaps (budget non-fit, --run-name traversal), small fixes (`/private/` ignored whole, etc.). Reports: `.claude/docs/research/review-{security,quality,tests}-llm-judge-intent-translation-eval.md`. |
+| D38 | Review fix scope | Fix the recommended set before any paid run: explicit OpenAI base_url, judge prompt-injection fencing, JSONL split on "\n" only + duplicate-key rejection, config URL/secret leak, uncertain status kept on interrupt/final-write failure, High test gaps (budget non-fit, --run-name traversal), small fixes (`/private/` ignored whole, etc.). Reports: `.claude/docs/research/archive/review-{security,quality,tests}-llm-judge-intent-translation-eval.md`. |
 | D39 | Detector endpoint default | UDS under a per-user 0700 directory is the default in `configs/translator/run.yaml`; loopback TCP stays selectable by config. |
 | D40 | File permissions | Keep the current umask (007); the 0700 run directory is the protection. No umask change. |
 | D41 | Over-long intent | Keep the current policy: an intent over `translation.max_intent_chars` fails the run (limit configurable). |

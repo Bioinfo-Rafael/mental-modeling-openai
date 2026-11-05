@@ -1,7 +1,9 @@
 # Plan: LLM as a Translator (two-layer) + LLM-as-a-judge for LAG
 
+> **Historical plan.** Implemented and merged in PR #3 / #5; kept for the reasoning behind the design. Where it differs from the code or from `.claude/docs/research/translator-requirements.md` (e.g. decisions that superseded parts of this plan), the code and the decision log win.
+
 Date: 2026-11-04. Status: design + plan for user approval (nothing implemented).
-Mode: /feature MODE=existing. Requirements: `.claude/docs/research/feature-llm-judge-intent-translation-eval-brief.md`.
+Mode: /feature MODE=existing. Requirements: `.claude/docs/research/archive/feature-llm-judge-intent-translation-eval-brief.md`.
 Decisions D1-D33 (fixed): `.claude/docs/research/translator-requirements.md`.
 Codex consults (read-only, `gpt-5.6-sol`), all under `.claude/logs/codex/`:
 scope `20261103T220250Z-translator-scope.md`, architecture `20261103T221121Z-translator-arch.md`,

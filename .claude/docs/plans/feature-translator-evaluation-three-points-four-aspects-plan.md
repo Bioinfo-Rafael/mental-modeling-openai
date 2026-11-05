@@ -1,15 +1,17 @@
 # Plan: Translator evaluation, 3 time points x 4 aspects (revision 2, simplified)
 
+> **Historical plan.** Implemented and merged in PR #3 / #5; kept for the reasoning behind the design. Where it differs from the code or from `.claude/docs/research/translator-requirements.md` (e.g. decisions that superseded parts of this plan), the code and the decision log win.
+
 Date: 2026-11-04. Status: revision 2 of the approved plan; nothing implemented.
-Requirement (authoritative, verbatim Japanese): `.claude/docs/research/eval-3points-4aspects-request.md`.
+Requirement (authoritative, verbatim Japanese): `.claude/docs/research/archive/eval-3points-4aspects-request.md`.
 Decisions: `.claude/docs/research/translator-requirements.md`; this revision applies **D50-D60**:
 - the Translator is aligned to the user's point definitions;
 - alarms and questions become inputs;
 - the user asked for the simplest implementation and editable defaults:
   「最大限シンプルな実装を心掛けてね」「基本は既定でいい．がちゃんとconfigで編集しやすくしておいて」.
 
-Brief: `.claude/docs/research/feature-translator-evaluation-three-points-four-aspects-brief.md`.
-Codebase scan and leakage evidence: `.claude/docs/research/feature-translator-evaluation-three-points-four-aspects-codebase.md`.
+Brief: `.claude/docs/research/archive/feature-translator-evaluation-three-points-four-aspects-brief.md`.
+Codebase scan and leakage evidence: `.claude/docs/research/archive/feature-translator-evaluation-three-points-four-aspects-codebase.md`.
 Codex consults (read-only, `--caller eval-designer`) are under `.claude/logs/codex/`: revision 1 in
 `20261104T04*-eval-*.md`; revision 2 under "Validation Verdict".
 
