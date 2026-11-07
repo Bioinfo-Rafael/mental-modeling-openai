@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT.parent.parent))
 lag = importlib.import_module('workspace.13_LAG.lag_data.dataset')
 definitions = importlib.import_module('workspace.13_LAG.lag_data.definitions')
 OUT = ROOT / 'data/viz/viewer'
+PROCESSED = ROOT.parent.parent / 'data/mhi/processed'  # the committed episodes live at <repo>/data/mhi/
 
 
 def prepare_frames(movie, eid):
@@ -46,11 +47,11 @@ def prepare_frames(movie, eid):
 
 
 def prepare():
-    manifest = json.loads((ROOT / 'data/processed/manifest.json').read_text())
+    manifest = json.loads((PROCESSED / 'manifest.json').read_text())
     OUT.mkdir(parents=True, exist_ok=True)
     catalog = []
     for episode in manifest['episodes']:
-        path = ROOT / 'data/processed' / episode['output']['path']
+        path = PROCESSED / episode['output']['path']
         frame = lag.load_episode(path)  # schema, hash and unique-key verification
         with path.open(newline='') as handle:
             # Keep original numeric strings for the full-precision inspector.

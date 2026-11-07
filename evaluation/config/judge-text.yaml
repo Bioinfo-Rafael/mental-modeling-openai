@@ -24,19 +24,19 @@ inputs:                             # exactly these six blocks (D15); include: f
     source: scenario_action_video
     videos:                         # episode id (run.json inputs.episode.episode_id) -> its video (D30)
       mhi_v1.3_ic100601_win:
-        path: workspace/13_LAG/data/viz/action_videos/mhi_v1.3_ic100601_win_with_actions.mp4   # relative to the repo root
+        path: data/mhi/action_videos/mhi_v1.3_ic100601_win_with_actions.mp4   # relative to the repo root
         fps: 20                     # the file's own frame rate; a mismatch is a preflight error
         frame_offset: 0             # video frame that shows step 0
         frames_per_step: 1          # frame = frame_offset + step * frames_per_step (D30: frame = step)
         step_seconds: 0.2           # simulation seconds per step (time shown in the label)
       ours_seed100100_ic100601_loss:
-        path: workspace/13_LAG/data/viz/action_videos/ours_seed100100_ic100601_loss_with_actions.mp4
+        path: data/mhi/action_videos/ours_seed100100_ic100601_loss_with_actions.mp4
         fps: 20
         frame_offset: 0
         frames_per_step: 1
         step_seconds: 0.2
       ours_seed100100_ic100606_win:
-        path: workspace/13_LAG/data/viz/action_videos/ours_seed100100_ic100606_win_with_actions.mp4
+        path: data/mhi/action_videos/ours_seed100100_ic100606_win_with_actions.mp4
         fps: 20
         frame_offset: 0
         frames_per_step: 1

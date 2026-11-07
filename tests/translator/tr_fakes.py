@@ -32,7 +32,7 @@ from mtd_rl_xavier.translator.schema import DETECTOR_LABELS, Scenario, sha256_te
 from mtd_rl_xavier.translator.translation import IntentModelOutput, TranslationLayer, TranslationPrompt
 from tests.llm.llm_fakes import choice_answer, json_response, systemone_body
 
-PROCESSED = paths.WORKSPACE / "13_LAG" / "data" / "processed"
+PROCESSED = paths.ROOT / "data" / "mhi" / "processed"
 EPISODE_CSV = {
     episode_id: PROCESSED / f"{episode_id}.csv"
     for episode_id in ("mhi_v1.3_ic100601_win", "ours_seed100100_ic100601_loss", "ours_seed100100_ic100606_win")

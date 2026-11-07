@@ -15,8 +15,8 @@ scenario_id: placeholder-episode-01
 episode:
   episode_id: mhi_v1.3_ic100601_win
   alias: episode_01                 # neutral alias; the only episode name a model sees
-  csv_path: ../../workspace/13_LAG/data/processed/mhi_v1.3_ic100601_win.csv
-  video_path: ../../workspace/13_LAG/data/viz/action_videos/mhi_v1.3_ic100601_win_with_actions.mp4
+  csv_path: ../../data/mhi/processed/mhi_v1.3_ic100601_win.csv
+  video_path: ../../data/mhi/action_videos/mhi_v1.3_ic100601_win_with_actions.mp4
 instructions:
   - instruction_id: placeholder-aircraft-001
     issue_step: 0

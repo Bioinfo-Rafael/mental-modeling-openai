@@ -21,17 +21,17 @@ uv run python workspace/13_LAG/viewer/serve.py
 ## 実験用の統合CSV
 
 3試合それぞれについて、A・Bチームの4機体、全ミサイル、撃墜・爆発の表示、元データの状態・行動・確率・発射・消滅を、1時刻×1オブジェクトのCSVに統合した。
-保存先は[`data/processed/`](data/processed/)。Bチームの選択行動・ミサイルの制御指令・rewardは未収録で、推定補完していない。
+保存先はリポジトリ直下の[`data/mhi/processed/`](../../data/mhi/processed/)。Bチームの選択行動・ミサイルの制御指令・rewardは未収録で、推定補完していない。
 
-**列定義、時刻・欠損・精度の規則、履歴長・機体・ミサイルを切り替えるコード例は[統合CSVの設計と利用方法](data/processed/README.md)を参照。**
+**列定義、時刻・欠損・精度の規則、履歴長・機体・ミサイルを切り替えるコード例は[統合CSVの設計と利用方法](../../data/mhi/processed/README.md)を参照。**
 
 | ファイル | 行数 |
 |---|---:|
-| [`mhi_v1.3_ic100601_win.csv`](data/processed/mhi_v1.3_ic100601_win.csv) | 2,124 |
-| [`ours_seed100100_ic100601_loss.csv`](data/processed/ours_seed100100_ic100601_loss.csv) | 1,893 |
-| [`ours_seed100100_ic100606_win.csv`](data/processed/ours_seed100100_ic100606_win.csv) | 3,016 |
+| [`mhi_v1.3_ic100601_win.csv`](../../data/mhi/processed/mhi_v1.3_ic100601_win.csv) | 2,124 |
+| [`ours_seed100100_ic100601_loss.csv`](../../data/mhi/processed/ours_seed100100_ic100601_loss.csv) | 1,893 |
+| [`ours_seed100100_ic100606_win.csv`](../../data/mhi/processed/ours_seed100100_ic100606_win.csv) | 3,016 |
 
-全ファイルは64列、原本の数値文字列を保持する。出典・SHA-256・件数・型は[`manifest.json`](data/processed/manifest.json)に記録。
+全ファイルは64列、原本の数値文字列を保持する。出典・SHA-256・件数・型は[`manifest.json`](../../data/mhi/processed/manifest.json)に記録。
 原本は変更せず、間引き・補間・状態の丸め・行動の穴埋めも行わない。
 
 リポジトリルートから：
@@ -52,14 +52,14 @@ uv run python -m pytest workspace/13_LAG/tests -q
 - `data/raw/manifest.json`: コピーした11ファイルの相対パス・サイズ・SHA-256。
 - `data/viz/inspect_acmi.ipynb`: データ確認Notebook（実行結果付き）。
 - `data/viz/acmi_loader.py`: 今回の6成分Tレコード用ローダー。
-- `data/processed/`: 実験条件に依存しない3試合の統合CSV、manifest、詳細README。
+- `../../data/mhi/processed/`（リポジトリ直下の`data/mhi/`）: 実験条件に依存しない3試合の統合CSV、manifest、詳細README。coreのTranslator・Judgeと共有するため移動した。行動付き動画は`../../data/mhi/action_videos/`。
 - `run.py`: 統合CSV生成・照合のエントリポイント。
 - `lag_data/definitions.py`: 64列スキーマ、機体・行動ID・状態10成分・単位の共通定義。
 - `lag_data/prepare.py`: 統合CSVの再生成・元データ照合。
 - `lag_data/dataset.py`: 型付き読み込み、時刻・機体・特徴量の抽出。
 - `tests/test_dataset.py`: データ保持・時刻対応・抽出・再現性を検証。
 
-14〜17とTranslatorは、`lag_data`を昇格した`mtd_rl_xavier.lag`（`src/mtd_rl_xavier/lag/`）を使う。`lag_data/`は13自身（`run.py`・`viewer/prepare.py`・`tests/`）が使い、`data/processed/manifest.json`の`generator`が`prepare.py`と`definitions.py`のSHA-256を記録しているため残す。両者の一致は`tests/lag/test_lag_contract.py`が確認する。
+14〜17とTranslatorは、`lag_data`を昇格した`mtd_rl_xavier.lag`（`src/mtd_rl_xavier/lag/`）を使う。`lag_data/`は13自身（`run.py`・`viewer/prepare.py`・`tests/`）が使い、`data/mhi/processed/manifest.json`の`generator`が`prepare.py`と`definitions.py`のSHA-256を記録しているため残す（`prepare.py`はそのためbyte単位で変更せず、出力先は`run.py`が`data/mhi/processed/`に設定する）。両者の一致は、分離前に記録した`tests/lag/fixtures/lag17-renderer-parity.json`をcoreの`tests/lag/test_lag_contract.py`が照合する。
 
 旧`prepare_data.py`は`run.py`へ、旧`dataset.py`のデータ処理は`lag_data/dataset.py`へ移動した。旧`make_query()`の実験固有処理は廃止し、14の`runner.build_query()`で4課題を構築する。保存CSVの内容は変更していない。
 

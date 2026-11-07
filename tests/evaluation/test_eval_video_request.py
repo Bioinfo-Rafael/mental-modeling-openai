@@ -67,7 +67,7 @@ KEY_POINTS = (KeyPoint("kp-001", "[PLACEHOLDER] key point one"),)
 LAST_STEP = 340
 EPISODES = ("mhi_v1.3_ic100601_win", "ours_seed100100_ic100601_loss", "ours_seed100100_ic100606_win")
 RUN_NAME = "video1"
-COMMITTED_VIDEO = paths.ROOT / "workspace/13_LAG/data/viz/action_videos/mhi_v1.3_ic100601_win_with_actions.mp4"
+COMMITTED_VIDEO = paths.ROOT / "data/mhi/action_videos/mhi_v1.3_ic100601_win_with_actions.mp4"
 EPISODE = VideoEpisode(path=Path("v.mp4"), fps=20.0, frame_offset=0, frames_per_step=1, step_seconds=0.2)
 SAMPLING = VideoSampling(strategy="event_window", before_steps=20, after_steps=20, stride_steps=5, max_frames=12)
 RESIZE = VideoResize(max_width=960, max_height=540, jpeg_quality=85)

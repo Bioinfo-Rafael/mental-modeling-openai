@@ -4,8 +4,8 @@ from pathlib import Path
 
 from mtd_rl_xavier.lag.dataset import STATE_FEATURES
 
-# Committed LAG data (CSV + manifest) of Experiment 13; the loader is mtd_rl_xavier.lag.dataset.
-PROCESSED = Path(__file__).resolve().parents[2] / "13_LAG" / "data" / "processed"
+# Committed MHI data (CSV + manifest), read-only from <repo>/data/mhi/processed (prepared by Experiment 13).
+PROCESSED = Path(__file__).resolve().parents[3] / "data" / "mhi" / "processed"
 
 # The same aliases/model IDs and request options as Experiments 05/06/08-12.
 MODELS = {"sol": "gpt-5.6-sol", "terra": "gpt-5.6-terra", "luna": "gpt-5.6-luna"}

@@ -9,6 +9,7 @@ import pytest
 prep = import_module("workspace.13_LAG.lag_data.prepare")
 lag = import_module("workspace.13_LAG.lag_data.dataset")
 legacy = import_module("workspace.13_LAG.data.viz.acmi_loader")
+prep.OUTPUT = lag.PROCESSED  # <repo>/data/mhi/processed; prepare.py bytes are pinned by the manifest
 STEMS = sorted(p.stem for p in prep.RAW.glob("*.acmi"))
 
 

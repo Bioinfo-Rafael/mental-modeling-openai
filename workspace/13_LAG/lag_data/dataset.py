@@ -8,7 +8,7 @@ import pandas as pd
 from .definitions import ACTIONS, AIRCRAFT, STATE_FEATURES
 
 HERE = Path(__file__).resolve().parents[1]
-PROCESSED = HERE / "data/processed"
+PROCESSED = HERE.parents[1] / "data/mhi/processed"
 
 def load_episode(path, *, verify_hash=True):
     """Read one episode with nullable numeric types and string identifiers.

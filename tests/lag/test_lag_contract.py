@@ -1,21 +1,17 @@
-"""Contract tests for ``mtd_rl_xavier.lag``: parity with the workspace 13/17 originals.
+"""Contract tests for ``mtd_rl_xavier.lag``: parity with the former workspace 13/17 originals.
 
-The workspace modules are imported here only to compute references. The library under
-``src/`` never imports them (see ``test_lag_sources_do_not_import_workspace``).
+The reference outputs of ``workspace/13_LAG/lag_data`` and ``workspace/17_commentary_LAG`` were
+recorded once, before the core/workspace split, in ``fixtures/lag17-renderer-parity.json`` (decision
+D22: the Translator's window is byte-identical to 17's). Core tests never import ``workspace/``.
 """
 
 from __future__ import annotations
 
 import ast
 import hashlib
-import importlib
 import json
 import shutil
-import sys
-from collections.abc import Iterator
-from contextlib import contextmanager
 from pathlib import Path
-from types import SimpleNamespace
 from typing import Any
 
 import pandas as pd
@@ -42,11 +38,9 @@ from mtd_rl_xavier.lag.rendering import (
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LAG_SRC = REPO_ROOT / "src" / "mtd_rl_xavier" / "lag"
-DIR_13 = REPO_ROOT / "workspace" / "13_LAG"
-DIR_17 = REPO_ROOT / "workspace" / "17_commentary_LAG"
-PROCESSED = DIR_13 / "data" / "processed"
-WORKSPACE_SOURCE_DIRS = (DIR_13 / "lag_data", DIR_17 / "commentary_experiment")
-WORKSPACE_MODULE_PREFIXES = ("lag_data", "commentary_experiment")
+PROCESSED = REPO_ROOT / "data" / "mhi" / "processed"
+REFERENCE = Path(__file__).resolve().parent / "fixtures" / "lag17-renderer-parity.json"
+FORBIDDEN_IMPORT_ROOTS = ("workspace", "lag_data", "commentary_experiment")
 
 LAST_COMPLETE_STEPS = {
     "mhi_v1.3_ic100601_win": 340,
@@ -72,35 +66,47 @@ CONSTANT_NAMES = (
     "STATE_FEATURES",
     "STATE_UNITS",
 )
+VALID_HISTORY_KWARGS = (
+    {"length": 20, "stride": 5},
+    {"offsets": [-20, -10, -5, -1]},
+    {"length": 3},
+    {"length": 4, "stride": 2},
+)
+INVALID_HISTORY_CASES = (
+    (-1, {"length": 1}),
+    (100, {"offsets": [-1], "length": 2}),
+    (100, {"offsets": [0]}),
+    (100, {"offsets": [-1, -1]}),
+    (100, {"length": 0}),
+    (3, {"length": 5}),
+)
+SELECT_ARGUMENTS = {"steps": [12, 10, 11], "object_ids": ["B0100", "A0100"], "columns": ["alive", "lon_deg"]}
+WINDOW_PLACEHOLDER = "\x00LAG17_WINDOW\x00"
 
 
-@contextmanager
-def workspace_modules() -> Iterator[SimpleNamespace]:
-    """Import the workspace 13/17 modules without leaving bytecode, sys.path or sys.modules traces."""
-    previous_flag = sys.dont_write_bytecode
-    previous_path = list(sys.path)
-    sys.dont_write_bytecode = True
-    sys.path[:0] = [str(DIR_17), str(DIR_13)]
-    try:
-        yield SimpleNamespace(
-            definitions=importlib.import_module("lag_data.definitions"),
-            dataset=importlib.import_module("lag_data.dataset"),
-            commentary_dataset=importlib.import_module("commentary_experiment.dataset"),
-            prompts=importlib.import_module("commentary_experiment.prompts"),
-        )
-    finally:
-        sys.path[:] = previous_path
-        sys.dont_write_bytecode = previous_flag
-        for name in [m for m in sys.modules if m.split(".")[0] in WORKSPACE_MODULE_PREFIXES]:
-            del sys.modules[name]
+def text_sha256(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def snapshot_workspace_sources() -> dict[str, str]:
-    digests: dict[str, str] = {}
-    for directory in WORKSPACE_SOURCE_DIRS:
-        for path in sorted(p for p in directory.rglob("*") if p.is_file()):
-            digests[str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
-    return digests
+def constant_repr(value: Any) -> str:
+    """``repr`` with sets sorted, so the digest does not depend on string hash randomisation."""
+    return repr(sorted(value)) if isinstance(value, set | frozenset) else repr(value)
+
+
+def frame_digest(frame: pd.DataFrame) -> dict[str, Any]:
+    """Exact values (CSV text keeps full float precision), dtypes and attrs of a frame."""
+    return {
+        "csv_sha256": text_sha256(frame.to_csv()),
+        "dtypes": [str(dtype) for dtype in frame.dtypes],
+        "attrs": {key: str(value) for key, value in frame.attrs.items()},
+    }
+
+
+def window_text(window: dict[str, Any]) -> str:
+    """Window body exactly as workspace 17 built it for the model prompt (used to record the fixture)."""
+    return "\n".join(
+        json.dumps(block, ensure_ascii=False, allow_nan=False, separators=(",", ":")) for block in window["blocks"]
+    )
 
 
 def episode_path(name: str) -> Path:
@@ -108,9 +114,8 @@ def episode_path(name: str) -> Path:
 
 
 @pytest.fixture(scope="module")
-def reference() -> Iterator[SimpleNamespace]:
-    with workspace_modules() as modules:
-        yield modules
+def reference() -> dict[str, Any]:
+    return json.loads(REFERENCE.read_text(encoding="utf-8"))
 
 
 @pytest.fixture(scope="module")
@@ -119,21 +124,8 @@ def frames() -> dict[str, pd.DataFrame]:
 
 
 @pytest.fixture(scope="module")
-def reference_frames(reference: SimpleNamespace) -> dict[str, pd.DataFrame]:
-    return {name: reference.dataset.load_episode(episode_path(name)) for name in LAST_COMPLETE_STEPS}
-
-
-@pytest.fixture(scope="module")
 def mhi(frames: dict[str, pd.DataFrame]) -> pd.DataFrame:
     return frames[MHI]
-
-
-def reference_lag17_text(reference: SimpleNamespace, frame: pd.DataFrame, center: int) -> str:
-    """Window body exactly as workspace 17 builds it for the model prompt."""
-    window = reference.commentary_dataset.build_window(frame, center)
-    return "\n".join(
-        json.dumps(block, ensure_ascii=False, allow_nan=False, separators=(",", ":")) for block in window["blocks"]
-    )
 
 
 def render_centered(frame: pd.DataFrame, center: int) -> rendering.RenderedTrajectory:
@@ -154,19 +146,17 @@ def parsed_lines(trajectory: rendering.RenderedTrajectory) -> list[dict[str, Any
 
 
 @pytest.mark.parametrize("name", CONSTANT_NAMES)
-def test_constant_matches_workspace_definition(reference: SimpleNamespace, name: str) -> None:
-    assert getattr(lag_dataset, name) == getattr(reference.definitions, name)
+def test_constant_matches_workspace_definition(reference: dict[str, Any], name: str) -> None:
+    assert text_sha256(constant_repr(getattr(lag_dataset, name))) == reference["constants_sha256"][name]
 
 
 @pytest.mark.parametrize("name", list(LAST_COMPLETE_STEPS))
 def test_load_episode_matches_workspace_frame_dtypes_and_attrs(
-    frames: dict[str, pd.DataFrame], reference_frames: dict[str, pd.DataFrame], name: str
+    frames: dict[str, pd.DataFrame], reference: dict[str, Any], name: str
 ) -> None:
-    ours, expected = frames[name], reference_frames[name]
+    ours = frames[name]
 
-    pd.testing.assert_frame_equal(ours, expected, check_exact=True)
-    assert list(ours.dtypes) == list(expected.dtypes)
-    assert ours.attrs == expected.attrs
+    assert frame_digest(ours) == reference["frames"][name]
     assert set(ours.attrs) == {"csv_sha256", "schema_version", "dt_s"}
     assert ours.shape[1] == len(lag_dataset.COLUMNS) == 64
 
@@ -200,49 +190,26 @@ def test_load_episode_satisfies_swappable_loader_protocol() -> None:
     assert isinstance(load_episode, EpisodeLoader)
 
 
-@pytest.mark.parametrize(
-    "kwargs",
-    [
-        {"length": 20, "stride": 5},
-        {"offsets": [-20, -10, -5, -1]},
-        {"length": 3},
-        {"length": 4, "stride": 2},
-    ],
-)
-def test_history_steps_matches_workspace(reference: SimpleNamespace, kwargs: dict[str, Any]) -> None:
-    assert history_steps(100, **kwargs) == reference.dataset.history_steps(100, **kwargs)
+@pytest.mark.parametrize("index", range(len(VALID_HISTORY_KWARGS)))
+def test_history_steps_matches_workspace(reference: dict[str, Any], index: int) -> None:
+    case = reference["history_steps"][index]
+
+    assert case["kwargs"] == VALID_HISTORY_KWARGS[index]
+    assert history_steps(100, **case["kwargs"]) == case["steps"]
 
 
-@pytest.mark.parametrize(
-    ("query_step", "kwargs"),
-    [
-        (-1, {"length": 1}),
-        (100, {"offsets": [-1], "length": 2}),
-        (100, {"offsets": [0]}),
-        (100, {"offsets": [-1, -1]}),
-        (100, {"length": 0}),
-        (3, {"length": 5}),
-    ],
-)
-def test_history_steps_with_invalid_arguments_raises_like_workspace(
-    reference: SimpleNamespace, query_step: int, kwargs: dict[str, Any]
-) -> None:
-    with pytest.raises(ValueError):
-        reference.dataset.history_steps(query_step, **kwargs)
+@pytest.mark.parametrize(("query_step", "kwargs"), INVALID_HISTORY_CASES)
+def test_history_steps_with_invalid_arguments_raises_like_workspace(query_step: int, kwargs: dict[str, Any]) -> None:
+    # The workspace 13 original raised ValueError for every case (checked when the fixture was recorded).
     with pytest.raises(LagDataError):
         history_steps(query_step, **kwargs)
 
 
-def test_select_records_and_index_records_match_workspace(
-    reference: SimpleNamespace, mhi: pd.DataFrame, reference_frames: dict[str, pd.DataFrame]
-) -> None:
-    arguments = {"steps": [12, 10, 11], "object_ids": ["B0100", "A0100"], "columns": ["alive", "lon_deg"]}
-    expected_frame = reference_frames[MHI]
+def test_select_records_and_index_records_match_workspace(reference: dict[str, Any], mhi: pd.DataFrame) -> None:
+    selected = select_records(mhi, **SELECT_ARGUMENTS)
 
-    pd.testing.assert_frame_equal(
-        select_records(mhi, **arguments), reference.dataset.select_records(expected_frame, **arguments)
-    )
-    assert index_records(mhi) == reference.dataset.index_records(expected_frame)
+    assert frame_digest(selected)["csv_sha256"] == reference["select_records_sha256"]
+    assert text_sha256(repr(index_records(mhi))) == reference["index_records_sha256"]
 
 
 def test_select_records_with_unknown_column_raises_data_error(mhi: pd.DataFrame) -> None:
@@ -284,14 +251,14 @@ def parity_cases() -> list[tuple[str, int]]:
 
 @pytest.mark.parametrize(("name", "center"), parity_cases())
 def test_render_lag17_jsonl_bytes_equal_workspace_17_window(
-    reference: SimpleNamespace, frames: dict[str, pd.DataFrame], name: str, center: int
+    reference: dict[str, Any], frames: dict[str, pd.DataFrame], name: str, center: int
 ) -> None:
-    expected = reference_lag17_text(reference, frames[name], center)
+    expected_sha256 = reference["lag17_window_sha256"][f"{name}@{center}"]
 
     rendered = render_centered(frames[name], center)
 
-    assert rendered.text.encode("utf-8") == expected.encode("utf-8")
-    assert rendered.sha256 == hashlib.sha256(expected.encode("utf-8")).hexdigest()
+    assert text_sha256(rendered.text) == expected_sha256
+    assert rendered.sha256 == expected_sha256
     assert (rendered.start_step, rendered.end_step, rendered.anchor_step) == (
         center - HALF_WINDOW,
         center + HALF_WINDOW,
@@ -301,13 +268,15 @@ def test_render_lag17_jsonl_bytes_equal_workspace_17_window(
 
 
 def test_render_lag17_jsonl_text_is_embedded_verbatim_in_workspace_prompt(
-    reference: SimpleNamespace, mhi: pd.DataFrame
+    reference: dict[str, Any], mhi: pd.DataFrame
 ) -> None:
-    center = MHI_CENTERS[0]
-    window = reference.commentary_dataset.build_window(mhi, center)
-    user_message = reference.prompts.build_messages(window)[1]["content"]
+    embedding = reference["prompt_embedding"]
+    rendered = render_centered(mhi, embedding["center"])
 
-    assert render_centered(mhi, center).text in user_message
+    user_message = embedding["template"].replace(WINDOW_PLACEHOLDER, rendered.text)
+
+    assert embedding["template"].count(WINDOW_PLACEHOLDER) == 1
+    assert text_sha256(user_message) == embedding["message_sha256"]
 
 
 def test_render_lag17_jsonl_records_metadata(mhi: pd.DataFrame) -> None:
@@ -410,7 +379,7 @@ def first_death_step(frame: pd.DataFrame) -> int:
 
 @pytest.mark.parametrize("name", list(LAST_COMPLETE_STEPS))
 def test_render_lag17_jsonl_window_after_death_renders_alive_zero_rows(
-    reference: SimpleNamespace, frames: dict[str, pd.DataFrame], name: str
+    reference: dict[str, Any], frames: dict[str, pd.DataFrame], name: str
 ) -> None:
     frame = frames[name]
     death = first_death_step(frame)
@@ -431,7 +400,7 @@ def test_render_lag17_jsonl_window_after_death_renders_alive_zero_rows(
     for line in post_death:
         aircraft_ids = {e["object_id"] for e in line["entities"] if e["entity_type"] == "aircraft"}
         assert aircraft_ids == set(AIRCRAFT)
-    assert rendered.text == reference_lag17_text(reference, frame, center)
+    assert text_sha256(rendered.text) == reference["lag17_window_sha256"][f"{name}@{center}"]
 
 
 def test_render_detector_compact_window_after_death_renders_alive_zero_rows(mhi: pd.DataFrame) -> None:
@@ -617,19 +586,6 @@ def imported_module_names(path: Path) -> list[str]:
 
 @pytest.mark.parametrize("path", sorted(LAG_SRC.glob("*.py")), ids=lambda p: p.name)
 def test_lag_sources_do_not_import_workspace(path: Path) -> None:
-    forbidden = ("workspace", *WORKSPACE_MODULE_PREFIXES)
-
-    offenders = [n for n in imported_module_names(path) if n.split(".")[0] in forbidden]
+    offenders = [n for n in imported_module_names(path) if n.split(".")[0] in FORBIDDEN_IMPORT_ROOTS]
 
     assert offenders == []
-
-
-def test_workspace_sources_are_unchanged_by_reference_import_and_rendering() -> None:
-    before = snapshot_workspace_sources()
-
-    with workspace_modules() as modules:
-        frame = modules.dataset.load_episode(episode_path(MHI))
-        modules.commentary_dataset.build_window(frame, 45)
-    render_centered(load_episode(episode_path(MHI)), 45)
-
-    assert snapshot_workspace_sources() == before
