@@ -97,11 +97,12 @@ def resolve_recorded(root: Path, relative: str | Path) -> Path:
 
     The path is used as recorded when it exists, so current-layout records and test
     fixtures are unaffected; otherwise it is read as an old-layout path. A caller that passes the
-    repository root (experiment scripts written before the split) gets the path under ``ROOT``.
+    repository root (experiment scripts written before the split) always gets the path under ``ROOT``:
+    a recorded path that still exists in the core must not resolve into it.
     """
+    if Path(root).resolve() == REPOSITORY_ROOT:
+        return ROOT / current_relpath(relative)
     recorded = root / relative
     if recorded.exists():
         return recorded
-    if Path(root).resolve() == REPOSITORY_ROOT:
-        return ROOT / current_relpath(relative)
     return root / current_relpath(relative)

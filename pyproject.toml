@@ -78,4 +78,4 @@ ignore = ["E501"]
 
 [tool.poe.tasks]
 test = { cmd = "pytest", help = "Core tests (Translator, methods A/B, judge)" }
-lint = { cmd = "ruff check src tests evaluation", help = "Lint the library, its tests and the evaluation package" }
+lint = { cmd = "ruff check src tests evaluation scripts", help = "Lint the library, its tests, the evaluation package and scripts" }

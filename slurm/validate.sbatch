@@ -54,7 +54,8 @@ case "$MODE" in
       echo "imports and --help from outside the repository: ok"
     )
     found="$(mktemp)"
-    git grep -nE -f tests/fixtures/stale-paths.pattern -- README.md pyproject.toml src evaluation configs tests slurm scripts \
+    # No line numbers (-n is dropped on purpose): an edit elsewhere in a file must not break the allowlist.
+    git grep -hE -f tests/fixtures/stale-paths.pattern -- README.md pyproject.toml src evaluation configs tests slurm scripts \
       ':!tests/fixtures/stale-paths.pattern' ':!tests/fixtures/allowed-stale-paths.txt' > "$found" || true
     diff -u tests/fixtures/allowed-stale-paths.txt "$found"
     echo "stale-path grep: only allowlisted lines"

@@ -24,7 +24,7 @@ coreはこの2つだけを扱います。旧LLM-Xavierの研究コードは独�
 | `src/mtd_rl_xavier/` | M1 Translator（`translator/`）、手法A・比較用viewer・変換（`intent_compare/`）、LLM client（`llm/`）、LAGデータの読込と描画（`lag/`） |
 | `src/weightreading/` | 手法B（`sandbox-selftest`、`intent-preview`、`intent-run`） |
 | `evaluation/` | Judge 2種と設定（`config/`）、入力例（`examples/`） |
-| `configs/` | Translator・手法A/B の設定。`compare*.yaml` と `intent_b.yaml` はmethod Bのresumeが内容を照合するので編集しない |
+| `configs/` | Translator・手法A/B の設定。`compare*.yaml` と `intent_b.yaml` はmethod Bのresumeがバイト列を照合するので編集しない。中の古いコメント（`intent_compare/compare*.yaml`、`weightreading/intent_b.yaml`）も意図的にそのまま残している |
 | `data/mhi/` | MHI v1.3の3試合（CSV・manifest・行動付き動画）。読み取り専用 |
 | `slurm/` | すべてのSlurm job と `common.sh`（[slurm/README.md](slurm/README.md)） |
 | `scripts/` | mtd-rl-lag側のinterpreterで動くhelperと、resume互換性の確認script |
@@ -40,6 +40,9 @@ coreはこの2つだけを扱います。旧LLM-Xavierの研究コードは独�
 ```bash
 sbatch slurm/uv_sync.sbatch          # .venv を uv.lock どおりに作る（uv.lock が変わったときも）
 ```
+
+`sbatch slurm/uv_sync.sbatch` には `uv` が必要です。既定の場所は `$HOME/.local/bin/uv` で、別の場所にある場合は `UV=<uvのパス>` で指定します。
+エピソード準備・rollout記録・method Bのparity確認の各jobは、隣の `../mtd-rl-lag` チェックアウトを使います。別の場所に置くときは `LAG_ROOT=<パス>` を指定します。
 
 jobは `.venv/bin/python` を直接使い、job内で `uv sync` は行いません。
 ログは `logs/slurm/<job名>-<job ID>.out` に出ます。

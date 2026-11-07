@@ -29,6 +29,7 @@ case "$CONFIG" in
 esac
 RUN_ID="$(arg_value --run-id "$@")"
 
+log_header "$0" "$MODE" "config=$CONFIG"
 "$PY" -m weightreading sandbox-selftest --config "$CONFIG"
 if [ "$MODE" = preview ]; then
   CMD=("$PY" -m weightreading intent-preview "$@")

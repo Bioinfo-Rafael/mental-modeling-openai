@@ -61,6 +61,17 @@ def test_resolve_recorded_from_the_repository_root_lands_in_the_workspace() -> N
     assert paths.resolve_recorded(paths.REPOSITORY_ROOT, "data/llmx_data/a.npz") == paths.ROOT / "data/llmx_data/a.npz"
 
 
+def test_resolve_recorded_from_the_repository_root_never_resolves_into_the_core() -> None:
+    # src/mtd_rl_xavier/ still exists in the core, but a recorded path belongs to the workspace library.
+    recorded = "src/mtd_rl_xavier/lag/dataset.py"
+    assert (paths.REPOSITORY_ROOT / recorded).exists()
+
+    resolved = paths.resolve_recorded(paths.REPOSITORY_ROOT, recorded)
+
+    assert resolved == paths.ROOT / paths.current_relpath(recorded)
+    assert paths.ROOT in resolved.parents
+
+
 def test_resolve_recorded_prefers_existing_path(tmp_path: Path) -> None:
     recorded = tmp_path / "experiments/01_x/results/a.json"
     recorded.parent.mkdir(parents=True)
