@@ -6,14 +6,13 @@ The endpoint rules the local parts share live outside this package, in
 `mtd_rl_xavier/local_endpoint.py`, and each part re-raises their fixed messages as its own
 configuration error. Protocols live on the consumer side (`translator/`, `evaluation/`), and only
 the composition roots (`translator/cli.py`, `evaluation/cli.py`, `evaluation/assess_cli.py`,
-`weightreading/cli.py`, `scripts/intent_compare_run_a.py`) build concrete clients.
+`weightreading/cli.py`, `mtd_rl_xavier/intent_compare/method_a_cli.py`) build concrete clients.
 
 | Module | Part | Phase |
 |---|---|---|
 | `openai_responses.py` | Paid OpenAI Responses API: strict JSON-schema output, text + image input | PHASE-1 |
 | `retry.py` | Narrow, logged retry (HTTP 5xx and non-timeout connection errors) for the intent comparison (methods A and B, weightreading) | - |
 | `system_one.py` | Local `POST /v1/systemone` (vLLM `clef-flash`, OpenJev `wev serve`) | PHASE-1 |
-| `vllm_chat.py` | Local OpenAI-compatible `chat.completions` client (generative models) | L1 (not wired into the Translator; L2) |
 | `vllm_server.py` | `vllm serve` launcher: allowlisted argv, health wait, teardown, CLI | L1 |
 
 The SLURM template `scripts/translator_vllm.sbatch` runs the launcher and the Translator CLI in one
@@ -101,47 +100,6 @@ one-GPU job. Nothing in L1 has been run against a real server: see
 
   Nothing is retried. Messages carry only the path and the HTTP status. When a response was
   received, its parsed body is kept on `.raw` and never copied into the message.
-
-## `vllm_chat.py`
-
-- For a GENERATIVE model served by `vllm serve`. clef-flash is a pooling model that answers only
-  `/v1/systemone` (use `system_one.py` for it); it does not serve chat completions.
-- `make_vllm_chat_client(base_url=..., uds_path=..., api_key_env=..., timeout_s=...)` validates the
-  endpoint with the same rules as `SystemOneClient` (exactly one of a Unix socket or a literal
-  loopback TCP root) and then builds an `openai.OpenAI` client with:
-  - `base_url` = `http://localhost/v1` over the socket, or `<loopback root>/v1` over TCP;
-  - the Bearer key read from the variable named by `api_key_env`. The key is required here even
-    over UDS, because the launcher always protects `/v1`;
-  - `max_retries=0`, and its own httpx client and transport with `trust_env=False` (no proxy,
-    `.netrc` or CA variables), no redirects, no transport retries, and `uds=` for a socket;
-  - no `OpenAI-Organization` / `OpenAI-Project` headers, even if `OPENAI_ORG_ID` /
-    `OPENAI_PROJECT_ID` are set.
-
-  It refuses to start while `OPENAI_LOG` or `OPENAI_CUSTOM_HEADERS` is set, or while the `openai`
-  SDK logger is enabled for DEBUG (at DEBUG the SDK logs the request, including the messages).
-  `OPENAI_API_KEY` and `OPENAI_BASE_URL` are never used, because the key and URL are passed
-  explicitly.
-- `VLLMChatClient(client).complete(VLLMChatRequest(...))` sends `model`, `messages`
-  (`ChatMessage(role, content)`, roles `system|user|assistant`) and `max_tokens`, plus
-  `temperature` and `seed` only when set. `schema_name` + `schema` add `response_format` =
-  `json_schema` with `strict: true` (unverified on vLLM, see below). `build_chat_body(request)`
-  returns the exact body, so a preview needs no client.
-- A response must be a `chat.completion` with exactly one choice (index 0) from the `assistant`
-  role. The result keeps `content`, `finish_reason`, usage (`prompt_tokens`,
-  `completion_tokens`) and the full `raw` response.
-- Errors mirror `openai_responses`:
-  - `VLLMChatIncompleteError` when `finish_reason == "length"`;
-  - `VLLMChatRefusalError` on a refusal;
-  - `VLLMChatConfigError` before anything is sent;
-  - `VLLMChatError` for everything else. `.uncertain` is True for connection failures, timeouts,
-    HTTP 5xx and unreadable responses: do not resend.
-
-  Messages carry only the SDK error class, the HTTP status and fixed text. A `finish_reason` is
-  shown only if it is a known value, and as `other` otherwise. Unlike `openai_responses`, the SDK
-  exception is never chained: `__cause__` and `__context__` stay empty, because its message can
-  quote the response body and its `request` carries the Bearer key.
-- Nothing touches the network at import or construction. `health(model)` is an authenticated
-  `GET /v1/models` on demand.
 
 ## `vllm_server.py`
 
@@ -255,8 +213,6 @@ vLLM 0.33.0: `vllm serve <model>`, `--revision`, `--served-model-name`, `--max-m
 | Every vLLM worker process stays in the server's process group | `stop_server` | a worker outside the group survives until SLURM ends the job |
 | `VLLM_NO_USAGE_STATS` / `DO_NOT_TRACK` are the usage-statistics opt-outs | child env | usage statistics may be sent if the compute node has egress |
 | The denylisted variables include nothing vLLM needs | child env | the server exits during start-up |
-| Chat request fields `max_tokens`, `temperature`, `seed` and `response_format` = `json_schema` (`strict`), and response fields `object`, `choices[0].{index,message.{role,content,refusal},finish_reason}` and `usage.{prompt_tokens,completion_tokens}`, on vLLM 0.33.0 | `vllm_chat.py` | a 400 (`VLLMChatError`) or an unreadable response (`uncertain`) |
-| A generative chat model to serve (none is chosen; clef-flash serves no chat) | `vllm_chat.py` | none until L2 wires it |
 | `HF_HUB_OFFLINE=1` alone resolves the pinned sha from `HF_HOME` (no `TRANSFORMERS_OFFLINE`) | child env | the server exits during start-up |
 | `/tmp` on the compute node is not a symlink (the socket path must be canonical) | `check_uds_parent` | the launcher refuses the socket path before start |
 
@@ -307,5 +263,5 @@ None of these ran:
 - Do not log request bodies: never set `--enable-log-requests`. Client error messages never
   contain the state, a response body or the key. The client ignores proxy and `.netrc` settings
   from the environment and never follows redirects.
-- The same endpoint rules (`mtd_rl_xavier.local_endpoint`) apply to `SystemOneClient`,
-  `make_vllm_chat_client` and the launcher, so all three accept and reject the same endpoints.
+- The same endpoint rules (`mtd_rl_xavier.local_endpoint`) apply to `SystemOneClient` and the
+  launcher, so both accept and reject the same endpoints.

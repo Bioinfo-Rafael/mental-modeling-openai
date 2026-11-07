@@ -92,27 +92,3 @@ def test_load_spec_with_invalid_json_raises(tmp_path: Path) -> None:
 
     with pytest.raises(SpecError, match="not valid JSON"):
         load_spec(path)
-
-
-@pytest.mark.parametrize(
-    ("spec_name", "checkpoint_name"),
-    [("lag_baseline_12", "baseline_model.pt"), ("lag_dodge_21", "dodge_missile_model.pt")],
-)
-def test_repository_specs_validate_against_lag_checkpoints(
-    lag_model_dir: Path, spec_name: str, checkpoint_name: str
-) -> None:
-    from weightreading.torch_reader import read_checkpoint
-
-    checkpoint = read_checkpoint(lag_model_dir / checkpoint_name)
-    spec = load_spec(SPEC_DIR / f"{spec_name}.spec.json")
-
-    check_against_tensors(spec, checkpoint.tensors, checkpoint.sha256)
-
-
-def test_baseline_spec_does_not_validate_against_dodge_checkpoint(lag_model_dir: Path) -> None:
-    from weightreading.torch_reader import read_checkpoint
-
-    checkpoint = read_checkpoint(lag_model_dir / "dodge_missile_model.pt")
-
-    with pytest.raises(SpecError):
-        check_against_tensors(load_spec(SPEC_DIR / "lag_baseline_12.spec.json"), checkpoint.tensors, checkpoint.sha256)

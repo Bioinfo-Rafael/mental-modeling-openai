@@ -1,19 +1,20 @@
-"""CLI: paid-call gate, preview path, refusal on failed preflight, full run with fakes."""
+"""CLI: only method B's commands remain, and the default client is the shared, pinned one.
+
+The paid-call gate of ``intent-run`` and its preview path are covered in ``test_wr_intent_run.py``.
+"""
 
 from __future__ import annotations
-
-import json
-from pathlib import Path
 
 import pytest
 
 from mtd_rl_xavier.llm.openai_responses import API_BASE_URL, OpenAIClientError, make_openai_client
-from weightreading import cli, commands
-from weightreading.preflight import PreflightResult
+from weightreading import cli, intent_run
 from weightreading.sandbox import Interpreter
 
-from .test_wr_session import CODE, FINAL, FakeExecutor
+from .test_wr_session import FakeExecutor
 
+METHOD_B_COMMANDS = {"sandbox-selftest", "intent-preview", "intent-run"}
+# Shared with the intent-run tests (test_wr_intent_run.py, test_wr_intent_limits.py).
 DUMMY_INTERPRETER = Interpreter("/opt/python", "bin/python3", "/opt/site/numpy", "", "2.0", "3.12.0")
 
 
@@ -40,87 +41,24 @@ def _fake_executor() -> FakeExecutor:
     return executor
 
 
-class RecordingFactory:
-    def __init__(self, client: object = None) -> None:
-        self.calls = 0
-        self.client = client
+def test_cli_offers_only_method_b_commands() -> None:
+    subparsers = next(action for action in cli.build_parser()._actions if action.dest == "command")
 
-    def __call__(self) -> object:
-        self.calls += 1
-        return self.client
+    assert set(subparsers.choices) == METHOD_B_COMMANDS
 
 
-def _args(small_files: tuple[Path, Path], out: Path, *extra: str) -> list[str]:
-    checkpoint, spec = small_files
-    return ["run", "--checkpoint", str(checkpoint), "--spec", str(spec), "--output-root", str(out), *extra]
-
-
-@pytest.mark.parametrize("flags", [["--execute"], ["--confirm-paid-api"]])
-def test_run_with_only_one_paid_flag_is_an_argparse_error(small_files, tmp_path: Path, flags: list[str]) -> None:
-    factory = RecordingFactory()
-
+@pytest.mark.parametrize("command", ["run", "evaluate", "inspect", "bundle", "preview", "audit", "validate-spec"])
+def test_removed_weights_only_commands_are_usage_errors(command: str) -> None:
     with pytest.raises(SystemExit) as raised:
-        cli.main(_args(small_files, tmp_path / "out", *flags), client_factory=factory)
+        cli.main([command])
 
     assert raised.value.code == 2
-    assert factory.calls == 0
-    assert not (tmp_path / "out").exists()
 
 
-def test_run_without_flags_writes_preview_and_builds_no_client(small_files, tmp_path: Path) -> None:
-    factory = RecordingFactory()
+def test_sandbox_selftest_defaults_to_the_method_b_config() -> None:
+    args = cli.build_parser().parse_args(["sandbox-selftest"])
 
-    code = cli.main(_args(small_files, tmp_path / "out"), client_factory=factory)
-
-    assert code == 0 and factory.calls == 0
-    preview_dir = next((tmp_path / "out" / "previews").iterdir())
-    assert (preview_dir / "message.txt").exists()
-    assert json.loads((preview_dir / "preview.json").read_text())["api_requests_made"] == 0
-    (bundle_dir,) = (tmp_path / "out" / "bundles").iterdir()
-    assert bundle_dir.name.startswith("net-0123abcd-")
-    assert len(list((bundle_dir / "weights").glob("*.npy"))) == 18
-    assert not (tmp_path / "out" / "runs").exists()
-
-
-def test_run_execute_with_failed_preflight_refuses_before_client(small_files, tmp_path, monkeypatch) -> None:
-    factory = RecordingFactory()
-    failed = PreflightResult(False, {"network_blocked": False}, None, 0, "")
-    monkeypatch.setattr(commands, "make_executor", lambda *_: _fake_executor())
-    monkeypatch.setattr(commands, "run_preflight", lambda *_: failed)
-
-    code = cli.main(_args(small_files, tmp_path / "out", "--execute", "--confirm-paid-api"), client_factory=factory)
-
-    assert code == 1 and factory.calls == 0
-    run_dir = next((tmp_path / "out" / "runs").iterdir())
-    assert "refused" in json.loads((run_dir / "run.json").read_text())["status"]
-
-
-def test_run_execute_with_fakes_produces_complete_run_dir(small_files, tmp_path, monkeypatch) -> None:
-    executor = _fake_executor()
-    passed = PreflightResult(True, {"all": True}, "2.0", 0, "")
-    monkeypatch.setattr(commands, "make_executor", lambda *_: executor)
-    monkeypatch.setattr(commands, "run_preflight", lambda *_: passed)
-    client = ScriptedClient([CODE, FINAL])
-    factory = RecordingFactory(client)
-
-    code = cli.main(
-        _args(small_files, tmp_path / "out", "--execute", "--confirm-paid-api", "--task-mode", "blind"),
-        client_factory=factory,
-    )
-
-    assert code == 0 and factory.calls == 1
-    run_dir = next((tmp_path / "out" / "runs").iterdir())
-    assert run_dir.name.endswith("_blind") and "_net-0123abcd-" in run_dir.name
-    for name in ["message.txt", "transcript.jsonl", "tool_calls.jsonl", "state.json", "final_answer.md", "audit.json"]:
-        assert (run_dir / name).exists(), name
-    record = json.loads((run_dir / "run.json").read_text())
-    assert record["status"] == "complete"
-    assert record["session"]["stop_reason"] == "final_answer"
-    assert record["inputs"]["checkpoint_sha256"]
-    assert "weightreading/torch_reader.py" in record["code_sha256"]
-    assert json.loads((run_dir / "audit.json").read_text())["human_verdict"] is None
-    assert all("tools" not in request for request in client.requests)
-    assert executor.calls == [("print(len(W))\n", 1)]
+    assert args.config == intent_run.DEFAULT_CONFIG
 
 
 def test_make_openai_client_without_key_raises(monkeypatch) -> None:
@@ -152,24 +90,3 @@ def test_cli_default_client_refuses_openai_log(monkeypatch) -> None:
 
     with pytest.raises(OpenAIClientError, match="OPENAI_LOG"):
         cli.main.__defaults__[-1]()
-
-
-def test_inspect_with_tensor_hashes_prints_hash_map(small_files, capsys) -> None:
-    code = cli.main(["inspect", str(small_files[0]), "--tensor-hashes"])
-
-    hashes = json.loads(capsys.readouterr().out)
-    assert code == 0
-    assert set(hashes) >= {"base.mlp.fc.0.weight", "rnn.gru.weight_hh_l0"}
-
-
-def test_validate_spec_with_mismatching_checkpoint_exits_nonzero(small_files, tmp_path, capsys) -> None:
-    spec = json.loads(small_files[1].read_text())
-    spec["inputs"].append({"index": 3, "name": "extra", "definition": "d"})
-    spec["architecture"][0]["input_size"] = 4
-    bad = tmp_path / "bad.spec.json"
-    bad.write_text(json.dumps(spec))
-
-    code = cli.main(["validate-spec", "--checkpoint", str(small_files[0]), "--spec", str(bad)])
-
-    assert code == 1
-    assert "base.mlp.fc.0.weight" in capsys.readouterr().err

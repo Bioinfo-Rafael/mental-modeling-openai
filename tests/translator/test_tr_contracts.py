@@ -105,8 +105,8 @@ def test_retrospective_mode_is_rejected_as_not_in_this_phase() -> None:
     _config_error("pipeline.visibility.mode", "retrospective", "not implemented in this phase")
 
 
-def test_vllm_chat_translation_is_rejected_as_not_in_this_phase() -> None:
-    _config_error("translation.backend", "vllm_chat", "not implemented in this phase")
+def test_local_chat_translation_backend_is_rejected() -> None:
+    _config_error("translation.backend", "local_chat", r"translation.backend must be one of \['openai_responses'\]")
 
 
 def test_online_mode_requires_zero_future_steps() -> None:

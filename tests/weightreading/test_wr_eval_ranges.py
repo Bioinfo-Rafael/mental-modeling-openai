@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 from pathlib import Path
 
 import pytest
@@ -10,11 +11,44 @@ from weightreading.prompt import ExecutorLimits, first_message
 from weightreading.spec import SpecError, load_spec, parse_spec
 from weightreading.tensors import Tensor
 
-from .wr_eval_helpers import eval_spec_dict
 from .wr_helpers import SMALL_SPEC, small_arrays
 
+# A synthetic spec with every kind of `evaluation` entry (moved here from the removed W eval helpers).
+INPUT_NAMES = ("speed", "noise", "roll_sin", "roll_cos", "side", "msl_dist")
+EVAL_SPEC = {
+    "schema_version": 1,
+    "network_alias": "net-feedbeef",
+    "hidden_from_prompt": ["provenance", "notes", "evaluation"],
+    "description": "Synthetic evaluation test network.",
+    "inputs": [{"index": i, "name": name, "definition": name} for i, name in enumerate(INPUT_NAMES)],
+    "input_clip": None,
+    "architecture": [
+        {"id": "base", "type": "mlp", "prefix": "base.mlp.fc.", "input": "observation", "input_size": 6, "hidden_sizes": [3]},
+        {"id": "heads", "type": "categorical_heads", "prefix": "act.action_outs.", "input": "base", "input_size": 3},
+    ],
+    "outputs": [
+        {"head": 0, "name": "climb", "bins": 2, "bin_value": {"values": [0, 1]}},
+        {"head": 1, "name": "dive", "bins": 2, "bin_value": {"values": [0, 1]}},
+    ],
+    "evaluation": {
+        "inputs": {
+            "speed": {"range": [-1.0, 1.0]},
+            "noise": {"range": [0.0, 2.0]},
+            "side": {"values": [-1, 1]},
+            "msl_dist": {"range": [0.1, 1.0]},
+        },
+        "angles": [{"sin": "roll_sin", "cos": "roll_cos", "range": [-1.0, 1.0]}],
+        "presence": [{"inputs": ["msl_dist"], "p_present": 0.5}],
+    },
+}  # fmt: skip
+
+
+def eval_spec_dict() -> dict:
+    return copy.deepcopy(EVAL_SPEC)
+
+
 CONFIGS = Path(__file__).resolve().parents[2] / "configs" / "weightreading"
-SHIPPED = ("lag_baseline_12", "lag_dodge_21", "lag_mappo_2v2_33")
+SHIPPED = ("lag_mappo_2v2_33",)  # the 1v1 W specs were removed
 
 
 def test_parse_valid_section_resolves_indices_and_kinds() -> None:

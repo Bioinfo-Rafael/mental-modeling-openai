@@ -1,4 +1,4 @@
-"""Run configuration (``configs/weightreading/run.yaml``): strict loading, no hidden defaults."""
+"""Run configuration (``configs/weightreading/intent_b.yaml``): strict loading, no hidden defaults."""
 
 from __future__ import annotations
 

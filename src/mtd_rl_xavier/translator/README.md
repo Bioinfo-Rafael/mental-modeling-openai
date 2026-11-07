@@ -368,8 +368,8 @@ duplicate YAML keys fail (in the scenario too). Contract v2 keys: `scenario_limi
 `detector.question` (the `choice` question), `detector.threshold: 0.65` and
 `translation.max_intent_chars: 600`.
 Phase limits: `pipeline.visibility.mode` accepts only `online` (with `future_steps: 0`);
-`retrospective` and `translation.backend: vllm_chat` are rejected as "not implemented in this
-phase" (LATER, L2). `pricing` must have an entry for `translation.model` (preview estimates only).
+`retrospective` is rejected as "not implemented in this phase" (LATER, L2), and
+`translation.backend` accepts only `openai_responses`. `pricing` must have an entry for `translation.model` (preview estimates only).
 
 `configs/translator/scenario.example.yaml` documents the scenario format (`schema_version: 2`)
 with placeholder text: `instructions`, `alarms` (`{alarm_id, step, targets, text}`) and

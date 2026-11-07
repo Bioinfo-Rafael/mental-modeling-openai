@@ -12,7 +12,6 @@ import pytest
 from mtd_rl_xavier import paths
 from weightreading.bundle import BundleError, verify_bundle, write_bundle
 from weightreading.config import ConfigError, load_config, parse_config
-from weightreading.estimate import preview_estimate
 from weightreading.prompt import ExecutorLimits, first_message, run_result_message
 from weightreading.protocol import KIND_CODE, KIND_ERROR, KIND_FINAL, parse_reply
 from weightreading.spec import parse_spec
@@ -20,7 +19,7 @@ from weightreading.tensors import Tensor
 
 from .wr_helpers import small_arrays
 
-RUN_CONFIG = paths.CONFIGS / "weightreading" / "run.yaml"
+RUN_CONFIG = paths.CONFIGS / "weightreading" / "intent_b.yaml"  # method B; W's run.yaml was removed
 LIMITS = ExecutorLimits(max_runs=7, timeout_s=60, stdout_cap_chars=1000, stderr_tail_chars=200)
 
 
@@ -158,14 +157,3 @@ def test_parse_config_with_invalid_value_raises(mutate, message: str) -> None:
 
     with pytest.raises(ConfigError, match=message):
         parse_config(raw, paths.ROOT)
-
-
-def test_preview_estimate_worst_case_is_bounded_and_above_typical() -> None:
-    config = load_config(RUN_CONFIG, paths.ROOT)
-
-    estimate = preview_estimate(8000, config)
-
-    worst = estimate["worst_case"]
-    assert worst["input_tokens"] + worst["output_tokens"] <= 3 * config.limits.max_total_tokens
-    assert worst["cost_usd"] > estimate["typical"]["cost_usd"] > 0
-    assert estimate["first_message_tokens_approx"] == 2000

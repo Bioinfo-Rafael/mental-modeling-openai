@@ -46,7 +46,6 @@ VISIBILITY_ONLINE = "online"
 VISIBILITY_RETROSPECTIVE = "retrospective"  # LATER (L2); rejected in this phase
 DETECTOR_BACKENDS = ("system_one",)
 TRANSLATION_OPENAI = "openai_responses"
-TRANSLATION_VLLM_CHAT = "vllm_chat"  # LATER (L2); rejected in this phase
 TRANSLATION_BACKENDS = (TRANSLATION_OPENAI,)
 PAID_BACKENDS = frozenset({TRANSLATION_OPENAI})
 ENTITY_SCOPES = ("target_and_opponents",)
@@ -473,7 +472,7 @@ def _detector(raw: object) -> DetectorConfig:
 
 def _translation(raw: object) -> TranslationConfig:
     section = _mapping(raw, TRANSLATION_KEYS, "translation", TranslatorConfigError)
-    backend = _phase_choice(section["backend"], "translation.backend", TRANSLATION_BACKENDS, (TRANSLATION_VLLM_CHAT,))
+    backend = _phase_choice(section["backend"], "translation.backend", TRANSLATION_BACKENDS, ())
     if section["connection"] is not None:
         raise TranslatorConfigError("translation.connection must be null for openai_responses")
     effort = section["reasoning_effort"]

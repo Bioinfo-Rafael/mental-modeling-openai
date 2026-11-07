@@ -54,7 +54,7 @@ detector:
     float_precision: 5              # 1e-5 deg ~ 1 m; 3 decimals (~100 m) cannot resolve ~50 m of motion per step
 
 translation:
-  backend: openai_responses         # the only backend in this phase; vllm_chat is LATER (L2) and rejected
+  backend: openai_responses         # the only translation backend
   connection: null                  # must be null for openai_responses
   model: gpt-6.1-terra              # D18; must have a pricing entry below
   reasoning_effort: medium

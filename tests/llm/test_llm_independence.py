@@ -57,7 +57,7 @@ def test_package_contains_the_phase_one_parts() -> None:
 def test_package_contains_the_local_runtime_parts_so_the_scan_covers_them() -> None:
     names = {path.stem for path in _llm_modules()}
 
-    assert {"vllm_chat", "vllm_server"} <= names
+    assert {"vllm_server"} <= names
 
 
 @pytest.mark.parametrize("path", _llm_modules(), ids=lambda path: path.name)

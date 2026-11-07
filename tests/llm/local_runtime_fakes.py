@@ -1,20 +1,17 @@
-"""Offline fakes for the local runtime parts (``vllm_chat``, ``vllm_server``).
+"""Offline fakes for the local runtime part (``vllm_server``).
 
 No vLLM, GPU, network, SLURM or real key is used: the launcher gets a fake process, clock and
-signal function; the chat client gets a scripted SDK-shaped client or a fake ``openai`` module.
+signal function.
 """
 
 from __future__ import annotations
 
-import copy
 import subprocess
-import types
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 FAKE_PID = 4242
-CHAT_MODEL = "local-chat"
 
 
 # --- launcher ---------------------------------------------------------------------------------------
@@ -128,78 +125,6 @@ class FakeClock:
     def sleep(self, seconds: float) -> None:
         self.sleeps.append(seconds)
         self.now += seconds
-
-
-# --- chat client --------------------------------------------------------------------------------------
-
-
-class ScriptedChatClient:
-    """Stands in for ``openai.OpenAI``: ``chat.completions.create`` and ``models.list`` pop outcomes."""
-
-    def __init__(self, outcomes: list[object]) -> None:
-        self.chat = types.SimpleNamespace(completions=types.SimpleNamespace(create=self._create))
-        self.models = types.SimpleNamespace(list=self._list)
-        self._outcomes = list(outcomes)
-        self.requests: list[dict[str, Any]] = []
-        self.model_lists = 0
-
-    def _next(self) -> object:
-        outcome = self._outcomes.pop(0)
-        if isinstance(outcome, BaseException):
-            raise outcome
-        return outcome
-
-    def _create(self, **kwargs: Any) -> object:
-        self.requests.append(copy.deepcopy(kwargs))
-        return self._next()
-
-    def _list(self) -> object:
-        self.model_lists += 1
-        return self._next()
-
-
-def chat_body(
-    content: str | None = '{"ok": true}',
-    *,
-    finish_reason: str | None = "stop",
-    refusal: str | None = None,
-    usage: dict[str, Any] | None = None,
-    choices: list[dict[str, Any]] | None = None,
-) -> dict[str, Any]:
-    """A ``/v1/chat/completions`` response as ``model_dump(mode="json")`` returns it."""
-    message = {"role": "assistant", "content": content, "refusal": refusal, "tool_calls": []}
-    default_choices = [{"index": 0, "message": message, "finish_reason": finish_reason, "logprobs": None}]
-    return {
-        "id": "chatcmpl-1",
-        "object": "chat.completion",
-        "created": 1,
-        "model": CHAT_MODEL,
-        "choices": choices if choices is not None else default_choices,
-        "usage": usage if usage is not None else {"prompt_tokens": 50, "completion_tokens": 7, "total_tokens": 57},
-    }
-
-
-class FakeOmit:
-    """Mimics ``openai.Omit`` (a sentinel that removes a default header)."""
-
-
-class RecordingChatOpenAI:
-    """Replaces ``openai.OpenAI`` in a fake ``openai`` module; records constructor arguments."""
-
-    instances: list[RecordingChatOpenAI] = []
-
-    def __init__(self, **kwargs: Any) -> None:
-        self.kwargs = kwargs
-        RecordingChatOpenAI.instances.append(self)
-
-
-def fake_chat_openai_module() -> types.ModuleType:
-    """A stand-in ``openai`` module with ``OpenAI`` and ``Omit`` (the real SDK import costs seconds)."""
-    RecordingChatOpenAI.instances = []
-    module = types.ModuleType("openai")
-    module.OpenAI = RecordingChatOpenAI  # type: ignore[attr-defined]
-    module.Omit = FakeOmit  # type: ignore[attr-defined]
-    return module
 
 
 def make_runtime_dir(base: Path) -> Path:

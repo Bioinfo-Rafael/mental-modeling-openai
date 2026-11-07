@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 
 from mtd_rl_xavier import local_endpoint
-from mtd_rl_xavier.llm import system_one, vllm_chat, vllm_server
+from mtd_rl_xavier.llm import system_one, vllm_server
 from mtd_rl_xavier.local_endpoint import LocalEndpointError
 
 KEY_ENV = "TEST_LOCAL_ENDPOINT_KEY"
@@ -157,7 +157,7 @@ def test_system_one_still_accepts_valid_values() -> None:
 
 @pytest.mark.parametrize(
     "config_error",
-    [system_one.SystemOneConfigError, vllm_chat.VLLMChatConfigError, vllm_server.VLLMServerConfigError],
+    [system_one.SystemOneConfigError, vllm_server.VLLMServerConfigError],
 )
 def test_no_client_exposes_the_shared_error_type(config_error: type[Exception]) -> None:
     assert not issubclass(config_error, LocalEndpointError)

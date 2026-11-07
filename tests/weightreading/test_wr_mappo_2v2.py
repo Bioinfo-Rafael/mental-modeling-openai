@@ -213,10 +213,3 @@ def test_mappo_spec_validates_against_delivered_actor(mhi_model_dir: Path, actor
 
     assert len(checkpoint.tensors) == MAPPO_TENSORS
     assert sum(t.numel for t in checkpoint.tensors) == MAPPO_PARAMS
-
-
-def test_dodge_spec_does_not_validate_against_delivered_actor(mhi_model_dir: Path) -> None:
-    checkpoint = read_checkpoint(mhi_model_dir / MHI_ACTORS[0])
-
-    with pytest.raises(SpecError, match="base.mlp.fc.0.weight: checkpoint shape"):
-        check_against_tensors(load_spec(SPEC_DIR / "lag_dodge_21.spec.json"), checkpoint.tensors)

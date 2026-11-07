@@ -11,15 +11,13 @@ import pytest
 from weightreading.architecture import Block
 from weightreading.reference import (
     ReferencePolicy,
-    build_policy,
     expected_value,
     gru_step,
     layer_norm,
     mlp_forward,
     sigmoid,
 )
-from weightreading.spec import load_spec, parse_spec
-from weightreading.torch_reader import read_checkpoint
+from weightreading.spec import parse_spec
 
 from .wr_helpers import SMALL_SPEC, small_arrays
 
@@ -148,14 +146,3 @@ def test_expected_value_binary_head_is_probability_of_yes() -> None:
     logits = np.array([[0.3, 1.1]])
     out = expected_value(logits, (0.0, 1.0))
     assert out[0] == pytest.approx(1.0 / (1.0 + math.exp(-0.8)))
-
-
-def test_baseline_checkpoint_forward_has_expected_head_shapes(lag_model_dir: Path) -> None:
-    checkpoint = read_checkpoint(lag_model_dir / "baseline_model.pt")
-    policy = build_policy(load_spec(CONFIGS / "lag_baseline_12.spec.json"), checkpoint.tensors)
-
-    out = policy.step(np.zeros((4, 12)), policy.initial_hidden(4))
-
-    assert [logits.shape for logits in out.logits] == [(4, 41), (4, 41), (4, 41), (4, 30)]
-    assert out.hidden.shape == (4, 128)
-    assert all(np.isfinite(logits).all() for logits in out.logits)
