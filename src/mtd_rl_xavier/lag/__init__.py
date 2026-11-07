@@ -1,1 +1,1 @@
-"""LAG (language-annotated game) dataset loading and rendering."""
+"""LAG (Light Aircraft Game) episode loading and rendering."""

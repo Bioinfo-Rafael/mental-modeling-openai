@@ -20,7 +20,9 @@ saw (D34).
 
 ## Command
 
-Run from the repository root only (a stray `evaluation.py` on `sys.path` would shadow the package).
+`evaluation` is installed with the core (`sbatch slurm/uv_sync.sbatch`), so `python -m evaluation.*` works
+from any directory. On Slurm use `slurm/judge_keypoints.sbatch` and `slurm/judge_assess.sbatch`
+(`preview` by default, `paid` explicitly; see `slurm/README.md`).
 
 ```bash
 # Preview (default): no client, no credential, no network. Writes run.json, preview.json and
@@ -29,9 +31,9 @@ uv run python -m evaluation.cli --translator-run outputs/translator/<run> \
   --key-points private/evaluation/<key-points>.yaml
 
 # Real run: one paid gpt-6.1-sol call per event that has key points. OPENAI_API_KEY comes from
-# the environment only; never type it on the command line (shell history, sbatch files). Export
-# it from a 0600 file outside the repository (set -a; . ~/.config/mtd-rl-xavier/keys.env; set +a)
-# or type it hidden (read -rs OPENAI_API_KEY && export OPENAI_API_KEY).
+# the environment only; never type it on the command line (shell history, sbatch files). It lives
+# in the gitignored, group-shared repo-root .env: load it right before the run (set -a; . ./.env;
+# set +a) and unset it afterwards. On Slurm: slurm/judge_keypoints.sbatch paid (slurm/README.md).
 uv run python -m evaluation.cli --translator-run outputs/translator/<run> \
   --key-points private/evaluation/<key-points>.yaml --execute --confirm-paid-api
 ```
@@ -116,7 +118,7 @@ the Translator's previous translation.
 
 `judge-text.yaml` keeps `video.include: false`. `judge-text-video.yaml` is the same config with the
 block on, for the three committed episodes. The video is **evaluation input**: the
-videos (`workspace/13_LAG/data/viz/action_videos/*.mp4`, 20 fps, 1920x1080, frame = step) show the
+videos (`data/mhi/action_videos/*.mp4`, 20 fps, 1920x1080, frame = step) show the
 A-team's actions and the visible hit and shot-down outcomes, including frames **after** the judged
 step that the online Translator never saw. That is intentional: the human rater watches the same
 video. It is never an input of the Translator (generation). The request text says so to the judge.
@@ -134,7 +136,7 @@ video:
   source: scenario_action_video
   videos:                          # episode id (run.json inputs.episode.episode_id) -> video
     mhi_v1.3_ic100601_win:
-      path: workspace/13_LAG/data/viz/action_videos/mhi_v1.3_ic100601_win_with_actions.mp4  # relative to the repo root
+      path: data/mhi/action_videos/mhi_v1.3_ic100601_win_with_actions.mp4  # relative to the repo root
       fps: 20                      # the file's own rate; a mismatch is a preflight error
       frame_offset: 0              # video frame that shows step 0
       frames_per_step: 1           # frame = frame_offset + step * frames_per_step
@@ -320,7 +322,13 @@ uv run python -m evaluation.assess_cli judge --translator-run $RUN --points priv
 uv run python -m evaluation.assess_cli judge --translator-run $RUN --points ... --execute --confirm-paid-api
 uv run python -m evaluation.assess_cli import-ratings --translator-run $RUN --ratings private/evaluation/<ratings>.jsonl
 uv run python -m evaluation.assess_cli report --translator-run $RUN
+# On Slurm (check + judge preview; `paid` adds the paid judge and report):
+sbatch slurm/judge_assess.sbatch preview --translator-run $RUN
 ```
+
+Method A output reaches this judge through `python -m mtd_rl_xavier.intent_compare.to_translator_run`,
+which turns one method A call into a Translator v2 run directory (the existing
+`outputs/translator/intentcmp-seed100601-ja-A-s045-A0100` was made this way). Method B has no converter.
 
 - Common flags: `--config` (default `evaluation/config/assess.yaml`), `--output-root`, and `--name`
   (the assessment directory; default: the Translator run directory's name).

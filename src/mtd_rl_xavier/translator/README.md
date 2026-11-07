@@ -39,10 +39,10 @@ max_output_tokens=...)`; tests run them over `httpx.MockTransport` and a scripte
 uv run python -m mtd_rl_xavier.translator.cli --scenario configs/translator/scenario.example.yaml
 
 # Real run with the default config (local detector + paid OpenAI translation layer). Keys come
-# from the environment only. Never type them on the command line (shell history, sbatch files):
-# keep them in a 0600 file outside the repository and export them from it, for example
-#   set -a; . ~/.config/mtd-rl-xavier/keys.env; set +a     # defines VLLM_API_KEY and OPENAI_API_KEY
-# or type them hidden: read -rs OPENAI_API_KEY && export OPENAI_API_KEY
+# from the environment only; never type them on the command line (shell history, sbatch files).
+# OPENAI_API_KEY lives in the gitignored, group-shared repo-root .env (set -a; . ./.env; set +a);
+# slurm/translator_vllm.sbatch generates VLLM_API_KEY per job. The real run needs the vLLM env,
+# the clef-flash snapshot and a GPU probe that still await approval (D49; llm/README.md).
 uv run python -m mtd_rl_xavier.translator.cli \
   --scenario private/translator/<scenario>.yaml --execute --confirm-paid-api
 ```
@@ -438,6 +438,6 @@ connection:
 `uv run pytest tests/translator -q` runs offline: no network, GPU, paid call or real key.
 `test_tr_budget.py` renders every tick of all three episodes (about 18 s).
 `test_tr_pipeline.py::test_no_payload_contains_information_after_its_step` parses every detector
-and translation payload of the example scenario (real renderers and 13_LAG rows) and checks that
+and translation payload of the example scenario (real renderers and the `data/mhi/` episode rows) and checks that
 every trajectory step, instruction, alarm and question step is `<= t` and that no later text
 appears.

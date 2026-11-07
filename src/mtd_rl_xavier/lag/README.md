@@ -1,38 +1,27 @@
 # `mtd_rl_xavier.lag`
 
-LAG (language-annotated game) episode loading and trajectory rendering, promoted from
-`workspace/13_LAG` and `workspace/17_commentary_LAG` so that the Translator and the judge do not
-import from `workspace/`. Nothing in this package imports `workspace/`.
+LAG (Light Aircraft Game) episode loading and trajectory rendering for the Translator and the
+judge, promoted from experiments 13 and 17 of the workspace project. Nothing in this package imports
+or reads the workspace project. The committed episodes are in `data/mhi/` (see its README).
 
 ## Loader (`dataset.py`)
 
-- `load_episode(path, *, verify_hash=True)` reads one 13_LAG CSV (64 columns, one row per step per
+- `load_episode(path, *, verify_hash=True)` reads one LAG episode CSV (64 columns, one row per step per
   object, 0.2 s per step). It verifies the CSV SHA-256 against the `manifest.json` beside it, applies
   the manifest dtypes (nullable `Int64` / `Float64` / `string`) and sets
   `frame.attrs = {csv_sha256, schema_version, dt_s}`.
 - `last_complete_step(frame)` is the last step at which all four aircraft have a CSV record
   (`has_csv_record == 1`). For the three committed episodes it is 340, 293 and 495. The step after
   it exists only in the ACMI log and has no CSV state or action, so it is never rendered.
-- `history_steps`, `select_records`, `index_records` are the workspace helpers, unchanged.
+- `history_steps`, `select_records`, `index_records` are experiment 13's helpers, unchanged.
 - The definitions (`AIRCRAFT`, `COLUMNS`, `STATE_FEATURES`, `ACTION_LABELS`, ...) live in
-  `dataset.py` with the same values as `workspace/13_LAG/lag_data/definitions.py`.
+  `dataset.py` with the same values as experiment 13's `lag_data/definitions.py`.
 - `EpisodeLoader` is the callable interface (`(path, *, verify_hash=True) -> DataFrame`) that a
   replacement loader for instruction-conditioned recordings has to satisfy (D12).
 - Errors: `LagDataError` (a `ValueError`; the workspace code raised plain `ValueError`).
 
-## Frozen-plan execution (`execution.py`, `batch.py`)
-
-Promoted from the byte-identical copies in `workspace/{15,16,17}_*/*_experiment/` (14 held the
-same `execution.py` without the batch-transport guard); 14-17 now import these modules.
-
-- `execution.py`: `canonical` / `digest` (they define every saved `plan_id`, `request_sha256` and
-  `query_id`, so they must stay byte-for-byte stable), `verify_plan`, `save_plan`, journals,
-  `run_lock`, and the synchronous `execute`.
-- `batch.py`: OpenAI Batch submit / recover / collect. The experiment's offline export is passed in
-  as `evaluate=` (`evaluate(plan, directory)`) to `execute` and `summarize`; everything else,
-  including `job_key` and the `lag_job_key` metadata, is unchanged.
-- Experiment 14's `batch_run.py` (Batch after a synchronous prefix) is a different adapter and
-  stays in `workspace/14_mental-modeling_LAG/`.
+The OpenAI Batch runners of experiments 14-17 (`execution.py`, `batch.py`) moved to the workspace
+project together with a frozen copy of `dataset.py`.
 
 ## Renderers (`rendering.py`)
 
@@ -59,15 +48,16 @@ reserved field names (`step`, `relative_step`, `object_id`) and bad precision ra
 hold the D27 defaults; the Translator config decides what is actually used. Note that 3 decimals
 on `lon_deg` / `lat_deg` is about 100 m, coarser than one step of movement.
 
-## Parity with the workspace
+## Parity with experiments 13 and 17 (D22)
 
-`render_lag17_jsonl` output equals the window body that
-`workspace/17_commentary_LAG/commentary_experiment` builds (`build_window` followed by the
+`render_lag17_jsonl` output equals the window body that experiment 17's `commentary_experiment`
+builds (`build_window` followed by the
 `json.dumps(..., ensure_ascii=False, allow_nan=False, separators=(",", ":"))` join in
-`prompts.build_messages`) byte for byte. `tests/lag/test_lag_contract.py` checks this for centre
-+/-30 windows (61 steps) on all three episodes, and checks that constants, dtypes, attrs and
-helper results equal workspace 13. The tests import the workspace modules only to compute
-references, and they check that the workspace files stay byte-identical.
+`prompts.build_messages`) byte for byte. Those reference outputs were recorded once, before the
+core/workspace split, in `tests/lag/fixtures/lag17-renderer-parity.json` (SHA-256 of every
+centre +/-30 window on all three episodes, the prompt embedding, and experiment 13's constants,
+dtypes, attrs and helper results). `tests/lag/test_lag_contract.py` compares against that fixture
+and never imports the workspace project.
 
 Differences, all deliberate:
 

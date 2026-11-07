@@ -41,8 +41,8 @@ one-GPU job. Nothing in L1 has been run against a real server: see
     the SDK message (it can echo request text or a masked key) is never copied.
 - `make_openai_client()` is the library's one OpenAI client factory: the Translator, the judge,
   weightreading and both methods of the intent comparison build their client here, and it is their
-  only reader of `OPENAI_API_KEY` (legacy chat-completions code in `experiment/`, `tools/` and `lag/`
-  still reads the key itself). It sets `max_retries=0`. Call it after the paid-call gate.
+  only reader of `OPENAI_API_KEY` in the core (the separate workspace project has its own legacy
+  clients). It sets `max_retries=0`. Call it after the paid-call gate.
 - The endpoint is pinned: it passes `base_url=API_BASE_URL` (`https://api.openai.com/v1`), so an
   `OPENAI_BASE_URL` exported for a local vLLM server cannot receive the key or the prompts. It
   refuses to build a client while `OPENAI_CUSTOM_HEADERS` is set (the SDK would add those headers
