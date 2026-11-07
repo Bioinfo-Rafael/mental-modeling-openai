@@ -1,0 +1,11 @@
+# USD per 1M tokens for the method A preview cost estimate (preview only; nothing is billed from it).
+# List price, verify before paid runs. Copied unchanged from the `pricing` block of
+# evaluation/config/judge-text.yaml, so method A no longer reads the judge's config.
+pricing:
+  gpt-6.1-sol:
+    input: 2.00
+    cached_input: 0.10
+    output: 10.00
+    long_context_threshold_tokens: 272000   # a request above this many input tokens is billed at the multipliers
+    long_input_multiplier: 2.0
+    long_output_multiplier: 1.5

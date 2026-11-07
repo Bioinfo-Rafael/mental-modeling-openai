@@ -26,7 +26,9 @@ from pathlib import Path
 from typing import Any, TextIO
 
 import pandas as pd
-from intent_compare_a_requests import (
+
+from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG, CompareConfig, load_compare
+from mtd_rl_xavier.intent_compare.method_a_requests import (
     RETRY_POLICY,
     Slot,
     TranslationSettings,
@@ -44,8 +46,6 @@ from intent_compare_a_requests import (
     request_body,
     sha256_text,
 )
-
-from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG, CompareConfig, load_compare
 from mtd_rl_xavier.llm.retry import RetryEvent, log_to_stderr
 from mtd_rl_xavier.translator.schema import IntentTranslation, ModelCallError, PreviousTranslation
 from mtd_rl_xavier.translator.translation import (

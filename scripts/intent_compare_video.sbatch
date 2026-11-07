@@ -50,7 +50,7 @@ echo "evaluate_mhi_team.py --acmi is byte-identical to the checked replay: ${SEC
 cp "$WORK/replay.txt.acmi" "$EPISODE_DIR/replay.txt.acmi"
 cp "$WORK/replay_check.json" "$EPISODE_DIR/replay_check.json"
 cp "$WORK/evaluate/evaluation.json" "$EPISODE_DIR/lag_evaluation.json"
-"$UV" run --no-sync python scripts/intent_compare_convert.py --config "$CONFIG"
+"$UV" run --no-sync python -m mtd_rl_xavier.intent_compare.convert --config "$CONFIG"
 
 FF="$("$UV" run --offline --isolated --no-project --python 3.12 --with imageio-ffmpeg \
   python -c "import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())")"
@@ -61,5 +61,5 @@ SECONDS=0
   -o "$EPISODE_DIR/full.mp4" --dpi "$DPI"
 echo "render: ${SECONDS}s"
 
-"$UV" run --no-sync python scripts/intent_compare_clips.py --config "$CONFIG" --full "$EPISODE_DIR/full.mp4"
+"$UV" run --no-sync python -m mtd_rl_xavier.intent_compare.clips --config "$CONFIG" --full "$EPISODE_DIR/full.mp4"
 ls -la "$EPISODE_DIR" "$EPISODE_DIR/clips"

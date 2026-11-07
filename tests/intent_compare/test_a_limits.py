@@ -8,7 +8,11 @@ import re
 from pathlib import Path
 
 import pytest
-from intent_compare_a_requests import (
+
+from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG, DEFAULT_LIMITS, AnswerLimits, CompareConfig, limits_sentence
+from mtd_rl_xavier.intent_compare import load_compare as load_config
+from mtd_rl_xavier.intent_compare.method_a_cli import EXIT_OK, RunPaths, execute
+from mtd_rl_xavier.intent_compare.method_a_requests import (
     INSTRUCTIONS_JOINER,
     TranslationSettings,
     answer_problem,
@@ -20,10 +24,6 @@ from intent_compare_a_requests import (
     provenance,
     sha256_text,
 )
-from intent_compare_run_a import EXIT_OK, RunPaths, execute
-
-from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG, DEFAULT_LIMITS, AnswerLimits, CompareConfig, limits_sentence
-from mtd_rl_xavier.intent_compare import load_compare as load_config
 from mtd_rl_xavier.translator.translation import (
     IntentModelOutput,
     TranslationPrompt,

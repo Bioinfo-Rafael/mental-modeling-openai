@@ -39,7 +39,7 @@ if [ "${INTENT_COMPARE_CONFIRM_PAID:-}" = "yes" ]; then
   if [ -n "${RUN_ID:-}" ]; then RUN_ARGS+=(--run-id "$RUN_ID"); fi
   if [ "${RESUME:-}" = "yes" ]; then RUN_ARGS+=(--resume); fi
   "$UV" run --no-sync python -m weightreading intent-run "${RUN_ARGS[@]}" --execute --confirm-paid-api
-  "$UV" run --no-sync python scripts/intent_compare_viewer.py --config "$COMPARE" ${RUN_ID:+--run-id "$RUN_ID"}
+  "$UV" run --no-sync python -m mtd_rl_xavier.intent_compare.viewer --config "$COMPARE" ${RUN_ID:+--run-id "$RUN_ID"}
 else
   echo "Preview only (set INTENT_COMPARE_CONFIRM_PAID=yes for a paid run)."
 fi

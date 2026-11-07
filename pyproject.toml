@@ -50,17 +50,25 @@ packages = [
   "mtd_rl_xavier.datasets",
   "mtd_rl_xavier.experiment",
   "mtd_rl_xavier.experiment.common_analysis",
+  "mtd_rl_xavier.intent_compare",
   "mtd_rl_xavier.lag",
   "mtd_rl_xavier.llm",
   "mtd_rl_xavier.preprocessing",
   "mtd_rl_xavier.tools",
   "mtd_rl_xavier.translator",
   "weightreading",
+  "evaluation",
 ]
 
 [tool.setuptools.package-dir]
 mtd_rl_xavier = "src/mtd_rl_xavier"
 weightreading = "src/weightreading"
+# The LLM judge stays at the repository root (its provenance keys and default config paths name
+# `evaluation/`); installing it makes `python -m evaluation.*` work from any directory.
+evaluation = "evaluation"
+
+[tool.setuptools.package-data]
+evaluation = ["README.md", "config/*.yaml", "examples/*"]
 
 [tool.pytest.ini_options]
 addopts = "-ra -p no:cacheprovider"
@@ -78,7 +86,12 @@ line-length = 120
 # Prior-work code and exploratory experiments are not linted or formatted,
 # even when a file path is passed explicitly (e.g. by editor hooks).
 force-exclude = true
-extend-exclude = ["src/mentalmodeling", "workspace"]
+extend-exclude = [
+  "src/mentalmodeling",
+  "workspace",
+  # Rescued byte-identical (its SHA-256 is recorded in the converted Translator run): never reformat.
+  "src/mtd_rl_xavier/intent_compare/to_translator_run.py",
+]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "UP"]

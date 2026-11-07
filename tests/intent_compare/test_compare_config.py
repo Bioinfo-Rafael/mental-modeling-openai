@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+import hashlib
+
 import httpx
-import intent_compare_run_a as run_a
 import openai
 import pytest
 import yaml
-from intent_compare_a_requests import TranslationSettings
 
+import mtd_rl_xavier.intent_compare.method_a_cli as run_a
 from mtd_rl_xavier import intent_compare, paths
 from mtd_rl_xavier.intent_compare import (
     DEFAULT_CONFIG,
@@ -18,12 +19,13 @@ from mtd_rl_xavier.intent_compare import (
     load_compare,
     parse_compare,
 )
+from mtd_rl_xavier.intent_compare.method_a_requests import TranslationSettings
 from mtd_rl_xavier.llm import openai_responses
 from mtd_rl_xavier.llm.openai_responses import REASONING_EFFORTS
 from mtd_rl_xavier.translator.translation import OUTPUT_SCHEMA_NAME, TranslationPrompt, output_schema
 from weightreading import intent_cli, intent_run
 
-COMMITTED_CONFIGS = sorted((paths.CONFIGS / "intent_compare").glob("*.yaml"))
+COMMITTED_CONFIGS = sorted((paths.CONFIGS / "intent_compare").glob("compare*.yaml"))  # not pricing.yaml
 REQUEST = httpx.Request("POST", "https://api.openai.com/v1/responses")
 
 
@@ -50,7 +52,7 @@ def test_every_committed_config_loads_with_a_shared_effort(path) -> None:
 
     assert config.reasoning_effort in REASONING_EFFORTS
     assert config.steps == tuple(sorted(set(config.steps)))
-    assert config.sha256 == intent_compare.hashlib.sha256(path.read_bytes()).hexdigest()
+    assert config.sha256 == hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def test_committed_configs_are_found() -> None:

@@ -5,7 +5,7 @@ Per translation step: the clip as a base64 ``<video>``, a timeline with the tran
 ``[t-59, t]`` shaded and a marker at the translation instant (click to seek), and per aircraft the
 A and B translations (intent + evidence) side by side, highlighted once playback reaches the
 translation instant. A missing ``cues_<method>.jsonl`` shows "not run yet". Every text value is
-HTML-escaped; no cue text reaches JavaScript. All page text comes from ``intent_compare_labels``
+HTML-escaped; no cue text reaches JavaScript. All page text comes from ``mtd_rl_xavier.intent_compare.labels``
 (English, or Japanese when the config sets ``output_language: ja``).
 Output: ``<output_root>/<run_id>/viewer.html``.
 """
@@ -20,18 +20,14 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from intent_compare_labels import EN, LABELS, Labels
-
 from mtd_rl_xavier.intent_compare import CLIPS_MANIFEST, DEFAULT_CONFIG, METHODS, CompareConfig, load_compare
+from mtd_rl_xavier.intent_compare.labels import EN, LABELS, Labels
 from mtd_rl_xavier.paths import ROOT as REPO_ROOT
 
 HUMAN = "human"
-# Places a local copy of the workspace/17 human annotation would live; none exists today (the
-# annotation is a Google Sheet linked from workspace/17_commentary_LAG/README.md, never fetched).
-HUMAN_ANNOTATION_CANDIDATES = (
-    REPO_ROOT / "workspace" / "17_commentary_LAG" / "annotation" / "human_annotation.jsonl",
-    REPO_ROOT / "private" / "intent_compare" / "human_annotation.jsonl",
-)
+# Where a local copy of the experiment-17 human annotation goes (gitignored private/); none exists today
+# (the annotation is a Google Sheet linked from the workspace project, never fetched).
+HUMAN_ANNOTATION = REPO_ROOT / "private" / "intent_compare" / "human_annotation.jsonl"
 
 STYLE = """
 body{font-family:system-ui,sans-serif;margin:1.5rem;max-width:1400px;color:#222}
@@ -202,10 +198,9 @@ def header(config: CompareConfig, sources: dict[str, str], annotation_note: str,
 def human_annotation(explicit: Path | None, labels: Labels = EN) -> tuple[Path | None, str]:
     if explicit is not None:
         return explicit, labels.annotation_given.format(path=explicit)
-    for candidate in HUMAN_ANNOTATION_CANDIDATES:
-        if candidate.is_file():
-            return candidate, labels.annotation_given.format(path=candidate.relative_to(REPO_ROOT))
-    return None, labels.annotation_absent
+    if HUMAN_ANNOTATION.is_file():
+        return HUMAN_ANNOTATION, labels.annotation_given.format(path=HUMAN_ANNOTATION.relative_to(REPO_ROOT))
+    return None, labels.annotation_absent.format(path=HUMAN_ANNOTATION.relative_to(REPO_ROOT))
 
 
 def build_html(config: CompareConfig, run_id: str, overrides: dict[str, Path | None], annotation: Path | None) -> str:

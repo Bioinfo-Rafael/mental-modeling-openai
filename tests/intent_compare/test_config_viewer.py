@@ -9,8 +9,6 @@ from pathlib import Path
 
 import pytest
 import yaml
-from intent_compare_labels import EN, JA, LABELS
-from intent_compare_viewer import build_html, cue_cell, load_cues, script
 
 from mtd_rl_xavier.intent_compare import (
     DEFAULT_CONFIG,
@@ -20,6 +18,8 @@ from mtd_rl_xavier.intent_compare import (
     parse_compare,
 )
 from mtd_rl_xavier.intent_compare import load_compare as load_config
+from mtd_rl_xavier.intent_compare.labels import EN, JA, LABELS
+from mtd_rl_xavier.intent_compare.viewer import build_html, cue_cell, load_cues, script
 
 SEED = 100601
 JA_CONFIG = DEFAULT_CONFIG.with_name("compare.ja.yaml")

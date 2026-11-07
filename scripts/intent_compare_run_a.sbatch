@@ -27,11 +27,11 @@ ARGS=(--config "$COMPARE")
 if [ -n "${RUN_ID:-}" ]; then ARGS+=(--run-id "$RUN_ID"); fi
 if [ -n "${MAX_OUTPUT_TOKENS:-}" ]; then ARGS+=(--max-output-tokens "$MAX_OUTPUT_TOKENS"); fi
 
-"$UV" run --no-sync python scripts/intent_compare_run_a.py "${ARGS[@]}"
+"$UV" run --no-sync python -m mtd_rl_xavier.intent_compare.method_a_cli "${ARGS[@]}"
 if [ "${INTENT_COMPARE_CONFIRM_PAID:-}" = "yes" ]; then
   if [ -z "${OPENAI_API_KEY:-}" ]; then echo "OPENAI_API_KEY is not set" >&2; exit 2; fi
-  "$UV" run --no-sync python scripts/intent_compare_run_a.py "${ARGS[@]}" --execute --confirm-paid-api
-  "$UV" run --no-sync python scripts/intent_compare_viewer.py "${ARGS[@]::2}" ${RUN_ID:+--run-id "$RUN_ID"}
+  "$UV" run --no-sync python -m mtd_rl_xavier.intent_compare.method_a_cli "${ARGS[@]}" --execute --confirm-paid-api
+  "$UV" run --no-sync python -m mtd_rl_xavier.intent_compare.viewer "${ARGS[@]::2}" ${RUN_ID:+--run-id "$RUN_ID"}
 else
   echo "Preview only (set INTENT_COMPARE_CONFIRM_PAID=yes for a paid run)."
 fi

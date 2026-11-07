@@ -41,7 +41,7 @@ from mtd_rl_xavier.translator.translation import (
 TRANSLATOR_LANGUAGE_NAMES = {"en": "English", "ja": "Japanese"}
 REPO_ROOT = paths.ROOT
 TRANSLATOR_RUN_CONFIG = REPO_ROOT / "configs" / "translator" / "run.yaml"
-JUDGE_CONFIG = REPO_ROOT / "evaluation" / "config" / "judge-text.yaml"
+PRICING_CONFIG = REPO_ROOT / "configs" / "intent_compare" / "pricing.yaml"
 EPISODE_ALIAS = "episode_01"  # neutral alias; the only episode name the model sees
 INSTRUCTION_ID_PREFIX = "compare-neutral"
 INSTRUCTIONS_JOINER = "\n\n"  # between the Translator instructions and the appended limits sentence
@@ -53,10 +53,10 @@ PROVENANCE_PACKAGES = ("translator", "lag", "llm")
 # The same default policy as method B (configs/weightreading/intent_b.yaml has no `retry` override).
 RETRY_POLICY = DEFAULT_RETRY_POLICY
 OWN_SCRIPTS = (
-    "src/mtd_rl_xavier/intent_compare.py",
-    "scripts/intent_compare_a_requests.py",
-    "scripts/intent_compare_run_a.py",
-    "scripts/intent_compare_convert.py",
+    "src/mtd_rl_xavier/intent_compare/config.py",
+    "src/mtd_rl_xavier/intent_compare/method_a_requests.py",
+    "src/mtd_rl_xavier/intent_compare/method_a_cli.py",
+    "src/mtd_rl_xavier/intent_compare/convert.py",
 )
 
 
@@ -121,8 +121,8 @@ def answer_problem(intent: str, evidence: tuple[str, ...], settings: Translation
 
 
 def load_pricing(model: str) -> dict[str, Any] | None:
-    """USD per 1M tokens from the repo's judge config (the only gpt-6.1-sol price in the repo)."""
-    pricing = yaml.safe_load(JUDGE_CONFIG.read_text(encoding="utf-8")).get("pricing", {})
+    """USD per 1M tokens from ``configs/intent_compare/pricing.yaml`` (preview estimate only)."""
+    pricing = yaml.safe_load(PRICING_CONFIG.read_text(encoding="utf-8")).get("pricing", {})
     return pricing.get(model)
 
 
@@ -237,7 +237,7 @@ def cost_summary(estimates: list[dict[str, Any]], pricing: dict[str, Any] | None
         "calls": calls,
         "input_tokens": input_tokens,
         "pricing_usd_per_1m": pricing,
-        "pricing_source": str(JUDGE_CONFIG.relative_to(REPO_ROOT)),
+        "pricing_source": str(PRICING_CONFIG.relative_to(REPO_ROOT)),
         "input_cost_usd": round(input_usd, 4),
         "output_cost_upper_bound_usd": round(output_cap_usd, 4),
         "total_upper_bound_usd": round(input_usd + output_cap_usd, 4),

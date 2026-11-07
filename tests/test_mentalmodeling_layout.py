@@ -61,11 +61,7 @@ def test_llm_x_resolves_to_vendored_source(tmp_path: Path) -> None:
 def test_mentalmodeling_is_not_an_importable_name(tmp_path: Path) -> None:
     """The editable install must expose `llm_x`, not `src/` as a whole: a `mentalmodeling`
     import name would be a second module identity for the vendored code."""
-    probe = (
-        "import importlib.util as u; "
-        "print(u.find_spec('mentalmodeling')); "
-        "print(u.find_spec('llm_x') is not None)"
-    )
+    probe = "import importlib.util as u; print(u.find_spec('mentalmodeling')); print(u.find_spec('llm_x') is not None)"
 
     result = subprocess.run(
         [sys.executable, "-I", "-c", probe], cwd=tmp_path, capture_output=True, text=True, check=True
@@ -100,8 +96,11 @@ def test_setuptools_package_list_covers_every_package_directory() -> None:
         for top in ("mtd_rl_xavier", "weightreading")
         for init in (src / top).rglob("__init__.py")
     }
+    judge = {
+        ".".join(init.parent.relative_to(paths.ROOT).parts) for init in (paths.ROOT / "evaluation").rglob("__init__.py")
+    }
 
-    assert declared == on_disk
+    assert declared == on_disk | judge
 
 
 @pytest.mark.parametrize("relative", ["", "derived.json", "llm_x/derived.json", "new_dir/out.csv"])

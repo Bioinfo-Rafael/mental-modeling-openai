@@ -12,7 +12,7 @@ import mtd_rl_xavier
 import weightreading
 
 GIT_TIMEOUT_S = 10
-SHARED_MODULES = ("intent_compare.py", "llm/openai_responses.py", "llm/retry.py", "translator/schema.py")
+SHARED_MODULES = ("intent_compare/config.py", "llm/openai_responses.py", "llm/retry.py", "translator/schema.py")
 
 
 def sha256_file(path: Path) -> str:

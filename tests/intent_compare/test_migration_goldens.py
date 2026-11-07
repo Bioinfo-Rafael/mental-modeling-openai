@@ -12,9 +12,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from intent_compare_a_requests import Slot, build_request, load_settings, prompt_for, request_body
-
 from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG, load_compare
+from mtd_rl_xavier.intent_compare.method_a_requests import Slot, build_request, load_settings, prompt_for, request_body
 from mtd_rl_xavier.lag.dataset import load_episode
 from mtd_rl_xavier.llm.openai_responses import build_responses_body
 from mtd_rl_xavier.translator.cli import _mandatory_requests, load_inputs
@@ -25,7 +24,7 @@ from tests.translator.tr_fakes import EPISODE_CSV, EXAMPLE_SCENARIO, RUN_CONFIG,
 
 FIXTURES = Path(__file__).resolve().parents[1] / "fixtures"
 GOLDENS = FIXTURES / "prompt-request-goldens.json"
-CONVERTER = Path(__file__).resolve().parents[2] / "scripts" / "cue_to_translator_run.py"
+CONVERTER = Path(__file__).resolve().parents[2] / "src" / "mtd_rl_xavier" / "intent_compare" / "to_translator_run.py"
 METHOD_A_MAX_OUTPUT_TOKENS = 25_000  # the method A CLI default
 METHOD_A_SLOT = Slot(step=45, aircraft="A0100", skipped=None)
 JA_SHORT_CONFIG = DEFAULT_CONFIG.with_name("compare.ja-short.yaml")

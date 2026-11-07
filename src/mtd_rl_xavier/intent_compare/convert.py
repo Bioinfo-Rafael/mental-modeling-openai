@@ -4,7 +4,7 @@
 The Translator only reads episodes through ``mtd_rl_xavier.lag.dataset.load_episode`` (64-column
 13_LAG CSV + ``manifest.json`` with SHA-256). This converter writes exactly that, so
 ``render_lag17_jsonl`` and ``episode_facts`` work unchanged. Semantics follow
-``workspace/13_LAG/data/processed/mhi_v1.3_ic100601_win.csv``:
+``data/mhi/processed/mhi_v1.3_ic100601_win.csv``:
 
 * aircraft, one row per npz row ``i`` (= state before decision ``i`` = ACMI frame ``#0.2*i``):
   state from the npz (degrees via ``* 180 / pi`` like the ACMI writer, yaw wrapped to [0, 360),
@@ -285,7 +285,7 @@ def build_manifest(csv_name: str, data: bytes, info: dict[str, Any], sources: di
         "missing_value": "",
         "primary_key": ["episode_id", "step", "object_id"],
         "columns": column_dtypes(),
-        "generator": {"scripts/intent_compare_convert.py": sha256_bytes(Path(__file__).read_bytes())},
+        "generator": {"src/mtd_rl_xavier/intent_compare/convert.py": sha256_bytes(Path(__file__).read_bytes())},
         "episodes": [
             {
                 "episode_id": info["episode_id"],

@@ -6,16 +6,16 @@ import dataclasses
 
 import pytest
 import yaml
-from intent_compare_a_requests import (
+
+from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG, CompareConfigError, parse_compare
+from mtd_rl_xavier.intent_compare import load_compare as load_config
+from mtd_rl_xavier.intent_compare.method_a_requests import (
     build_request,
     load_frame,
     load_settings,
     plan_slots,
     prompt_for,
 )
-
-from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG, CompareConfigError, parse_compare
-from mtd_rl_xavier.intent_compare import load_compare as load_config
 from mtd_rl_xavier.translator.pipeline import EpisodeFacts
 from mtd_rl_xavier.translator.translation import system_prompt
 

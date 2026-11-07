@@ -1,7 +1,7 @@
 """The intent-translation comparison's shared contract: ``compare.yaml``, run ids and answer limits.
 
 One parser and one dataclass for ``configs/intent_compare/*.yaml``, used by method A (the
-trajectory-based Translator, ``scripts/intent_compare_run_a.py``), method B (weights and activations,
+trajectory-based Translator, ``mtd_rl_xavier.intent_compare.method_a_cli``), method B (weights and activations,
 ``weightreading intent-run``), the clip cutter and the viewer. Rules (the strictest of the two
 former parsers):
 

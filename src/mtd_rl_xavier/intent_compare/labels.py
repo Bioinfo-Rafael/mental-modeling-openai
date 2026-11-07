@@ -54,10 +54,10 @@ EN = Labels(
     header_cues="cues {method}: {source}",
     not_run_suffix=" (not run yet)",
     drift_note="Note: this rollout drifts numerically from the 13_LAG episode mhi_v1.3_ic100601_win used for "
-    "the workspace/17 human annotation (same initial condition and launches; positions diverge later).",
+    "the experiment-17 human annotation (same initial condition and launches; positions diverge later).",
     annotation_given="human annotation: {path}",
-    annotation_absent="human annotation (workspace/17): no local copy in this repository (only a Google Sheet "
-    "link in workspace/17_commentary_LAG/README.md, not fetched); column omitted.",
+    annotation_absent="human annotation (experiment 17): no local copy (only a Google Sheet link in the "
+    "workspace project's 17_commentary_LAG/README.md, not fetched); expected at {path}; column omitted.",
     section_title="Step {step} (t = {t_s} s); translation window steps {win_a}-{step} "
     "({win_start_s}-{t_s} s); clip {clip_start}-{clip_end} s",
     clip_missing="clip missing (run scripts/intent_compare_video.sbatch)",
@@ -86,12 +86,12 @@ JA = Labels(
     header_instruction="指示文（AとBで共通）：{instruction}",
     header_cues="{method} のキュー：{source}",
     not_run_suffix="（未実行）",
-    drift_note="注意：このロールアウトは、workspace/17 の人手アノテーションに使われた 13_LAG のエピソード "
+    drift_note="注意：このロールアウトは、実験17 の人手アノテーションに使われた 13_LAG のエピソード "
     "mhi_v1.3_ic100601_win と数値的にずれています（初期条件と発射は同じで、位置は後半で乖離します）。",
     annotation_given="人手アノテーション：{path}",
-    annotation_absent="人手アノテーション（workspace/17）：このリポジトリにローカルコピーはありません"
-    "（workspace/17_commentary_LAG/README.md に Google Sheet へのリンクがあるのみで、取得していません）。"
-    "この列は省略しました。",
+    annotation_absent="人手アノテーション（実験17）：ローカルコピーはありません"
+    "（workspace プロジェクトの 17_commentary_LAG/README.md に Google Sheet へのリンクがあるのみで、取得していません）。"
+    "置き場所は {path} です。この列は省略しました。",
     section_title="ステップ {step}（t = {t_s} 秒）；翻訳ウィンドウ ステップ {win_a}～{step}"
     "（{win_start_s}～{t_s} 秒）；クリップ {clip_start}～{clip_end} 秒",
     clip_missing="クリップがありません（scripts/intent_compare_video.sbatch を実行してください）",
