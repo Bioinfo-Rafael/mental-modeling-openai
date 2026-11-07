@@ -2,7 +2,7 @@
 """Replay one recorded weightreading seed with ACMI output on and prove it is the same rollout.
 
 Run with mtd-rl-lag's interpreter (torch + JSBSim) on a compute node, via
-``scripts/intent_compare_video.sbatch``. The setup is the recorder's
+``slurm/translator_prepare_episode.sbatch``. The setup is the recorder's
 (``weightreading_record_rollouts.py``): seeds before the env exists, one torch thread, pinned actor
 through ``load_team_bundle``, deterministic ``TeamSide``, the real ``play_team_match`` loop, and
 the recorder's own ``aircraft_context`` read before every decision. The only difference is

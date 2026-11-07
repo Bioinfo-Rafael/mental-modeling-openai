@@ -60,7 +60,7 @@ EN = Labels(
     "workspace project's 17_commentary_LAG/README.md, not fetched); expected at {path}; column omitted.",
     section_title="Step {step} (t = {t_s} s); translation window steps {win_a}-{step} "
     "({win_start_s}-{t_s} s); clip {clip_start}-{clip_end} s",
-    clip_missing="clip missing (run scripts/intent_compare_video.sbatch)",
+    clip_missing="clip missing (run slurm/translator_prepare_episode.sbatch)",
     timeline_title="click to seek",
     seek_button="Seek to translation instant (t = {t_s} s)",
     legend="Blue: translation window (the input both methods see). Red: translation instant. "
@@ -94,7 +94,7 @@ JA = Labels(
     "置き場所は {path} です。この列は省略しました。",
     section_title="ステップ {step}（t = {t_s} 秒）；翻訳ウィンドウ ステップ {win_a}～{step}"
     "（{win_start_s}～{t_s} 秒）；クリップ {clip_start}～{clip_end} 秒",
-    clip_missing="クリップがありません（scripts/intent_compare_video.sbatch を実行してください）",
+    clip_missing="クリップがありません（slurm/translator_prepare_episode.sbatch を実行してください）",
     timeline_title="クリックで移動",
     seek_button="翻訳時刻へ移動（t = {t_s} 秒）",
     legend="青：翻訳ウィンドウ（両手法が見る入力）。赤：翻訳時刻。"

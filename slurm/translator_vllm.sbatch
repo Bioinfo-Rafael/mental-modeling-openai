@@ -9,15 +9,14 @@
 #   HF_CACHE_DIR  the Hugging Face cache holding the pinned snapshot (e.g. on /lustre)
 #   SCENARIO      Translator scenario YAML (real ones live under private/translator/)
 # Optional: CONFIG (default configs/translator/run.yaml), MAX_MODEL_LEN (default 16384),
-#   STARTUP_TIMEOUT_S (default 900), SHUTDOWN_TIMEOUT_S (default 20), UV.
+#   STARTUP_TIMEOUT_S (default 900), SHUTDOWN_TIMEOUT_S (default 20).
 #
-# Default: GPU probe only. The server starts, the detector client's authenticated health check
-# runs against it, and the server stops; no paid API call is made.
-# A PAID Translator run happens only when TRANSLATOR_CONFIRM_PAID=yes is exported explicitly
-# (the default translation layer is the OpenAI Responses API; OPENAI_API_KEY must be set):
-#   mkdir -p outputs/translator/slurm
-#   VLLM_ENV=... HF_CACHE_DIR=... SCENARIO=... sbatch --export=ALL scripts/translator_vllm.sbatch
-#   TRANSLATOR_CONFIRM_PAID=yes VLLM_ENV=... HF_CACHE_DIR=... SCENARIO=... sbatch --export=ALL scripts/translator_vllm.sbatch
+# MODE (first argument): probe (default) = GPU probe only: the server starts, the detector client's
+# authenticated health check runs against it, and the server stops; no paid API call is made.
+# paid = a PAID Translator run (the translation layer is the OpenAI Responses API; OPENAI_API_KEY
+# must be in the submitting environment):
+#   VLLM_ENV=... HF_CACHE_DIR=... SCENARIO=... sbatch --export=ALL slurm/translator_vllm.sbatch probe
+#   set -a; . ./.env; set +a; VLLM_ENV=... HF_CACHE_DIR=... SCENARIO=... sbatch --export=ALL slurm/translator_vllm.sbatch paid
 #
 # Security: the server listens only on the Unix socket from detector.connection.uds_path (default
 # /tmp/$USER-vllm/clef-flash.sock, directory mode 0700, one launcher per socket path). A fresh random
@@ -25,22 +24,29 @@
 # (never argv, never printed). Request logging stays off and the launcher accepts no passthrough
 # flags (src/mtd_rl_xavier/llm/README.md). Two of your jobs on one node with the same config cannot
 # share the socket: the second one stops at the launcher's lock.
-#SBATCH -p 151-partition
-#SBATCH -n 1
+#SBATCH --partition=151-partition
+#SBATCH --job-name=translator_vllm
 #SBATCH --gres=gpu:1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=64G
 #SBATCH --time=00:30:00
-#SBATCH --job-name=translator-vllm
-#SBATCH --output=outputs/translator/slurm/%x-%j.out
-set -euo pipefail
-cd "${SLURM_SUBMIT_DIR:-.}"
-UV="${UV:-$HOME/.local/bin/uv}"
+#SBATCH --output=logs/slurm/%x-%j.out
+set -euo pipefail                        # before source: a missing common.sh must stop the job
+source "${SLURM_SUBMIT_DIR:-.}/slurm/common.sh"
+MODE="${1:-probe}"
+case "$MODE" in
+  probe) unset OPENAI_API_KEY ;;
+  paid) require_openai_key ;;
+  *) echo "MODE must be probe or paid (got $MODE)" >&2; exit 2 ;;
+esac
+require_python
 VLLM_ENV="${VLLM_ENV:?set VLLM_ENV to the separate vLLM env directory (it contains bin/vllm)}"
 HF_CACHE_DIR="${HF_CACHE_DIR:?set HF_CACHE_DIR to the Hugging Face cache holding the pinned snapshot}"
 SCENARIO="${SCENARIO:?set SCENARIO to the Translator scenario YAML}"
 CONFIG="${CONFIG:-configs/translator/run.yaml}"
-# The project's own interpreter, called directly below, so that no `uv` process sits between SLURM's
+# The project's own interpreter, called directly, so that no `uv` process sits between SLURM's
 # signals and the launcher (the launcher stops the server on SIGTERM).
-PYTHON="$("$UV" run --no-sync python -c 'import sys; print(sys.executable)')"
+PYTHON="$PY"
 
 # The detector settings come from the Translator config itself, so server and client cannot drift.
 # A failing reader fails the assignment, and so the job (set -e).
@@ -95,10 +101,7 @@ LAUNCHER=(
   --shutdown-timeout-s "${SHUTDOWN_TIMEOUT_S:-20}"
 )
 
-# Preflight (env, cache, key, socket directory) and the exact server argv; the key is never printed.
-"$PYTHON" -m mtd_rl_xavier.llm.vllm_server "${LAUNCHER[@]}" --dry-run
-if [ "${TRANSLATOR_CONFIRM_PAID:-}" = "yes" ]; then
-  if [ -z "${OPENAI_API_KEY:-}" ]; then echo "OPENAI_API_KEY is not set" >&2; exit 2; fi
+if [ "$MODE" = paid ]; then
   CLIENT=("$PYTHON" -m mtd_rl_xavier.translator.cli --config "$CONFIG" --scenario "$SCENARIO" --execute --confirm-paid-api)
 else
   PROBE='import sys
@@ -107,10 +110,13 @@ from mtd_rl_xavier.translator.cli import build_system_one_client
 from mtd_rl_xavier.translator.config import load_config
 with build_system_one_client(load_config(Path(sys.argv[1])).detector) as client:
     client.health()
-print("detector health: ok (probe only; set TRANSLATOR_CONFIRM_PAID=yes for a paid Translator run)")'
+print("detector health: ok (probe only; MODE=paid runs the paid Translator)")'
   CLIENT=("$PYTHON" -c "$PROBE" "$CONFIG")
 fi
-# exec: the launcher replaces this shell, so SIGTERM from scancel or the time limit reaches it
-# directly. It starts the server, waits for authenticated readiness, runs the client, then stops the
+log_header "$PYTHON" -m mtd_rl_xavier.llm.vllm_server "${LAUNCHER[@]}" -- "${CLIENT[@]}"
+# Preflight (env, cache, key, socket directory) and the exact server argv; the key is never printed.
+"$PYTHON" -m mtd_rl_xavier.llm.vllm_server "${LAUNCHER[@]}" --dry-run
+# exec: the launcher replaces this shell (skipping the EXIT trap; sacct shows the exit code), so
+# SIGTERM from scancel or the time limit reaches it directly. It starts the server, waits for authenticated readiness, runs the client, then stops the
 # server and its process group (SIGTERM, wait, SIGKILL) and exits with the client's exit code.
 exec "$PYTHON" -m mtd_rl_xavier.llm.vllm_server "${LAUNCHER[@]}" -- "${CLIENT[@]}"

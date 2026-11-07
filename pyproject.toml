@@ -25,7 +25,7 @@ video = ["av>=17,<20", "Pillow>=12,<14"]
 dev = ["pytest>=7,<9", "ruff>=0.8", "poethepoet>=0.29"]
 
 # Core only: the Translator library (mtd_rl_xavier), method B (weightreading) and the judge
-# (evaluation). The legacy LLM-Xavier stack is the separate uv project in workspace/.
+# (evaluation). The legacy LLM-Xavier stack is the separate uv project in the workspace directory.
 # The explicit package-dir keeps the editable install from putting all of src/ on sys.path (a .pth entry).
 [tool.setuptools]
 # Subpackages are listed explicitly because `find` would map "" -> src and bring the .pth back;
@@ -53,7 +53,7 @@ evaluation = ["README.md", "config/*.yaml", "examples/*"]
 
 [tool.pytest.ini_options]
 addopts = "-ra -p no:cacheprovider"
-# Core tests only. workspace/ is a separate uv project with its own test session.
+# Core tests only. The workspace directory is a separate uv project with its own test session.
 testpaths = ["tests"]
 # The repository root makes the `tests.<area>` helper modules importable.
 pythonpath = ["."]

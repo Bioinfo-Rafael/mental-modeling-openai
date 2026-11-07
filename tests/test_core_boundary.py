@@ -1,6 +1,6 @@
-"""The core (Translator, methods A/B, judge) is independent of the workspace/ project.
+"""The core (Translator, methods A/B, judge) is independent of the workspace project.
 
-The core never imports the workspace library, the vendored LLM-Xavier (``llm_x``) or an experiment
+The core never imports the workspace library, the vendored LLM-Xavier package or an experiment
 module, never edits ``sys.path``, and installs exactly its own packages.
 """
 
@@ -61,7 +61,7 @@ def test_core_module_does_not_touch_sys_path(path: Path) -> None:
     assert sys_path_mutations(path) == []
 
 
-def test_vendored_llm_x_is_not_installed_in_the_core_environment(tmp_path: Path) -> None:
+def test_vendored_prior_work_is_not_installed_in_the_core_environment(tmp_path: Path) -> None:
     probe = "import importlib.util as u; print(u.find_spec('llm_x'), u.find_spec('mtd_rl_xavier_workspace'))"
 
     result = subprocess.run(

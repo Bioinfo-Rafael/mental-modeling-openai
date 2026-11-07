@@ -1,22 +1,22 @@
 #!/bin/bash
 # Record MHI 2v2 team-actor rollouts in mtd-rl-lag and replay them through weightreading's numpy
 # reference forward, on a compute node. No API is called; nothing in either repository is modified.
-#   mkdir -p outputs/weightreading/slurm
-#   sbatch scripts/weightreading_record_rollouts.sbatch
+#   sbatch slurm/translator_record_rollouts.sbatch
 # 1. record: mtd-rl-lag's own interpreter (torch + JSBSim) runs weightreading_record_rollouts.py;
 # 2. cross-check (XCHECK=1): mtd-rl-lag's unmodified evaluate_mhi_team.py replays the same seeds into
 #    $LAG_ROOT/LOCAL_ONLY/ (gitignored there; the script refuses outputs outside its worktree);
 # 3. replay: an isolated numpy-only uv environment runs weightreading_replay_rollouts.py.
-# Optional: LAG_ROOT, MODEL_DIR (default $LAG_ROOT/models/v1.3), MODEL_ALIAS (mhi-v1.3), PROTOCOL
+# Optional: LAG_ROOT (default ../mtd-rl-lag), MODEL_DIR (default $LAG_ROOT/models/v1.3), MODEL_ALIAS (mhi-v1.3), PROTOCOL
 # (per_agent_v1 | mhi_render_v1_3), SEEDS ("100600 100601 100602 100603"), SCENARIO, MAX_STEPS, XCHECK, UV.
-#SBATCH -p 151-partition
-#SBATCH -n 1
-#SBATCH --job-name=wr-rollouts
-#SBATCH --output=outputs/weightreading/slurm/%x-%j.out
-set -euo pipefail
-cd "${SLURM_SUBMIT_DIR:-.}"
-UV="${UV:-$HOME/.local/bin/uv}"
-LAG_ROOT="${LAG_ROOT:-/home/user151005/workspace/mtd-rl-lag}"
+#SBATCH --partition=151-partition
+#SBATCH --job-name=translator_record_rollouts
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=32G
+#SBATCH --time=01:00:00
+#SBATCH --output=logs/slurm/%x-%j.out
+set -euo pipefail                        # before source: a missing common.sh must stop the job
+source "${SLURM_SUBMIT_DIR:-.}/slurm/common.sh"
+UV="${UV:-$HOME/.local/bin/uv}"          # only for the throwaway numpy-only replay env
 LAG_PYTHON="$LAG_ROOT/.venv/bin/python"
 MODEL_DIR="${MODEL_DIR:-$LAG_ROOT/models/v1.3}"
 MODEL_ALIAS="${MODEL_ALIAS:-mhi-v1.3}"
@@ -29,7 +29,7 @@ XCHECK_ROOT="$LAG_ROOT/LOCAL_ONLY/weightreading_xcheck/${SLURM_JOB_ID:-local}"
 export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1
 STEP_ARGS=()
 if [ -n "${MAX_STEPS:-}" ]; then STEP_ARGS=(--max-steps "$MAX_STEPS"); fi
-echo "host=$(hostname) out=$OUT protocol=$PROTOCOL seeds=${SEED_LIST[*]} scenario=$SCENARIO"
+log_header "$0" "out=$OUT" "protocol=$PROTOCOL" "seeds=${SEED_LIST[*]}" "scenario=$SCENARIO"
 
 SECONDS=0
 "$LAG_PYTHON" -B scripts/weightreading_record_rollouts.py --lag-root "$LAG_ROOT" --checkpoint "$CHECKPOINT" \

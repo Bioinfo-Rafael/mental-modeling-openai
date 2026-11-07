@@ -15,7 +15,7 @@ the composition roots (`translator/cli.py`, `evaluation/cli.py`, `evaluation/ass
 | `system_one.py` | Local `POST /v1/systemone` (vLLM `clef-flash`, OpenJev `wev serve`) | PHASE-1 |
 | `vllm_server.py` | `vllm serve` launcher: allowlisted argv, health wait, teardown, CLI | L1 |
 
-The SLURM template `scripts/translator_vllm.sbatch` runs the launcher and the Translator CLI in one
+The SLURM template `slurm/translator_vllm.sbatch` runs the launcher and the Translator CLI in one
 one-GPU job. Nothing in L1 has been run against a real server: see
 [Unverified vLLM facts](#unverified-vllm-facts) and [Still needs approval](#still-needs-approval-d49).
 
@@ -170,13 +170,13 @@ one-GPU job. Nothing in L1 has been run against a real server: see
 - The subprocess factory, clock, sleep, `killpg` and HTTP transport are injectable. The tests
   need no vLLM, GPU or network.
 
-## SLURM template `scripts/translator_vllm.sbatch`
+## SLURM template `slurm/translator_vllm.sbatch`
 
-- Directives: `-p 151-partition`, `--gres=gpu:1`, `--time=00:30:00`. The log goes to
-  `outputs/translator/slurm/`, which is gitignored.
-- Placeholders you set: `VLLM_ENV` (the separate env directory), `HF_CACHE_DIR` and `SCENARIO`.
-  Optional: `CONFIG`, `MAX_MODEL_LEN`, `STARTUP_TIMEOUT_S`, `SHUTDOWN_TIMEOUT_S` and `UV`. No
-  personal path is hardcoded.
+- Directives: `--partition=151-partition`, `--gres=gpu:1`, 8 CPUs, 64G, `--time=00:30:00`. The log
+  goes to `logs/slurm/translator_vllm-<job id>.out` (see `slurm/README.md`).
+- MODE (first argument): `probe` (default) or `paid`. Placeholders you set: `VLLM_ENV` (the separate
+  env directory), `HF_CACHE_DIR` and `SCENARIO`. Optional: `CONFIG`, `MAX_MODEL_LEN`,
+  `STARTUP_TIMEOUT_S` and `SHUTDOWN_TIMEOUT_S`. No personal path is hardcoded.
 - The model, revision, served name, socket path and budget are read from the Translator config
   (`detector.*`), so the server and the client cannot drift. The job requires a UDS endpoint and
   `api_key_env: VLLM_API_KEY`. A failing config reader fails the job.
@@ -184,16 +184,15 @@ one-GPU job. Nothing in L1 has been run against a real server: see
   missing; a concurrent job may create it first.
 - It generates a fresh per-job `VLLM_API_KEY` with Python `secrets`, and never prints it.
 - It runs the launcher `--dry-run` (preflight and argv), then `exec`s the launcher with the
-  project interpreter directly, so SIGTERM reaches it with no `uv` process in between. The client
-  is one of:
-  - default: a GPU probe (the detector client's authenticated `health()`), with no paid call;
-  - `TRANSLATOR_CONFIRM_PAID=yes`: the Translator CLI with `--execute --confirm-paid-api` (needs
-    `OPENAI_API_KEY`).
+  project interpreter (`.venv/bin/python`) directly, so SIGTERM reaches it with no `uv` process in
+  between. The client is one of:
+  - `probe` (default): a GPU probe (the detector client's authenticated `health()`), with no paid call;
+  - `paid`: the Translator CLI with `--execute --confirm-paid-api` (needs `OPENAI_API_KEY`).
 - Two of your jobs on one node with the same config cannot share the socket: the second one stops
   at the launcher's lock. A per-job socket path would need a Translator config placeholder (not in
   L1).
-- It passes `bash -n`, and `tests/llm/test_llm_vllm_sbatch.py` runs it once offline: a stub `UV`
-  and a fake `vllm` record what the server would get, and the key is in its environment only. It
+- It passes `bash -n`, and `tests/llm/test_llm_vllm_sbatch.py` runs it once offline: a fake `vllm`
+  records what the server would get, and the key is in its environment only. It
   has never been submitted.
 
 ## Unverified vLLM facts
@@ -223,10 +222,10 @@ None of these ran:
 - Creating the separate vLLM env (vLLM >= 0.33.0, about 10 GB), outside the project `.venv`.
 - Downloading clef-flash at `fb4417d31c1d0f9e7e77f1141b40aaede7491e00` (about 19 GB) into the HF
   cache, for example on `/lustre`.
-- One short `--gres=gpu:1` probe job on `151-partition` (`scripts/translator_vllm.sbatch` without
-  `TRANSLATOR_CONFIRM_PAID`), which checks the GPU, driver, memory, start-up time and the
+- One short `--gres=gpu:1` probe job on `151-partition` (`slurm/translator_vllm.sbatch probe`),
+  which checks the GPU, driver, memory, start-up time and the
   unverified items above.
-- Any paid Translator run (`TRANSLATOR_CONFIRM_PAID=yes`).
+- Any paid Translator run (`slurm/translator_vllm.sbatch paid`).
 
 ## Gating
 

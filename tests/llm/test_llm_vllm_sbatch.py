@@ -1,8 +1,9 @@
-"""The one-GPU SLURM template ``scripts/translator_vllm.sbatch``: static checks and one offline run.
+"""The one-GPU SLURM template ``slurm/translator_vllm.sbatch``: static checks and one offline run.
 
 Nothing is submitted. The offline run executes the script with ``bash`` (``#SBATCH`` lines are
-comments), a stub ``UV`` and a fake ``vllm`` that records its argv and environment and exits, so
-the real launcher refuses to continue. No SLURM, GPU, network or vLLM is involved.
+comments) from the repository root, with the project interpreter and a fake ``vllm`` that records
+its argv and environment and exits, so the real launcher refuses to continue. No SLURM, GPU,
+network or vLLM is involved.
 """
 
 from __future__ import annotations
@@ -21,7 +22,7 @@ import pytest
 from mtd_rl_xavier import paths
 from mtd_rl_xavier.llm import vllm_server
 
-SBATCH = paths.ROOT / "scripts" / "translator_vllm.sbatch"
+SBATCH = paths.ROOT / "slurm" / "translator_vllm.sbatch"
 DEFAULT_CONFIG = paths.ROOT / "configs" / "translator" / "run.yaml"
 DEFAULT_UDS_LINE = "uds_path: /tmp/{user}-vllm/clef-flash.sock"
 REVISION = "fb4417d31c1d0f9e7e77f1141b40aaede7491e00"
@@ -49,7 +50,7 @@ def test_sbatch_passes_bash_syntax_check() -> None:
 def test_sbatch_requests_one_gpu_on_the_partition_for_a_short_time() -> None:
     directives = re.findall(r"^#SBATCH (.+)$", _sbatch(), flags=re.MULTILINE)
 
-    assert "-p 151-partition" in directives and "--gres=gpu:1" in directives
+    assert "--partition=151-partition" in directives and "--gres=gpu:1" in directives
     (time_limit,) = [d.split("=", 1)[1] for d in directives if d.startswith("--time=")]
     hours, minutes, _ = (int(part) for part in time_limit.split(":"))
     assert hours * 60 + minutes <= 60
@@ -77,7 +78,8 @@ def test_sbatch_creates_the_socket_directory_0700_and_paid_runs_need_explicit_op
     text = _sbatch()
 
     assert 'mkdir -m 700 "$SOCKET_DIR"' in text
-    assert '[ "${TRANSLATOR_CONFIRM_PAID:-}" = "yes" ]' in text
+    assert 'MODE="${1:-probe}"' in text and '[ "$MODE" = paid ]' in text
+    assert "CONFIRM_PAID" not in text
     assert text.count("--confirm-paid-api") == 1
 
 
@@ -85,7 +87,7 @@ def test_sbatch_execs_the_launcher_so_signals_reach_it_directly() -> None:
     last = [line for line in _code_lines().splitlines() if line.strip()][-1]
 
     assert last.startswith('exec "$PYTHON" -m mtd_rl_xavier.llm.vllm_server')
-    assert _code_lines().count('"$UV" run') == 1  # only to resolve the interpreter
+    assert "uv run" not in _code_lines() and 'PYTHON="$PY"' in _code_lines()  # .venv/bin/python, no uv
 
 
 def test_sbatch_launcher_flags_are_all_known_to_the_launcher() -> None:
@@ -146,9 +148,6 @@ def test_sbatch_runs_offline_with_a_fake_vllm_and_never_exposes_the_key(
         vllm_env / "bin" / "vllm",
         f'#!/bin/sh\nprintf "%s\\n" "$@" > "{dump}/argv"\nenv > "{dump}/env"\nexit {FAKE_VLLM_EXIT}\n',
     )
-    _write_executable(
-        tmp_path / "uv", f'#!/bin/sh\nshift 3\nexec "{sys.executable}" "$@"\n'
-    )  # `uv run --no-sync python`
     (tmp_path / "hf").mkdir()
     config_text = DEFAULT_CONFIG.read_text(encoding="utf-8")
     assert config_text.count(DEFAULT_UDS_LINE) == 1
@@ -158,7 +157,6 @@ def test_sbatch_runs_offline_with_a_fake_vllm_and_never_exposes_the_key(
         "PATH": os.environ["PATH"],
         "HOME": os.environ.get("HOME", str(tmp_path)),
         "SLURM_SUBMIT_DIR": str(paths.ROOT),
-        "UV": str(tmp_path / "uv"),
         "VLLM_ENV": str(vllm_env),
         "HF_CACHE_DIR": str(tmp_path / "hf"),
         "SCENARIO": str(tmp_path / "never-read.yaml"),

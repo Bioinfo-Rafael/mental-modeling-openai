@@ -15,11 +15,10 @@ import numpy as np
 from weightreading.architecture import expected_params
 from weightreading.spec import parse_spec
 
-LAG_MODEL_DIR = Path(
-    os.environ.get("WEIGHTREADING_LAG_MODEL_DIR", "/home/user151005/workspace/mtd-rl-lag/envs/JSBSim/model")
-)
+LAG_ROOT = Path(__file__).resolve().parents[3] / "mtd-rl-lag"  # the sibling mtd-rl-lag checkout
+LAG_MODEL_DIR = Path(os.environ.get("WEIGHTREADING_LAG_MODEL_DIR", str(LAG_ROOT / "envs" / "JSBSim" / "model")))
 # Delivered 2v2 MAPPO actors (client files; read-only, never copied into this repository).
-MHI_MODEL_DIR = Path(os.environ.get("WEIGHTREADING_MHI_MODEL_DIR", "/home/user151005/workspace/mtd-rl-lag/models"))
+MHI_MODEL_DIR = Path(os.environ.get("WEIGHTREADING_MHI_MODEL_DIR", str(LAG_ROOT / "models")))
 MHI_ACTORS = ("v1.3/files/actor_latest.pt", "v1.3-1/files/actor_latest.pt")
 PREFIX = "archive"
 

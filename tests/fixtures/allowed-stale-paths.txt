@@ -1,0 +1,38 @@
+README.md:13:src/mentalmodeling/    Prior work: vendored LLM-Xavier (`llm_x` package, own distribution
+README.md:21:  lag/                 LAG episode loader and trajectory rendering (promoted from workspace/13_LAG, 17).
+README.md:32:tests/                 Tests for src/, evaluation/ and scripts/ (src/mentalmodeling/tests is collected too).
+README.md:33:workspace/             Exploratory experiments, one directory per experiment (NN_name/).
+README.md:51:- One-off or still-changing experiment code goes in `workspace/NN_name/` (see
+README.md:52:  [workspace/README.md](workspace/README.md)).
+README.md:60:- `src/mentalmodeling/` changes only to track upstream LLM-Xavier. Its files are hashed into
+README.md:62:  It is not part of the `mtd-rl-xavier` wheel. Import it only as `llm_x`: `mentalmodeling` is
+README.md:70:uv sync --all-extras          # Python 3.12 venv in .venv; installs src/mentalmodeling/ as editable `llm_x`
+README.md:87:uv run poe test                                   # tests/ + src/mentalmodeling/tests
+README.md:92:uv run pytest workspace/14_mental-modeling_LAG    # one experiment's tests
+README.md:94:uv run python workspace/06_new_models_n10/analysis/analyze.py
+README.md:95:node --test workspace/13_LAG/viewer/test_model.mjs
+README.md:107:- **Results are immutable.** Results already tracked in git (`workspace/*/results/`, viewers and
+README.md:114:  `workspace/13_LAG/data/` is tracked on purpose.
+README.md:115:- **Provenance**: plans record SHA-256 of the prompt/scoring code (`src/mentalmodeling/llm_x/*.py`,
+README.md:127:  | `workspace/01`–`06`, `08` `run.py` | `--execute --confirm-paid-api` (01 refuses paid runs) |
+README.md:128:  | `workspace/09`–`12` `run.py` | run **without arguments**; `--dry-run` only previews |
+README.md:129:  | `workspace/14`–`17` `run.py` | `--execute` alone (OpenAI Batch; no `--confirm-paid-api`) |
+README.md:130:  | `workspace/14_mental-modeling_LAG/batch_run.py` | the `run`, `submit`, `complete-prefix`, `rolling` commands (no flag) |
+README.md:137:  The `scripts/*.sbatch` wrappers add `--execute --confirm-paid-api` themselves when
+README.md:138:  `WEIGHTREADING_CONFIRM_PAID=yes`, `INTENT_COMPARE_CONFIRM_PAID=yes` or
+README.md:139:  `TRANSLATOR_CONFIRM_PAID=yes` is exported; read the script header before submitting.
+evaluation/README.md:119:videos (`workspace/13_LAG/data/viz/action_videos/*.mp4`, 20 fps, 1920x1080, frame = step) show the
+evaluation/README.md:137:      path: workspace/13_LAG/data/viz/action_videos/mhi_v1.3_ic100601_win_with_actions.mp4  # relative to the repo root
+src/mtd_rl_xavier/lag/README.md:4:`workspace/13_LAG` and `workspace/17_commentary_LAG` so that the Translator and the judge do not
+src/mtd_rl_xavier/lag/README.md:5:import from `workspace/`. Nothing in this package imports `workspace/`.
+src/mtd_rl_xavier/lag/README.md:18:  `dataset.py` with the same values as `workspace/13_LAG/lag_data/definitions.py`.
+src/mtd_rl_xavier/lag/README.md:25:Promoted from the byte-identical copies in `workspace/{15,16,17}_*/*_experiment/` (14 held the
+src/mtd_rl_xavier/lag/README.md:35:  stays in `workspace/14_mental-modeling_LAG/`.
+src/mtd_rl_xavier/lag/README.md:65:`workspace/17_commentary_LAG/commentary_experiment` builds (`build_window` followed by the
+src/mtd_rl_xavier/lag/dataset.py:1:"""Typed LAG episode loading and record selection, promoted from ``workspace/13_LAG``.
+src/mtd_rl_xavier/lag/dataset.py:4:``workspace/13_LAG/lag_data/{definitions,dataset}.py``; ``tests/lag/test_lag_contract.py`` pins that.
+src/mtd_rl_xavier/lag/dataset.py:5:This module must never import from ``workspace/``.
+src/mtd_rl_xavier/lag/rendering.py:3:``render_lag17_jsonl`` reproduces the window body of ``workspace/17_commentary_LAG``
+src/mtd_rl_xavier/lag/rendering.py:6:This module must never import from ``workspace/``.
+tests/test_core_boundary.py:23:FORBIDDEN_IMPORT_ROOTS = {"workspace", "mtd_rl_xavier_workspace", "llm_x", "mentalmodeling"}
+tests/test_core_boundary.py:65:    probe = "import importlib.util as u; print(u.find_spec('llm_x'), u.find_spec('mtd_rl_xavier_workspace'))"

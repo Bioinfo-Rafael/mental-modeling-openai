@@ -162,7 +162,7 @@ def test_build_html_english_page_keeps_original_labels(tmp_path: Path) -> None:
     assert '<html lang="en">' in page
     for expected in ("Intent translation comparison: method A vs method B", "<th>A</th><th>B</th>", "not run yet",
                      "Step 45 (t = 9.0 s); translation window steps 0-45 (0.0-9.0 s); clip 0.0-9.0 s",
-                     "Seek to translation instant (t = 9.0 s)", "clip missing (run scripts/intent_compare_video.sbatch)",
+                     "Seek to translation instant (t = 9.0 s)", "clip missing (run slurm/translator_prepare_episode.sbatch)",
                      "clock.textContent = 'sim t = ' + sim.toFixed(1) + ' s (step ' + Math.round(sim / dt) + ')';"):  # fmt: skip
         assert expected in page
     assert re.search(r"[\u3040-\u30ff\u4e00-\u9fff]", page) is None
