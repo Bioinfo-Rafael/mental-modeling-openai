@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import pytest
 
-from mtd_rl_xavier.paths import resolve_recorded
+from mtd_rl_xavier_workspace.paths import resolve_recorded
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[2]

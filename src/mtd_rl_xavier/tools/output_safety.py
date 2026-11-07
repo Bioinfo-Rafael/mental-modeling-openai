@@ -1,10 +1,11 @@
-"""Reject derived writes to raw data or src/mentalmodeling/ (prior work), including symlink traversal."""
+"""Reject derived writes into the committed input data (data/), including symlink traversal."""
+
 from pathlib import Path
 
 from mtd_rl_xavier import paths
 
 ROOT = paths.ROOT
-PROTECTED_DIRS = (paths.DATA, paths.MENTALMODELING)
+PROTECTED_DIRS = (paths.DATA,)
 
 
 def derived_path(path):

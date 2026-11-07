@@ -7,7 +7,7 @@ import sys
 
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from mtd_rl_xavier.experiment import common
+from mtd_rl_xavier_workspace.experiment import common
 
 original = import_module('workspace.10_ICRL.analysis.build_results_viewer')
 data = original.data

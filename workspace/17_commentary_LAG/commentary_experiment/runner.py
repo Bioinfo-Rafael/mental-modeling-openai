@@ -3,12 +3,12 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-from mtd_rl_xavier.lag.dataset import load_episode
+from mtd_rl_xavier_workspace.lag.dataset import load_episode
 from .config import PROCESSED
 from .config import EPISODE, CENTERS, MODELS, REFERENCE_URL
 from .dataset import build_window
 from .prompts import build_messages, PROMPT_VERSION
-from mtd_rl_xavier.lag import batch, execution as ex
+from mtd_rl_xavier_workspace.lag import batch, execution as ex
 from . import evaluation
 HERE = Path(__file__).resolve().parents[1]
 LAG_LIBRARY = Path(ex.__file__).resolve().parent

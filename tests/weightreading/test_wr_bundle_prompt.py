@@ -62,7 +62,7 @@ def test_verify_bundle_after_tampering_raises(tmp_path: Path) -> None:
         verify_bundle(bundle.path)
 
 
-@pytest.mark.parametrize("protected", [paths.DATA, paths.MENTALMODELING])
+@pytest.mark.parametrize("protected", [paths.DATA])
 def test_write_bundle_under_protected_directory_refuses(protected: Path) -> None:
     with pytest.raises(ValueError, match="read-only source"):
         write_bundle(_tensors(), "net-0123abcd", "abc", protected / "wr-test")

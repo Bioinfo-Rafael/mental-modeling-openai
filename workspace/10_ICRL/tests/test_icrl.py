@@ -63,7 +63,7 @@ def test_nested_context_selection_and_hashes(plan, monkeypatch):
     expected = sorted(str(s.path.relative_to(runner.ROOT)) for s in sources
                       if s.task == 'Pendulum-v1' and s.path.name != entry.EXPERIMENT.target_episode)
     contexts = {}
-    from mtd_rl_xavier.preprocessing.llmx_original import file_sha256
+    from mtd_rl_xavier_workspace.preprocessing.llmx_original import file_sha256
     for q in plan['queries']:
         assert q['E'] == q['context_episode_count']
         assert q['auxiliary_episode_paths'] == expected[:q['E']-1]

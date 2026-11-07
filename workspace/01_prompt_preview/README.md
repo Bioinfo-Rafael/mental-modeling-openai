@@ -205,7 +205,7 @@ if __name__ == "__main__":
 directory = EXPERIMENTS / spec.name / "results"
 ```
 
-`EXPERIMENTS` は `mtd_rl_xavier.paths.WORKSPACE`（repositoryの `workspace/`）。したがって、Exp.1の出力先は `workspace/01_prompt_preview/results/` になります。
+`EXPERIMENTS` は `mtd_rl_xavier_workspace.paths.WORKSPACE`（repositoryの `workspace/`）。したがって、Exp.1の出力先は `workspace/01_prompt_preview/results/` になります。
 
 ### `models`：aliasをmodel IDへ変換する
 

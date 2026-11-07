@@ -17,7 +17,7 @@ import numpy as np
 HERE = Path(__file__).resolve().parents[1]
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT))
-from mtd_rl_xavier.experiment.common_analysis.joint_data import Episode
+from mtd_rl_xavier_workspace.experiment.common_analysis.joint_data import Episode
 scoring = import_module('workspace.08_fewshot.runner.scoring')
 
 TASKS = ('MountainCar-v0', 'Pendulum-v1')

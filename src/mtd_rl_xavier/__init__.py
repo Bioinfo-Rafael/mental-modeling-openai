@@ -1,6 +1,7 @@
-"""Shared library for LLM mental-modelling experiments on RL agents.
+"""Core library: the two-layer intent Translator and the intent-comparison methods.
 
-Subpackages: `datasets` (raw readers), `preprocessing` (prompt construction),
-`experiment` (planning, guarded execution, analysis), `tools` (CLI utilities).
-Repository layout lives in `paths`.
+Subpackages: `translator` (M1, the two-layer Translator), `intent_compare` (comparison contract,
+method A, viewer, converters), `llm` (LLM clients), `lag` (LAG episode loader and renderers),
+`tools` (output safety). Repository layout lives in `paths`. Method B is the separate
+`weightreading` package, and the LLM judge is `evaluation`.
 """

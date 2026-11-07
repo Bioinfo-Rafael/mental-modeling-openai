@@ -124,13 +124,13 @@ H・課題によって有効範囲が変わるので、**H間・課題間で正�
 
 | 処理 | 実装 |
 |---|---|
-| CSVスキーマ・状態と行動の定義 | `mtd_rl_xavier.lag.dataset`（13の定義を昇格したもの）を再利用 |
-| CSV読込・検証・索引化 | `mtd_rl_xavier.lag.dataset`の`load_episode()` / `index_records()`を再利用 |
+| CSVスキーマ・状態と行動の定義 | `mtd_rl_xavier_workspace.lag.dataset`（13の定義を昇格したもの）を再利用 |
+| CSV読込・検証・索引化 | `mtd_rl_xavier_workspace.lag.dataset`の`load_episode()` / `index_records()`を再利用 |
 | systemの外枠 | **LLM-Xavierの`llm_x.prompting.system_prompt()`を変更せず直接呼ぶ**。生成後、空のReward節だけをLAG側で削除 |
 | userの外枠 | **LLM-Xavierの`llm_x.prompting.user_prompt()`を変更せず直接呼ぶ** |
 | LAGの説明、履歴の整形、質問、回答形式 | 14の`prompts.py`で新規定義 |
 | 窓抽出、4課題の可視情報と正解の分離、条件の展開 | 14の`runner.py` |
-| API実行・記録・再開 | 09の記録方式を参考に実装し、15〜17と共通の`mtd_rl_xavier.lag.execution`へ昇格 |
+| API実行・記録・再開 | 09の記録方式を参考に実装し、15〜17と共通の`mtd_rl_xavier_workspace.lag.execution`へ昇格 |
 | 3成分の離散行動・10成分の連続状態の採点 | 14の`evaluation.py` |
 
 上流の`Episode`はNPZ前提なので作らず、`user_prompt()`が必要とする`history_text()`だけを持つ小さな`HistoryView`を渡す。

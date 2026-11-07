@@ -26,7 +26,7 @@ NN_short_name/
 - Entry points put the repository root on `sys.path` so sibling experiments can be imported:
   ```python
   sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-  from mtd_rl_xavier.experiment import common          # shared library
+  from mtd_rl_xavier_workspace.experiment import common          # shared library
   runner = import_module("workspace.10_ICRL.runner")   # another experiment (digit-leading name)
   ```
 - Experiment-local packages (e.g. `13_LAG/lag_data`, `14_.../lag_experiment`) are added to

@@ -17,13 +17,9 @@ __pycache__/
 .ipynb_checkpoints/
 .DS_Store
 
-# Downloaded datasets are reproducible inputs (see data/README.md and configs/sources.json).
-data/llmx_data/
-data/candidate_datasets/*/repository/
-data/candidate_datasets/*/*.zip
-data/candidate_datasets/*/extracted/
+# The workspace/ project keeps its own ignores (workspace/.gitignore).
 
-# Generated analyses and paid-pilot outputs from src/mtd_rl_xavier/tools.
+# Generated analyses and stray outputs.
 outputs/**/*.csv
 outputs/**/*.json
 outputs/**/*.jsonl

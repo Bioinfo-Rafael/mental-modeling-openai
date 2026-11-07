@@ -4,8 +4,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 sys.dont_write_bytecode = True
-from mtd_rl_xavier.experiment import common
-from mtd_rl_xavier.experiment.joint_questions import JOINT_QUESTIONS
+from mtd_rl_xavier_workspace.experiment import common
+from mtd_rl_xavier_workspace.experiment.joint_questions import JOINT_QUESTIONS
 
 EXPERIMENT = common.Experiment(
     name="03_1_gpt35_history_n30_joint",

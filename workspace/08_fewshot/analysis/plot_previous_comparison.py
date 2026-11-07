@@ -17,7 +17,7 @@ HERE = Path(__file__).resolve().parents[1]
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT))
 from llm_x.data import Episode
-from mtd_rl_xavier.paths import resolve_recorded
+from mtd_rl_xavier_workspace.paths import resolve_recorded
 scoring = import_module('workspace.08_fewshot.runner.scoring')
 
 OUT = HERE / 'results/analysis/previous_comparison'

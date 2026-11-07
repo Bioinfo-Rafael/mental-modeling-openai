@@ -24,13 +24,13 @@ ROOT = HERE.parents[2]
 sys.path.insert(0, str(ROOT))
 sys.dont_write_bytecode = True
 
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.experiment import common
-from mtd_rl_xavier.experiment.analysis import describe
+from mtd_rl_xavier_workspace import paths
+from mtd_rl_xavier_workspace.experiment import common
+from mtd_rl_xavier_workspace.experiment.analysis import describe
 from llm_x.data import Episode
 from llm_x.evaluation import EvaluationConfig, _action_range, _score_response
 from llm_x.metrics import element_accuracy, state_directions
-from mtd_rl_xavier.tools.output_safety import derived_path
+from mtd_rl_xavier_workspace.tools.output_safety import derived_path
 
 TASKS = ("MountainCar-v0", "Pendulum-v1")
 METRICS = ("next-action", "last-action", "next-state", "last-state")

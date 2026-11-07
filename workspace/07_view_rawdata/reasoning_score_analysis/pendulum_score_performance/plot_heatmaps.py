@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from mtd_rl_xavier.paths import resolve_recorded
+from mtd_rl_xavier_workspace.paths import resolve_recorded
 
 MODELS = {"3.5": "GPT-3.5", "luna": "Luna", "terra": "Terra", "sol": "Sol", "all": "All models (equal model weights)"}
 METRICS = ["last-action", "next-action"]

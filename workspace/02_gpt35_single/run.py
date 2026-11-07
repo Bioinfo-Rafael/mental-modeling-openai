@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 sys.dont_write_bytecode = True
-from mtd_rl_xavier.experiment import common
+from mtd_rl_xavier_workspace.experiment import common
 
 EXPERIMENT = common.Experiment(
     name="02_gpt35_single", models=("3.5",),

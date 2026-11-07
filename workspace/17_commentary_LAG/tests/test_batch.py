@@ -6,9 +6,9 @@ from types import SimpleNamespace
 import pytest
 HERE = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(HERE)]
-from mtd_rl_xavier.lag import batch, execution as ex
+from mtd_rl_xavier_workspace.lag import batch, execution as ex
 from commentary_experiment import evaluation
-from mtd_rl_xavier.lag.dataset import STATE_FEATURES, ACTIONS
+from mtd_rl_xavier_workspace.lag.dataset import STATE_FEATURES, ACTIONS
 
 def obj(data):
     return SimpleNamespace(**data, model_dump=lambda **kwargs: deepcopy(data))

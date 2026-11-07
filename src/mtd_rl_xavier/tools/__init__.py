@@ -1,2 +1,1 @@
-"""Offline preparation tools for the Mental Modeling re-evaluation workspace."""
-
+"""Small shared helpers of the core (``output_safety``)."""

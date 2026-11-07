@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-from mtd_rl_xavier.lag.dataset import STATE_FEATURES
+from mtd_rl_xavier_workspace.lag.dataset import STATE_FEATURES
 
 # Committed MHI data (CSV + manifest), read-only from <repo>/data/mhi/processed (prepared by Experiment 13).
 PROCESSED = Path(__file__).resolve().parents[3] / "data" / "mhi" / "processed"

@@ -20,7 +20,7 @@ from typing import Iterable
 
 import numpy as np
 
-from mtd_rl_xavier.paths import MENTALMODELING
+from mtd_rl_xavier_workspace.paths import MENTALMODELING
 
 ROOT = Path(__file__).resolve().parents[2]
 UPSTREAM_ROOT = MENTALMODELING
@@ -28,7 +28,7 @@ for import_root in (ROOT, UPSTREAM_ROOT):
     if str(import_root) not in sys.path:
         sys.path.insert(0, str(import_root))
 
-from mtd_rl_xavier.datasets.llmx import EpisodeSource, discover_episodes  # noqa: E402
+from mtd_rl_xavier_workspace.datasets.llmx import EpisodeSource, discover_episodes  # noqa: E402
 from llm_x.data import Episode  # noqa: E402
 from llm_x.task import MountainCarTask, PendulumTask  # noqa: E402
 

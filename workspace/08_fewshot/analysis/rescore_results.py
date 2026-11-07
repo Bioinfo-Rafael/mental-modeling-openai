@@ -10,8 +10,8 @@ import tempfile
 HERE = Path(__file__).resolve().parents[1]
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT))
-from mtd_rl_xavier.experiment import common
-from mtd_rl_xavier.experiment.split_execution import execution_lock
+from mtd_rl_xavier_workspace.experiment import common
+from mtd_rl_xavier_workspace.experiment.split_execution import execution_lock
 from llm_x.data import Episode
 
 scoring = import_module('workspace.08_fewshot.runner.scoring')

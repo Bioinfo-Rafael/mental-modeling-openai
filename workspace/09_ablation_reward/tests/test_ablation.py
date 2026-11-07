@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from mtd_rl_xavier.paths import resolve_recorded
+from mtd_rl_xavier_workspace.paths import resolve_recorded
 
 entry = import_module('workspace.09_ablation_reward.run')
 planning = import_module('workspace.09_ablation_reward.runner.planning')

@@ -4,11 +4,11 @@ import sys
 import pytest
 HERE = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(HERE)]
-from mtd_rl_xavier.lag import batch, execution
+from mtd_rl_xavier_workspace.lag import batch, execution
 from commentary_experiment import runner, evaluation
 from commentary_experiment.dataset import build_window
 from commentary_experiment.config import CENTERS, EPISODE, REFERENCE_URL
-from mtd_rl_xavier.lag.dataset import load_episode
+from mtd_rl_xavier_workspace.lag.dataset import load_episode
 from commentary_experiment.config import PROCESSED
 
 @pytest.fixture(scope='module')

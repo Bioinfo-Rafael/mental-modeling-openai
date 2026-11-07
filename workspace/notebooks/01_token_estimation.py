@@ -49,7 +49,7 @@ import sys
 import xml.etree.ElementTree as ET
 import zipfile
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]  # workspace/: data/, configs/ and outputs/ live here
 sys.path.insert(0, str(ROOT))
 sys.dont_write_bytecode = True
 
@@ -59,19 +59,19 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 
-from mtd_rl_xavier.datasets.base import inventory_context
-from mtd_rl_xavier.paths import MENTALMODELING
-from mtd_rl_xavier.datasets.registry import dataset_ids, get_adapter, EXTERNAL
-from mtd_rl_xavier.datasets.llmx import discover_episodes
-from mtd_rl_xavier.preprocessing.llmx_original import Episode, _history_range, _query_indices, file_sha256
-from mtd_rl_xavier.preprocessing.prompting import config_identity
-from mtd_rl_xavier.tools.count_input_tokens import count_query
-from mtd_rl_xavier.tools.inventory_llmx_data import create_inventory
-from mtd_rl_xavier.tools.live_inspection import official_frames
-from mtd_rl_xavier.tools.notebook_inspection import (
+from mtd_rl_xavier_workspace.datasets.base import inventory_context
+from mtd_rl_xavier_workspace.paths import MENTALMODELING
+from mtd_rl_xavier_workspace.datasets.registry import dataset_ids, get_adapter, EXTERNAL
+from mtd_rl_xavier_workspace.datasets.llmx import discover_episodes
+from mtd_rl_xavier_workspace.preprocessing.llmx_original import Episode, _history_range, _query_indices, file_sha256
+from mtd_rl_xavier_workspace.preprocessing.prompting import config_identity
+from mtd_rl_xavier_workspace.tools.count_input_tokens import count_query
+from mtd_rl_xavier_workspace.tools.inventory_llmx_data import create_inventory
+from mtd_rl_xavier_workspace.tools.live_inspection import official_frames
+from mtd_rl_xavier_workspace.tools.notebook_inspection import (
     preprocessing_for_inspection, queries_for_sequence, selected_query,
 )
-from mtd_rl_xavier.tools.output_safety import derived_path
+from mtd_rl_xavier_workspace.tools.output_safety import derived_path
 
 H_VALUES = [1, 10]  # Actual steps, NOT the upstream history_size parameter.
 N_SAMPLES = 10000
@@ -671,7 +671,7 @@ def validate_workbook(path, expected):
 
 
 def self_test():
-    from mtd_rl_xavier.datasets.base import Sequence
+    from mtd_rl_xavier_workspace.datasets.base import Sequence
     seqs = [Sequence(0,'a','a',30,'.npz'),Sequence(1,'b','b',40,'.npz')]
     for h in [1,10,15]:
         n, chosen = choose_windows(seqs,h,100000,42)

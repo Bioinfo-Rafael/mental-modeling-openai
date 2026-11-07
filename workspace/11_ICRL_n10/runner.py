@@ -5,10 +5,10 @@ from importlib import import_module
 from itertools import islice, product
 from pathlib import Path
 
-from mtd_rl_xavier.experiment import common
-from mtd_rl_xavier.experiment.joint_questions import JOINT_QUESTIONS
-from mtd_rl_xavier.experiment.split_execution import execution_lock
-from mtd_rl_xavier.preprocessing.llmx_original import build_prompt_queries, discover_episodes
+from mtd_rl_xavier_workspace.experiment import common
+from mtd_rl_xavier_workspace.experiment.joint_questions import JOINT_QUESTIONS
+from mtd_rl_xavier_workspace.experiment.split_execution import execution_lock
+from mtd_rl_xavier_workspace.preprocessing.llmx_original import build_prompt_queries, discover_episodes
 from llm_x.data import Episode
 
 icrl = import_module('workspace.10_ICRL.runner')

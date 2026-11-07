@@ -1,8 +1,9 @@
 """Contract tests for ``mtd_rl_xavier.lag``: parity with the former workspace 13/17 originals.
 
-The reference outputs of ``workspace/13_LAG/lag_data`` and ``workspace/17_commentary_LAG`` were
-recorded once, before the core/workspace split, in ``fixtures/lag17-renderer-parity.json`` (decision
-D22: the Translator's window is byte-identical to 17's). Core tests never import ``workspace/``.
+The reference outputs of experiment 13 (``lag_data``) and experiment 17 (``commentary_experiment``)
+of the workspace project were recorded once, before the core/workspace split, in
+``fixtures/lag17-renderer-parity.json`` (decision D22: the Translator's window is byte-identical to
+17's). Core tests never import the workspace project.
 """
 
 from __future__ import annotations

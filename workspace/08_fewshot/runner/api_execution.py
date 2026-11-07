@@ -6,8 +6,8 @@ import os
 from pathlib import Path
 import time
 
-from mtd_rl_xavier.experiment import common
-from mtd_rl_xavier.experiment.split_execution import execution_lock
+from mtd_rl_xavier_workspace.experiment import common
+from mtd_rl_xavier_workspace.experiment.split_execution import execution_lock
 from llm_x.data import Episode
 from .scoring import score, CSV_FIELDS, VERSION
 

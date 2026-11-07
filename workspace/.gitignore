@@ -1,0 +1,13 @@
+# Downloaded datasets are reproducible inputs (see data/README.md and configs/sources.json).
+data/llmx_data/
+data/candidate_datasets/*/repository/
+data/candidate_datasets/*/*.zip
+data/candidate_datasets/*/extracted/
+
+# Generated analyses and paid-pilot outputs from mtd_rl_xavier_workspace.tools.
+outputs/**/*.csv
+outputs/**/*.json
+outputs/**/*.jsonl
+outputs/**/*.partial
+outputs/smoke/
+outputs/smoke-episode.npz
