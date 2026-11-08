@@ -57,6 +57,30 @@ LEAK_CHECKS = frozenset(
     {"trajectory_future", "future_message", "previous_translation", "run_identifier", "action_at_t"}
 )
 INTERVAL_DECIMALS = 3
+TRAJECTORY_INPUT = "trajectory"
+
+
+def reads_trajectory(record: dict[str, Any]) -> bool:
+    """Whether the translator read the recorded trajectory window.
+
+    ``input.translator_inputs`` lists what the translator read; runs before 2026-11-08 do not have
+    it and read every recorded input. A translator that did not read the trajectory (a policy
+    input) still records the window as the material the judge and the human rater see.
+    """
+    return TRAJECTORY_INPUT in record["input"].get("translator_inputs", [TRAJECTORY_INPUT])
+
+
+def _policy_problems(record: dict[str, Any], step: int) -> list[dict[str, str]]:
+    """A policy input's activation window must end at or before t."""
+    policy = record["input"].get("policy")
+    if not isinstance(policy, dict):
+        return []
+    end = policy.get("window", [None, None])[-1]
+    if not is_int(end):
+        return [_problem("policy_window", "the recorded policy window has no integer end step")]
+    if end > step:
+        return [_problem("trajectory_future", f"the policy window ends at step {end} > t")]
+    return []
 
 
 @dataclass(frozen=True)
@@ -152,7 +176,11 @@ def _record_problems(request: dict[str, Any], record: dict[str, Any], joined: st
     if sha256_text(canonical_json(request["payload"])) != record["request_sha256"]:
         problems.append(_problem("request_sha256", "the payload does not match the record's request_sha256"))
     trajectory = record["input"]["trajectory"]
-    if sha256_text(trajectory["text"]) != trajectory["sha256"] or trajectory["text"] not in joined:
+    if not reads_trajectory(record):
+        if sha256_text(trajectory["text"]) != trajectory["sha256"]:
+            problems.append(_problem("trajectory_record", "the recorded trajectory text does not match its sha256"))
+        problems += _policy_problems(record, request["step"])
+    elif sha256_text(trajectory["text"]) != trajectory["sha256"] or trajectory["text"] not in joined:
         problems.append(_problem("trajectory_record", "the recorded trajectory text is not the one in the payload"))
     for label, issued, _ in listed_messages(record):
         if issued > request["step"]:
@@ -183,7 +211,7 @@ def _check_call(
     future = run.future_steps or 0
     lines, line_problems = _trajectory_lines(texts)
     problems += line_problems
-    if not lines:
+    if not lines and (record is None or reads_trajectory(record)):
         problems.append(_problem("trajectory_line", "no trajectory line found in the payload"))
     for line in lines:
         if line["step"] > step + future or line["relative_step"] > future:
@@ -208,11 +236,17 @@ def _check_call(
         layer=request["layer"],
         target=request["target"],
         step=step,
-        visible_end_step=max((line["step"] for line in lines), default=None),
+        visible_end_step=max((line["step"] for line in lines), default=_policy_end(record)),
         request_sha256=record["request_sha256"] if record is not None else None,
         status=CHECK_LEAK if leaked else CHECK_ERROR if problems else CHECK_OK,
         problems=tuple(problems),
     )
+
+
+def _policy_end(record: dict[str, Any] | None) -> int | None:
+    policy = record["input"].get("policy") if record is not None else None
+    end = policy.get("window", [None, None])[-1] if isinstance(policy, dict) else None
+    return end if is_int(end) else None
 
 
 def check_generation_inputs(run: TranslatorRun, config: AssessConfig) -> tuple[CallCheck, ...]:
@@ -223,7 +257,9 @@ def check_generation_inputs(run: TranslatorRun, config: AssessConfig) -> tuple[C
     ``t`` (``t + future_steps`` for a declared retrospective run); every instruction, alarm and
     question shown must be issued at or before ``t``; the previous translation must be older than
     ``t``; and the run's own episode and scenario ids must not appear. ``run.json`` must declare
-    the visibility.
+    the visibility. A translator that did not read the trajectory (``input.translator_inputs``)
+    needs no window in its payload; its recorded window must still match its hash, and a policy
+    window must end at or before ``t``.
     """
     calls = [r for r in run.records if r["record_type"] in LAYER_OF_RECORD]
     record_counts = Counter(record_call_id(record) for record in calls)

@@ -1,5 +1,5 @@
 {
-  "_note": "Files frozen by tests/fixtures/assess-request-path.sha256 before the move into src/translate and src/evaluation (pins = d8b2d12 blobs). Each moved file must equal its pin after the rename map is reversed. Never edit a pin.",
+  "_note": "Files frozen by tests/fixtures/assess-request-path.sha256 before the move into src/translate and src/evaluation (pins = d8b2d12 blobs). Each moved file must equal its pin after the rename map is reversed. Never edit a pin. assess_checks.py left the freeze in the commit that made the leak check method-independent (it builds no request bytes; the assess request goldens and check_assess_resume guard it).",
   "rename_map": [
     [
       "mtd_rl_xavier.translator.schema",
@@ -32,6 +32,10 @@
     [
       "mtd_rl_xavier.intent_compare",
       "translate.answers"
+    ],
+    [
+      "\"--\", \"evaluation\")",
+      "\"--\", \"src/evaluation\")"
     ]
   ],
   "files": {
@@ -42,10 +46,6 @@
     "src/evaluation/config/assess.yaml": {
       "pinned_path": "evaluation/config/assess.yaml",
       "pinned_sha256": "56a3474b4cf1378de84f87b9040d4ed8a87a0a2169a800a1de7f550b877c655b"
-    },
-    "src/evaluation/assess_checks.py": {
-      "pinned_path": "evaluation/assess_checks.py",
-      "pinned_sha256": "d74bf5c25264ce7d29f333a67b15570d6bf103bebf8e114a658dec6dcc48f0a9"
     },
     "src/evaluation/assess_data.py": {
       "pinned_path": "evaluation/assess_data.py",

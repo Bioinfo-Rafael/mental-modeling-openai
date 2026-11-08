@@ -95,7 +95,7 @@ TOKENS_PER_MILLION = 1_000_000
 COST_DECIMALS = 4
 GIT_TIMEOUT_S = 10
 RUN_DIR_MODE = 0o700  # outputs hold model-visible scenario text and key points: owner-only
-GIT_TRACKED_PATHS = ("evaluation",)
+GIT_TRACKED_PATHS = ("src/evaluation",)
 GATE_MESSAGE = "the judge always calls a paid API: use BOTH --execute and --confirm-paid-api"
 
 OpenAIClientFactory = Callable[..., Any]

@@ -189,7 +189,7 @@ def _git_state() -> dict[str, Any]:
 
     try:
         commit = git("rev-parse", "HEAD")
-        status = git("--no-optional-locks", "status", "--porcelain", "--", "evaluation")
+        status = git("--no-optional-locks", "status", "--porcelain", "--", "src/evaluation")
     except (OSError, subprocess.TimeoutExpired):
         return {"commit": None, "dirty": None}
     if commit.returncode != 0:
