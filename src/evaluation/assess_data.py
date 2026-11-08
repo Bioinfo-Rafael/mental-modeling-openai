@@ -17,11 +17,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.llm.openai_responses import REASONING_EFFORTS
-from mtd_rl_xavier.translator.schema import canonical_json as canonical_json  # re-exported for the assess modules
-from mtd_rl_xavier.translator.schema import sha256_text as sha256_text  # re-exported for the assess modules
-from mtd_rl_xavier.translator.schema import strict_json_loads
+from translate import paths
+from translate.llm.openai_responses import REASONING_EFFORTS
+from translate.events import canonical_json as canonical_json  # re-exported for the assess modules
+from translate.events import sha256_text as sha256_text  # re-exported for the assess modules
+from translate.events import strict_json_loads
 
 from .configuration import JUDGE_MODEL, read_strict_yaml
 

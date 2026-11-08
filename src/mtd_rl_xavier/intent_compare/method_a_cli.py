@@ -6,7 +6,7 @@ body plus a token / cost estimate under ``<output_root>/<run_id>/method_a/previe
 ``--execute --confirm-paid-api`` sends one OpenAI Responses call per (step, aircraft) in
 chronological order; each target chains its own previous translation. Every request is journaled
 before it is sent. Like method B, the SDK call is retried only by the shared narrow policy of
-``mtd_rl_xavier.llm.retry`` (HTTP 5xx and non-timeout connection failures, bounded, every failed attempt
+``translate.llm.retry`` (HTTP 5xx and non-timeout connection failures, bounded, every failed attempt
 logged to stderr and recorded under ``retries`` in ``responses.jsonl``); timeouts and 4xx are never resent.
 An answer that violates the length limits (or the schema) gets a
 ``skipped`` cue like in method B, the chain keeps the last valid answer, and the run goes on; the first
@@ -46,14 +46,14 @@ from mtd_rl_xavier.intent_compare.method_a_requests import (
     request_body,
     sha256_text,
 )
-from mtd_rl_xavier.llm.retry import RetryEvent, log_to_stderr
-from mtd_rl_xavier.translator.schema import IntentTranslation, ModelCallError, PreviousTranslation
 from mtd_rl_xavier.translator.translation import (
     IntentModel,
     IntentModelOutput,
     TranslationLayer,
     TranslationOutputError,
 )
+from translate.events import IntentTranslation, ModelCallError, PreviousTranslation
+from translate.llm.retry import RetryEvent, log_to_stderr
 
 EXIT_OK, EXIT_FAILED, EXIT_USAGE, EXIT_UNCERTAIN = 0, 1, 2, 3
 METHOD = "A"
@@ -173,9 +173,9 @@ def make_model(config: CompareConfig, settings: TranslationSettings, journal: Re
     The SDK client is wrapped in ``RetryingClient`` below the Translator, so the Translator code and
     its request body are unchanged and only transient failures are resent (method B's policy).
     """
-    from mtd_rl_xavier.llm.openai_responses import OpenAIResponsesClient, make_openai_client
-    from mtd_rl_xavier.llm.retry import RetryingClient
     from mtd_rl_xavier.translator.translation import OpenAIIntentModel
+    from translate.llm.openai_responses import OpenAIResponsesClient, make_openai_client
+    from translate.llm.retry import RetryingClient
 
     log = log_to_stderr if journal is None else journal.record
     sdk_client = RetryingClient(make_openai_client(timeout_s=settings.timeout_s), RETRY_POLICY, log=log)

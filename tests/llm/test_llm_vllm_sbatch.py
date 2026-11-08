@@ -19,8 +19,8 @@ from pathlib import Path
 
 import pytest
 
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.llm import vllm_server
+from translate import paths
+from translate.llm import vllm_server
 
 SBATCH = paths.ROOT / "slurm" / "translator_vllm.sbatch"
 DEFAULT_CONFIG = paths.ROOT / "configs" / "translator" / "run.yaml"
@@ -86,7 +86,7 @@ def test_sbatch_creates_the_socket_directory_0700_and_paid_runs_need_explicit_op
 def test_sbatch_execs_the_launcher_so_signals_reach_it_directly() -> None:
     last = [line for line in _code_lines().splitlines() if line.strip()][-1]
 
-    assert last.startswith('exec "$PYTHON" -m mtd_rl_xavier.llm.vllm_server')
+    assert last.startswith('exec "$PYTHON" -m translate.llm.vllm_server')
     assert "uv run" not in _code_lines() and 'PYTHON="$PY"' in _code_lines()  # .venv/bin/python, no uv
 
 

@@ -15,10 +15,10 @@ from typing import Any
 import pandas as pd
 import pytest
 
-from mtd_rl_xavier.lag.rendering import render_detector_compact
 from mtd_rl_xavier.translator.detector import choice_question
 from mtd_rl_xavier.translator.pipeline import BudgetFit, check_detector_budget, episode_facts, is_tick
-from mtd_rl_xavier.translator.schema import TargetRef
+from translate.events import TargetRef
+from translate.lag.rendering import render_detector_compact
 
 from .tr_fakes import WIN01, alarm, instruction, make_config, make_scenario, request
 

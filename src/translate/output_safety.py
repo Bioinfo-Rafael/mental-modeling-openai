@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from mtd_rl_xavier import paths
+from translate import paths
 
 ROOT = paths.ROOT
 PROTECTED_DIRS = (paths.DATA,)

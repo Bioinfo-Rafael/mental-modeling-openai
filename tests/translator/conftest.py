@@ -5,7 +5,7 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
-from mtd_rl_xavier.lag.dataset import load_episode
+from translate.lag.dataset import load_episode
 
 from .tr_fakes import EPISODE_CSV, SHORT_LAST_STEP
 

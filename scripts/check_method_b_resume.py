@@ -28,7 +28,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from mtd_rl_xavier import paths
+from translate import paths
 from weightreading.intent_execute import RESUME_KEYS
 from weightreading.intent_prompt import PROMPT_VERSION
 from weightreading.intent_run import DEFAULT_CONFIG, DEFAULT_SPEC

@@ -14,7 +14,7 @@ from pathlib import Path
 
 import numpy as np
 
-from mtd_rl_xavier.tools.output_safety import derived_path
+from translate.output_safety import derived_path
 from weightreading import SCHEMA_VERSION
 from weightreading.tensors import Tensor
 

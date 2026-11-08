@@ -27,16 +27,17 @@ from typing import Any, TextIO
 import httpx
 import pandas as pd
 
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.lag.dataset import MANIFEST_NAME, load_episode
-from mtd_rl_xavier.lag.rendering import (
+from translate import paths
+from translate.events import SAFE_ID_PATTERN, Scenario, canonical_json, redacted_error, sha256_text
+from translate.lag.dataset import MANIFEST_NAME, load_episode
+from translate.lag.rendering import (
     DETECTOR_RENDERER,
     LAG17_RENDERER,
     RENDERER_VERSION,
     render_detector_compact,
     render_lag17_jsonl,
 )
-from mtd_rl_xavier.llm.openai_responses import (
+from translate.llm.openai_responses import (
     API_BASE_URL,
     OpenAIClientError,
     OpenAIResponsesClient,
@@ -44,8 +45,8 @@ from mtd_rl_xavier.llm.openai_responses import (
     make_openai_client,
     set_provenance_env_names,
 )
-from mtd_rl_xavier.llm.system_one import SystemOneClient, SystemOneError, question_set_sha256
-from mtd_rl_xavier.tools.output_safety import derived_path
+from translate.llm.system_one import SystemOneClient, SystemOneError, question_set_sha256
+from translate.output_safety import derived_path
 
 from .config import DetectorConfig, TranslatorConfig, load_config, load_scenario
 from .detector import DETECTOR_STATE_VERSION, DetectorLayer, SystemOneDetectionModel, choice_question
@@ -69,7 +70,6 @@ from .pipeline import (
     target_request,
     validate_scenario,
 )
-from .schema import SAFE_ID_PATTERN, Scenario, canonical_json, redacted_error, sha256_text
 from .translation import (
     PROMPT_VERSION,
     OpenAIIntentModel,
@@ -107,13 +107,7 @@ TOKENS_PER_MILLION = 1_000_000
 REPRESENTATIVE_WINDOWS = 3  # full-length translation windows rendered for the per-call size estimate
 GIT_TIMEOUT_S = 10
 RUN_DIR_MODE = 0o700  # run outputs hold model-visible scenario text: owner-only
-PROVENANCE_PACKAGES = ("translator", "lag", "llm")
-GIT_TRACKED_PATHS = (
-    "src/mtd_rl_xavier/translator",
-    "src/mtd_rl_xavier/lag",
-    "src/mtd_rl_xavier/llm",
-    "configs/translator",
-)
+GIT_TRACKED_PATHS = ("src/mtd_rl_xavier/translator", "src/translate", "configs/translator")
 
 DetectorClientFactory = Callable[[DetectorConfig], SystemOneClient]
 OpenAIClientFactory = Callable[..., Any]
@@ -363,11 +357,12 @@ def _git_state() -> dict[str, Any]:
 
 
 def _code_hashes() -> dict[str, str]:
-    package_root = Path(__file__).resolve().parents[1]
+    own = Path(__file__).resolve().parent
+    shared = paths.ROOT / "src" / "translate"
+    code = {f"mtd_rl_xavier/translator/{path.name}": _sha256_file(path) for path in sorted(own.glob("*.py"))}
     return {
-        f"mtd_rl_xavier/{package}/{path.name}": _sha256_file(path)
-        for package in PROVENANCE_PACKAGES
-        for path in sorted((package_root / package).glob("*.py"))
+        **code,
+        **{f"translate/{path.relative_to(shared)}": _sha256_file(path) for path in sorted(shared.rglob("*.py"))},
     }
 
 

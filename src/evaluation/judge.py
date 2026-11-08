@@ -23,8 +23,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Protocol, TextIO
 
-from mtd_rl_xavier.llm.openai_responses import OpenAIClientError, OpenAIResponsesClient, build_responses_body
-from mtd_rl_xavier.translator.schema import UNEXPECTED_ERROR_MESSAGE, canonical_json, redacted_error, sha256_text
+from translate.events import UNEXPECTED_ERROR_MESSAGE, canonical_json, redacted_error, sha256_text
+from translate.llm.openai_responses import OpenAIClientError, OpenAIResponsesClient, build_responses_body
 
 from .rendering import JudgeRequest, redact_images
 from .schemas import JudgeSchemaError, JudgeVerdict, parse_judge_output

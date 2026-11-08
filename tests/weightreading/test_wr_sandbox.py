@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from mtd_rl_xavier import paths
+from translate import paths
 from weightreading.bundle import verify_bundle, write_bundle
 from weightreading.preflight import EXPECTED_CHECKS, run_preflight
 from weightreading.sandbox import (

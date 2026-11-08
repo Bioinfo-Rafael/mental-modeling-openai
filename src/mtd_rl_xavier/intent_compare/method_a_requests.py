@@ -19,14 +19,8 @@ from typing import Any
 import pandas as pd
 import yaml
 
-from mtd_rl_xavier import paths
 from mtd_rl_xavier.intent_compare import AnswerLimits, CompareConfig, limits_sentence, payload_problem
-from mtd_rl_xavier.lag.dataset import load_episode
-from mtd_rl_xavier.lag.rendering import render_lag17_jsonl
-from mtd_rl_xavier.llm.openai_responses import API_BASE_URL
-from mtd_rl_xavier.llm.retry import DEFAULT_RETRY_POLICY
 from mtd_rl_xavier.translator.pipeline import EpisodeFacts, episode_facts
-from mtd_rl_xavier.translator.schema import TARGET_AIRCRAFT, Instruction, PreviousTranslation, TargetRef
 from mtd_rl_xavier.translator.translation import (
     PROMPT_VERSION,
     TranslationModelRequest,
@@ -34,6 +28,12 @@ from mtd_rl_xavier.translator.translation import (
     build_openai_request,
     build_prompt,
 )
+from translate import paths
+from translate.events import TARGET_AIRCRAFT, Instruction, PreviousTranslation, TargetRef
+from translate.lag.dataset import load_episode
+from translate.lag.rendering import render_lag17_jsonl
+from translate.llm.openai_responses import API_BASE_URL
+from translate.llm.retry import DEFAULT_RETRY_POLICY
 
 # The Translator's language mechanism is the ``output_language`` argument of ``build_prompt`` /
 # ``TranslationLayer`` (the "{output_language}" slot of its system prompt). Its run.yaml also sets a
@@ -49,7 +49,6 @@ TOKENIZER = "o200k_base"
 CHARS_PER_TOKEN = 4  # the Translator CLI's own approximation
 EVIDENCE_ALLOWANCE_CHARS = 1000  # assumed size of the previous translation's evidence list
 TOKENS_PER_MILLION = 1_000_000
-PROVENANCE_PACKAGES = ("translator", "lag", "llm")
 # The same default policy as method B (configs/weightreading/intent_b.yaml has no `retry` override).
 RETRY_POLICY = DEFAULT_RETRY_POLICY
 OWN_SCRIPTS = (
@@ -194,7 +193,7 @@ def prompt_for(request: TranslationModelRequest, settings: TranslationSettings) 
 
 
 def request_body(prompt: TranslationPrompt, config: CompareConfig, settings: TranslationSettings) -> dict[str, Any]:
-    from mtd_rl_xavier.llm.openai_responses import build_responses_body
+    from translate.llm.openai_responses import build_responses_body
 
     request = build_openai_request(
         prompt,
@@ -248,11 +247,12 @@ def cost_summary(estimates: list[dict[str, Any]], pricing: dict[str, Any] | None
 
 def provenance(config: CompareConfig, frame: pd.DataFrame, settings: TranslationSettings) -> dict[str, Any]:
     """SHA-256 of every Translator source file used (uncommitted, may change), configs and the episode."""
-    package_root = REPO_ROOT / "src" / "mtd_rl_xavier"
+    translator = REPO_ROOT / "src" / "mtd_rl_xavier" / "translator"
+    shared = REPO_ROOT / "src" / "translate"
+    code = {f"src/mtd_rl_xavier/translator/{path.name}": sha256_file(path) for path in sorted(translator.glob("*.py"))}
     code = {
-        f"src/mtd_rl_xavier/{package}/{path.name}": sha256_file(path)
-        for package in PROVENANCE_PACKAGES
-        for path in sorted((package_root / package).glob("*.py"))
+        **code,
+        **{f"src/translate/{path.relative_to(shared)}": sha256_file(path) for path in sorted(shared.rglob("*.py"))},
     }
     return {
         "translator_sources_sha256": code,

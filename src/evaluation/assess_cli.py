@@ -25,16 +25,16 @@ from typing import Any
 
 import pandas as pd
 
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.lag.dataset import load_episode
-from mtd_rl_xavier.llm.openai_responses import (
+from translate import paths
+from translate.lag.dataset import load_episode
+from translate.llm.openai_responses import (
     API_BASE_URL,
     OpenAIClientError,
     OpenAIResponsesClient,
     make_openai_client,
     set_provenance_env_names,
 )
-from mtd_rl_xavier.tools.output_safety import derived_path
+from translate.output_safety import derived_path
 
 from .assess_checks import (
     LEAKAGE_FILE,

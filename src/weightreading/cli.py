@@ -15,9 +15,9 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from mtd_rl_xavier import paths
 from mtd_rl_xavier.intent_compare import CompareConfigError
-from mtd_rl_xavier.llm.openai_responses import make_openai_client
+from translate import paths
+from translate.llm.openai_responses import make_openai_client
 from weightreading import commands, intent_cli, intent_run
 from weightreading.bundle import BundleError
 from weightreading.config import ConfigError, load_config

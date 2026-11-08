@@ -18,8 +18,16 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Protocol
 
-from mtd_rl_xavier.lag.rendering import STEP_SECONDS, RenderedTrajectory
-from mtd_rl_xavier.llm.system_one import (
+from translate.events import (
+    DETECTOR_LABEL_NONE,
+    DETECTOR_LABELS,
+    Instruction,
+    ModelCallError,
+    PreviousTranslation,
+    TargetRef,
+)
+from translate.lag.rendering import STEP_SECONDS, RenderedTrajectory
+from translate.llm.system_one import (
     ChoiceAnswer,
     ChoiceQuestion,
     SystemOneClient,
@@ -32,7 +40,6 @@ from mtd_rl_xavier.llm.system_one import (
 )
 
 from .config import DetectorQuestionConfig
-from .schema import DETECTOR_LABEL_NONE, DETECTOR_LABELS, Instruction, ModelCallError, PreviousTranslation, TargetRef
 
 DETECTOR_STATE_VERSION = "2"
 MAX_UTF8_BYTES_PER_CHAR = 4  # worst case for any character of a previous intent

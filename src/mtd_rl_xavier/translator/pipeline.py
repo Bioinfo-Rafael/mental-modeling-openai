@@ -27,21 +27,7 @@ from typing import Any, Protocol
 
 import pandas as pd
 
-from mtd_rl_xavier.lag.dataset import last_complete_step
-from mtd_rl_xavier.lag.rendering import RenderedTrajectory
-from mtd_rl_xavier.llm.system_one import SystemOneQuestion
-
-from .config import ScenarioLimitsConfig, TranslatorConfig, check_scenario_rules
-from .detector import (
-    MAX_UTF8_BYTES_PER_CHAR,
-    MESSAGE_ALARM,
-    MESSAGE_QUESTION,
-    DetectionContext,
-    DetectorLayer,
-    DetectorMessage,
-    detector_state_bound,
-)
-from .schema import (
+from translate.events import (
     DETECTOR_SOURCE,
     DOWN_REASON,
     EVENT_SCHEMA_VERSION,
@@ -74,6 +60,20 @@ from .schema import (
     sort_reasons,
     step_time_s,
     trajectory_json,
+)
+from translate.lag.dataset import last_complete_step
+from translate.lag.rendering import RenderedTrajectory
+from translate.llm.system_one import SystemOneQuestion
+
+from .config import ScenarioLimitsConfig, TranslatorConfig, check_scenario_rules
+from .detector import (
+    MAX_UTF8_BYTES_PER_CHAR,
+    MESSAGE_ALARM,
+    MESSAGE_QUESTION,
+    DetectionContext,
+    DetectorLayer,
+    DetectorMessage,
+    detector_state_bound,
 )
 from .translation import (
     PROMPT_VERSION,

@@ -11,7 +11,7 @@
   ``temperature``, ``top_p`` and ``top_logprobs`` are never sent (reasoning models reject or ignore
   them). ``max_output_tokens`` covers reasoning plus visible output.
 - No retries here (SDK ``max_retries=0``): a retried paid call may be billed twice. The intent
-  comparison adds the narrow, logged retry of ``mtd_rl_xavier.llm.retry`` on top of this client.
+  comparison adds the narrow, logged retry of ``translate.llm.retry`` on top of this client.
 - The endpoint is pinned: ``make_openai_client`` passes ``base_url=API_BASE_URL`` explicitly, so
   ``OPENAI_BASE_URL`` in the environment cannot send the key or the prompts elsewhere, and it
   refuses to start while ``OPENAI_CUSTOM_HEADERS`` (the SDK would inject those headers) or
@@ -22,7 +22,7 @@
 - Error messages carry only the SDK error class, HTTP status and a safe error code; never the SDK
   message (it can echo request text or a masked key) and never the key.
 
-This module imports no sibling module of ``mtd_rl_xavier.llm`` (the LLM parts stay independent).
+This module imports no sibling module of ``translate.llm`` (the LLM parts stay independent).
 """
 
 from __future__ import annotations

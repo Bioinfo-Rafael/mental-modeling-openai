@@ -1,4 +1,4 @@
-"""The shared retry policy (``mtd_rl_xavier.llm.retry``) as method A uses it: ``RetryingClient`` below
+"""The shared retry policy (``translate.llm.retry``) as method A uses it: ``RetryingClient`` below
 ``OpenAIResponsesClient``. Offline, real ``openai`` exception instances, no sleeping."""
 
 from __future__ import annotations
@@ -7,14 +7,14 @@ import httpx
 import openai
 import pytest
 
-from mtd_rl_xavier.llm.openai_responses import (
+from translate.llm.openai_responses import (
     OpenAIClientError,
     OpenAIRequest,
     OpenAIResponsesClient,
     build_responses_body,
     input_text,
 )
-from mtd_rl_xavier.llm.retry import RetryEvent, RetryingClient, RetryPolicy, is_transient
+from translate.llm.retry import RetryEvent, RetryingClient, RetryPolicy, is_transient
 
 REQUEST = httpx.Request("POST", "https://api.openai.com/v1/responses")
 SCHEMA = {"type": "object", "properties": {}, "required": [], "additionalProperties": False}

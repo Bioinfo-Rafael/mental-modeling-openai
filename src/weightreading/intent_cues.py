@@ -13,7 +13,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from mtd_rl_xavier.tools.output_safety import derived_path
+from translate.output_safety import derived_path
 from weightreading.intent_protocol import IntentAnswer
 
 METHOD = "B"

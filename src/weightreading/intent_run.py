@@ -15,10 +15,10 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from mtd_rl_xavier import paths
 from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG as SHARED_COMPARE_CONFIG
 from mtd_rl_xavier.intent_compare import CompareConfig, load_compare
-from mtd_rl_xavier.tools.output_safety import derived_path
+from translate import paths
+from translate.output_safety import derived_path
 from weightreading import provenance
 from weightreading.commands import DEFAULT_OUTPUT_ROOT, executor_limits, write_json
 from weightreading.config import ConfigError, RunConfig, load_config

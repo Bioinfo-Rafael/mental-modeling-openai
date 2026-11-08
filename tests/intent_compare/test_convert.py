@@ -17,9 +17,9 @@ from mtd_rl_xavier.intent_compare.convert import (
     parse_acmi_missiles,
     softmax_heads,
 )
-from mtd_rl_xavier.lag.dataset import COLUMNS, MANIFEST_NAME, load_episode
-from mtd_rl_xavier.lag.rendering import render_lag17_jsonl
 from mtd_rl_xavier.translator.pipeline import episode_facts
+from translate.lag.dataset import COLUMNS, MANIFEST_NAME, load_episode
+from translate.lag.rendering import render_lag17_jsonl
 
 UIDS = ("A0100", "A0200", "B0100", "B0200")
 LEARNERS = ("A0100", "A0200")

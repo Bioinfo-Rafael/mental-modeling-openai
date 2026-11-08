@@ -18,11 +18,8 @@ import pandas as pd
 import pytest
 import yaml
 
-from mtd_rl_xavier.lag.rendering import render_lag17_jsonl
-from mtd_rl_xavier.llm.openai_responses import PROVENANCE_ENV
 from mtd_rl_xavier.translator import cli
 from mtd_rl_xavier.translator.config import DetectorConfig, load_config
-from mtd_rl_xavier.translator.schema import canonical_json, sha256_text
 from tests.llm.llm_fakes import (
     APITimeoutError,
     DumpableResponse,
@@ -33,6 +30,9 @@ from tests.llm.llm_fakes import (
     models_body,
     responses_body,
 )
+from translate.events import canonical_json, sha256_text
+from translate.lag.rendering import render_lag17_jsonl
+from translate.llm.openai_responses import PROVENANCE_ENV
 
 from .tr_fakes import (
     CHANGE,

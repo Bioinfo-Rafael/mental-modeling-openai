@@ -38,8 +38,8 @@ from evaluation.assess_judge import (
     system_prompt,
 )
 from evaluation.assess_store import active_results
-from mtd_rl_xavier.llm.openai_responses import build_responses_body
 from tests.llm.llm_fakes import APITimeoutError, DumpableResponse, message_item, responses_body
+from translate.llm.openai_responses import build_responses_body
 
 from .assess_fakes import (
     E_CHANGE,

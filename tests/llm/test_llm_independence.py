@@ -1,4 +1,4 @@
-"""The LLM parts stay independent: no module in ``mtd_rl_xavier.llm`` imports a sibling (D2)."""
+"""The LLM parts stay independent: no module in ``translate.llm`` imports a sibling (D2)."""
 
 from __future__ import annotations
 
@@ -7,9 +7,9 @@ from pathlib import Path
 
 import pytest
 
-import mtd_rl_xavier.llm as llm_package
+import translate.llm as llm_package
 
-PACKAGE = "mtd_rl_xavier.llm"
+PACKAGE = "translate.llm"
 PACKAGE_DIR = Path(llm_package.__file__).resolve().parent
 
 
@@ -70,10 +70,10 @@ def test_llm_module_imports_no_sibling(path: Path) -> None:
 @pytest.mark.parametrize(
     "source",
     [
-        "import mtd_rl_xavier.llm.system_one",
-        "import mtd_rl_xavier.llm",
-        "from mtd_rl_xavier.llm import system_one",
-        "from mtd_rl_xavier.llm.system_one import SystemOneClient",
+        "import translate.llm.system_one",
+        "import translate.llm",
+        "from translate.llm import system_one",
+        "from translate.llm.system_one import SystemOneClient",
         "from . import system_one",
         "from .system_one import SystemOneClient",
         "from ..llm import system_one",
@@ -90,12 +90,12 @@ def test_checker_detects_absolute_relative_and_nested_sibling_imports(source: st
     "source",
     [
         "import httpx",
-        "from mtd_rl_xavier import paths",
-        "from mtd_rl_xavier import local_endpoint",
-        "from mtd_rl_xavier.local_endpoint import LocalEndpointError",
+        "from translate import paths",
+        "from translate import local_endpoint",
+        "from translate.local_endpoint import LocalEndpointError",
         "from .. import paths",
         "from ..lag import dataset",
-        "import mtd_rl_xavier.llmx",
+        "import translate.llmx",
     ],
 )
 def test_checker_allows_non_sibling_imports(source: str) -> None:

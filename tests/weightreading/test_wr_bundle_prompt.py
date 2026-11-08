@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from mtd_rl_xavier import paths
+from translate import paths
 from weightreading.bundle import BundleError, verify_bundle, write_bundle
 from weightreading.config import ConfigError, load_config, parse_config
 from weightreading.prompt import ExecutorLimits, first_message, run_result_message

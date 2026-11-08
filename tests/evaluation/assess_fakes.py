@@ -18,7 +18,7 @@ import yaml
 
 from evaluation.assess_data import DEFAULT_CONFIG, AssessConfig, parse_config
 from evaluation.assess_judge import JudgeCallError, JudgeReply
-from mtd_rl_xavier.llm.openai_responses import OpenAIRequest
+from translate.llm.openai_responses import OpenAIRequest
 
 SCENARIO_ID = "placeholder-episode-01"
 EPISODE_ID = "mhi_v1.3_ic100601_win"

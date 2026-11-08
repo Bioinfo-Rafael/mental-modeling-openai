@@ -24,7 +24,6 @@ import pytest
 from evaluation import assess_cli, assess_data
 from evaluation.assess_data import canonical_json, load_config, sha256_text
 from mtd_rl_xavier.translator import cli as translator_cli
-from mtd_rl_xavier.translator import schema as translator_schema
 from tests.llm.llm_fakes import (
     DumpableResponse,
     ScriptedResponsesClient,
@@ -35,10 +34,11 @@ from tests.llm.llm_fakes import (
     responses_body,
 )
 from tests.translator.tr_fakes import CHANGE, EXAMPLE_SCENARIO, SHORT_LAST_STEP, START, over_tcp, systemone_responder
+from translate import events as translator_schema
 
 from .assess_fakes import find, read_jsonl, verdict_text
 
-EXAMPLES = Path(__file__).resolve().parents[2] / "evaluation" / "examples"
+EXAMPLES = Path(__file__).resolve().parents[2] / "src" / "evaluation" / "examples"
 POINTS, RATINGS = EXAMPLES / "assess-points.example.yaml", EXAMPLES / "human-ratings.example.jsonl"
 SCENARIO_ID = "placeholder-episode-01"
 DETECTOR_ANSWERS = {("aircraft A0100", 5): START, ("aircraft A0100", 15): CHANGE}

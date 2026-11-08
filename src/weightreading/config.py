@@ -8,8 +8,8 @@ from pathlib import Path
 
 import yaml
 
-from mtd_rl_xavier.llm.openai_responses import REASONING_EFFORTS
-from mtd_rl_xavier.llm.retry import DEFAULT_RETRY_POLICY, MAX_ALLOWED_RETRIES, RetryPolicy
+from translate.llm.openai_responses import REASONING_EFFORTS
+from translate.llm.retry import DEFAULT_RETRY_POLICY, MAX_ALLOWED_RETRIES, RetryPolicy
 
 BACKENDS = ("openai-responses",)
 TASK_MODES = ("shown", "blind")

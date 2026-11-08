@@ -20,9 +20,9 @@ from typing import Any, Protocol
 
 import pandas as pd
 
-from mtd_rl_xavier.lag.dataset import AIRCRAFT
-from mtd_rl_xavier.lag.rendering import render_detector_compact
-from mtd_rl_xavier.llm.openai_responses import (
+from translate.lag.dataset import AIRCRAFT
+from translate.lag.rendering import render_detector_compact
+from translate.llm.openai_responses import (
     OpenAIClientError,
     OpenAIRequest,
     OpenAIResponsesClient,

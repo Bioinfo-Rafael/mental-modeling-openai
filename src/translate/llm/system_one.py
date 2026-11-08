@@ -17,9 +17,9 @@
 - No retries. Error messages never contain the request body, the response body or the key; the
   parsed error body is kept on ``SystemOneError.raw`` for the caller's private records.
 
-The endpoint and key checks live in ``mtd_rl_xavier.local_endpoint`` (shared with the other local
+The endpoint and key checks live in ``translate.local_endpoint`` (shared with the other local
 parts); this module re-raises their fixed messages as ``SystemOneConfigError``. This module imports
-no sibling module of ``mtd_rl_xavier.llm`` (the LLM parts stay independent).
+no sibling module of ``translate.llm`` (the LLM parts stay independent).
 """
 
 from __future__ import annotations
@@ -35,8 +35,8 @@ from typing import Any, TypeVar
 
 import httpx
 
-from mtd_rl_xavier import local_endpoint
-from mtd_rl_xavier.local_endpoint import LocalEndpointError
+from translate import local_endpoint
+from translate.local_endpoint import LocalEndpointError
 
 T = TypeVar("T")
 

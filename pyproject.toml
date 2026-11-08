@@ -31,22 +31,21 @@ dev = ["pytest>=7,<9", "ruff>=0.8", "poethepoet>=0.29"]
 # Subpackages are listed explicitly because `find` would map "" -> src and bring the .pth back;
 # tests/test_core_boundary.py fails when this list misses a package directory.
 packages = [
+  "translate",
+  "translate.lag",
+  "translate.llm",
+  "evaluation",
   "mtd_rl_xavier",
   "mtd_rl_xavier.intent_compare",
-  "mtd_rl_xavier.lag",
-  "mtd_rl_xavier.llm",
-  "mtd_rl_xavier.tools",
   "mtd_rl_xavier.translator",
   "weightreading",
-  "evaluation",
 ]
 
 [tool.setuptools.package-dir]
+translate = "src/translate"
+evaluation = "src/evaluation"
 mtd_rl_xavier = "src/mtd_rl_xavier"
 weightreading = "src/weightreading"
-# The LLM judge stays at the repository root (its provenance keys and default config paths name
-# `evaluation/`); installing it makes `python -m evaluation.*` work from any directory.
-evaluation = "evaluation"
 
 [tool.setuptools.package-data]
 evaluation = ["README.md", "config/*.yaml", "examples/*"]
@@ -68,14 +67,16 @@ line-length = 120
 force-exclude = true
 extend-exclude = [
   "workspace",
-  # Rescued byte-identical (its SHA-256 is recorded in the converted Translator run): never reformat.
-  "src/mtd_rl_xavier/intent_compare/to_translator_run.py",
 ]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "UP"]
 ignore = ["E501"]
 
+[tool.ruff.lint.per-file-ignores]
+# Frozen request-path file (tests/test_frozen_moves.py): its import order is pinned with its bytes.
+"src/evaluation/assess_data.py" = ["I001"]
+
 [tool.poe.tasks]
 test = { cmd = "pytest", help = "Core tests (Translator, methods A/B, judge)" }
-lint = { cmd = "ruff check src tests evaluation scripts", help = "Lint the library, its tests, the evaluation package and scripts" }
+lint = { cmd = "ruff check src tests scripts", help = "Lint both packages, their tests and scripts" }

@@ -19,7 +19,6 @@ import pytest
 
 from evaluation import cli
 from evaluation.rendering import HEADING_TRAJECTORY, WINDOW_BEGIN, WINDOW_END
-from mtd_rl_xavier.llm.openai_responses import PROVENANCE_ENV
 from mtd_rl_xavier.translator import cli as translator_cli
 from tests.llm.llm_fakes import (
     APITimeoutError,
@@ -29,6 +28,7 @@ from tests.llm.llm_fakes import (
     models_body,
 )
 from tests.translator.tr_fakes import EXAMPLE_SCENARIO, FakeIntentModel, over_tcp, systemone_responder
+from translate.llm.openai_responses import PROVENANCE_ENV
 
 from .eval_fakes import (
     A1_REQUEST,

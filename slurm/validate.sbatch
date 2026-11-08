@@ -41,29 +41,29 @@ case "$MODE" in
     ;;
   static)
     git diff --check
-    "$PY" -m ruff check src evaluation tests scripts
-    "$PY" -m ruff format --check src evaluation tests scripts
+    "$PY" -m ruff check src tests scripts
+    "$PY" -m ruff format --check src tests scripts
     bash -n slurm/common.sh
     for job in slurm/*.sbatch; do bash -n "$job"; done
     (
       cd "$(mktemp -d)"
-      "$PY" -B -c 'import evaluation, mtd_rl_xavier, mtd_rl_xavier.intent_compare, weightreading'
+      "$PY" -B -c 'import evaluation, translate, mtd_rl_xavier, mtd_rl_xavier.intent_compare, weightreading'
       for module in evaluation.cli evaluation.assess_cli mtd_rl_xavier.translator.cli \
-          mtd_rl_xavier.intent_compare.method_a_cli mtd_rl_xavier.intent_compare.to_translator_run weightreading; do
+          mtd_rl_xavier.intent_compare.method_a_cli weightreading; do
         "$PY" -B -m "$module" --help >/dev/null
       done
       echo "imports and --help from outside the repository: ok"
     )
     found="$(mktemp)"
     # No line numbers (-n is dropped on purpose): an edit elsewhere in a file must not break the allowlist.
-    git grep -hE -f tests/fixtures/stale-paths.pattern -- README.md pyproject.toml src evaluation configs tests slurm scripts \
+    git grep -hE -f tests/fixtures/stale-paths.pattern -- README.md pyproject.toml src configs tests slurm scripts \
       ':!tests/fixtures/stale-paths.pattern' ':!tests/fixtures/allowed-stale-paths.txt' > "$found" || true
     diff -u tests/fixtures/allowed-stale-paths.txt "$found"
     echo "stale-path grep: only allowlisted lines"
     ;;
   golden)
     sha256sum -c tests/fixtures/assess-request-path.sha256
-    echo "$(golden_value converter_sha256)  src/mtd_rl_xavier/intent_compare/to_translator_run.py" | sha256sum -c
+    echo "$(golden_value converter_sha256)  tests/fixtures/frozen/to_translator_run_v2.py.txt" | sha256sum -c
     "$PY" -m pytest -q tests/intent_compare/test_migration_goldens.py tests/evaluation/test_migration_goldens.py \
       tests/weightreading/test_wr_intent_goldens.py
     "$PY" -B scripts/check_request_replay.py --source-root "$SOURCE_ROOT"

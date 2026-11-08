@@ -16,9 +16,6 @@ import yaml
 
 from evaluation.configuration import JudgeConfig, VideoResize, parse_config
 from evaluation.frames import EncodedFrame, FrameSourceError, VideoInfo
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.lag.dataset import last_complete_step
-from mtd_rl_xavier.lag.rendering import render_detector_compact, render_lag17_jsonl
 from mtd_rl_xavier.translator.cli import JsonlRunSink
 from mtd_rl_xavier.translator.config import load_scenario
 from mtd_rl_xavier.translator.pipeline import TranslatorSummary
@@ -34,10 +31,13 @@ from tests.translator.tr_fakes import (
     make_translator,
     with_value,
 )
+from translate import paths
+from translate.lag.dataset import last_complete_step
+from translate.lag.rendering import render_detector_compact, render_lag17_jsonl
 
-JUDGE_CONFIG = paths.ROOT / "evaluation" / "config" / "judge-text.yaml"
-VIDEO_CONFIG = paths.ROOT / "evaluation" / "config" / "judge-text-video.yaml"
-EXAMPLE_KEY_POINTS = paths.ROOT / "evaluation" / "examples" / "key-points.example.yaml"
+JUDGE_CONFIG = paths.ROOT / "src" / "evaluation" / "config" / "judge-text.yaml"
+VIDEO_CONFIG = paths.ROOT / "src" / "evaluation" / "config" / "judge-text-video.yaml"
+EXAMPLE_KEY_POINTS = paths.ROOT / "src" / "evaluation" / "examples" / "key-points.example.yaml"
 SCENARIO_ID = "placeholder-episode-01"
 A1_START = f"{SCENARIO_ID}:aircraft:A0100:000000"  # trigger "initial" (the start-point bootstrap)
 TEAM_START = f"{SCENARIO_ID}:team:A:000000"  # trigger "initial"

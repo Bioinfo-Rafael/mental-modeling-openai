@@ -28,9 +28,9 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from mtd_rl_xavier.lag.rendering import LAG17_RENDERER
-from mtd_rl_xavier.llm.openai_responses import OpenAIRequest, input_image, input_text
-from mtd_rl_xavier.translator.schema import canonical_json, sha256_text, step_time_s
+from translate.events import canonical_json, sha256_text, step_time_s
+from translate.lag.rendering import LAG17_RENDERER
+from translate.llm.openai_responses import OpenAIRequest, input_image, input_text
 
 from .configuration import (
     BLOCK_INSTRUCTIONS,

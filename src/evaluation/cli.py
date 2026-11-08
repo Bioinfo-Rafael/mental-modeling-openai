@@ -25,8 +25,9 @@ from importlib import metadata
 from pathlib import Path
 from typing import Any
 
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.llm.openai_responses import (
+from translate import paths
+from translate.events import SAFE_ID_PATTERN, redacted_error, sha256_text
+from translate.llm.openai_responses import (
     API_BASE_URL,
     OpenAIClientError,
     OpenAIResponsesClient,
@@ -34,8 +35,7 @@ from mtd_rl_xavier.llm.openai_responses import (
     make_openai_client,
     set_provenance_env_names,
 )
-from mtd_rl_xavier.tools.output_safety import derived_path
-from mtd_rl_xavier.translator.schema import SAFE_ID_PATTERN, redacted_error, sha256_text
+from translate.output_safety import derived_path
 
 from .configuration import JudgeConfig, JudgeConfigError, JudgePrice, load_config
 from .frames import CachingFrameSource, FrameSource, PyAVFrameSource

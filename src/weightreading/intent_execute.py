@@ -19,8 +19,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.tools.output_safety import derived_path
+from translate import paths
+from translate.output_safety import derived_path
 from weightreading import provenance
 from weightreading.backends import ChatBackend, OpenAIResponsesBackend
 from weightreading.bundle import verify_bundle

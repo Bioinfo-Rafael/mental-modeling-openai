@@ -17,8 +17,6 @@ import httpx
 import pandas as pd
 import yaml
 
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.lag.rendering import DETECTOR_RENDERER, LAG17_RENDERER, RENDERER_VERSION, RenderedTrajectory
 from mtd_rl_xavier.translator.config import (
     ConnectionConfig,
     DetectorConfig,
@@ -28,9 +26,11 @@ from mtd_rl_xavier.translator.config import (
 )
 from mtd_rl_xavier.translator.detector import DetectionModelReply, DetectorLayer
 from mtd_rl_xavier.translator.pipeline import Translator
-from mtd_rl_xavier.translator.schema import DETECTOR_LABELS, Scenario, sha256_text
 from mtd_rl_xavier.translator.translation import IntentModelOutput, TranslationLayer, TranslationPrompt
 from tests.llm.llm_fakes import choice_answer, json_response, systemone_body
+from translate import paths
+from translate.events import DETECTOR_LABELS, Scenario, sha256_text
+from translate.lag.rendering import DETECTOR_RENDERER, LAG17_RENDERER, RENDERER_VERSION, RenderedTrajectory
 
 PROCESSED = paths.ROOT / "data" / "mhi" / "processed"
 EPISODE_CSV = {

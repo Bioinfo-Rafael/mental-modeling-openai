@@ -8,8 +8,8 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.tools.output_safety import derived_path
+from translate import paths
+from translate.output_safety import derived_path
 from weightreading.bundle import Bundle, verify_bundle, write_bundle
 from weightreading.config import RunConfig
 from weightreading.preflight import PreflightResult, run_preflight

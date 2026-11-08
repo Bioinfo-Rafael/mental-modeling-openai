@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from mtd_rl_xavier.intent_compare import AnswerLimits
-from mtd_rl_xavier.translator.schema import canonical_json, sha256_text
+from translate.events import canonical_json, sha256_text
 from weightreading.backends import OpenAIResponsesBackend, user_item
 from weightreading.intent_prompt import PreviousTranslation
 from weightreading.intent_protocol import IntentAnswer

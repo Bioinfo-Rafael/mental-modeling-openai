@@ -8,8 +8,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from mtd_rl_xavier import paths
 from mtd_rl_xavier.intent_compare import CompareConfigError, check_run_id, parse_compare
+from translate import paths
 from weightreading.architecture import expected_params
 from weightreading.intent_cues import CueContext, CueWriter, skipped_cue, translated_cue
 from weightreading.intent_prompt import IntentRequest, PreviousTranslation, intent_message

@@ -14,17 +14,17 @@ from typing import Any
 
 from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG, load_compare
 from mtd_rl_xavier.intent_compare.method_a_requests import Slot, build_request, load_settings, prompt_for, request_body
-from mtd_rl_xavier.lag.dataset import load_episode
-from mtd_rl_xavier.llm.openai_responses import build_responses_body
 from mtd_rl_xavier.translator.cli import _mandatory_requests, load_inputs
 from mtd_rl_xavier.translator.config import load_config
-from mtd_rl_xavier.translator.schema import canonical_json, sha256_text
 from mtd_rl_xavier.translator.translation import build_openai_request, build_prompt
 from tests.translator.tr_fakes import EPISODE_CSV, EXAMPLE_SCENARIO, RUN_CONFIG, WIN01
+from translate.events import canonical_json, sha256_text
+from translate.lag.dataset import load_episode
+from translate.llm.openai_responses import build_responses_body
 
 FIXTURES = Path(__file__).resolve().parents[1] / "fixtures"
 GOLDENS = FIXTURES / "prompt-request-goldens.json"
-CONVERTER = Path(__file__).resolve().parents[2] / "src" / "mtd_rl_xavier" / "intent_compare" / "to_translator_run.py"
+CONVERTER = Path(__file__).resolve().parents[1] / "fixtures" / "frozen" / "to_translator_run_v2.py.txt"
 METHOD_A_MAX_OUTPUT_TOKENS = 25_000  # the method A CLI default
 METHOD_A_SLOT = Slot(step=45, aircraft="A0100", skipped=None)
 JA_SHORT_CONFIG = DEFAULT_CONFIG.with_name("compare.ja-short.yaml")

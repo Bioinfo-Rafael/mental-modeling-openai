@@ -12,8 +12,8 @@ from typing import Any
 
 import pytest
 
-from mtd_rl_xavier.llm import vllm_server
-from mtd_rl_xavier.llm.vllm_server import (
+from translate.llm import vllm_server
+from translate.llm.vllm_server import (
     ServerEndpoint,
     VLLMServerConfig,
     VLLMServerStartupError,

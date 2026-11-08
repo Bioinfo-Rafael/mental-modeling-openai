@@ -18,7 +18,7 @@
   server only: its ``bin`` first on ``PATH`` and ``VIRTUAL_ENV`` set to it.
 - Socket: the parent is created with mode 0700 if missing; an existing insecure one is refused.
   An exclusive lock next to the socket is held for the server's lifetime, so a second launcher on
-  the same path fails instead of unlinking a live socket (``mtd_rl_xavier.local_endpoint``).
+  the same path fails instead of unlinking a live socket (``translate.local_endpoint``).
 - Budget: the client's ``input_token_budget`` must equal ``min(serving_cap_tokens, max_model_len)``
   (clef-flash: 16384), otherwise the client's post-hoc truncation check could not see truncation.
 - Lifecycle: start (own session) -> authenticated ``GET /v1/models`` until the served name is
@@ -30,13 +30,13 @@
 - Tests inject the subprocess factory, clock, sleep, signal function and HTTP transport, so no
   vLLM, GPU or network is needed.
 
-CLI: ``python -m mtd_rl_xavier.llm.vllm_server <flags> -- <client command ...>`` starts the server,
+CLI: ``python -m translate.llm.vllm_server <flags> -- <client command ...>`` starts the server,
 runs the client command (no shell, same environment, own process group) once it is ready, stops the
 server and exits with the client's exit code. ``--dry-run`` runs the read-only preflight and prints
 the argv (never the key). The first SIGTERM or SIGINT unwinds through teardown; later ones are
 ignored so they cannot cut it short.
 
-This module imports no sibling module of ``mtd_rl_xavier.llm`` (the LLM parts stay independent).
+This module imports no sibling module of ``translate.llm`` (the LLM parts stay independent).
 """
 
 from __future__ import annotations
@@ -59,8 +59,8 @@ from typing import Any, NoReturn, Protocol, TypeVar
 
 import httpx
 
-from mtd_rl_xavier import local_endpoint
-from mtd_rl_xavier.local_endpoint import LocalEndpointError
+from translate import local_endpoint
+from translate.local_endpoint import LocalEndpointError
 
 VLLM_EXECUTABLE_NAME = "vllm"
 VLLM_SUBCOMMAND = "serve"
@@ -567,7 +567,7 @@ class QuietArgumentParser(argparse.ArgumentParser):
 
 def build_parser() -> QuietArgumentParser:
     parser = QuietArgumentParser(
-        prog="python -m mtd_rl_xavier.llm.vllm_server",
+        prog="python -m translate.llm.vllm_server",
         description="Start vllm serve, run one client command once it is ready, then stop the server.",
         usage="%(prog)s [flags] -- CLIENT_COMMAND [ARG ...]",
         allow_abbrev=False,  # no prefix matching: every flag is spelt out

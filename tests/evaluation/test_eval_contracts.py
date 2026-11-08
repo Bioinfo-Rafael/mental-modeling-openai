@@ -33,9 +33,9 @@ from evaluation.schemas import (
     parse_judge_output,
     parse_key_points,
 )
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.translator.schema import sha256_text
 from tests.translator.tr_fakes import DELETE, SHORT_LAST_STEP, FakeIntentModel
+from translate import paths
+from translate.events import sha256_text
 
 from .eval_fakes import (
     A1_START,

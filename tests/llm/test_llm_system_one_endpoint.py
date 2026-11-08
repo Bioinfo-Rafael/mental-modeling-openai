@@ -8,8 +8,8 @@ from typing import Any
 
 import pytest
 
-from mtd_rl_xavier.llm import system_one
-from mtd_rl_xavier.llm.system_one import SystemOneConfigError
+from translate.llm import system_one
+from translate.llm.system_one import SystemOneConfigError
 
 from .conftest import SYSTEMONE_KEY_ENV
 from .llm_fakes import SystemOneServer

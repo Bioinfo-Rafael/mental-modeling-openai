@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Convert a weightreading rollout (npz) plus its replayed ACMI into the 13_LAG episode CSV format.
 
-The Translator only reads episodes through ``mtd_rl_xavier.lag.dataset.load_episode`` (64-column
+The Translator only reads episodes through ``translate.lag.dataset.load_episode`` (64-column
 13_LAG CSV + ``manifest.json`` with SHA-256). This converter writes exactly that, so
 ``render_lag17_jsonl`` and ``episode_facts`` work unchanged. Semantics follow
 ``data/mhi/processed/mhi_v1.3_ic100601_win.csv``:
@@ -35,7 +35,7 @@ from typing import Any
 import numpy as np
 
 from mtd_rl_xavier.intent_compare import DEFAULT_CONFIG, load_compare
-from mtd_rl_xavier.lag.dataset import (
+from translate.lag.dataset import (
     ACTION_LABELS,
     COLUMNS,
     FLOAT_COLUMNS,

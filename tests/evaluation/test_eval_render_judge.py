@@ -38,8 +38,6 @@ from evaluation.rendering import (
     quoted,
 )
 from evaluation.schemas import EventKeyPoints, KeyPoint, load_translator_run
-from mtd_rl_xavier.llm.openai_responses import OpenAIResponsesClient, build_responses_body
-from mtd_rl_xavier.translator.schema import canonical_json, sha256_text
 from tests.llm.llm_fakes import (
     APITimeoutError,
     DumpableResponse,
@@ -47,6 +45,8 @@ from tests.llm.llm_fakes import (
     refusal_item,
     responses_body,
 )
+from translate.events import canonical_json, sha256_text
+from translate.llm.openai_responses import OpenAIResponsesClient, build_responses_body
 
 from .eval_fakes import (
     A1_CHANGE,

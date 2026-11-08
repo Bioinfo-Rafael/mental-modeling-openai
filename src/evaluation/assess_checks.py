@@ -16,7 +16,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from mtd_rl_xavier.lag.rendering import SECONDS_DECIMALS, STEP_SECONDS
+from translate.lag.rendering import SECONDS_DECIMALS, STEP_SECONDS
 
 from .assess_data import (
     ASPECT_OVERALL,

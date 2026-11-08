@@ -24,7 +24,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from mtd_rl_xavier.translator.schema import (
+from translate.events import (
     EVENT_SCHEMA_VERSION,
     RECORD_TRANSLATION_EVENT,
     RECORD_TYPES,

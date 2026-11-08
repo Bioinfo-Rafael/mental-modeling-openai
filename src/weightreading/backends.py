@@ -2,10 +2,10 @@
 
 ``OpenAIResponsesBackend`` replays the whole conversation statelessly (``store=False``) and keeps
 reasoning across turns through ``reasoning.encrypted_content`` items, like ``codex exec resume``.
-The SDK client is built only by the shared ``mtd_rl_xavier.llm.openai_responses.make_openai_client``
+The SDK client is built only by the shared ``translate.llm.openai_responses.make_openai_client``
 (endpoint pinned, SDK retries off, the only ``OPENAI_API_KEY`` reader), which the CLI calls after
 the paid-call gate and the sandbox preflight have passed. Retries follow the shared
-``mtd_rl_xavier.llm.retry`` policy, the same one method A of the intent comparison uses.
+``translate.llm.retry`` policy, the same one method A of the intent comparison uses.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Protocol
 
-from mtd_rl_xavier.llm.retry import DEFAULT_RETRY_POLICY, RetryEvent, RetryPolicy, call_with_retry, log_to_stderr
+from translate.llm.retry import DEFAULT_RETRY_POLICY, RetryEvent, RetryPolicy, call_with_retry, log_to_stderr
 
 
 @dataclass(frozen=True)

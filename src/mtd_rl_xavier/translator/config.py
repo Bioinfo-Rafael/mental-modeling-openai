@@ -22,13 +22,8 @@ from typing import Any
 
 import yaml
 
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.lag.dataset import COLUMNS
-from mtd_rl_xavier.lag.rendering import LAG17_RENDERER, RESERVED_COMPACT_KEYS
-from mtd_rl_xavier.llm.openai_responses import REASONING_EFFORTS
-from mtd_rl_xavier.llm.system_one import SystemOneConfigError, checked_env_name, checked_tcp_url
-
-from .schema import (
+from translate import paths
+from translate.events import (
     DETECTOR_LABELS,
     SAFE_ID_PATTERN,
     TARGET_KINDS,
@@ -39,6 +34,10 @@ from .schema import (
     Scenario,
     TargetRef,
 )
+from translate.lag.dataset import COLUMNS
+from translate.lag.rendering import LAG17_RENDERER, RESERVED_COMPACT_KEYS
+from translate.llm.openai_responses import REASONING_EFFORTS
+from translate.llm.system_one import SystemOneConfigError, checked_env_name, checked_tcp_url
 
 CONFIG_SCHEMA_VERSION = 1
 SCENARIO_SCHEMA_VERSION = 2

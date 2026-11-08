@@ -113,10 +113,10 @@ with build_system_one_client(load_config(Path(sys.argv[1])).detector) as client:
 print("detector health: ok (probe only; MODE=paid runs the paid Translator)")'
   CLIENT=("$PYTHON" -c "$PROBE" "$CONFIG")
 fi
-log_header "$PYTHON" -m mtd_rl_xavier.llm.vllm_server "${LAUNCHER[@]}" -- "${CLIENT[@]}"
+log_header "$PYTHON" -m translate.llm.vllm_server "${LAUNCHER[@]}" -- "${CLIENT[@]}"
 # Preflight (env, cache, key, socket directory) and the exact server argv; the key is never printed.
-"$PYTHON" -m mtd_rl_xavier.llm.vllm_server "${LAUNCHER[@]}" --dry-run
+"$PYTHON" -m translate.llm.vllm_server "${LAUNCHER[@]}" --dry-run
 # exec: the launcher replaces this shell (skipping the EXIT trap; sacct shows the exit code), so
 # SIGTERM from scancel or the time limit reaches it directly. It starts the server, waits for authenticated readiness, runs the client, then stops the
 # server and its process group (SIGTERM, wait, SIGKILL) and exits with the client's exit code.
-exec "$PYTHON" -m mtd_rl_xavier.llm.vllm_server "${LAUNCHER[@]}" -- "${CLIENT[@]}"
+exec "$PYTHON" -m translate.llm.vllm_server "${LAUNCHER[@]}" -- "${CLIENT[@]}"

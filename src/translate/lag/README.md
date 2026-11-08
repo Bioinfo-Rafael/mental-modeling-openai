@@ -1,4 +1,4 @@
-# `mtd_rl_xavier.lag`
+# `translate.lag`
 
 LAG (Light Aircraft Game) episode loading and trajectory rendering for the Translator and the
 judge, promoted from experiments 13 and 17 of the workspace project. Nothing in this package imports

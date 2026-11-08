@@ -11,6 +11,6 @@
 set -euo pipefail                        # before source: a missing common.sh must stop the job
 source "${SLURM_SUBMIT_DIR:-.}/slurm/common.sh"
 UV="${UV:-$HOME/.local/bin/uv}"
-CMD=("$UV" sync --locked --all-extras)
+CMD=("$UV" sync --locked --all-extras --reinstall-package mtd-rl-xavier)  # the editable mapping follows pyproject
 log_header "${CMD[@]}"
 "${CMD[@]}"

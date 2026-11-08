@@ -39,11 +39,11 @@ from evaluation.rendering import (
     redact_images,
 )
 from evaluation.schemas import EventKeyPoints, EventLogError, KeyPoint, load_translator_run, run_episode
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.llm.openai_responses import build_responses_body
-from mtd_rl_xavier.translator.schema import canonical_json, sha256_text
 from tests.llm.llm_fakes import ScriptedResponsesClient
 from tests.translator.tr_fakes import WIN01
+from translate import paths
+from translate.events import canonical_json, sha256_text
+from translate.llm.openai_responses import build_responses_body
 
 from .eval_fakes import (
     A1_REQUEST,

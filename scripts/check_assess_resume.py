@@ -22,7 +22,7 @@ from evaluation.assess_checks import check_generation_inputs, invalid_targets
 from evaluation.assess_cli import _episode_frame
 from evaluation.assess_data import DEFAULT_CONFIG, load_config, load_run, target_key
 from evaluation.assess_judge import plan_calls
-from mtd_rl_xavier.lag.dataset import load_episode
+from translate.lag.dataset import load_episode
 
 EXIT_OK, EXIT_MISMATCH = 0, 1
 

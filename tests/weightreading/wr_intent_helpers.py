@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 import yaml
 
-from mtd_rl_xavier import paths
+from translate import paths
 from weightreading.intent_trace import concatenated_logits, trace_episode
 from weightreading.provenance import sha256_file
 from weightreading.reference import build_policy

@@ -32,8 +32,8 @@ from evaluation.rendering import (
     build_judge_request,
 )
 from evaluation.schemas import EventKeyPoints, KeyPoint, load_translator_run
-from mtd_rl_xavier import paths
 from tests.translator.tr_fakes import WIN01
+from translate import paths
 
 from .eval_fakes import (
     A1_REQUEST,

@@ -27,11 +27,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from mtd_rl_xavier import paths
 from mtd_rl_xavier.intent_compare import load_compare
 from mtd_rl_xavier.intent_compare.method_a_requests import Slot, build_request, load_settings, prompt_for, request_body
-from mtd_rl_xavier.lag.dataset import load_episode as load_csv_episode
-from mtd_rl_xavier.translator.schema import IntentTranslation, PreviousTranslation, canonical_json, sha256_text
+from translate import paths
+from translate.events import IntentTranslation, PreviousTranslation, canonical_json, sha256_text
+from translate.lag.dataset import load_episode as load_csv_episode
 from weightreading.backends import BackendReply, Usage, history_sha256
 from weightreading.config import load_config
 from weightreading.intent_episode import load_episode, plan_sessions

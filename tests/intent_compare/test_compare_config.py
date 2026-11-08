@@ -10,7 +10,7 @@ import pytest
 import yaml
 
 import mtd_rl_xavier.intent_compare.method_a_cli as run_a
-from mtd_rl_xavier import intent_compare, paths
+from mtd_rl_xavier import intent_compare
 from mtd_rl_xavier.intent_compare import (
     DEFAULT_CONFIG,
     REQUIRED_KEYS,
@@ -20,9 +20,10 @@ from mtd_rl_xavier.intent_compare import (
     parse_compare,
 )
 from mtd_rl_xavier.intent_compare.method_a_requests import TranslationSettings
-from mtd_rl_xavier.llm import openai_responses
-from mtd_rl_xavier.llm.openai_responses import REASONING_EFFORTS
 from mtd_rl_xavier.translator.translation import OUTPUT_SCHEMA_NAME, TranslationPrompt, output_schema
+from translate import paths
+from translate.llm import openai_responses
+from translate.llm.openai_responses import REASONING_EFFORTS
 from weightreading import intent_cli, intent_run
 
 COMMITTED_CONFIGS = sorted((paths.CONFIGS / "intent_compare").glob("compare*.yaml"))  # not pricing.yaml
@@ -161,7 +162,7 @@ def _server_error() -> openai.InternalServerError:
 def _model(monkeypatch, failures: list[BaseException]) -> tuple[object, _SDK, run_a.RetryJournal]:
     sdk, journal = _SDK(failures), run_a.RetryJournal()
     monkeypatch.setattr(openai_responses, "make_openai_client", lambda **_: sdk)
-    monkeypatch.setattr("mtd_rl_xavier.llm.retry.time.sleep", lambda _: None)
+    monkeypatch.setattr("translate.llm.retry.time.sleep", lambda _: None)
     monkeypatch.setattr(run_a, "log_to_stderr", lambda _: None)
     settings = TranslationSettings("English", 1000, 100, 10.0)
     config = load_compare(DEFAULT_CONFIG)
@@ -186,7 +187,7 @@ def test_method_a_resends_a_5xx_with_the_same_body_and_journals_it(monkeypatch) 
 
 
 def test_method_a_never_resends_a_timeout(monkeypatch) -> None:
-    from mtd_rl_xavier.translator.schema import ModelCallError
+    from translate.events import ModelCallError
 
     model, sdk, journal = _model(monkeypatch, [openai.APITimeoutError(request=REQUEST)])
 

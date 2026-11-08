@@ -14,7 +14,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from mtd_rl_xavier.tools.output_safety import derived_path
+from translate.output_safety import derived_path
 
 from .assess_data import (
     ASPECT_OVERALL,

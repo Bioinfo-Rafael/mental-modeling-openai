@@ -1,4 +1,4 @@
-"""Contract tests for ``mtd_rl_xavier.lag``: parity with the former workspace 13/17 originals.
+"""Contract tests for ``translate.lag``: parity with the former workspace 13/17 originals.
 
 The reference outputs of experiment 13 (``lag_data``) and experiment 17 (``commentary_experiment``)
 of the workspace project were recorded once, before the core/workspace split, in
@@ -18,9 +18,9 @@ from typing import Any
 import pandas as pd
 import pytest
 
-from mtd_rl_xavier.lag import dataset as lag_dataset
-from mtd_rl_xavier.lag import rendering
-from mtd_rl_xavier.lag.dataset import (
+from translate.lag import dataset as lag_dataset
+from translate.lag import rendering
+from translate.lag.dataset import (
     AIRCRAFT,
     EpisodeLoader,
     LagDataError,
@@ -30,7 +30,7 @@ from mtd_rl_xavier.lag.dataset import (
     load_episode,
     select_records,
 )
-from mtd_rl_xavier.lag.rendering import (
+from translate.lag.rendering import (
     DEFAULT_DETECTOR_FIELDS,
     RenderError,
     render_detector_compact,
@@ -38,7 +38,7 @@ from mtd_rl_xavier.lag.rendering import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-LAG_SRC = REPO_ROOT / "src" / "mtd_rl_xavier" / "lag"
+LAG_SRC = REPO_ROOT / "src" / "translate" / "lag"
 PROCESSED = REPO_ROOT / "data" / "mhi" / "processed"
 REFERENCE = Path(__file__).resolve().parent / "fixtures" / "lag17-renderer-parity.json"
 FORBIDDEN_IMPORT_ROOTS = ("workspace", "lag_data", "commentary_experiment")

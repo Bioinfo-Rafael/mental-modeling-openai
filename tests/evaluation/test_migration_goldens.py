@@ -17,8 +17,8 @@ from evaluation.assess_data import load_run
 from evaluation.assess_judge import plan_calls
 from evaluation.rendering import build_judge_request
 from evaluation.schemas import EventKeyPoints, KeyPoint, load_translator_run
-from mtd_rl_xavier.llm.openai_responses import build_responses_body
-from mtd_rl_xavier.translator.schema import canonical_json, sha256_text
+from translate.events import canonical_json, sha256_text
+from translate.llm.openai_responses import build_responses_body
 
 from .assess_fakes import make_config, make_frame, make_run
 from .eval_fakes import A1_REQUEST, make_judge_config

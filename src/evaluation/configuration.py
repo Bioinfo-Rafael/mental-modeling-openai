@@ -18,9 +18,9 @@ from typing import Any
 
 import yaml
 
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.llm.openai_responses import IMAGE_DETAILS, REASONING_EFFORTS
-from mtd_rl_xavier.translator.schema import SAFE_ID_PATTERN
+from translate import paths
+from translate.events import SAFE_ID_PATTERN
+from translate.llm.openai_responses import IMAGE_DETAILS, REASONING_EFFORTS
 
 CONFIG_SCHEMA_VERSION = 1
 JUDGE_MODEL = "gpt-6.1-sol"  # D8: the only accepted judge model

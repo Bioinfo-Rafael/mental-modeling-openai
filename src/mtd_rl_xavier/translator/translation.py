@@ -15,16 +15,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from typing import Any, Protocol
 
-from mtd_rl_xavier.lag.rendering import STEP_SECONDS, RenderedTrajectory
-from mtd_rl_xavier.llm.openai_responses import (
-    OpenAIClientError,
-    OpenAIRequest,
-    OpenAIResponsesClient,
-    build_responses_body,
-    input_text,
-)
-
-from .schema import (
+from translate.events import (
     INTENT_OUTPUT_KEYS,
     Alarm,
     Instruction,
@@ -35,6 +26,14 @@ from .schema import (
     TargetRef,
     step_time_s,
     strict_json_loads,
+)
+from translate.lag.rendering import STEP_SECONDS, RenderedTrajectory
+from translate.llm.openai_responses import (
+    OpenAIClientError,
+    OpenAIRequest,
+    OpenAIResponsesClient,
+    build_responses_body,
+    input_text,
 )
 
 PROMPT_VERSION = "translator-intent-v2"

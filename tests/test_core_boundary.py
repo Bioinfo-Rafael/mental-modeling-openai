@@ -14,10 +14,11 @@ from pathlib import Path
 
 import pytest
 
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.tools.output_safety import derived_path
+from translate import paths
+from translate.output_safety import derived_path
 
-CORE_PACKAGES = (paths.ROOT / "src" / "mtd_rl_xavier", paths.ROOT / "src" / "weightreading", paths.ROOT / "evaluation")
+SRC = paths.ROOT / "src"
+CORE_PACKAGES = tuple(SRC / name for name in ("translate", "evaluation", "mtd_rl_xavier", "weightreading"))
 CORE_SOURCES = sorted(path for package in CORE_PACKAGES for path in package.rglob("*.py"))
 TEST_SOURCES = sorted((paths.ROOT / "tests").rglob("*.py"))
 FORBIDDEN_IMPORT_ROOTS = {"workspace", "mtd_rl_xavier_workspace", "llm_x", "mentalmodeling"}
@@ -47,8 +48,9 @@ def sys_path_mutations(path: Path) -> list[int]:
 
 
 def test_core_sources_are_found() -> None:
-    assert paths.ROOT / "src" / "mtd_rl_xavier" / "translator" / "cli.py" in CORE_SOURCES
-    assert paths.ROOT / "evaluation" / "assess_cli.py" in CORE_SOURCES
+    assert SRC / "mtd_rl_xavier" / "translator" / "cli.py" in CORE_SOURCES
+    assert SRC / "evaluation" / "assess_cli.py" in CORE_SOURCES
+    assert SRC / "translate" / "events.py" in CORE_SOURCES
 
 
 @pytest.mark.parametrize("path", CORE_SOURCES + TEST_SOURCES, ids=lambda p: str(p.relative_to(paths.ROOT)))
@@ -75,17 +77,9 @@ def test_setuptools_package_list_covers_every_package_directory() -> None:
     """The list is explicit (see pyproject.toml), so a new subpackage must be added by hand."""
     tomllib = pytest.importorskip("tomllib")
     declared = set(tomllib.loads((paths.ROOT / "pyproject.toml").read_text())["tool"]["setuptools"]["packages"])
-    src = paths.ROOT / "src"
-    on_disk = {
-        ".".join(init.parent.relative_to(src).parts)
-        for top in ("mtd_rl_xavier", "weightreading")
-        for init in (src / top).rglob("__init__.py")
-    }
-    judge = {
-        ".".join(init.parent.relative_to(paths.ROOT).parts) for init in (paths.ROOT / "evaluation").rglob("__init__.py")
-    }
+    on_disk = {".".join(init.parent.relative_to(SRC).parts) for init in SRC.rglob("__init__.py")}
 
-    assert declared == on_disk | judge
+    assert declared == on_disk
 
 
 def test_core_package_is_importable_without_the_workspace_on_sys_path() -> None:

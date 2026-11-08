@@ -1,4 +1,4 @@
-# `mtd_rl_xavier.llm`: LLM call parts
+# `translate.llm`: LLM call parts
 
 Independent clients for the two layers of the Translator and for the judge. Each part is one
 module. No part imports another (`tests/llm/test_llm_independence.py` checks this with an AST scan).
@@ -136,7 +136,7 @@ one-GPU job. Nothing in L1 has been run against a real server: see
 - Budget: `client_input_token_budget` must equal `min(serving_cap_tokens, max_model_len)`
   (clef-flash: `min(16384, max_model_len)`), otherwise the launcher refuses. That equality is
   what lets `SystemOneClient` detect vLLM's silent truncation.
-- Socket (`mtd_rl_xavier.local_endpoint`):
+- Socket (`translate.local_endpoint`):
   - The parent directory is created with mode `0700` if it is missing. An existing parent that is
     not owned by you with mode exactly `0700` is refused and never repaired.
   - The path must fit in an AF_UNIX address (107 bytes).
@@ -158,7 +158,7 @@ one-GPU job. Nothing in L1 has been run against a real server: see
 
   The group is swept even if the child already exited, so leftover workers cannot keep the GPU.
   `/health` is not used because vLLM leaves it unauthenticated.
-- CLI: `python -m mtd_rl_xavier.llm.vllm_server <flags> -- <client command>` runs the client
+- CLI: `python -m translate.llm.vllm_server <flags> -- <client command>` runs the client
   without a shell, in the same environment and in its own process group, once the server is ready.
   - It exits with the client's code, where a death by signal N is reported as `128 + N`, or 1 on a
     launcher error.
@@ -262,5 +262,5 @@ None of these ran:
 - Do not log request bodies: never set `--enable-log-requests`. Client error messages never
   contain the state, a response body or the key. The client ignores proxy and `.netrc` settings
   from the environment and never follows redirects.
-- The same endpoint rules (`mtd_rl_xavier.local_endpoint`) apply to `SystemOneClient` and the
+- The same endpoint rules (`translate.local_endpoint`) apply to `SystemOneClient` and the
   launcher, so both accept and reject the same endpoints.

@@ -18,7 +18,7 @@ from pathlib import Path
 
 import numpy as np
 
-from mtd_rl_xavier.tools.output_safety import derived_path
+from translate.output_safety import derived_path
 from weightreading import SCHEMA_VERSION
 from weightreading.bundle import INDEX_FILE, MANIFEST_FILE, WEIGHTS_DIR, Bundle, npy_bytes, sha256_bytes
 from weightreading.tensors import Tensor

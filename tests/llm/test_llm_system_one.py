@@ -10,7 +10,7 @@ from typing import Any
 import httpx
 import pytest
 
-from mtd_rl_xavier.llm.system_one import (
+from translate.llm.system_one import (
     ChoiceAnswer,
     ChoiceQuestion,
     NoulAnswer,

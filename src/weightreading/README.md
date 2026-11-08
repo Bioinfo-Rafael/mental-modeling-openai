@@ -26,7 +26,7 @@ The weights-only explainer (the former `run` and `evaluate` commands) was remove
 On Slurm: `slurm/translator_method_b.sbatch` (see `slurm/README.md`). `intent-run` without both paid
 flags writes the same local preview as `intent-preview`; one flag alone is an argparse error. The API
 key is read from the environment only after both flags and the sandbox preflight pass. The SDK client
-is the shared `mtd_rl_xavier.llm.openai_responses.make_openai_client` (endpoint pinned to
+is the shared `translate.llm.openai_responses.make_openai_client` (endpoint pinned to
 `https://api.openai.com/v1`, `OPENAI_LOG` / `OPENAI_CUSTOM_HEADERS` refused, `max_retries=0`).
 
 ## Inputs and outputs

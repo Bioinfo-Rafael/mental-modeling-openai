@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import pytest
 
-from mtd_rl_xavier.llm.openai_responses import API_BASE_URL, OpenAIClientError, make_openai_client
+from translate.llm.openai_responses import API_BASE_URL, OpenAIClientError, make_openai_client
 from weightreading import cli, intent_run
 from weightreading.sandbox import Interpreter
 

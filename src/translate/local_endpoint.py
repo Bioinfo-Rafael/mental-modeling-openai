@@ -1,6 +1,6 @@
 """Endpoint rules for local model servers on a shared node (shared by the local LLM parts).
 
-The LLM parts in ``mtd_rl_xavier.llm`` must not import each other (D2), so the endpoint checks
+The LLM parts in ``translate.llm`` must not import each other (D2), so the endpoint checks
 they all need live here, outside that package:
 
 - TCP: ``checked_tcp_url`` accepts only a server root whose host is literally ``127.0.0.1`` or

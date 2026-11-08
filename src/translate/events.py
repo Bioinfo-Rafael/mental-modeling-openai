@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from mtd_rl_xavier.lag.rendering import SECONDS_DECIMALS, STEP_SECONDS, RenderedTrajectory
+from translate.lag.rendering import SECONDS_DECIMALS, STEP_SECONDS, RenderedTrajectory
 
 EVENT_SCHEMA_VERSION = 2
 RECORD_DETECTOR_CALL = "detector_call"
@@ -170,7 +170,7 @@ class TriggerReason:
 
 
 # The intent output contract, defined once: the Translator's strict parser and both methods of the
-# intent comparison (``mtd_rl_xavier.intent_compare.payload_problem``) accept exactly these keys.
+# intent comparison (``translate.answers.payload_problem``) accept exactly these keys.
 # The intent length cap is a parameter: the Translator CLI reads ``translation.max_intent_chars``,
 # the comparison defaults to ``intent_compare.MAX_INTENT_CHARS``.
 INTENT_OUTPUT_KEYS = frozenset({"intent", "evidence"})

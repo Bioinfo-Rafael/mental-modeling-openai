@@ -12,7 +12,6 @@ from typing import Any
 import pandas as pd
 import pytest
 
-from mtd_rl_xavier.lag.rendering import render_detector_compact, render_lag17_jsonl
 from mtd_rl_xavier.translator import pipeline
 from mtd_rl_xavier.translator.config import ScenarioError, load_scenario
 from mtd_rl_xavier.translator.pipeline import (
@@ -25,7 +24,7 @@ from mtd_rl_xavier.translator.pipeline import (
     plan_schedule,
     validate_scenario,
 )
-from mtd_rl_xavier.translator.schema import (
+from translate.events import (
     RECORD_TYPES,
     Alarm,
     ModelCallError,
@@ -33,6 +32,7 @@ from mtd_rl_xavier.translator.schema import (
     Scenario,
     TargetRef,
 )
+from translate.lag.rendering import render_detector_compact, render_lag17_jsonl
 
 from .tr_fakes import (
     CHANGE,

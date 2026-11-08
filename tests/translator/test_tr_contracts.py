@@ -9,7 +9,6 @@ from typing import Any
 import pandas as pd
 import pytest
 
-from mtd_rl_xavier import paths
 from mtd_rl_xavier.translator import config as translator_config
 from mtd_rl_xavier.translator.config import (
     ScenarioError,
@@ -20,7 +19,8 @@ from mtd_rl_xavier.translator.config import (
     parse_scenario,
 )
 from mtd_rl_xavier.translator.pipeline import PipelineError, episode_facts, validate_scenario
-from mtd_rl_xavier.translator.schema import TargetRef
+from translate import paths
+from translate.events import TargetRef
 
 from .tr_fakes import (
     DELETE,

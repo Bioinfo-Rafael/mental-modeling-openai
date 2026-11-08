@@ -12,7 +12,7 @@ method A by wrapping its SDK client in ``RetryingClient`` (below the Translator,
 unchanged). The Translator and judge CLIs do not use it: they keep reporting a 5xx as
 "outcome uncertain, not retried" (``openai_responses``).
 
-This module imports no sibling module of ``mtd_rl_xavier.llm`` (the LLM parts stay independent).
+This module imports no sibling module of ``translate.llm`` (the LLM parts stay independent).
 """
 
 from __future__ import annotations

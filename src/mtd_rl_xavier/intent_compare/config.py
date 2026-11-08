@@ -31,9 +31,9 @@ from typing import Any
 
 import yaml
 
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.llm.openai_responses import REASONING_EFFORTS
-from mtd_rl_xavier.translator.schema import INTENT_OUTPUT_KEYS
+from translate import paths
+from translate.events import INTENT_OUTPUT_KEYS
+from translate.llm.openai_responses import REASONING_EFFORTS
 
 DEFAULT_CONFIG = paths.CONFIGS / "intent_compare" / "compare.yaml"
 MAX_INTENT_CHARS = 1000  # default intent cap of the comparison (characters)

@@ -38,7 +38,7 @@ from .assess_fakes import (
     write_jsonl,
 )
 
-EXAMPLES = Path(__file__).resolve().parents[2] / "evaluation" / "examples"
+EXAMPLES = Path(__file__).resolve().parents[2] / "src" / "evaluation" / "examples"
 SCALE = (1, 2, 3, 4, 5)
 
 

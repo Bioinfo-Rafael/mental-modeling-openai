@@ -8,13 +8,6 @@ from typing import Any
 import httpx
 import pytest
 
-from mtd_rl_xavier.llm.openai_responses import OpenAIResponsesClient
-from mtd_rl_xavier.llm.system_one import (
-    ChoiceQuestion,
-    NoulQuestion,
-    SystemOneClient,
-    conservative_input_token_bound,
-)
 from mtd_rl_xavier.translator.cli import build_system_one_client
 from mtd_rl_xavier.translator.detector import (
     DetectionContext,
@@ -24,15 +17,6 @@ from mtd_rl_xavier.translator.detector import (
     choice_question,
     detector_state_bound,
     render_detector_state,
-)
-from mtd_rl_xavier.translator.schema import (
-    Alarm,
-    Instruction,
-    IntentTranslation,
-    ModelCallError,
-    PreviousTranslation,
-    RequestPoint,
-    TargetRef,
 )
 from mtd_rl_xavier.translator.translation import (
     OpenAIIntentModel,
@@ -55,6 +39,22 @@ from tests.llm.llm_fakes import (
     refusal_item,
     responses_body,
     systemone_body,
+)
+from translate.events import (
+    Alarm,
+    Instruction,
+    IntentTranslation,
+    ModelCallError,
+    PreviousTranslation,
+    RequestPoint,
+    TargetRef,
+)
+from translate.llm.openai_responses import OpenAIResponsesClient
+from translate.llm.system_one import (
+    ChoiceQuestion,
+    NoulQuestion,
+    SystemOneClient,
+    conservative_input_token_bound,
 )
 
 from .tr_fakes import (

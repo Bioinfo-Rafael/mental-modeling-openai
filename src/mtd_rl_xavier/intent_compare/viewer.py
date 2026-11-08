@@ -22,7 +22,7 @@ from typing import Any
 
 from mtd_rl_xavier.intent_compare import CLIPS_MANIFEST, DEFAULT_CONFIG, METHODS, CompareConfig, load_compare
 from mtd_rl_xavier.intent_compare.labels import EN, LABELS, Labels
-from mtd_rl_xavier.paths import ROOT as REPO_ROOT
+from translate.paths import ROOT as REPO_ROOT
 
 HUMAN = "human"
 # Where a local copy of the experiment-17 human annotation goes (gitignored private/); none exists today
