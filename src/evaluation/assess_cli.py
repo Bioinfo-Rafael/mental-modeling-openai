@@ -66,7 +66,6 @@ from .assess_data import (
 )
 from .assess_judge import (
     INTERRUPTIONS,
-    JUDGE_PROMPT_VERSION,
     JUDGE_REQUESTS,
     JUDGE_RESPONSES,
     STATUS_CAP_REACHED,
@@ -189,7 +188,7 @@ def _git_state() -> dict[str, Any]:
 
     try:
         commit = git("rev-parse", "HEAD")
-        status = git("--no-optional-locks", "status", "--porcelain", "--", "src/evaluation")
+        status = git("--no-optional-locks", "status", "--porcelain", "--", "src/evaluation", "configs/evaluation")
     except (OSError, subprocess.TimeoutExpired):
         return {"commit": None, "dirty": None}
     if commit.returncode != 0:
@@ -353,7 +352,8 @@ def _judge_settings(config: AssessConfig) -> dict[str, Any]:
     """The resolved judge configuration, stored in full (not only as a hash)."""
     return {
         **asdict(config.judge),
-        "prompt_version": JUDGE_PROMPT_VERSION,
+        "prompt_version": config.prompt.version,
+        "prompt_file": {"path": str(config.prompt.path), "sha256": config.prompt.sha256},
         "system_prompt": system_prompt(config),
         "rubric_version": config.rubric_version,
         "criteria": {name: [asdict(c) for c in items] for name, items in config.criteria.items()},
@@ -362,6 +362,24 @@ def _judge_settings(config: AssessConfig) -> dict[str, Any]:
         "openai_base_url": API_BASE_URL,
         "sdk_environment_set": set_provenance_env_names(),  # names only, never values
     }
+
+
+def _refuse_rejudging(calls: list[PlannedCall], journal: list[dict[str, Any]]) -> None:
+    """An event already sent from this directory must plan exactly a request it sent: other bytes (another
+    prompt, rubric or config) would bill the event a second time. Use another --name for a new judgement."""
+    sent_for: dict[str, set[str]] = {}
+    for line in journal:
+        sent_for.setdefault(str(line.get("call_id")), set()).add(str(line.get("request_sha256")))
+    changed = [
+        c.event["event_id"]
+        for c in calls
+        if c.event["event_id"] in sent_for and c.request_sha256 not in sent_for[c.event["event_id"]]
+    ]
+    if changed:
+        raise AssessError(
+            f"{len(changed)} event(s) of this assessment directory were judged with other request bytes "
+            f"(first: {changed[0]}): resume with the config they were judged with, or judge again under another --name"
+        )
 
 
 def run_judge(session: Session, client_factory: OpenAIClientFactory, loader: EpisodeLoader) -> int:
@@ -374,6 +392,7 @@ def run_judge(session: Session, client_factory: OpenAIClientFactory, loader: Epi
     )
     journal = read_results(directory / JUDGE_REQUESTS)
     sent = {line["request_sha256"] for line in journal if isinstance(line.get("request_sha256"), str)}
+    _refuse_rejudging(calls, journal)
     planned = tuple(call for call in calls if call.request_sha256 not in sent)  # never send a request twice
     mode = MODE_EXECUTE if session.args.execute else MODE_PREVIEW
     plan = {

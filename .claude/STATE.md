@@ -26,7 +26,7 @@ Rolling progress summary (latest 5 checkpoints): [PROGRESS.md](../PROGRESS.md)
 ### Context
 
 - Goal: evaluate LLM Translator output at start / change / request points on elements, correctness, timing and contribution, with machine, human and judge results kept separate.
-- Key files: src/evaluation/assess_*.py, src/evaluation/config/assess.yaml, src/translate/ (event contract v2), tests/evaluation/test_assess_*.py
+- Key files: src/evaluation/assess_*.py, configs/evaluation/assess.yaml, src/translate/ (event contract v2), tests/evaluation/test_assess_*.py
 - Complexity: COMPLEX (/team-execute)
 - Status 2026-11-08: implemented and verified 2026-11-04 (commit 10e34fe, PR #3), merged into main. The repository was then restructured into core and workspace/, and the core into src/translate + src/evaluation, on branch restructure/core-workspace (see DESIGN.md Key Decisions, 2026-11-08).
 

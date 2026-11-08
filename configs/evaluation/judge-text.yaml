@@ -1,9 +1,9 @@
-# Text + video LLM-as-a-judge config (python -m evaluation.cli --config <this file> ...).
+# Text-only LLM-as-a-judge config (python -m evaluation.cli --config <this file> ...).
 # Every key is required and every value is explicit; unknown or duplicate keys fail.
-# Same as judge-text.yaml, with the video block on: action-video frames go into each request (L3, D30).
 # One gpt-6.1-sol call per judged translation event (D20). The judge always calls a paid API:
 # --execute --confirm-paid-api are both required. See evaluation/README.md.
-schema_version: 1
+schema_version: 2                   # 2: the prompt file
+prompt: configs/evaluation/prompts/judge-text-v4.yaml   # every word of the request (repo-relative)
 model: gpt-6.1-sol                  # D8: the only accepted value
 reasoning_effort: medium            # low | medium | high | xhigh | max
 max_output_tokens: 25000            # reasoning + visible output; an incomplete response fails the run
@@ -19,8 +19,8 @@ inputs:                             # exactly these six blocks (D15); include: f
     show_ids: true
     show_targets: true
     show_issue_steps: true
-  video:                            # frames of the action video the human rater watches; needs the 'video' extra
-    include: true
+  video:                            # include: false removes the block; the rest is used once it is true
+    include: false
     renderer: sampled-jpeg
     source: scenario_action_video
     videos:                         # episode id (run.json inputs.episode.episode_id) -> its video (D30)
@@ -44,10 +44,10 @@ inputs:                             # exactly these six blocks (D15); include: f
         step_seconds: 0.2
     sampling:                       # frames at event step +- k * stride_steps, clipped to the episode and the video
       strategy: event_window
-      before_steps: 20            # window start, steps before the judged step
-      after_steps: 20             # window end, steps after it (the Translator never saw these)
+      before_steps: 10            # window start, steps before the judged step
+      after_steps: 10             # window end, steps after it (the Translator never saw these)
       stride_steps: 5
-      max_frames: 12                # more candidates: the ones closest to the event are kept
+      max_frames: 8                # more candidates: the ones closest to the event are kept
     resize: {max_width: 960, max_height: 540, jpeg_quality: 85}   # fit inside the box, keep the aspect ratio, never upscale
     detail: high                    # low | high | original | auto
     label_format: "Video frame at step {step} ({time_s} s, {relative_step} steps from the judged step):"   # put right before each image

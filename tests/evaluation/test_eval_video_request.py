@@ -29,7 +29,6 @@ from evaluation.frames import (
     plan_frames,
 )
 from evaluation.rendering import (
-    HEADING_VIDEO,
     IMAGE_OMITTED,
     JudgeRenderError,
     VideoContext,
@@ -62,6 +61,7 @@ from .eval_fakes import (
     with_video,
     write_yaml,
 )
+from .legacy_prompts import HEADING_VIDEO
 
 KEY_POINTS = (KeyPoint("kp-001", "[PLACEHOLDER] key point one"),)
 LAST_STEP = 340

@@ -55,9 +55,6 @@ from .judge import (
 )
 from .rendering import (
     CHARS_PER_TOKEN,
-    JUDGE_PROMPT_VERSION,
-    JUDGE_SYSTEM_PROMPT,
-    KEY_POINT_RUBRIC,
     VideoContext,
     approx_input_tokens,
     approx_text_tokens,
@@ -73,7 +70,7 @@ from .schemas import (
     run_episode,
 )
 
-DEFAULT_CONFIG = Path(__file__).resolve().parent / "config" / "judge-text.yaml"
+DEFAULT_CONFIG = paths.ROOT / "configs" / "evaluation" / "judge-text.yaml"
 EXIT_OK = 0
 EXIT_FAILED = 1
 EXIT_USAGE = 2
@@ -374,11 +371,11 @@ def _run_record(inputs: Inputs, *, mode: str, status: str) -> dict[str, Any]:
             "git": _git_state(),
             "code_sha256": _code_hashes(),
             "python": sys.version.split()[0],
-            "prompt_version": JUDGE_PROMPT_VERSION,
+            "prompt_version": inputs.config.prompt.version,
+            "prompt_file": {"path": str(inputs.config.prompt.path), "sha256": inputs.config.prompt.sha256},
             "openai_base_url": API_BASE_URL,  # the only endpoint make_openai_client targets
             "sdk_environment_set": set_provenance_env_names(),  # names only; proxy URLs can hold credentials
-            "system_prompt_sha256": sha256_text(JUDGE_SYSTEM_PROMPT),
-            "key_point_rubric_sha256": sha256_text(KEY_POINT_RUBRIC),
+            "system_prompt_sha256": sha256_text(inputs.config.prompt.text("system")),
             "video": _video_provenance(inputs),
         },
         "config": json.loads(json.dumps(asdict(inputs.config), default=str)),

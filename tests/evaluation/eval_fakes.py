@@ -35,8 +35,11 @@ from translate.lag.rendering import render_detector_compact, render_lag17_jsonl
 from translate.pipeline import TranslatorSummary
 from translate.scenario import load_scenario
 
-JUDGE_CONFIG = paths.ROOT / "src" / "evaluation" / "config" / "judge-text.yaml"
-VIDEO_CONFIG = paths.ROOT / "src" / "evaluation" / "config" / "judge-text-video.yaml"
+# The tests pin the legacy prompt judge-text-v3 (byte-identical to the former in-code prompt); the
+# default judge-text-v4 is checked in test_judge_prompt_files.py.
+JUDGE_CONFIG = paths.ROOT / "configs" / "evaluation" / "judge-text-legacy.yaml"
+VIDEO_CONFIG = paths.ROOT / "configs" / "evaluation" / "judge-text-video.yaml"
+LEGACY_PROMPT = "configs/evaluation/prompts/judge-text-v3.yaml"
 EXAMPLE_KEY_POINTS = paths.ROOT / "src" / "evaluation" / "examples" / "key-points.example.yaml"
 SCENARIO_ID = "placeholder-episode-01"
 A1_START = f"{SCENARIO_ID}:aircraft:A0100:000000"  # trigger "initial" (the start-point bootstrap)
@@ -63,7 +66,8 @@ def make_judge_config(**overrides: Any) -> JudgeConfig:
 
 
 def video_config_raw() -> dict[str, Any]:
-    return yaml.safe_load(VIDEO_CONFIG.read_text(encoding="utf-8"))
+    """judge-text-video.yaml with the legacy prompt, like every other judge test."""
+    return {**yaml.safe_load(VIDEO_CONFIG.read_text(encoding="utf-8")), "prompt": LEGACY_PROMPT}
 
 
 def with_video(raw: dict[str, Any], **changes: Any) -> dict[str, Any]:

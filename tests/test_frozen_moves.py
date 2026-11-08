@@ -1,10 +1,12 @@
-"""The request-path files moved into ``src/`` changed only by the declared module rename map.
+"""The paid assess request path: moved files changed only by the rename map, the rest pinned as is.
 
 ``tests/fixtures/assess-request-path.sha256`` freezes the current bytes of the files that build the
-paid assess request; ``tests/fixtures/frozen-moves.json`` ties each of them to its pin from before
-the move (``d8b2d12``). Reversing the rename map on the moved file must give exactly the pinned
-bytes, so the move changed nothing but module names. A file that later changes on purpose leaves
-this fixture in that commit and is guarded by the request goldens instead.
+paid assess request; ``tests/fixtures/frozen-moves.json`` ties each moved, unchanged file to its pin
+from before the move (``d8b2d12``): reversing the rename map on it must give exactly the pinned
+bytes. A file that later changes on purpose leaves ``files`` in that commit and is listed in
+``pinned_without_move`` with the reason; the manifest pins its current bytes, and the request
+goldens and ``scripts/check_assess_resume.py`` prove the request did not change. Since the judge
+prompts moved into config files, the request text lives in the legacy prompt and config files.
 """
 
 from __future__ import annotations
@@ -13,6 +15,7 @@ import hashlib
 import json
 
 import pytest
+import yaml
 
 from translate import paths
 
@@ -41,7 +44,20 @@ def test_moved_file_equals_its_pin_modulo_renames(path: str) -> None:
     assert hashlib.sha256(restored.encode("utf-8")).hexdigest() == pin["pinned_sha256"]
 
 
-def test_manifest_freezes_exactly_the_moved_files() -> None:
-    frozen = {line.split()[1] for line in MANIFEST.read_text(encoding="utf-8").splitlines() if line.strip()}
+def _manifest() -> set[str]:
+    return {line.split()[1] for line in MANIFEST.read_text(encoding="utf-8").splitlines() if line.strip()}
 
-    assert frozen == set(fixture()["files"])
+
+def test_manifest_freezes_exactly_the_moved_and_the_pinned_files() -> None:
+    moved, pinned = set(fixture()["files"]), set(fixture()["pinned_without_move"])
+
+    assert not moved & pinned
+    assert _manifest() == moved | pinned
+    assert all(isinstance(reason, str) and reason.strip() for reason in fixture()["pinned_without_move"].values())
+
+
+def test_manifest_pins_the_legacy_judge_config_and_the_prompt_it_names() -> None:
+    legacy = "configs/evaluation/assess-legacy.yaml"
+    prompt = yaml.safe_load((paths.ROOT / legacy).read_text(encoding="utf-8"))["prompt"]
+
+    assert {legacy, prompt} <= _manifest()

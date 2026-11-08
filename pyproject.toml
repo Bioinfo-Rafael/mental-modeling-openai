@@ -44,7 +44,7 @@ translate = "src/translate"
 evaluation = "src/evaluation"
 
 [tool.setuptools.package-data]
-evaluation = ["README.md", "config/*.yaml", "examples/*"]
+evaluation = ["README.md", "examples/*"]
 
 [tool.pytest.ini_options]
 addopts = "-ra -p no:cacheprovider"

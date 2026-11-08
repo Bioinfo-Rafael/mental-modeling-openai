@@ -29,6 +29,7 @@ from .assess_fakes import (
     E_REQUEST,
     E_START,
     EPISODE_ID,
+    LEGACY_CONFIG,
     find,
     make_frame,
     make_run,
@@ -63,6 +64,7 @@ class AutoClient:
 
 def _cli(tmp_path: Path, command: str, run_dir: Path, *extra: str, client: object = None) -> int:
     argv = [command, "--translator-run", str(run_dir), "--output-root", str(tmp_path / "out"), *extra]
+    argv += [] if "--config" in extra else ["--config", str(LEGACY_CONFIG)]
     factory = (lambda **kwargs: client) if client is not None else None
     options: dict[str, Any] = {"episode_loader": lambda path: make_frame()}
     if factory is not None:

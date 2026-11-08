@@ -161,7 +161,8 @@ def test_max_judged_events_of_one_is_accepted() -> None:
         ("timeout_s", 0),
         ("timeout_s", float("inf")),
         ("schema_version", True),
-        ("schema_version", 2),
+        ("schema_version", 1),
+        ("schema_version", 3),
         ("output__root", ""),
     ],
 )

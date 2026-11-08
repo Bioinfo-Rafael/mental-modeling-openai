@@ -6,7 +6,7 @@
 # `--translator-run` and `--key-points private/evaluation/<file>.yaml`.
 #   sbatch slurm/judge_keypoints.sbatch preview --translator-run outputs/translator/<run> --key-points private/evaluation/<kp>.yaml
 #   set -a; . ./.env; set +a; sbatch --export=ALL slurm/judge_keypoints.sbatch paid --translator-run ... --key-points ...
-# Video frames: add `--config src/evaluation/config/judge-text-video.yaml` (needs the `video` extra).
+# Video frames: add `--config configs/evaluation/judge-text-video.yaml` (needs the `video` extra).
 #SBATCH --partition=151-partition
 #SBATCH --job-name=judge_keypoints
 #SBATCH --cpus-per-task=2

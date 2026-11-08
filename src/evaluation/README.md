@@ -40,7 +40,7 @@ uv run python -m evaluation.cli --translator-run outputs/translate/<run> \
 
 | Flag | Meaning |
 |---|---|
-| `--config PATH` | Judge config (default `src/evaluation/config/judge-text.yaml`) |
+| `--config PATH` | Judge config (default `configs/evaluation/judge-text.yaml`) |
 | `--translator-run DIR` | Translator run directory holding `run.json` and `events.jsonl` (required) |
 | `--key-points PATH` | Key-points YAML (required; real ones under `private/evaluation/`) |
 | `--output-root DIR` | Overrides `output.root` |
@@ -89,7 +89,7 @@ The log is read strictly, because it is untrusted input to a paid judge:
 
 ### The six input blocks
 
-`src/evaluation/config/judge-text.yaml` (and `judge-text-video.yaml`) has exactly these six blocks, each with `include` plus its
+`configs/evaluation/judge-text.yaml` (and `judge-text-video.yaml`) has exactly these six blocks, each with `include` plus its
 rendering options. An excluded block is absent from the request (heading and content). The user
 message is one fixed header naming the target and its aircraft, then one text item per included
 block in this order:
@@ -339,7 +339,7 @@ judged as given by both judges. The judges' prompts are fixed in code, not confi
 `outputs/translator/intentcmp-seed100601-ja-A-s045-A0100`, built by the former converter whose
 exact bytes are kept in `tests/fixtures/frozen/to_translator_run_v2.py.txt`.
 
-- Common flags: `--config` (default `src/evaluation/config/assess.yaml`), `--output-root`, and `--name`
+- Common flags: `--config` (default `configs/evaluation/assess.yaml`), `--output-root`, and `--name`
   (the assessment directory; default: the Translator run directory's name).
 - `--points` is optional: an annotation of start/change reference points, which may use hindsight
   (format: `src/evaluation/examples/assess-points.example.yaml`). Without it, matching, delay, missed and
@@ -408,7 +408,7 @@ for the judge its model, prompt version and hashes), rubric version and config h
 
 ### `assess.yaml`
 
-Every editable evaluation value lives in `src/evaluation/config/assess.yaml`, commented. The unset
+Every editable evaluation value lives in `configs/evaluation/assess.yaml`, commented. The unset
 behaviour is written next to each key. Unknown, missing or duplicate keys fail. Translator-side
 values (detector question and threshold, text limits, `max_intent_chars`) stay in
 the run config (`configs/translate/*.yaml`).

@@ -4,8 +4,9 @@ Exact key sets everywhere: unknown, missing or wrong-typed keys fail, booleans n
 numbers, and duplicate YAML keys fail. The model is fixed to ``gpt-6.1-sol`` (D8); there is no
 default model in code. The ``video`` block (L3, D30) maps each episode id to its video and sets
 the frame window, sampling, resize, JPEG quality, image ``detail``, the label format and the
-(unverified) image-token estimate; every key is required, so there are no hidden defaults. Named
-``configuration.py`` so it does not collide with the ``evaluation/config/`` directory.
+(unverified) image-token estimate; every key is required, so there are no hidden defaults.
+``prompt`` names the prompt file (``configs/evaluation/prompts/``) that holds every word of the
+request; it is loaded and checked with the config.
 """
 
 from __future__ import annotations
@@ -16,13 +17,14 @@ from pathlib import Path
 from string import Formatter
 from typing import Any
 
-import yaml
-
 from translate import paths
 from translate.events import SAFE_ID_PATTERN
 from translate.llm.openai_responses import IMAGE_DETAILS, REASONING_EFFORTS
 
-CONFIG_SCHEMA_VERSION = 1
+from .prompt_files import KEY_POINT_PROMPT_SPEC, JudgePrompt, JudgePromptError, load_judge_prompt
+from .strict_yaml import read_strict_yaml as read_strict_yaml  # re-exported for the judge modules
+
+CONFIG_SCHEMA_VERSION = 2  # 2: the prompt file
 JUDGE_MODEL = "gpt-6.1-sol"  # D8: the only accepted judge model
 
 BLOCK_INSTRUCTIONS = "instructions"
@@ -68,6 +70,7 @@ TOP_KEYS = {
     "inputs",
     "output",
     "pricing",
+    "prompt",
 }
 LIMIT_KEYS = {"max_judged_events"}
 INSTRUCTIONS_KEYS = {"include", "renderer", "show_ids", "show_targets", "show_issue_steps"}
@@ -226,43 +229,7 @@ class JudgeConfig:
     inputs: JudgeInputs
     output_root: Path
     price: JudgePrice
-
-
-# --- strict YAML ----------------------------------------------------------------------------------
-
-
-class _StrictLoader(yaml.SafeLoader):
-    """Safe YAML loader that rejects duplicate mapping keys (PyYAML keeps the last one silently)."""
-
-
-def _unique_mapping(loader: yaml.SafeLoader, node: yaml.MappingNode, deep: bool = False) -> dict[Any, Any]:
-    mapping: dict[Any, Any] = {}
-    for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
-        try:
-            duplicate = key in mapping
-        except TypeError:
-            raise yaml.constructor.ConstructorError(None, None, "unhashable mapping key", key_node.start_mark) from None
-        if duplicate:
-            raise yaml.constructor.ConstructorError(None, None, f"duplicate key {key!r}", key_node.start_mark)
-        mapping[key] = loader.construct_object(value_node, deep=deep)
-    return mapping
-
-
-_StrictLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _unique_mapping)
-
-
-def read_strict_yaml(path: Path, error: type[ValueError]) -> object:
-    """Decode a YAML file with the safe loader; duplicate keys and unreadable files raise ``error``."""
-    try:
-        text = Path(path).read_text(encoding="utf-8")
-    except OSError as exc:
-        raise error(f"cannot read {path}: {type(exc).__name__}") from exc
-    try:
-        return yaml.load(text, Loader=_StrictLoader)  # a SafeLoader subclass: no arbitrary objects
-    except yaml.YAMLError as exc:
-        problem = getattr(exc, "problem", None)
-        raise error(f"{path} is not valid YAML" + (f": {problem}" if problem else "")) from exc
+    prompt: JudgePrompt  # every word of the request
 
 
 # --- primitive checks -----------------------------------------------------------------------------
@@ -507,7 +474,18 @@ def parse_config(raw: object, *, root: Path = paths.ROOT) -> JudgeConfig:
         inputs=_inputs(section["inputs"], root),
         output_root=_output_root(section["output"], root),
         price=_price(section["pricing"], JUDGE_MODEL),
+        prompt=_prompt(section["prompt"], root),
     )
+
+
+def _prompt(value: object, root: Path) -> JudgePrompt:
+    if not isinstance(value, str) or not value.strip():
+        raise JudgeConfigError("prompt must be the path of a prompt file (configs/evaluation/prompts/)")
+    path = Path(value) if Path(value).is_absolute() else root / value
+    try:
+        return load_judge_prompt(path, KEY_POINT_PROMPT_SPEC)
+    except JudgePromptError as exc:
+        raise JudgeConfigError(f"prompt: {exc}") from exc
 
 
 def _positive_timeout(value: object) -> float:

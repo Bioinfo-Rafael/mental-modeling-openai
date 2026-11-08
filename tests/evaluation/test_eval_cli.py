@@ -19,7 +19,6 @@ import pandas as pd
 import pytest
 
 from evaluation import cli
-from evaluation.rendering import HEADING_TRAJECTORY, WINDOW_BEGIN, WINDOW_END
 from tests.llm.llm_fakes import (
     APITimeoutError,
     ScriptedResponsesClient,
@@ -38,7 +37,6 @@ from .eval_fakes import (
     EXAMPLE_DETECTOR_ANSWERS,
     EXAMPLE_JUDGED,
     EXAMPLE_KEY_POINTS,
-    JUDGE_CONFIG,
     RecordingFactory,
     judge_config_raw,
     judge_response,
@@ -50,6 +48,7 @@ from .eval_fakes import (
     write_translator_run,
     write_yaml,
 )
+from .legacy_prompts import HEADING_TRAJECTORY, WINDOW_BEGIN, WINDOW_END
 
 RUN_NAME = "judge1"
 DETECTOR_TICKS = 136  # 68 ticks (5..340) x {aircraft A0100, team A} on the full example episode
@@ -139,7 +138,7 @@ def test_preview_builds_no_client_and_writes_only_its_run_directory(
     assert inputs["translator_run"]["run_json_sha256"] == _sha256(translator_run / "run.json")
     assert inputs["translator_run"]["events_jsonl_sha256"] == _sha256(translator_run / "events.jsonl")
     assert inputs["key_points"]["sha256"] == _sha256(EXAMPLE_KEY_POINTS)
-    assert inputs["config"]["sha256"] == _sha256(JUDGE_CONFIG)
+    assert inputs["config"]["sha256"] == _sha256(cli.DEFAULT_CONFIG)  # no --config: the default
     assert set(record["provenance"]["git"]) == {"commit", "dirty"}
     assert "evaluation/judge.py" in record["provenance"]["code_sha256"]
     example = json.loads((run_dir / "example_judge_request.json").read_text())

@@ -6,7 +6,11 @@ checks that each ``request_sha256`` is already journaled, so the next ``judge --
 nothing. Builds no client, reads no key and writes no file.
 
     python scripts/check_assess_resume.py --translator-run outputs/translator/<run> \
-        --journal outputs/evaluation/assess/<run>/judge_requests.jsonl [--expect <request_sha256> ...]
+        --journal outputs/evaluation/assess/<run>/judge_requests.jsonl [--expect <request_sha256> ...] \
+        [--config configs/evaluation/assess-legacy.yaml]
+
+Pass the judge config the run was judged with: the paid run of 2026-11-05 resumes only with
+``configs/evaluation/assess-legacy.yaml`` (the default config words the prompt differently).
 
 Exit codes: 0 every planned request is journaled (and every --expect hash is planned); 1 otherwise.
 """

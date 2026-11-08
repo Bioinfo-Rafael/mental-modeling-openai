@@ -110,7 +110,7 @@ unset OPENAI_API_KEY
 
 resumeとバイト列の保証は次のとおりです。
 
-- assess judgeは `request_sha256` で送信済みかを判定します。Judgeのプロンプト、packet、`src/evaluation/config/assess.yaml` の値が1 byteでも変わると、支払い済みの呼び出しを再送します。
+- assess judgeは `request_sha256` で送信済みかを判定します。プロンプトファイル、packet、judge設定の値が1 byteでも変わると別のrequestになるため、同じassessment directoryで判定済みのeventを別のbytesで送ろうとすると実行を拒否します。2026-11-05の支払い済みrunは `configs/evaluation/assess-legacy.yaml` で再開します。
 - 出荷している設定のプロンプトと要求のバイト列はgoldenで固定してあります。記録済みの旧手法A・Bのrunは、このパイプラインで再実行するとすべての要求が一致します（`scripts/check_request_replay.py`）。
 - 確認は `sbatch --export=ALL,SOURCE_ROOT=<出力のあるcheckout> slurm/validate.sbatch golden` で行います。APIは呼びません。
 

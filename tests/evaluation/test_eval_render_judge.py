@@ -23,16 +23,6 @@ from evaluation.judge import (
     run_judge,
 )
 from evaluation.rendering import (
-    HEADING_INSTRUCTIONS,
-    HEADING_KEY_POINTS,
-    HEADING_TIMESTAMPS,
-    HEADING_TRAJECTORY,
-    HEADING_TRANSLATED_INTENT,
-    JUDGE_PROMPT_VERSION,
-    JUDGE_SYSTEM_PROMPT,
-    KEY_POINT_RUBRIC,
-    WINDOW_BEGIN,
-    WINDOW_END,
     JudgeRenderError,
     build_judge_request,
     quoted,
@@ -62,6 +52,18 @@ from .eval_fakes import (
     verdict,
     verdict_response,
     with_value,
+)
+from .legacy_prompts import (
+    HEADING_INSTRUCTIONS,
+    HEADING_KEY_POINTS,
+    HEADING_TIMESTAMPS,
+    HEADING_TRAJECTORY,
+    HEADING_TRANSLATED_INTENT,
+    JUDGE_PROMPT_VERSION,
+    JUDGE_SYSTEM_PROMPT,
+    KEY_POINT_RUBRIC,
+    WINDOW_BEGIN,
+    WINDOW_END,
 )
 
 TOGGLED_BLOCKS = ("instructions", "timestamps", "trajectory", "translated_intent", "key_points")

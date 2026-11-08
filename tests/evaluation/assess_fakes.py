@@ -16,10 +16,12 @@ from typing import Any
 import pandas as pd
 import yaml
 
-from evaluation.assess_data import DEFAULT_CONFIG, AssessConfig, parse_config
+from evaluation.assess_data import AssessConfig, parse_config
 from evaluation.assess_judge import JudgeCallError, JudgeReply
+from translate import paths
 from translate.llm.openai_responses import OpenAIRequest
 
+LEGACY_CONFIG = paths.ROOT / "configs" / "evaluation" / "assess-legacy.yaml"
 SCENARIO_ID = "placeholder-episode-01"
 EPISODE_ID = "mhi_v1.3_ic100601_win"
 ALIAS = "episode_01"
@@ -324,7 +326,8 @@ def make_run(root: Path, name: str = "run", **options: Any) -> Path:
 
 
 def config_raw() -> dict[str, Any]:
-    return yaml.safe_load(DEFAULT_CONFIG.read_text(encoding="utf-8"))
+    """The legacy judge config: the hand-written v2 run here is judged with the rubric it was written for."""
+    return yaml.safe_load(LEGACY_CONFIG.read_text(encoding="utf-8"))
 
 
 def with_value(raw: dict[str, Any], dotted: str, value: Any) -> dict[str, Any]:
@@ -342,7 +345,7 @@ def make_config(output_root: Path | None = None, **overrides: Any) -> AssessConf
         raw = with_value(raw, dotted.replace("__", "."), value)
     if output_root is not None:
         raw = with_value(raw, "output.root", str(output_root))
-    return parse_config(raw, path=DEFAULT_CONFIG, sha256="test-config")
+    return parse_config(raw, path=LEGACY_CONFIG, sha256="test-config")
 
 
 def write_config(path: Path, **overrides: Any) -> Path:

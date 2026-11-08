@@ -66,7 +66,7 @@ case "$MODE" in
     "$PY" -m pytest -q tests/translate/test_request_goldens.py tests/evaluation/test_migration_goldens.py \
       tests/evaluation/test_judge_request_goldens.py tests/test_frozen_moves.py
     "$PY" -B scripts/check_request_replay.py --source-root "$SOURCE_ROOT"
-    "$PY" -B scripts/check_assess_resume.py \
+    "$PY" -B scripts/check_assess_resume.py --config configs/evaluation/assess-legacy.yaml \
       --translator-run "$SOURCE_ROOT/outputs/translator/$ASSESS_RUN" \
       --journal "$SOURCE_ROOT/outputs/evaluation/assess/$ASSESS_RUN/judge_requests.jsonl" \
       --expect "$(golden_value paid_assess_request_sha256)"

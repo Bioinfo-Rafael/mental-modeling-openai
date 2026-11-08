@@ -4,10 +4,14 @@
 # null = undecided. The check that needs the value still reports the raw measurement, and records
 # not_evaluated/<key>_unset instead of a pass/fail verdict. No default is invented in code.
 # Translator-side values (detector question and threshold, messages_lookback_steps, text limits,
-# max_intent_chars) live in configs/translator/run.yaml, not here.
-schema_version: 2                # 2: per-criterion level anchors (D65)
+# max_intent_chars) live in the run configs under configs/translate/, not here.
+# The judge sees the same material for every Translator method; its TRAJECTORY block is the
+# human-visible telemetry up to t, not necessarily what the Translator read. Judged runs of the
+# 2026-11-05 assessment resume only with configs/evaluation/assess-legacy.yaml.
+schema_version: 3                # 2: per-criterion level anchors (D65); 3: the prompt file below
 rubric_version: pilot-2          # bump whenever you edit criteria, anchors or scale wording below. Ratings
                                  # and judge results carry it; the report compares one version at a time.
+prompt: configs/evaluation/prompts/assess-judge-v3.yaml   # every word of the judge request (repo-relative)
 
 timing:                          # machine measurements (evaluator "machine"); never merged with human/judge timing
   request_deadline_s: 3.0        # D55. 要求点: processing_s <= this passes. null => processing_s reported, no verdict
@@ -53,7 +57,7 @@ scale:                           # D53 pilot scale; D65 anchors live under each 
 # holds (written 5 -> 1, checked from 1 upward; if two hold, the lower wins), which is what makes
 # adjacent levels exclusive. 例 = an illustration, not required wording. Japanese full-width colons
 # (例：) keep the plain YAML scalars valid.
-# Material names: OUTPUT (intent + evidence), WINDOW (trajectory the Translator saw), INSTRUCTIONS,
+# Material names: OUTPUT (intent + evidence), WINDOW (human-visible trajectory up to t), INSTRUCTIONS,
 # ALARMS, QUESTION, PREVIOUS (previous translation), TIMELINE, FUTURE (start/change only).
 # 「特定できる」 = the packet names exactly one candidate (an object id, an action, a step, a quoted
 # instruction or alarm, a recorded value). Mirror for review: .claude/docs/research/judge-score-anchors.md

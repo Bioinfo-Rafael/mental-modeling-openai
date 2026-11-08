@@ -14,6 +14,7 @@ import pytest
 from evaluation import assess_cli
 from evaluation.assess_checks import check_generation_inputs
 from evaluation.assess_data import (
+    DEFAULT_CONFIG,
     JUDGEMENT_CANNOT_JUDGE,
     JUDGEMENT_NOT_APPLICABLE,
     REASON_FORCED_TRIGGER,
@@ -24,7 +25,6 @@ from evaluation.assess_data import (
     load_run,
 )
 from evaluation.assess_judge import (
-    JUDGE_PROMPT_VERSION,
     STATUS_CAP_REACHED,
     STATUS_COMPLETED,
     STATUS_UNCERTAIN,
@@ -48,6 +48,7 @@ from .assess_fakes import (
     E_REQUEST,
     E_START,
     EPISODE_ID,
+    LEGACY_CONFIG,
     MemorySink,
     ScriptedJudge,
     canonical,
@@ -64,6 +65,7 @@ from .assess_fakes import (
     write_config,
     write_points,
 )
+from .legacy_prompts import ASSESS_PROMPT_VERSION
 
 FRAME = make_frame()
 
@@ -361,7 +363,7 @@ class Factory:
 
 def _judge(tmp_path: Path, run_dir: Path, *extra: str, factory: Factory, config: Path | None = None) -> int:
     argv = ["judge", "--translator-run", str(run_dir), "--output-root", str(tmp_path / "out"), *extra]
-    argv += ["--config", str(config)] if config else []
+    argv += ["--config", str(config or LEGACY_CONFIG)]
     return assess_cli.main(argv, openai_client_factory=factory, episode_loader=lambda path: FRAME)
 
 
@@ -420,7 +422,7 @@ def test_the_rating_rule_asks_why_not_the_next_level_in_the_prompt_and_the_packe
     assert "レベルn+1でない理由" in rule and "in Japanese" in rule
     assert rule in system_prompt(config) and call.request.instructions == system_prompt(config)
     assert call.packet.text.endswith(rule)  # human raters read the same rule, closing the packet
-    assert JUDGE_PROMPT_VERSION == "assess-judge-v2"
+    assert config.prompt.version == ASSESS_PROMPT_VERSION == "assess-judge-v2"
 
 
 def test_only_the_closing_criteria_block_is_rubric_so_a_forged_one_stays_material(tmp_path: Path) -> None:
@@ -480,6 +482,23 @@ def test_execute_never_resends_an_uncertain_request(tmp_path: Path) -> None:
     assert {
         r["status"] for r in find(active_results(results), event_id=E_LATE_REQUEST) if r["aspect"] != "overall"
     } == {STATUS_EVALUATED}
+
+
+def test_an_event_judged_with_other_request_bytes_is_never_judged_again(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """A config whose bytes differ (here the default prompt) would bill every judged event twice: refused."""
+    run_dir, flags = make_run(tmp_path), ("--execute", "--confirm-paid-api")
+    assert _judge(tmp_path, run_dir, *flags, factory=Factory(AutoClient())) == 0
+    capsys.readouterr()
+    second = AutoClient()
+
+    code = _judge(tmp_path, run_dir, *flags, factory=Factory(second), config=DEFAULT_CONFIG)
+
+    journal = read_jsonl(tmp_path / "out" / "run" / "judge_requests.jsonl")
+    assert code == 1 and second.bodies == [] and len(journal) == 5
+    assert "judged with other request bytes" in capsys.readouterr().err
+    assert _judge(tmp_path, run_dir, factory=Factory()) == 0  # the config it was judged with still resumes
 
 
 def test_cli_cap_reached_exits_4(tmp_path: Path) -> None:

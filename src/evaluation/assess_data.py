@@ -2,8 +2,9 @@
 
 - The Translator event contract v2 constants are an own copy; ``test_assess_e2e`` checks them
   against ``translator.schema``.
-- ``assess.yaml``, the run files and the annotation load strictly: exact keys (``null`` =
-  undecided), JSONL split on ``"\\n"`` only, and a repeated JSON or YAML key is an error.
+- The judge config (``configs/evaluation/assess*.yaml``), its prompt file, the run files and the
+  annotation load strictly: exact keys (``null`` = undecided), JSONL split on ``"\\n"`` only, and a
+  repeated JSON or YAML key is an error.
 - An event is rated on the union of the criteria of all its point kinds (``event_criteria``).
 """
 
@@ -24,6 +25,7 @@ from translate.events import sha256_text as sha256_text  # re-exported for the a
 from translate.events import strict_json_loads
 
 from .configuration import JUDGE_MODEL, read_strict_yaml
+from .prompt_files import ASSESS_PROMPT_SPEC, JudgePrompt, JudgePromptError, load_judge_prompt
 
 # --- Translator event contract v2 (own copy; see the module docstring) ----------------------------
 
@@ -67,7 +69,7 @@ RESULT_FILES = {
     EVALUATOR_HUMAN: "human_results.jsonl",
     EVALUATOR_JUDGE: "judge_results.jsonl",
 }
-DEFAULT_CONFIG = Path(__file__).resolve().parent / "config" / "assess.yaml"
+DEFAULT_CONFIG = paths.ROOT / "configs" / "evaluation" / "assess.yaml"
 
 
 class AssessError(ValueError):
@@ -201,9 +203,9 @@ def target_key(target: dict[str, Any]) -> tuple[str, str]:
 
 # --- config ---------------------------------------------------------------------------------------
 
-CONFIG_SCHEMA_VERSION = 2  # v2: per-criterion level anchors (D65) replace scale.levels
+CONFIG_SCHEMA_VERSION = 3  # v2: per-criterion level anchors (D65); v3: the prompt file
 CONFIG_KEYS = {"schema_version", "rubric_version", "timing", "future_evidence", "leakage", "judge"}
-CONFIG_KEYS |= {"open_items", "scale", "criteria", "output"}
+CONFIG_KEYS |= {"open_items", "scale", "criteria", "output", "prompt"}
 POSITIVE = (lambda value: is_number(value) and value > 0, "a number > 0")
 NON_NEGATIVE = (is_non_negative, "a number >= 0")
 INT_GE_0, INT_GE_1 = (is_count, "an integer >= 0"), (lambda value: is_int(value) and value >= 1, "an integer >= 1")
@@ -303,6 +305,7 @@ class AssessConfig:
     scale: ScaleConfig
     criteria: dict[str, tuple[Criterion, ...]]  # elements / start / change / request -> criteria
     output_root: Path
+    prompt: JudgePrompt  # every word of the judge request
 
 
 def _section(raw: object, spec: dict[str, tuple[Check, str]], name: str, *, allow_null: bool = False) -> dict[str, Any]:
@@ -375,6 +378,16 @@ def _criteria(raw: object, values: tuple[str, ...]) -> dict[str, tuple[Criterion
     return parsed
 
 
+def _prompt(raw: object, root: Path) -> JudgePrompt:
+    if not is_text(raw):
+        raise ConfigError("prompt must be the path of a prompt file (configs/evaluation/prompts/)")
+    path = Path(raw) if Path(raw).is_absolute() else root / raw
+    try:
+        return load_judge_prompt(path, ASSESS_PROMPT_SPEC)
+    except JudgePromptError as exc:
+        raise ConfigError(f"prompt: {exc}") from exc
+
+
 def parse_config(raw: object, *, path: Path, sha256: str, root: Path = paths.ROOT) -> AssessConfig:
     section = exact_keys(raw, CONFIG_KEYS, "config")
     if not is_int(section["schema_version"]) or section["schema_version"] != CONFIG_SCHEMA_VERSION:
@@ -404,6 +417,7 @@ def parse_config(raw: object, *, path: Path, sha256: str, root: Path = paths.ROO
         scale=scale,
         criteria=_criteria(section["criteria"], scale.values),
         output_root=output_root if output_root.is_absolute() else root / output_root,
+        prompt=_prompt(section["prompt"], root),
     )
 
 
