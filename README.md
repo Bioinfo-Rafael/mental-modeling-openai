@@ -16,15 +16,17 @@
 3. プロンプトを完成させる：プロンプトの文面は設定側のプロンプトファイル（`configs/translate/prompts/`）にあります。文面を書き換えるだけでプロンプトのアブレーションができます。
 4. 翻訳する：プロンプトファイルの `protocol` で呼び出し方が決まります。`one_shot` は1回のOpenAI呼び出し、`code_session` はモデルがサンドボックスでPythonを実行しながら方策を読む複数回の対話です。
 
-翻訳する時点は次の3種類です。
+翻訳する時点は次の3種類です（イベントのschema 3）。
 
-- 開始点（`initial` / `start`）
-- 変化点（`change`）：clef-flash（変化点検出器）が判定します。
+- 開始点（`start`）：対象に最初の指示が出た時点です。
+- 変化点（`change`）：clef-flash（変化点検出器）が判定します。新しい戦術を始めたときも、戦術を変えたときも変化点です。
 - 要求点（`request`）：人の質問が届いた時点です。
+
+2026-11-07までのrun（schema 2）は `initial`（最初の指示）と検出器の `start` も使っていました。Judgeはこれらを明示した対応表で読みます（評価の節を参照）。
 
 時点の決め方は2通りあります。
 
-- `online`：エピソードを先頭から進めながら、clef-flashが開始点・変化点を判定し、要求点はその時点で届きます。
+- `online`：エピソードを先頭から進めながら、clef-flashが変化点を判定します。開始点と要求点はその時点で必ず翻訳します。
 - `preset`：翻訳する時点と種類を、設定ファイルに前もって書きます。
 
 旧「手法A」（トラジェクトリを読む翻訳）と旧「手法B」（重みと中間状態を読む翻訳）は、入力の選び方が違う設定ファイルにすぎません。`seed100601-trajectory*.yaml` と `seed100601-policy*.yaml` が、以前と1バイトも違わない要求を送ります。
@@ -38,7 +40,12 @@ Judgeは2種類です。
 - `evaluation.assess_cli`：3時点×4観点の評価です。実データで1回の有料実行実績があります。
 - `evaluation.cli`：D29のkey-point評価です。まだ実行していません。
 
-Judgeのプロンプトはコードに固定してあり、設定では変えません。有料実行のresumeが、このプロンプトのバイト列に依存しているためです。
+Judgeのプロンプトの文面も、翻訳と同じく設定側のプロンプトファイル（`configs/evaluation/prompts/`）にあります。どのファイルを使うかはjudge設定（`configs/evaluation/*.yaml`）が決めます。
+
+- 新しいrunの既定：`assess.yaml` と `judge-text*.yaml`。トラジェクトリを「Translatorが見たもの」ではなく「人が見られるテレメトリ」と書きます。
+- 互換用：`assess-legacy.yaml` と `judge-text-legacy.yaml`。以前コードにあったプロンプトと1バイトも違わない要求を送ります。2026-11-05の有料実行は `assess-legacy.yaml` でしか再開できません。
+
+assess judgeの設定は、イベントのschemaごとに、トリガーの種類をどの時点の基準で評価するかを `triggers` に書きます。既定の設定では、schema 2の検出器の `start` を変化点として評価します。
 
 ## ディレクトリ
 
@@ -47,6 +54,7 @@ Judgeのプロンプトはコードに固定してあり、設定では変えま
 | `src/translate/` | 翻訳パイプライン（[README](src/translate/README.md)） |
 | `src/evaluation/` | Judge 2種、比較用viewer、クリップ作成（[README](src/evaluation/README.md)） |
 | `configs/translate/` | 実行設定、プロンプトファイル（`prompts/`）、シナリオ（`scenarios/`）、方策のspec（`policies/`） |
+| `configs/evaluation/` | Judgeの設定と、Judgeのプロンプトファイル（`prompts/`） |
 | `data/mhi/` | MHI v1.3の3試合（CSV・manifest・行動付き動画）。読み取り専用 |
 | `slurm/` | すべてのSlurm job と `common.sh`（[slurm/README.md](slurm/README.md)） |
 | `scripts/` | mtd-rl-lag側のinterpreterで動くhelper（rollout記録、エピソード準備、parity）と、互換性の確認script |

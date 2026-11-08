@@ -58,6 +58,11 @@ jid=$(sbatch --parsable --export=ALL slurm/translate.sbatch paid --config config
 unset OPENAI_API_KEY
 ```
 
-Resume: `judge_assess.sbatch` never re-sends a request already in `judge_requests.jsonl`. Translation
-runs and the D29 judge have no resume: a re-run sends every call again (the former method B
-`--resume` was retired on 2026-11-08; its three recorded runs are complete).
+Resume: `judge_assess.sbatch` never re-sends a request already in `judge_requests.jsonl`, and refuses
+to judge an event of that directory again with other request bytes (another prompt file or judge
+config). Pass the judge config the run was judged with: the paid run of 2026-11-05 resumes only with
+`--config configs/evaluation/assess-legacy.yaml` (the default `configs/evaluation/assess.yaml` words
+the prompt differently); `validate.sbatch golden` checks exactly that with
+`scripts/check_assess_resume.py`. Translation runs and the D29 judge have no resume: a re-run sends
+every call again (the former method B `--resume` was retired on 2026-11-08; its three recorded runs
+are complete).

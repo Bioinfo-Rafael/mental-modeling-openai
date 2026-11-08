@@ -1,5 +1,7 @@
 #!/bin/bash
-# Per-criterion LLM judge (python -m evaluation.assess_cli) of one Translator v2 run.
+# Per-criterion LLM judge (python -m evaluation.assess_cli) of one Translator run (event schema 2 or 3).
+# The judge config defaults to configs/evaluation/assess.yaml; resume the paid 2026-11-05 run with
+# --config configs/evaluation/assess-legacy.yaml.
 # MODE (first argument): preview (default) = `check` + judge preview (packets, cost estimate, 0 API
 # calls, no key read) | paid = `check`, `judge --execute --confirm-paid-api` (one call per event not
 # yet in judge_requests.jsonl, at most judge.max_calls), then `report`. Everything after MODE goes

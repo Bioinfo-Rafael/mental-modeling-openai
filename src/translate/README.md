@@ -16,12 +16,12 @@ run config (`configs/translate/*.yaml`):
    activations with Python in a sandbox, then answers in JSON).
 
 When to translate is the trigger source (`triggers:`): **online** (the clef-flash change-point
-detector decides `start` / `change` every tick as the episode advances; a target's first
-instruction forces `initial` and a human request forces `request`) or **preset** (the steps are
-chosen in advance in the config, each with its kind). Trigger kinds are always `initial`, `start`,
-`change` and `request`.
+detector decides `change` every tick as the episode advances; a target's first instruction forces
+`start` and a human request forces `request`) or **preset** (the steps are chosen in advance in the
+config, each with its kind). Trigger kinds are exactly `start` (開始点), `change` (変化点: a new or
+changed tactic, whatever its cause) and `request` (要求点).
 
-Every run writes `events.jsonl` (schema v2) for the judges. Each event records the human-visible
+Every run writes `events.jsonl` (schema 3) for the judges. Each event records the human-visible
 material (scenario texts and the trajectory window) whatever the translator read, so the judges
 evaluate every configuration the same way.
 
@@ -54,7 +54,7 @@ evaluate every configuration the same way.
 The trajectory and policy configs reproduce the two former comparison methods byte for byte (the
 prompts and request bodies are pinned by `tests/translate/test_request_goldens.py`, and
 `scripts/check_request_replay.py` re-runs the recorded runs through this pipeline). The preset
-kinds of the reproduction configs (45 `initial`, the others `change`) are assumptions: the
+kinds of the reproduction configs (45 `start`, the others `change`) are assumptions: the
 recorded runs had none. `prompts/translator-intent-v1.yaml` is the 2026-11-04 trajectory prompt,
 kept only to reproduce those recorded runs.
 
@@ -161,7 +161,7 @@ The unit of translation is one exact target: `aircraft:<id>` or `team:<id>` (D17
 2. Every instructed target that is down is closed once (`target_closed`). Aircraft: first step with
    `alive == 0`. Team: the step its last aircraft is down. A closed target never reopens (D37).
 3. Targets are processed in canonical `(kind, id)` order (aircraft before team):
-   - online triggers: `initial` at the target's first instruction (step 0, or later per D35;
+   - online triggers: `start` at the target's first instruction (step 0, or later per D35;
      source `first_instruction`, the bootstrap the detector needs as its previous intent) and
      `request` at a scenario request (D4, D10; the question goes into the prompt);
    - preset triggers: the config's `triggers.points`, each step with its kind (source `preset`;
@@ -170,11 +170,10 @@ The unit of translation is one exact target: `aircraft:<id>` or `team:<id>` (D17
    - online only, on a tick (`step > 0` and `step % tick_interval_steps == 0`, a fixed grid that requests never
      move, D28) a target that already has a translation gets exactly one detector call, even when
      other triggers exist (D9). Decision rule: `label` is the model's choice; the tick triggers
-     when `label != none` and `p(label) >= threshold`, adding a `start` or `change` reason;
+     when `label != none` and `p(label) >= threshold`, adding a `change` reason;
    - if any trigger remains, the target gets exactly one translation. Coinciding reasons are all
-     kept; the primary trigger follows `initial > start > change > request` (`start` and `change`
-     are exclusive by construction).
-4. A target first instructed after step 0 gets its `initial` translation at its issue step with no
+     kept; the primary trigger follows `start > change > request`.
+4. A target first instructed after step 0 gets its `start` translation at its issue step with no
    previous translation; its detector ticks start after that (D35).
 
 Scenario change points are not triggers: hindsight-placed change references live in the
@@ -222,8 +221,9 @@ Trajectory window: steps <a>-<b>, 0.2 s per step, one JSON line per step, newest
 <compact window text>
 ```
 
-- Question: one `choice` question `point_kind` with exactly the options `none`, `start`,
-  `change` (config `detector.question`; the adapter rejects any other question set).
+- Question: one `choice` question `point_kind` with exactly the options `none` and `change`
+  (config `detector.question`; the adapter rejects any other question set, the former third option
+  `start` included).
 - Instructions in effect: the target's own current instruction and, for an aircraft, its team's;
   each with its issue step (all issued at or before t).
 - Recent messages: **all** alarms and questions for this target issued in
@@ -253,7 +253,7 @@ Trajectory window: steps <a>-<b>, 0.2 s per step, one JSON line per step, newest
 - `input_token_budget` must equal the server's real cap, `min(16384, --max-model-len)` for
   `vllm serve Cloudflare/clef-flash` (4096 for OpenJev `wev serve`); the config rejects > 16384.
 - `threshold: 0.65` is provisional until a labelled LAG check.
-- `detector_call.output` = `{label, probabilities: {none, start, change}, threshold, triggered}`.
+- `detector_call.output` = `{label, probabilities: {none, change}, threshold, triggered}`.
 
 ## Code-session safety (the policy input)
 
@@ -271,15 +271,18 @@ Trajectory window: steps <a>-<b>, 0.2 s per step, one JSON line per step, newest
 - **Reference forward** (`policy/reference.py`): numpy float64, mirrors mtd-rl-lag (Linear -> ReLU ->
   LayerNorm, GRU gates `[r; z; n]`). Torch parity: `slurm/policy_parity.sbatch`.
 
-## `events.jsonl` contract (schema_version 2)
+## `events.jsonl` contract (schema_version 3)
 
 One JSON object per line, in emission order. Four record types only. `requests.jsonl` and
-`responses.jsonl` records carry the same `schema_version`. A v1 run is not accepted by the judges.
+`responses.jsonl` records carry the same `schema_version`. Schema 3 (2026-11-08) has three trigger
+kinds; schema 2 runs (kinds `initial`, `start`, `change`, `request`, where `initial` was the first
+instruction and `start` a detector label) stay readable by the judges through an explicit table
+(`src/evaluation/trigger_kinds.py`). A v1 run is not accepted.
 Every record has:
 
 | Field | Meaning |
 |---|---|
-| `schema_version` | `2` |
+| `schema_version` | `3` |
 | `sequence` | 1, 2, 3, ... without gaps, in file order |
 | `record_type` | `translation_event`, `detector_call`, `target_closed`, `trigger_suppressed` |
 | `scenario_id`, `episode_id` | From the scenario |
@@ -290,12 +293,11 @@ Trigger reason object: `{"kind", "source", "reference_id", "probability"}`.
 
 | `kind` | Point | `source` | `reference_id` | `probability` |
 |---|---|---|---|---|
-| `initial` | bootstrap at the target's first instruction (evaluated with the start rules; not a detector decision) | `first_instruction` (`preset` for a preset point) | the instruction id (`preset-step-<s>`) | `null` |
-| `start` | 開始点: new tactic as planned | `detector` (`preset`) | the detector `call_id` (`preset-step-<s>`) | `p(start)` (`null`) |
-| `change` | 変化点: tactic changed by an external factor | `detector` (`preset`) | the detector `call_id` (`preset-step-<s>`) | `p(change)` (`null`) |
+| `start` | 開始点: the target's first instruction (forced; also the bootstrap the detector needs as its previous intent) | `first_instruction` (`preset` for a preset point) | the instruction id (`preset-step-<s>`) | `null` |
+| `change` | 変化点: a new or changed tactic, as planned or because of an external factor | `detector` (`preset`) | the detector `call_id` (`preset-step-<s>`) | `p(change)` (`null`) |
 | `request` | 要求点: a human asked | the request's `source` | the request id | `null` |
 
-Lists are in precedence order (`initial > start > change > request`), then by `reference_id`.
+Lists are in precedence order (`start > change > request`), then by `reference_id`.
 
 ### `translation_event`
 
@@ -357,10 +359,10 @@ and nothing about it is judged.
 
 ### Examples (trajectory and state text truncated)
 
-`translation_event` for the example request at step 10, after a detector `start` at step 5:
+`translation_event` for the example request at step 10, after a detector `change` at step 5:
 
 ```json
-{"schema_version": 2, "sequence": 7, "record_type": "translation_event", "scenario_id": "placeholder-episode-01",
+{"schema_version": 3, "sequence": 7, "record_type": "translation_event", "scenario_id": "placeholder-episode-01",
  "episode_id": "mhi_v1.3_ic100601_win", "step": 10, "time_s": 2.0, "target": {"kind": "aircraft", "id": "A0100"},
  "event_id": "placeholder-episode-01:aircraft:A0100:000010",
  "episode": {"episode_id": "mhi_v1.3_ic100601_win", "alias": "episode_01", "csv_sha256": "812a44c4..."},
@@ -389,7 +391,7 @@ and nothing about it is judged.
 `detector_call` at tick 15, after the question at 10 and the alarm at 12:
 
 ```json
-{"schema_version": 2, "sequence": 9, "record_type": "detector_call", "scenario_id": "placeholder-episode-01",
+{"schema_version": 3, "sequence": 9, "record_type": "detector_call", "scenario_id": "placeholder-episode-01",
  "episode_id": "mhi_v1.3_ic100601_win", "step": 15, "time_s": 3.0, "target": {"kind": "aircraft", "id": "A0100"},
  "call_id": "placeholder-episode-01:detector:aircraft:A0100:000015", "request_sha256": "...",
  "input": {"trajectory": {"renderer": "lag-detector-compact", "renderer_version": "1", "start_step": 6, "end_step": 15, "anchor_step": 15,
@@ -402,8 +404,8 @@ and nothing about it is judged.
              {"kind": "question", "id": "placeholder-request-001", "step": 10, "text": "[PLACEHOLDER] What is aircraft A0100 trying to do now?"},
              {"kind": "alarm", "id": "placeholder-alarm-001", "step": 12, "text": "[PLACEHOLDER] Warning about the situation of aircraft A0100."}],
            "state_text": "Target: aircraft A0100 (aircraft A0100). Opponents: B0100, B0200.\n...",
-           "question": {"id": "point_kind", "type": "choice", "instructions": "...", "criteria": {"none": "...", "start": "...", "change": "..."}}},
- "output": {"label": "change", "probabilities": {"none": 0.05, "start": 0.05, "change": 0.9}, "threshold": 0.65, "triggered": true},
+           "question": {"id": "point_kind", "type": "choice", "instructions": "...", "criteria": {"none": "...", "change": "..."}}},
+ "output": {"label": "change", "probabilities": {"none": 0.1, "change": 0.9}, "threshold": 0.65, "triggered": true},
  "raw_response": {"model": "clef-flash", "answers": {"point_kind": {"type": "choice", "choice": "change", "probabilities": {"...": 0}}}, "usage": {"...": 0}},
  "model": {"backend": "system_one", "model": "Cloudflare/clef-flash", "revision": "fb4417d31c1d0f9e7e77f1141b40aaede7491e00",
            "served_model_name": "clef-flash", "response_model": "clef-flash"},

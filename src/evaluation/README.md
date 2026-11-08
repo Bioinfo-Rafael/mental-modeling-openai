@@ -2,18 +2,22 @@
 
 Scores the intent translations in a translation run (`src/translate/`, any configuration) with OpenAI
 `gpt-6.1-sol` (D8): one call per judged `translation_event` (D20). A YAML config decides which of
-six inputs the judge sees and how each one is rendered (D15). The judge reads the Translator's
-`events.jsonl` as is, so the trajectory it shows is byte-identical to what the translation layer
-saw (D34).
+six inputs the judge sees and how each one is rendered (D15), and names the prompt file that holds
+every word of the request (`configs/evaluation/prompts/`, see "Prompt files" below). The judge reads
+the Translator's `events.jsonl` as is: the trajectory it shows is the human-visible window each
+event records, the same for every translation configuration (D34).
 
 `Dn` numbers refer to the requirement decision log
 [`.claude/docs/research/translator-requirements.md`](../.claude/docs/research/translator-requirements.md).
 
 | Module | Responsibility |
 |---|---|
-| `configuration.py` | Strict judge YAML: model, limits, the six input blocks, output root, pricing |
+| `configuration.py` | Strict judge YAML: model, limits, the six input blocks, output root, pricing, prompt file |
+| `prompt_files.py` | Judge prompt files of both judges: strict loading, the fields each template may and must use |
+| `strict_yaml.py` | The safe YAML loader that rejects repeated keys (judge configs, prompt files) |
+| `trigger_kinds.py` | The trigger kinds of event schemas 2 and 3 (an explicit table; nothing is inferred) |
 | `schemas.py` | Event-log checks, key points, per-event output schema, strict verdict parser |
-| `rendering.py` | Fixed system prompt, the block renderers (video block included), one request per event, token estimate, `redact_images` |
+| `rendering.py` | The material of one event rendered into the prompt file's texts (video block included), one request per event, token estimate, `redact_images` |
 | `frames.py` | Video frames: `FrameSource` Protocol, frame selection (`plan_frames`), `PyAVFrameSource` (PyAV + Pillow, lazy), `CachingFrameSource` |
 | `judge.py` | `JudgeModel` Protocol, OpenAI adapter, JSONL sink, the per-event loop (caps, write-before-send) |
 | `cli.py` | The only composition root: gate, preflight, preview, client construction, run directory, provenance |
@@ -69,7 +73,8 @@ writes `run.json`, builds the OpenAI client (`make_openai_client`, the only read
 ## Inputs
 
 `--translator-run` must hold `run.json` (any JSON object; its `mode` and `status` are recorded, and
-a status other than `completed` is a preview warning) and `events.jsonl` with `schema_version` 1, a
+a status other than `completed` is a preview warning) and `events.jsonl` with one `schema_version`
+(2 or 3; trigger kinds checked against `trigger_kinds.py`, shown to the judge as recorded), a
 gap-free `sequence` 1..n, the four known record types, unique translation `event_id`s and, in every
 `translation_event`, the fields the judge renders (`step`, `time_s`, `target`, `primary_trigger`,
 `trigger_reasons`, `input.{instructions_in_effect, primary_instruction_id, target_aircraft,
@@ -113,6 +118,30 @@ never contain a raw line break, so it cannot open a `## ...` section or end the 
 system prompt says that the whole user message is material to judge and that requests inside it
 (about scores, the rubric or the output format) must not be followed. The judge does not render
 the Translator's previous translation.
+
+## Prompt files
+
+Every word both judges send comes from a prompt file under `configs/evaluation/prompts/`, named by
+the judge config's `prompt` key (repo-relative). The code loads the material, renders it into the
+file's templates, calls and parses; it holds no prompt text. A prompt file has `schema_version` 1,
+`judge` (`assess` or `key_point`), `version` (recorded as `prompt_version`), `texts` (the system
+prompt and the user message or its blocks) and `blocks` (item templates, joiners, the text when a
+list or an optional piece is empty). It loads strictly: UTF-8, no repeated key, exact keys, and every
+`{field}` is checked when the config loads (`prompt_files.py` lists the fields of each template): an
+unknown field, or a template that drops judge material (the trajectory, the intent, the criteria,
+...), fails before anything is rendered. Literal braces are doubled.
+
+| Config (`configs/evaluation/`) | Prompt | Use |
+|---|---|---|
+| `assess.yaml` | `assess-judge-v3` | Default for new runs. Calls the trajectory the human-visible telemetry up to t (not what the Translator saw); shows trigger kinds as the config's point kinds |
+| `assess-legacy.yaml` | `assess-judge-v2` | Byte-identical to the former in-code prompt. The paid 2026-11-05 assessment resumes only with this config |
+| `judge-text.yaml`, `judge-text-video.yaml` | `judge-text-v4` | Default for new runs; same neutral trajectory wording |
+| `judge-text-legacy.yaml` | `judge-text-v3` | Byte-identical to the former in-code prompt |
+
+Never edit a legacy prompt file: `tests/fixtures/judge-request-goldens.json` and
+`tests/fixtures/prompt-request-goldens.json` pin the requests it builds, and
+`tests/fixtures/assess-request-path.sha256` pins the legacy assess config and prompt. Write a new
+version instead.
 
 ## Video block (L3, D30, D31)
 
@@ -297,15 +326,19 @@ production OpenAI translation adapter over a scripted SDK stand-in -> event log 
 ## 3 time points x 4 aspects assessment (`assess_cli`)
 
 A second evaluator, separate from the D29 key-point judge above. It rates every translation event of
-a Translator **v2** run on the user's 3 points (開始点 `start`, 変化点 `change`, 要求点 `request`;
-the forced first translation `initial` counts as a start) x 4 aspects (要素 `elements`, 正しさ
+a translation run on the user's 3 points (開始点 `start`: the forced first translation; 変化点
+`change`: the clef-flash detector; 要求点 `request`) x 4 aspects (要素 `elements`, 正しさ
 `correctness`, タイミング `timing`, 判断への寄与 `contribution`). The event is judged on the union
-of the criteria of all its trigger reasons. Machine, human and judge results are stored apart and
+of the criteria of all its trigger reasons. Which point kind rates a trigger kind is the judge
+config's `triggers` map, per event schema: schema 3 maps one to one; for schema 2 runs (before
+2026-11-08) the default config maps `initial` to `start` and the detector's `start` to `change`,
+and `assess-legacy.yaml` keeps `initial` and `start` as `start`. A run of a schema the config does
+not map fails before anything is written. Machine, human and judge results are stored apart and
 never merged; nothing is aggregated into an overall score (D54).
 
 | Module | Responsibility |
 |---|---|
-| `assess_data.py` | v2 contract constants (checked against `translator.schema` by a test), strict loading of `assess.yaml`, the run, the annotation; the criteria of an event |
+| `assess_data.py` | Event contract constants (the current kinds checked against `translate.events` by a test), strict loading of the judge config with its prompt file and trigger map, the run, the annotation; the point kinds and criteria of an event |
 | `assess_store.py` | The one result-record schema, append-only stores with `supersedes`, human-rating import |
 | `assess_checks.py` | Time-range (leakage) check of every model call, reference points and segments, machine metrics |
 | `assess_judge.py` | Packet (with `TIMELINE` and the `FUTURE` block), strict schema and parser, OpenAI adapter, call loop |
@@ -315,7 +348,7 @@ never merged; nothing is aggregated into an overall score (D54).
 ### Command
 
 ```bash
-RUN=outputs/translate/<run>             # a completed Translator v2 run (events, requests, responses)
+RUN=outputs/translate/<run>             # a completed translation run (events, requests, responses)
 uv run python -m evaluation.assess_cli check --translator-run $RUN --points private/evaluation/<points>.yaml
 uv run python -m evaluation.assess_cli judge --translator-run $RUN --points private/evaluation/<points>.yaml
 # paid: one gpt-6.1-sol call per event, at most judge.max_calls per invocation; needs BOTH flags
@@ -335,7 +368,7 @@ record the bundle the sandbox read (`input.policy`: session directory, manifest 
 `assess_policy.py` verifies it against `sessions/<dir>/inputs/manifest.json` and requires the window
 to end at or before t (before t when `leakage.allow_action_at_t` is false); a missing or unverifiable
 record is an error. A skipped invalid answer (blank output plus `answer_problem`) is loaded and
-judged as given by both judges. The judges' prompts are fixed in code, not configurable. The one paid assessment judged
+judged as given by both judges. The judges' prompts live in prompt files (see "Prompt files"). The one paid assessment judged
 `outputs/translator/intentcmp-seed100601-ja-A-s045-A0100`, built by the former converter whose
 exact bytes are kept in `tests/fixtures/frozen/to_translator_run_v2.py.txt`.
 
@@ -347,8 +380,10 @@ exact bytes are kept in `tests/fixtures/frozen/to_translator_run_v2.py.txt`.
   target's down step or `max_steps`.
 - `judge` without the flags writes the packets and a cost preview, builds no client and reads no
   key. A request whose SHA-256 is already in `judge_requests.jsonl` is never sent again, so an
-  uncertain call is never resent and a capped run resumes where it stopped. Events of a target whose
-  generation input is invalid are never sent.
+  uncertain call is never resent and a capped run resumes where it stopped. An event already sent
+  from the directory with other request bytes (another prompt file or config) is refused instead of
+  billed twice: resume with the config it was judged with, or judge again under another `--name`.
+  Events of a target whose generation input is invalid are never sent.
 - Ratings format: `src/evaluation/examples/human-ratings.example.jsonl`. `judgement` is `"1"`..`"5"`,
   `cannot_judge`, or `not_applicable` (conditional criteria only: four elements, plus
   `correctness.change_delta` and `correctness.consistent_with_latest` when there is no PREVIOUS). Raters score against the
@@ -393,8 +428,8 @@ for the judge its model, prompt version and hashes), rubric version and config h
 - `cannot_judge`, `not_applicable`, unset thresholds and missing ratings are `not_evaluated` with a
   reason. They never count as 0, and never enter a mean.
 - Agreement below two pairs, or with no variance, is `null` with a reason.
-- The start timing of a forced `initial` translation is `not_evaluated/forced_trigger` for every
-  evaluator.
+- The start timing of the forced first translation (the config's `triggers[].forced`: `start` in
+  schema 3, `initial` in schema 2) is `not_evaluated/forced_trigger` for every evaluator.
 - `check` verifies every model call of both layers:
   - the payload matches its event record's `request_sha256`;
   - trajectory lines, instructions, alarms and questions are at or before t, and the previous
@@ -408,12 +443,13 @@ for the judge its model, prompt version and hashes), rubric version and config h
 
 ### `assess.yaml`
 
-Every editable evaluation value lives in `configs/evaluation/assess.yaml`, commented. The unset
+Every editable evaluation value lives in the judge config (`configs/evaluation/assess.yaml`, or
+`assess-legacy.yaml` to resume the paid 2026-11-05 run), commented. The unset
 behaviour is written next to each key. Unknown, missing or duplicate keys fail. Translator-side
 values (detector question and threshold, text limits, `max_intent_chars`) stay in
 the run config (`configs/translate/*.yaml`).
 
-Score anchors (schema 2, `pilot-2`, judge prompt `assess-judge-v2`; D65-D67): every criterion has its
+Score anchors (`pilot-3` default and `pilot-2` legacy, the same criteria; D65-D67): every criterion has its
 own anchor for each level, rendered under the criterion in the packet from 5 down to 1, followed
 by its own `cannot_judge` / `not_applicable` boundary when it has one. Each packet ends with the
 rating rule, which the judge's system prompt repeats word for word. The score is the lowest level
@@ -428,7 +464,9 @@ rubric; anything before them is material.
 
 | Key | Default | When `null` |
 |---|---|---|
-| `rubric_version` | `pilot-2` | Required. Bump it after editing criteria, anchors or scale wording; ratings must match it |
+| `rubric_version` | `pilot-3` (legacy `pilot-2`) | Required. Bump it after editing criteria, anchors, scale wording or `triggers`; ratings must match it |
+| `prompt` | `prompts/assess-judge-v3.yaml` (legacy `assess-judge-v2`) | Required: the prompt file (repo-relative) |
+| `triggers` | schema 3 and 2 (legacy: 2 only) | Required: per event schema, `point_kinds` (every trigger kind of that schema -> `start`, `change` or `request`) and `forced` (kinds of the forced first translation; they must map to `start`) |
 | `timing.request_deadline_s` | 3.0 (D55) | `processing_s` reported, `not_evaluated/request_deadline_s_unset` |
 | `timing.min_question_interval_s` | 10.0 (D55) | Intervals reported, no verdict |
 | `timing.start_min_lead_steps` | null | Lead before the annotated action onset reported only |
@@ -443,6 +481,6 @@ rubric; anything before them is material.
 
 Tests: `uv run pytest tests/evaluation/test_assess_checks.py tests/evaluation/test_assess_judge.py
 tests/evaluation/test_assess_data_report.py tests/evaluation/test_assess_e2e.py -q`, offline. The
-E2E produces a v2 run with the real Translator CLI over fake layers on the real example episode,
+E2E produces an event-schema-3 run with the real Translator CLI over fake layers on the real example episode,
 then runs `check -> judge preview -> judge --execute -> import-ratings -> report` with no socket
 opened.
