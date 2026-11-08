@@ -3,19 +3,19 @@
 Independent clients for the two layers of the Translator and for the judge. Each part is one
 module. No part imports another (`tests/llm/test_llm_independence.py` checks this with an AST scan).
 The endpoint rules the local parts share live outside this package, in
-`mtd_rl_xavier/local_endpoint.py`, and each part re-raises their fixed messages as its own
-configuration error. Protocols live on the consumer side (`translator/`, `evaluation/`), and only
-the composition roots (`translator/cli.py`, `evaluation/cli.py`, `evaluation/assess_cli.py`,
-`weightreading/cli.py`, `mtd_rl_xavier/intent_compare/method_a_cli.py`) build concrete clients.
+`translate/local_endpoint.py`, and each part re-raises their fixed messages as its own
+configuration error. Protocols live on the consumer side (`translate/`, `evaluation/`), and only
+the composition roots (`translate/cli.py`, `evaluation/cli.py`, `evaluation/assess_cli.py`) build
+concrete clients.
 
 | Module | Part | Phase |
 |---|---|---|
 | `openai_responses.py` | Paid OpenAI Responses API: strict JSON-schema output, text + image input | PHASE-1 |
-| `retry.py` | Narrow, logged retry (HTTP 5xx and non-timeout connection errors) for the intent comparison (methods A and B, weightreading) | - |
+| `retry.py` | Narrow, logged retry (HTTP 5xx and non-timeout connection errors) for the translation calls (`translation.retry: default`) | - |
 | `system_one.py` | Local `POST /v1/systemone` (vLLM `clef-flash`, OpenJev `wev serve`) | PHASE-1 |
 | `vllm_server.py` | `vllm serve` launcher: allowlisted argv, health wait, teardown, CLI | L1 |
 
-The SLURM template `slurm/translator_vllm.sbatch` runs the launcher and the Translator CLI in one
+The SLURM template `slurm/translate_vllm.sbatch` runs the launcher and `python -m translate` in one
 one-GPU job. Nothing in L1 has been run against a real server: see
 [Unverified vLLM facts](#unverified-vllm-facts) and [Still needs approval](#still-needs-approval-d49).
 
@@ -39,8 +39,8 @@ one-GPU job. Nothing in L1 has been run against a real server: see
     call as `uncertain`, and do not resend it.
   - Messages carry only the error class and HTTP status. The SDK error code is on `.error_code`;
     the SDK message (it can echo request text or a masked key) is never copied.
-- `make_openai_client()` is the library's one OpenAI client factory: the Translator, the judge,
-  weightreading and both methods of the intent comparison build their client here, and it is their
+- `make_openai_client()` is the library's one OpenAI client factory: the translation pipeline and
+  the judges build their client here, and it is their
   only reader of `OPENAI_API_KEY` in the core (the separate workspace project has its own legacy
   clients). It sets `max_retries=0`. Call it after the paid-call gate.
 - The endpoint is pinned: it passes `base_url=API_BASE_URL` (`https://api.openai.com/v1`), so an
@@ -60,10 +60,11 @@ one-GPU job. Nothing in L1 has been run against a real server: see
   `MAX_ALLOWED_RETRIES` (2) retries, backoff 10 s then 30 s by default; every failed attempt goes to
   `log` (stderr by default: attempt, error class, status, request id; never the message or body).
 - `RetryingClient(sdk_client, policy)` wraps the client from `make_openai_client()` so that
-  `responses.create` goes through `call_with_retry` with the identical keyword arguments. Method A of
-  the intent comparison puts it under `OpenAIResponsesClient`; weightreading's backend calls
-  `call_with_retry` directly. The Translator and judge CLIs do not use it and keep treating a 5xx as
-  "outcome uncertain, not retried".
+  `responses.create` goes through `call_with_retry` with the identical keyword arguments. A one-shot
+  translation call puts it under `OpenAIResponsesClient` (failed attempts go into the call's
+  `responses.jsonl` line); the code-session backend (`translate/session_backend.py`) calls
+  `call_with_retry` directly. `translation.retry: none` and the judge CLIs do not use it and keep
+  treating a 5xx as "outcome uncertain, not retried".
 
 ## `system_one.py`
 
@@ -170,10 +171,10 @@ one-GPU job. Nothing in L1 has been run against a real server: see
 - The subprocess factory, clock, sleep, `killpg` and HTTP transport are injectable. The tests
   need no vLLM, GPU or network.
 
-## SLURM template `slurm/translator_vllm.sbatch`
+## SLURM template `slurm/translate_vllm.sbatch`
 
 - Directives: `--partition=151-partition`, `--gres=gpu:1`, 8 CPUs, 64G, `--time=00:30:00`. The log
-  goes to `logs/slurm/translator_vllm-<job id>.out` (see `slurm/README.md`).
+  goes to `logs/slurm/translate_vllm-<job id>.out` (see `slurm/README.md`).
 - MODE (first argument): `probe` (default) or `paid`. Placeholders you set: `VLLM_ENV` (the separate
   env directory), `HF_CACHE_DIR` and `SCENARIO`. Optional: `CONFIG`, `MAX_MODEL_LEN`,
   `STARTUP_TIMEOUT_S` and `SHUTDOWN_TIMEOUT_S`. No personal path is hardcoded.
@@ -222,10 +223,10 @@ None of these ran:
 - Creating the separate vLLM env (vLLM >= 0.33.0, about 10 GB), outside the project `.venv`.
 - Downloading clef-flash at `fb4417d31c1d0f9e7e77f1141b40aaede7491e00` (about 19 GB) into the HF
   cache, for example on `/lustre`.
-- One short `--gres=gpu:1` probe job on `151-partition` (`slurm/translator_vllm.sbatch probe`),
+- One short `--gres=gpu:1` probe job on `151-partition` (`slurm/translate_vllm.sbatch probe`),
   which checks the GPU, driver, memory, start-up time and the
   unverified items above.
-- Any paid Translator run (`slurm/translator_vllm.sbatch paid`).
+- Any paid Translator run (`slurm/translate_vllm.sbatch paid`).
 
 ## Gating
 

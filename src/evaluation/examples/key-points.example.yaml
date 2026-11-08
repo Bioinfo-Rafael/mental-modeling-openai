@@ -8,7 +8,7 @@
 # The scale is fixed in code (D29): 2 = core purpose and main action reproduced, 1 = partial,
 # 0 = missing or a different purpose; plus an overall 1-5 score.
 #
-# These ids match a run of configs/translator/scenario.example.yaml (scenario placeholder-episode-01).
+# These ids match a run of configs/translate/scenarios/example.yaml (scenario placeholder-episode-01).
 schema_version: 1
 events:
   - event_id: placeholder-episode-01:aircraft:A0100:000000

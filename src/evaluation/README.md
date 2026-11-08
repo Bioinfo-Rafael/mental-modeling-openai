@@ -1,6 +1,6 @@
 # `evaluation/`: LLM-as-a-judge for Translator events
 
-Scores the intent translations in a Translator run (`src/mtd_rl_xavier/translator/`) with OpenAI
+Scores the intent translations in a translation run (`src/translate/`, any configuration) with OpenAI
 `gpt-6.1-sol` (D8): one call per judged `translation_event` (D20). A YAML config decides which of
 six inputs the judge sees and how each one is rendered (D15). The judge reads the Translator's
 `events.jsonl` as is, so the trajectory it shows is byte-identical to what the translation layer
@@ -27,20 +27,20 @@ from any directory. On Slurm use `slurm/judge_keypoints.sbatch` and `slurm/judge
 ```bash
 # Preview (default): no client, no credential, no network. Writes run.json, preview.json and
 # example_judge_request.json.
-uv run python -m evaluation.cli --translator-run outputs/translator/<run> \
+uv run python -m evaluation.cli --translator-run outputs/translate/<run> \
   --key-points private/evaluation/<key-points>.yaml
 
 # Real run: one paid gpt-6.1-sol call per event that has key points. OPENAI_API_KEY comes from
 # the environment only; never type it on the command line (shell history, sbatch files). It lives
 # in the gitignored, group-shared repo-root .env: load it right before the run (set -a; . ./.env;
 # set +a) and unset it afterwards. On Slurm: slurm/judge_keypoints.sbatch paid (slurm/README.md).
-uv run python -m evaluation.cli --translator-run outputs/translator/<run> \
+uv run python -m evaluation.cli --translator-run outputs/translate/<run> \
   --key-points private/evaluation/<key-points>.yaml --execute --confirm-paid-api
 ```
 
 | Flag | Meaning |
 |---|---|
-| `--config PATH` | Judge config (default `evaluation/config/judge-text.yaml`) |
+| `--config PATH` | Judge config (default `src/evaluation/config/judge-text.yaml`) |
 | `--translator-run DIR` | Translator run directory holding `run.json` and `events.jsonl` (required) |
 | `--key-points PATH` | Key-points YAML (required; real ones under `private/evaluation/`) |
 | `--output-root DIR` | Overrides `output.root` |
@@ -89,7 +89,7 @@ The log is read strictly, because it is untrusted input to a paid judge:
 
 ### The six input blocks
 
-`evaluation/config/judge-text.yaml` (and `judge-text-video.yaml`) has exactly these six blocks, each with `include` plus its
+`src/evaluation/config/judge-text.yaml` (and `judge-text-video.yaml`) has exactly these six blocks, each with `include` plus its
 rendering options. An excluded block is absent from the request (heading and content). The user
 message is one fixed header naming the target and its aircraft, then one text item per included
 block in this order:
@@ -149,7 +149,7 @@ video:
 ```
 
 - **Mapping.** The mapping from a video to its episode lives only in this YAML. The episode of a
-  Translator run is `inputs.episode.episode_id` of its `run.json` (the Translator CLI writes it,
+  translation run is `inputs.episode.episode_id` of its `run.json` (`python -m translate` writes it,
   with `last_complete_step`). A video whose frame rate or length differs needs its own entry
   (for example a 10 fps recording of the same game: `frames_per_step: 2`).
 - **Window.** Candidate steps are `event_step + k * stride_steps` between `-before_steps` and
@@ -226,7 +226,7 @@ events:
 - Events without key points get a `not_judged` result (`reason: no_key_points`) and no call.
 - `limits.max_judged_events` counts only events with key points. More is a preflight error. At run
   time the loop stops with `cap_reached` before call cap+1 (defence in depth).
-- `evaluation/examples/key-points.example.yaml` is placeholder-only. **Real key points live under
+- `src/evaluation/examples/key-points.example.yaml` is placeholder-only. **Real key points live under
   `private/evaluation/`; the whole `private/` tree is gitignored. Never commit them.**
 
 ## Run directory
@@ -315,7 +315,7 @@ never merged; nothing is aggregated into an overall score (D54).
 ### Command
 
 ```bash
-RUN=outputs/translator/<run>             # a completed Translator v2 run (events, requests, responses)
+RUN=outputs/translate/<run>             # a completed Translator v2 run (events, requests, responses)
 uv run python -m evaluation.assess_cli check --translator-run $RUN --points private/evaluation/<points>.yaml
 uv run python -m evaluation.assess_cli judge --translator-run $RUN --points private/evaluation/<points>.yaml
 # paid: one gpt-6.1-sol call per event, at most judge.max_calls per invocation; needs BOTH flags
@@ -326,21 +326,26 @@ uv run python -m evaluation.assess_cli report --translator-run $RUN
 sbatch slurm/judge_assess.sbatch preview --translator-run $RUN
 ```
 
-Method A output reaches this judge through `python -m mtd_rl_xavier.intent_compare.to_translator_run`,
-which turns one method A call into a Translator v2 run directory (the existing
-`outputs/translator/intentcmp-seed100601-ja-A-s045-A0100` was made this way). Method B has no converter.
+Every translation run (`outputs/translate/<run>/`) is a judge input, whatever its inputs were: each
+event records the human-visible material (scenario texts and the trajectory window), so every
+configuration is judged the same way. For a translator that did not read the trajectory
+(`input.translator_inputs`, e.g. the policy input) the leak check needs no window in the payload,
+checks the recorded window against its hash and requires the activation window to end at or
+before t. The judges' prompts are fixed in code, not configurable. The one paid assessment judged
+`outputs/translator/intentcmp-seed100601-ja-A-s045-A0100`, built by the former converter whose
+exact bytes are kept in `tests/fixtures/frozen/to_translator_run_v2.py.txt`.
 
-- Common flags: `--config` (default `evaluation/config/assess.yaml`), `--output-root`, and `--name`
+- Common flags: `--config` (default `src/evaluation/config/assess.yaml`), `--output-root`, and `--name`
   (the assessment directory; default: the Translator run directory's name).
 - `--points` is optional: an annotation of start/change reference points, which may use hindsight
-  (format: `evaluation/examples/assess-points.example.yaml`). Without it, matching, delay, missed and
+  (format: `src/evaluation/examples/assess-points.example.yaml`). Without it, matching, delay, missed and
   excess points are not measured, and a FUTURE block ends only at the next instruction or alarm, the
   target's down step or `max_steps`.
 - `judge` without the flags writes the packets and a cost preview, builds no client and reads no
   key. A request whose SHA-256 is already in `judge_requests.jsonl` is never sent again, so an
   uncertain call is never resent and a capped run resumes where it stopped. Events of a target whose
   generation input is invalid are never sent.
-- Ratings format: `evaluation/examples/human-ratings.example.jsonl`. `judgement` is `"1"`..`"5"`,
+- Ratings format: `src/evaluation/examples/human-ratings.example.jsonl`. `judgement` is `"1"`..`"5"`,
   `cannot_judge`, or `not_applicable` (conditional criteria only: four elements, plus
   `correctness.change_delta` and `correctness.consistent_with_latest` when there is no PREVIOUS). Raters score against the
   anchors and the rating rule printed in every packet of `packets-<batch>.md`, the same text the
@@ -399,10 +404,10 @@ for the judge its model, prompt version and hashes), rubric version and config h
 
 ### `assess.yaml`
 
-Every editable evaluation value lives in `evaluation/config/assess.yaml`, commented. The unset
+Every editable evaluation value lives in `src/evaluation/config/assess.yaml`, commented. The unset
 behaviour is written next to each key. Unknown, missing or duplicate keys fail. Translator-side
 values (detector question and threshold, text limits, `max_intent_chars`) stay in
-`configs/translator/run.yaml`.
+the run config (`configs/translate/*.yaml`).
 
 Score anchors (schema 2, `pilot-2`, judge prompt `assess-judge-v2`; D65-D67): every criterion has its
 own anchor for each level, rendered under the criterion in the packet from 5 down to 1, followed

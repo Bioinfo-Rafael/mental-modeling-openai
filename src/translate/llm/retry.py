@@ -151,7 +151,7 @@ class _RetryingResponses:
 
 
 class RetryingClient:
-    """SDK client stand-in whose ``responses.create`` retries like method B; the request body is untouched.
+    """SDK client stand-in whose ``responses.create`` retries like the code-session backend; the request body is untouched.
 
     Wrap the client from ``make_openai_client`` before handing it to a caller that only needs
     ``responses.create`` (e.g. ``OpenAIResponsesClient``). Exhausted retries re-raise the SDK error

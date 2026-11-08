@@ -1,4 +1,4 @@
-"""Network spec (``configs/weightreading/*.spec.json``): load, validate, cross-check against tensors.
+"""Network spec (``configs/translate/policies/*.spec.json``): load, validate, cross-check against tensors.
 
 Only ``description``, ``inputs``, ``input_clip``, ``architecture`` and ``outputs`` ever reach the
 prompt. ``provenance`` and ``notes`` stay on the harness side (they name the source checkpoint), and

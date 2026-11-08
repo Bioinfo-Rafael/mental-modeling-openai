@@ -12,7 +12,7 @@
 <!-- Why does this project exist? What problem does it solve, for whom?
      State the business/technical context and the goal in a few sentences. -->
 
-Research code that translates the behaviour of reinforcement-learning agents into intent statements with LLMs (the Translator) and evaluates those translations with LLM-as-a-judge. The core holds only translator and judge code: M1, a two-layer Translator for LAG 2v2 air combat; method A (trajectory-based) and method B (weights-and-activations-based) intent translation compared on recorded MHI rollouts; and two judges (the D29 key-point judge and the 3-point x 4-aspect assessment). The legacy LLM-Xavier work (Lu et al., TMLR 2024: mental modelling, few-shot prompting, reward ablation, in-context RL, LAG trajectories) is kept, not deleted, as the independent `workspace/` project, which is also the free-experiment area. The core and `workspace/` do not depend on each other.
+Research code that translates the behaviour of reinforcement-learning agents into intent statements with LLMs and evaluates those translations with LLM-as-a-judge. The core is two packages: `src/translate`, one config-driven pipeline (choose inputs -> process them -> complete the prompt -> translate) that covers the two-layer online Translator (M1) and the former trajectory-based (A) and weights-and-activations-based (B) methods as configurations, and `src/evaluation`, the two judges (the D29 key-point judge and the 3-point x 4-aspect assessment). The legacy LLM-Xavier work (Lu et al., TMLR 2024: mental modelling, few-shot prompting, reward ablation, in-context RL, LAG trajectories) is kept, not deleted, as the independent `workspace/` project, which is also the free-experiment area. The core and `workspace/` do not depend on each other.
 
 ## スコープ (Scope)
 
@@ -20,9 +20,8 @@ Research code that translates the behaviour of reinforcement-learning agents int
 
 <!-- What this project explicitly delivers. -->
 
-- M1 Translator: two-layer intent translation of LAG trajectories (`src/mtd_rl_xavier/translator/`, `llm/`, `lag/`, `configs/translator/`).
-- Method A (trajectory-based, `src/mtd_rl_xavier/intent_compare/`) and method B (weights-and-activations-based, `src/weightreading/` with only `sandbox-selftest`, `intent-preview` and `intent-run`) intent translation on recorded MHI 2v2 rollouts, with an HTML viewer and the `to_translator_run` converter that feeds method A into the judge (`configs/intent_compare/`, `configs/weightreading/`).
-- Judges in `evaluation/` (installable in place): the D29 key-point judge and the 3-point x 4-aspect assessment (`assess_*.py`).
+- `src/translate`: one translation pipeline. A run config (`configs/translate/*.yaml`) selects the inputs (instructions, alarms, question, previous translation, trajectory, policy weights and replay activations), the prompt file (`configs/translate/prompts/`, whose protocol decides the call: one strict-schema Responses request or a sandboxed code session), and the trigger source: online (the clef-flash change-point detector decides start/change as the episode advances; first instructions and human requests force initial/request) or preset (steps chosen in advance, each with its kind).
+- `src/evaluation`: the D29 key-point judge, the 3-point x 4-aspect assessment (`assess_*.py`), and the side-by-side viewer of translation runs.
 - MHI v1.3 match data in `data/mhi/` (read-only) and Slurm jobs in `slurm/` (`common.sh`; MODE `preview`/`paid`, `probe`/`paid` for vLLM; logs in `logs/slurm/`).
 - `workspace/`: an independent uv project (own `pyproject.toml`, `uv.lock`, `.venv`) with the legacy LLM-Xavier experiments 00-17, the vendored `src/mentalmodeling`, and the `mtd_rl_xavier_workspace` legacy library (experiment, preprocessing, datasets, tools, lag batch). It reads only `../data/mhi` from outside and is the place for free experiments. The core does not guarantee it.
 
@@ -30,7 +29,7 @@ Research code that translates the behaviour of reinforcement-learning agents int
 
 <!-- What is explicitly NOT covered, to prevent scope creep. -->
 
-- Training RL policies. Live environments run only to record or replay rollouts of existing LAG checkpoints (`scripts/weightreading_record_rollouts.py` runs `MultipleCombatEnv`, `scripts/intent_compare_replay.py`) with the external mtd-rl-lag interpreter, never inside the core `.venv`.
+- Training RL policies. Live environments run only to record or replay rollouts of existing LAG checkpoints (`scripts/policy_record_rollouts.py` runs `MultipleCombatEnv`, `scripts/episode_replay.py`) with the external mtd-rl-lag interpreter, never inside the core `.venv`.
 - Importing or reading `workspace/` from the core, or importing the core from `workspace/`. Legacy LLM-Xavier experiments are not part of the core's tests, jobs or guarantees.
 - Weights-only policy explanation (the former `weightreading run/evaluate`) and local vLLM chat (`llm/vllm_chat.py`): both deleted 2026-11-08.
 
@@ -41,13 +40,13 @@ Research code that translates the behaviour of reinforcement-learning agents int
 | ID | Requirement | Priority | Notes |
 |----|-------------|----------|-------|
 | FR-1 | Legacy, `workspace/` only: build prompts from recorded RL trajectories with original LLM-Xavier semantics (next/last action, state direction, Joint variants) | Could | workspace/src/mtd_rl_xavier_workspace/preprocessing, workspace/src/mentalmodeling/llm_x |
-| FR-2 | Send paid OpenAI queries only through explicit paid paths (core: `--execute --confirm-paid-api`, Slurm MODE `paid`), with resumable journals and provenance where a resume contract exists | Must | core: src/mtd_rl_xavier/llm, evaluation/, slurm/common.sh; legacy: workspace/src/mtd_rl_xavier_workspace/experiment |
+| FR-2 | Send paid OpenAI queries only through explicit paid paths (core: `--execute --confirm-paid-api`, Slurm MODE `paid`), with resumable journals and provenance where a resume contract exists | Must | core: src/translate/llm, src/evaluation/, slurm/common.sh; legacy: workspace/src/mtd_rl_xavier_workspace/experiment |
 | FR-3 | Legacy, `workspace/` only: analyse saved responses offline (accuracy, continuous metrics, confusion matrices, figures) without API calls | Could | workspace/src/mtd_rl_xavier_workspace/experiment, workspace/*/analysis |
 | FR-4 | Legacy, `workspace/` only: inspect raw datasets and count prompt tokens locally | Could | workspace/src/mtd_rl_xavier_workspace/tools, workspace/notebooks |
-| FR-5 | Removed 2026-11-08: weights-only explanation of an RL policy (`weightreading run/evaluate`); method B (FR-8) remains | - | deleted |
-| FR-6 | Translate LAG trajectories into intent statements per target with a change-point detector and a translation model, using only information at or before t | Must | src/mtd_rl_xavier/translator, llm, lag |
+| FR-5 | Removed 2026-11-08: weights-only explanation of an RL policy (`weightreading run/evaluate`); the policy input of the translation pipeline (FR-6) remains | - | deleted |
+| FR-6 | Translate a LAG episode into intent statements per target at start, change and request points, online (clef-flash) or at preset points, from config-selected inputs with a config-provided prompt, using only information at or before t | Must | src/translate, configs/translate |
 | FR-7 | Judge and assess Translator output (key-point judge; 3 points x 4 aspects) with machine, human and judge results stored separately | Must | evaluation/ |
-| FR-8 | Compare trajectory-based (method A) and weights-based (method B) intent translation on the same recorded rollouts, render a side-by-side viewer, and convert method A calls into a Translator v2 run for the judge | Should | src/mtd_rl_xavier/intent_compare, src/weightreading, configs/intent_compare |
+| FR-8 | Compare input configurations (e.g. trajectory vs policy weights and activations) on the same recorded rollouts with a side-by-side viewer; every configuration writes the judges' input format | Should | configs/translate/seed100601-*.yaml, src/evaluation/viewer.py |
 
 ## 非機能要件 (Non-Functional Requirements)
 
@@ -59,7 +58,7 @@ Research code that translates the behaviour of reinforcement-learning agents int
 | Security | API keys only from environment variables (or a hidden prompt); customer text stays in gitignored `private/`; local model servers bind only to a 0700 Unix socket or 127.0.0.1 | No secrets or `private/` content in git; previews read no credential |
 | Repository size | Existing tracked results stay; new large generated artifacts (images, videos, request/response journals, HTML viewers, dry runs) go to Git LFS or external storage, not plain git | Storage location TBD; no new large binaries in plain git |
 | Maintainability | New library modules pass the full ruff rule set and have tests in tests/ | uv run poe lint and uv run poe test pass |
-| Reproducibility | Resume contracts stay frozen: assess judge skips requests by `request_sha256`, method B `--resume` checks recorded compare/config/spec paths and contents; the legacy `workspace/` plans reproduce saved query_id sets from pinned data (03_1, 05, 06) | `sbatch slurm/validate.sbatch golden`; workspace tests |
+| Reproducibility | The assess judge skips requests by `request_sha256` (its prompts stay in code); the shipped configs reproduce the former prompts byte for byte and the recorded A/B runs replay with identical requests (`scripts/check_request_replay.py`); the former method B `--resume` is retired (2026-11-08; its three runs are complete); the legacy `workspace/` plans reproduce saved query_id sets from pinned data (03_1, 05, 06) | `sbatch slurm/validate.sbatch golden`; workspace tests |
 | Cost safety | No paid request outside documented execute paths; SDK retries disabled | Previews/dry-runs make 0 API calls |
 
 ## アーキテクチャ (Architecture)
@@ -74,9 +73,9 @@ Research code that translates the behaviour of reinforcement-learning agents int
 | Change-point detector (System One model on local vLLM) | Translator layer 1 | Each tick, decide none / start / change for a target from state, instructions, alarms and requests at or before t |
 | Translation model (OpenAI Responses) | Translator layer 2 | Write the intent statement for a target when the detector, a new instruction or a request triggers it |
 | Judge (OpenAI Responses) | evaluation/ | Score each translation event per key point and overall, with rationale |
-| Weight reader (OpenAI, code-execution loop) | src/weightreading | Method B only: read policy weights and replay activations to write the intent statement for a recorded rollout |
+| Code-session translator (OpenAI, code-execution loop) | src/translate/call_session.py, sandbox/, policy/ | The policy input: read policy weights and replay activations in the sandbox to write the intent statement |
 
-- Translator (src/mtd_rl_xavier/translator/) writes events.jsonl/requests.jsonl/responses.jsonl (event schema v2); the D29 judge (evaluation/judge.py) and the 3x4 assessment (evaluation/assess_*.py) read them; plans in .claude/docs/plans/feature-llm-judge-intent-translation-eval-plan.md and feature-translator-evaluation-three-points-four-aspects-plan.md.
+- The pipeline (src/translate/) writes events.jsonl/requests.jsonl/responses.jsonl (event schema v2) for every configuration; each event records the human-visible material (scenario texts and the trajectory window) and the translator's inputs, so the D29 judge (src/evaluation/judge.py) and the 3x4 assessment (src/evaluation/assess_*.py) judge every configuration the same way; plans in .claude/docs/plans/feature-llm-judge-intent-translation-eval-plan.md and feature-translator-evaluation-three-points-four-aspects-plan.md.
 
 ## 技術選定 (Tech Stack & Rationale)
 
@@ -84,10 +83,10 @@ Research code that translates the behaviour of reinforcement-learning agents int
 
 | Area | Technology | Rationale | Alternatives Considered |
 |------|------------|-----------|-------------------------|
-| Environment / packaging | uv + setuptools; core packages `mtd_rl_xavier` (src/), `weightreading` (src/) and `evaluation` (repo root) installed explicitly; `workspace/` is a separate uv project with its own lock and `.venv` | Project rule (.claude/rules/dev-environment.md); `python -m evaluation.*` works from any directory; core tests never see workspace code | One project with src/mentalmodeling as a path dependency (until 2026-11-08) |
+| Environment / packaging | uv + setuptools; core packages `translate` and `evaluation` (both under src/) installed explicitly; `workspace/` is a separate uv project with its own lock and `.venv` | Project rule (.claude/rules/dev-environment.md); `python -m evaluation.*` works from any directory; core tests never see workspace code | One project with src/mentalmodeling as a path dependency (until 2026-11-08) |
 | LLM API | openai SDK, Responses API for the core; Chat Completions and the Batch API only in `workspace/` (experiments 01-17) | Core judge and Translator need strict json_schema output and image input; legacy experiments were ported unchanged |  |
-| Lint | ruff (E,W,F,I,B,UP) over `src tests evaluation` in the core | Enforce rules on all core code | Per-file ignores for ported legacy modules (now only in workspace/) |
-| Tests / tasks | pytest + poethepoet in each project (core: `test`, `lint`; workspace: `test-library`, `test-experiments`); core Slurm `validate.sbatch` modes `subset`, `full`, `static`, `golden`, `method-a-preview` | Core tests run without API access; workspace experiments reuse test file names, so workspace runs each as its own pytest session | Single pytest run across both projects |
+| Lint | ruff (E,W,F,I,B,UP) over `src tests scripts` in the core | Enforce rules on all core code | Per-file ignores for ported legacy modules (now only in workspace/) |
+| Tests / tasks | pytest + poethepoet in each project (core: `test`, `lint`; workspace: `test-library`, `test-experiments`); core Slurm `validate.sbatch` modes `subset`, `full`, `static`, `golden`, `translate-preview` | Core tests run without API access; workspace experiments reuse test file names, so workspace runs each as its own pytest session | Single pytest run across both projects |
 | Change-point detector (local) | Cloudflare/clef-flash @ fb4417d31c1d0f9e7e77f1141b40aaede7491e00 on vLLM >= 0.33.0 POST /v1/systemone (separate env, not the project .venv) | System One decision model natively served by vLLM (D26); client budgets the state because vLLM silently truncates it | OpenJev-4B (not supported by vLLM, own wev serve) |
 | Translation / judge API | OpenAI Responses API with strict json_schema output, reasoning.effort, store=False, no temperature | gpt-6.1 models; structured per-key-point scores; frames sent as input_image items | Chat Completions |
 | Judge video frames | PyAV (av) + Pillow as optional extra `video` (declared in pyproject.toml and locked in uv.lock) | D31; frame source is pluggable so tests need no decoder | ffmpeg subprocess; OpenCV |
@@ -136,4 +135,11 @@ Research code that translates the behaviour of reinforcement-learning agents int
 - Where new large generated artifacts are stored (Git LFS or an external store) is not decided; nothing is set up yet.
 - Whether and how the post-snapshot work on rafael/mental-modeling-openai (experiments 18-20, changes to 13 and 17) is ported into `workspace/`.
 - LLM Translator + judge: open questions are listed in .claude/docs/plans/feature-llm-judge-intent-translation-eval-plan.md section "Open Questions For The User" (mid-episode first instruction, judging all events, caps, detector threshold, judge video window, dead-target policy). Real-data M1 runs still await the vLLM environment and GPU probe approval (D49).
-- Method B output has no converter into a Translator v2 run yet, so it cannot be judged.
+- The preset trigger kinds of the reproduction configs (45 initial, 145/245/315 change) are assumptions; set them from an annotation before judging.
+- The judge heading "TRAJECTORY THE TRANSLATOR SAW" is shown for every event, also for translations that read only the policy; changing it is a new rubric version (judge prompts stay in code).
+- "Online" is the causal per-step loop over a recorded episode with scenario requests revealed at their step; a live request channel is not built.
+| One config-driven pipeline in src/translate (choose inputs -> process -> prompt -> translate) replaces M1, method A and method B; src/ holds only translate/ and evaluation/ (evaluation depends on translate, never the reverse) | Owner request 2026-11-08: methods A and B differ only in what they reference; "method A" is meaningless as a name | Keep three packages; a third shared package | 2026-11-08 |
+| Trigger kinds stay initial/start/change/request; trigger source online (clef-flash) or preset (steps and kinds in the config) | Owner decision 2026-11-08: translation runs at start, change and request points, online or chosen in advance | A new `scheduled` kind with event schema v3 | 2026-11-08 |
+| The judge is method-independent: every event records the human-visible material and the judge prompt is the same for every configuration; judge prompts stay in code | Owner decision 2026-11-08; the paid assess resume depends on judge prompt bytes | Per-method judge variants; not_evaluated for policy-only translations | 2026-11-08 |
+| Translation prompt text lives in prompt files (configs/translate/prompts/) filled from the selected inputs; shipped configs reproduce the former prompts byte for byte (goldens + replay) | Owner decision 2026-11-08: prompt ablations by config | Two prompt templates in code | 2026-11-08 |
+| The former method B `--resume` is retired | Owner decision 2026-11-08: its three recorded runs are complete; results stay readable | Keep a legacy resume adapter and the old config paths | 2026-11-08 |

@@ -6,16 +6,24 @@ the repository root; logs go to `logs/slurm/<job name>-<job id>.out` (the direct
 
 | File | What it runs | MODE (first argument) | Resources |
 |---|---|---|---|
-| `uv_sync.sbatch` | `uv sync --locked --all-extras` (the only job that changes `.venv`) | - | 4 CPU, 30 min |
-| `validate.sbatch` | offline checks, never an API call | `subset`, `full`, `static`, `golden`, `method-a-preview` | 4 CPU, 2 h |
-| `translator_vllm.sbatch` | vLLM detector + Translator CLI in one GPU job (awaits approval D49) | `probe` (default), `paid` | 1 GPU, 8 CPU, 30 min |
-| `translator_method_a.sbatch` | method A (`mtd_rl_xavier.intent_compare.method_a_cli`), then the viewer | `preview` (default), `paid` | 2 CPU, 4 h |
-| `translator_method_b.sbatch` | method B (`weightreading sandbox-selftest`, `intent-preview` / `intent-run`), then the viewer | `preview` (default), `paid` | 4 CPU, 12 h |
-| `translator_prepare_episode.sbatch` | replay, CSV conversion and clips of the A/B episode (mtd-rl-lag) | - | 4 CPU, 1 h |
-| `translator_record_rollouts.sbatch` | record MHI rollouts in mtd-rl-lag and replay them in numpy | - | 4 CPU, 1 h |
-| `translator_method_b_parity.sbatch` | torch vs numpy forward parity of the MHI actors | - | 4 CPU, 1 h |
+| `uv_sync.sbatch` | `uv sync --locked --all-extras --reinstall-package mtd-rl-xavier` (the only job that changes `.venv`) | - | 4 CPU, 30 min |
+| `validate.sbatch` | offline checks, never an API call | `subset`, `full`, `static`, `golden`, `translate-preview` | 4 CPU, 2 h |
+| `translate.sbatch` | `python -m translate` for a preset-trigger config (a code-session config passes the sandbox preflight first) | `preview` (default), `paid` | 4 CPU, 16 GB, 12 h |
+| `translate_vllm.sbatch` | vLLM (the clef-flash change-point detector) + `python -m translate` for an online config in one GPU job (awaits approval D49) | `probe` (default), `paid` | 1 GPU, 8 CPU, 30 min |
+| `viewer.sbatch` | `python -m evaluation.viewer` (side-by-side HTML of runs or cue files) | - | 1 CPU, 30 min |
 | `judge_assess.sbatch` | `evaluation.assess_cli` check + judge (+ report when paid) | `preview` (default), `paid` | 2 CPU, 4 h |
 | `judge_keypoints.sbatch` | the D29 key-point judge `evaluation.cli` | `preview` (default), `paid` | 2 CPU, 4 h |
+| `episode_record_rollouts.sbatch` | record MHI rollouts in mtd-rl-lag and replay them in numpy (`outputs/rollouts/`) | - | 4 CPU, 1 h |
+| `episode_prepare.sbatch` | replay, CSV conversion (`scripts/episode_to_csv.py`) and clips of one rollout seed (mtd-rl-lag) | - | 4 CPU, 1 h |
+| `policy_parity.sbatch` | torch vs numpy forward parity of the MHI actors | - | 4 CPU, 1 h |
+
+`episode_prepare.sbatch` takes its inputs from the environment (all required):
+
+```bash
+ROLLOUT_DIR=outputs/weightreading/rollouts/mhi-v1.3-20261104T010525Z SEED=100601 \
+  EPISODE_DIR=outputs/intent_compare/episode/seed100601 STEPS="45 145 245 315" \
+  sbatch --export=ALL slurm/episode_prepare.sbatch
+```
 
 ## Conventions
 
@@ -35,9 +43,9 @@ the repository root; logs go to `logs/slurm/<job name>-<job id>.out` (the direct
 ## Submit, follow, find the outputs
 
 ```bash
-sbatch slurm/uv_sync.sbatch                                   # once, and after uv.lock changes
-jid=$(sbatch --parsable slurm/judge_assess.sbatch preview --translator-run outputs/translator/<run>)
-tail -f "logs/slurm/judge_assess-$jid.out"                    # Ctrl-C stops following, not the job
+sbatch slurm/uv_sync.sbatch                                   # once, and after uv.lock or package changes
+jid=$(sbatch --parsable slurm/translate.sbatch preview --config configs/translate/seed100601-trajectory.yaml)
+tail -f "logs/slurm/translate-$jid.out"                       # Ctrl-C stops following, not the job
 sacct -j "$jid" --format=JobID,State,Elapsed,ExitCode         # sacct -u is refused on this cluster
 ```
 
@@ -46,11 +54,10 @@ group-shared repo-root `.env`; load it right before the one paid submission and 
 
 ```bash
 set -a; . ./.env; set +a
-jid=$(sbatch --parsable --export=ALL slurm/judge_assess.sbatch paid --translator-run outputs/translator/<run>)
+jid=$(sbatch --parsable --export=ALL slurm/translate.sbatch paid --config configs/translate/<config>.yaml --run-name <name>)
 unset OPENAI_API_KEY
 ```
 
-Resume: `judge_assess.sbatch` never re-sends a request already in `judge_requests.jsonl`;
-`translator_method_b.sbatch paid ... --run-id <id> --resume` continues an interrupted method B run
-(pass `--compare` / `--config` exactly as the original run did). Method A and the D29 judge have no
-resume: a re-run sends every call again.
+Resume: `judge_assess.sbatch` never re-sends a request already in `judge_requests.jsonl`. Translation
+runs and the D29 judge have no resume: a re-run sends every call again (the former method B
+`--resume` was retired on 2026-11-08; its three recorded runs are complete).

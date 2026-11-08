@@ -1,33 +1,55 @@
 # mtd-rl-xavier
 
-強化学習エージェントの振る舞いをLLMで「意図」の文章に翻訳し（A: Translator）、その翻訳をLLM-as-a-judgeで評価する（B: Judge）ためのリポジトリです。
-coreはこの2つだけを扱います。旧LLM-Xavierの研究コードは独立したプロジェクト [`workspace/`](workspace/README.md) にあり、coreとは無関係です。
+強化学習エージェントの振る舞いをLLMで「意図」の文章に翻訳し（`translate`）、その翻訳をLLM-as-a-judgeで評価する（`evaluation`）ためのリポジトリです。
+`src/` には `translate/` と `evaluation/` の2つだけがあります。旧LLM-Xavierの研究コードは独立したプロジェクト [`workspace/`](workspace/README.md) にあり、coreとは無関係です。
 
-## 全体像
+## 翻訳の流れ
+
+翻訳は1本のパイプラインで、何をどう使うかはすべて設定ファイル（`configs/translate/*.yaml`）で決めます。
 
 ```text
-入力: data/mhi/ の試合、rollout、方策の重み
-  M1   2層Translator ─────────────────────────────→ Translator v2 run ─→ Judge
-  手法A 固定stepで翻訳層を呼ぶ ─→ to_translator_run ─→ (outputs/translator/)  (outputs/evaluation/)
-  手法B 重みとactivationを読む ─→ （Judgeへ渡す変換はまだない）
+入力を選ぶ（inputs）→ 入力を加工する → プロンプトを完成させる（prompt）→ 翻訳する
 ```
 
-- M1（`mtd_rl_xavier.translator`）はJudgeの入力形式をそのまま書き出します。ただし実データでの実行は、vLLM環境とGPU probeの承認待ち（D49）です。
-- 手法A（`mtd_rl_xavier.intent_compare`）は、`python -m mtd_rl_xavier.intent_compare.to_translator_run` で1回分の呼び出しをTranslator v2 runに変換すると、Judgeに渡せます。
-- 手法B（`weightreading`）の出力をJudgeへ渡す変換は、まだありません。
-- Judgeは2種類です。`evaluation.assess_cli` は3時点×4観点の評価で、実データで1回の有料実行実績があります。`evaluation.cli` はD29のkey-point評価で、まだ実行していません。
+1. 入力を選ぶ：`instructions`（指示）、`alarms`（警報）、`question`（人の質問）、`previous_translation`（前回の翻訳）、`trajectory`（トラジェクトリ）、`policy`（方策の重みと中間状態）から選びます。
+2. 入力を加工する：時刻tまでの情報だけから、プロンプトに入れる値を作ります。
+3. プロンプトを完成させる：プロンプトの文面は設定側のプロンプトファイル（`configs/translate/prompts/`）にあります。文面を書き換えるだけでプロンプトのアブレーションができます。
+4. 翻訳する：プロンプトファイルの `protocol` で呼び出し方が決まります。`one_shot` は1回のOpenAI呼び出し、`code_session` はモデルがサンドボックスでPythonを実行しながら方策を読む複数回の対話です。
+
+翻訳する時点は次の3種類です。
+
+- 開始点（`initial` / `start`）
+- 変化点（`change`）：clef-flash（変化点検出器）が判定します。
+- 要求点（`request`）：人の質問が届いた時点です。
+
+時点の決め方は2通りあります。
+
+- `online`：エピソードを先頭から進めながら、clef-flashが開始点・変化点を判定し、要求点はその時点で届きます。
+- `preset`：翻訳する時点と種類を、設定ファイルに前もって書きます。
+
+旧「手法A」（トラジェクトリを読む翻訳）と旧「手法B」（重みと中間状態を読む翻訳）は、入力の選び方が違う設定ファイルにすぎません。`seed100601-trajectory*.yaml` と `seed100601-policy*.yaml` が、以前と1バイトも違わない要求を送ります。
+
+## 評価
+
+Judgeは翻訳がどの入力を使ったかに関係なく、同じ方法で評価します。
+Judgeには、人の評価者が見るのと同じ材料（シナリオの文面とトラジェクトリ。動画は未実装）が常に渡ります。
+Judgeは2種類です。
+
+- `evaluation.assess_cli`：3時点×4観点の評価です。実データで1回の有料実行実績があります。
+- `evaluation.cli`：D29のkey-point評価です。まだ実行していません。
+
+Judgeのプロンプトはコードに固定してあり、設定では変えません。有料実行のresumeが、このプロンプトのバイト列に依存しているためです。
 
 ## ディレクトリ
 
 | パス | 内容 |
 |---|---|
-| `src/mtd_rl_xavier/` | M1 Translator（`translator/`）、手法A・比較用viewer・変換（`intent_compare/`）、LLM client（`llm/`）、LAGデータの読込と描画（`lag/`） |
-| `src/weightreading/` | 手法B（`sandbox-selftest`、`intent-preview`、`intent-run`） |
-| `evaluation/` | Judge 2種と設定（`config/`）、入力例（`examples/`） |
-| `configs/` | Translator・手法A/B の設定。`compare*.yaml` と `intent_b.yaml` はmethod Bのresumeがバイト列を照合するので編集しない。中の古いコメント（`intent_compare/compare*.yaml`、`weightreading/intent_b.yaml`）も意図的にそのまま残している |
+| `src/translate/` | 翻訳パイプライン（[README](src/translate/README.md)） |
+| `src/evaluation/` | Judge 2種、比較用viewer、クリップ作成（[README](src/evaluation/README.md)） |
+| `configs/translate/` | 実行設定、プロンプトファイル（`prompts/`）、シナリオ（`scenarios/`）、方策のspec（`policies/`） |
 | `data/mhi/` | MHI v1.3の3試合（CSV・manifest・行動付き動画）。読み取り専用 |
 | `slurm/` | すべてのSlurm job と `common.sh`（[slurm/README.md](slurm/README.md)） |
-| `scripts/` | mtd-rl-lag側のinterpreterで動くhelperと、resume互換性の確認script |
+| `scripts/` | mtd-rl-lag側のinterpreterで動くhelper（rollout記録、エピソード準備、parity）と、互換性の確認script |
 | `tests/` | coreのテスト |
 | `outputs/`, `private/`, `logs/slurm/` | 実行結果・非公開入力・Slurmログ（いずれもgit管理外） |
 | `workspace/` | 独立した自由実験の場（旧LLM-Xavier実験00〜17） |
@@ -38,11 +60,11 @@ coreはこの2つだけを扱います。旧LLM-Xavierの研究コードは独�
 すべてのjobはリポジトリのrootから投げます。
 
 ```bash
-sbatch slurm/uv_sync.sbatch          # .venv を uv.lock どおりに作る（uv.lock が変わったときも）
+sbatch slurm/uv_sync.sbatch          # .venv を uv.lock どおりに作る（uv.lock やパッケージ構成が変わったときも）
 ```
 
 `sbatch slurm/uv_sync.sbatch` には `uv` が必要です。既定の場所は `$HOME/.local/bin/uv` で、別の場所にある場合は `UV=<uvのパス>` で指定します。
-エピソード準備・rollout記録・method Bのparity確認の各jobは、隣の `../mtd-rl-lag` チェックアウトを使います。別の場所に置くときは `LAG_ROOT=<パス>` を指定します。
+rollout記録・エピソード準備・parity確認の各jobは、隣の `../mtd-rl-lag` チェックアウトを使います。別の場所に置くときは `LAG_ROOT=<パス>` を指定します。
 
 jobは `.venv/bin/python` を直接使い、job内で `uv sync` は行いません。
 ログは `logs/slurm/<job名>-<job ID>.out` に出ます。
@@ -54,7 +76,7 @@ jobは `.venv/bin/python` を直接使い、job内で `uv sync` は行いませ�
 
 ```bash
 set -a; . ./.env; set +a
-sbatch --export=ALL slurm/judge_assess.sbatch paid --translator-run outputs/translator/<run>
+sbatch --export=ALL slurm/translate.sbatch paid --config configs/translate/<設定>.yaml --run-name <名前>
 unset OPENAI_API_KEY
 ```
 
@@ -65,39 +87,40 @@ unset OPENAI_API_KEY
 
 | やること | コマンド例 |
 |---|---|
-| M1 Translator（GPU、D49承認後） | `VLLM_ENV=... HF_CACHE_DIR=... SCENARIO=private/translator/<s>.yaml sbatch --export=ALL slurm/translator_vllm.sbatch probe`（有料は `paid`） |
-| 手法A | `sbatch slurm/translator_method_a.sbatch preview --config configs/intent_compare/compare.ja.yaml` |
-| 手法B | `sbatch slurm/translator_method_b.sbatch preview --compare configs/intent_compare/compare.ja.yaml` |
-| A/B用エピソードの準備 | `sbatch slurm/translator_record_rollouts.sbatch` の後に `sbatch slurm/translator_prepare_episode.sbatch` |
-| Judge（3時点×4観点） | `sbatch slurm/judge_assess.sbatch preview --translator-run outputs/translator/<run>` |
-| Judge（key point） | `sbatch slurm/judge_keypoints.sbatch preview --translator-run outputs/translator/<run> --key-points private/evaluation/<kp>.yaml` |
+| 翻訳（preset） | `sbatch slurm/translate.sbatch preview --config configs/translate/seed100601-policy.yaml` |
+| 翻訳（online、GPU、D49承認後） | `VLLM_ENV=... HF_CACHE_DIR=... SCENARIO=private/translator/<s>.yaml sbatch --export=ALL slurm/translate_vllm.sbatch probe`（有料は `paid`） |
+| rolloutの記録とエピソードの準備 | `sbatch slurm/episode_record_rollouts.sbatch` の後に `sbatch slurm/episode_prepare.sbatch`（引数は [slurm/README.md](slurm/README.md)） |
+| 比較viewer | `sbatch slurm/viewer.sbatch --column 軌跡=outputs/translate/<run> --column 方策=outputs/translate/<run> --out <html>` |
+| Judge（3時点×4観点） | `sbatch slurm/judge_assess.sbatch preview --translator-run outputs/translate/<run>` |
+| Judge（key point） | `sbatch slurm/judge_keypoints.sbatch preview --translator-run outputs/translate/<run> --key-points private/evaluation/<kp>.yaml` |
 
 有料で実行するときは、上の `preview` を `paid` に替え、「OpenAI APIキー」の手順で投げます。
-手法Aの結果をJudgeに渡すには、まず `python -m mtd_rl_xavier.intent_compare.to_translator_run --help` で、変換する呼び出しを1つ選びます。
-人手で作る入力（key point、reference point、rating）は `private/evaluation/` に置きます。形式は `evaluation/examples/` にあります。
+人手で作る入力（key point、reference point、rating）は `private/evaluation/` に置きます。形式は `src/evaluation/examples/` にあります。
 
 ## 出力とresume
 
 | 出力先 | 書くもの | 再実行したとき |
 |---|---|---|
-| `outputs/translator/<run>/` | M1、`to_translator_run` | M1は毎回新しいrun。resumeなし |
-| `outputs/intent_compare/<run_id>/` | 手法Aの結果、`cues_A/B.jsonl`、viewer | 手法Aは同じrun IDを上書きしない。resumeなし |
-| `outputs/weightreading/intent/runs/<run_id>/` | 手法B | `paid ... --run-id <id> --resume` で続きから |
+| `outputs/translate/<run>/` | 翻訳（`events.jsonl`、`cues.jsonl`、要求と応答、code sessionの記録） | 毎回新しいrun。resumeなし |
 | `outputs/evaluation/assess/<run>/` | assess judge | `judge_requests.jsonl` にある要求は再送しない |
 | `outputs/evaluation/<UTC>_judge_*/` | key-point judge | resumeなし。再実行すると全件を再送する |
 
-resumeが成り立つ条件は次のとおりです。
+以前の出力（`outputs/translator/`、`outputs/intent_compare/`、`outputs/weightreading/`）はそのまま残り、Judgeとviewerで読めます。
+旧手法Bの `--resume` は廃止しました。記録済みの3 runはすべて完了しているので、続きから実行するものはありません。
 
-- assess judgeは `request_sha256` で送信済みかを判定します。プロンプト、packet、`evaluation/config/assess.yaml` の値が1 byteでも変わると、支払い済みの呼び出しを再送します。
-- 手法Bの `--resume` は、記録されたcompare・config・specのパス文字列と内容を照合します。これらのファイルを動かしたり編集したり、別のcheckoutから再開したりすると、拒否されます。
-- 既存の結果が今のコードで再開できるかは、`sbatch slurm/validate.sbatch golden` で確認できます。APIは呼びません。
+resumeとバイト列の保証は次のとおりです。
+
+- assess judgeは `request_sha256` で送信済みかを判定します。Judgeのプロンプト、packet、`src/evaluation/config/assess.yaml` の値が1 byteでも変わると、支払い済みの呼び出しを再送します。
+- 出荷している設定のプロンプトと要求のバイト列はgoldenで固定してあります。記録済みの旧手法A・Bのrunは、このパイプラインで再実行するとすべての要求が一致します（`scripts/check_request_replay.py`）。
+- 確認は `sbatch --export=ALL,SOURCE_ROOT=<出力のあるcheckout> slurm/validate.sbatch golden` で行います。APIは呼びません。
 
 ## テスト
 
 ```bash
-sbatch slurm/validate.sbatch subset     # Translator・LLM・LAG・手法A/B・Judge
-sbatch slurm/validate.sbatch full       # coreの全テスト
-sbatch slurm/validate.sbatch static     # ruff、bash -n、repo外からのimport、古いパスの検出
+sbatch slurm/validate.sbatch subset             # translate・policy・sandbox・LLM・LAG・Judge
+sbatch slurm/validate.sbatch full               # coreの全テスト
+sbatch slurm/validate.sbatch static             # ruff、bash -n、repo外からのimport、古いパスの検出
+sbatch slurm/validate.sbatch translate-preview  # 出荷しているすべての設定のpreview（要求は送らない）
 ```
 
 どのテストもAPIを呼ばず、jobは `OPENAI_API_KEY` を必ず消してから動きます。
@@ -110,10 +133,9 @@ coreは `workspace/` をimportも読み取りもしません。workspaceからco
 
 ## 詳細な仕様（英語）
 
-- [src/mtd_rl_xavier/translator/README.md](src/mtd_rl_xavier/translator/README.md): M1と `events.jsonl` v2 の契約
-- [evaluation/README.md](evaluation/README.md): 2種類のJudge、入力、出力、安全策
-- [src/mtd_rl_xavier/llm/README.md](src/mtd_rl_xavier/llm/README.md): LLM client、vLLM、課金gate、D49
-- [src/mtd_rl_xavier/lag/README.md](src/mtd_rl_xavier/lag/README.md): LAGデータの読込と描画
-- [src/weightreading/README.md](src/weightreading/README.md): 手法B
+- [src/translate/README.md](src/translate/README.md): パイプライン、設定、入力、プロンプトファイル、`events.jsonl` の契約
+- [src/evaluation/README.md](src/evaluation/README.md): 2種類のJudge、入力、出力、安全策、viewer
+- [src/translate/llm/README.md](src/translate/llm/README.md): LLM client、vLLM、課金gate、D49
+- [src/translate/lag/README.md](src/translate/lag/README.md): LAGデータの読込と描画
 - [data/mhi/README.md](data/mhi/README.md): MHI試合データ
 - [slurm/README.md](slurm/README.md): job一覧と規約

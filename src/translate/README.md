@@ -1,109 +1,156 @@
-# `mtd_rl_xavier.translator`: two-layer LLM Translator
+# `translate`: one config-driven translation pipeline
 
-Turns a LAG trajectory into natural-language intent statements, one target at a time (D3, D7).
-`Dn` numbers refer to the requirement decision log
-[`.claude/docs/research/translator-requirements.md`](../../../.claude/docs/research/translator-requirements.md).
-Two layers alternate in time order (D9):
+Turns the behaviour of RL agents in a recorded LAG episode into natural-language intent statements,
+one target (aircraft or team) at a time. Every run follows the same four steps, all chosen by one
+run config (`configs/translate/*.yaml`):
 
-- the **detector layer** asks a System One model, on a fixed tick grid, one `choice` question:
-  does the target continue its previous intent (`none`), begin a new tactic as planned (`start`,
-  開始点) or change its tactic because of an external factor (`change`, 変化点)? (D50)
-- the **translation layer** asks an OpenAI model for a new intent whenever a trigger fires: the
-  forced `initial` bootstrap at a target's first instruction, a detector `start` / `change`, or a
-  human request (`request`, 要求点).
+1. **choose inputs** (`inputs:`): `instructions`, `alarms`, `question`, `previous_translation`,
+   `trajectory`, `policy`;
+2. **process inputs** (`inputs.py`, `policy/`): each selected input becomes named values for the
+   step t, built only from information at or before t;
+3. **complete the prompt** (`prompts.py`): the prompt file named by `prompt.file` is filled with
+   those values and `prompt.vars`; the prompt text lives in config, so prompt ablations need no
+   code change;
+4. **translate**: the prompt file's `protocol` decides the call: `one_shot` (one strict-schema
+   OpenAI Responses request) or `code_session` (the model reads the policy's weights and replay
+   activations with Python in a sandbox, then answers in JSON).
 
-Every model input holds only data issued at or before the current step t: the trajectory windows
-end at t, and instructions, alarms and questions are filtered to `step <= t` (D51).
+When to translate is the trigger source (`triggers:`): **online** (the clef-flash change-point
+detector decides `start` / `change` every tick as the episode advances; a target's first
+instruction forces `initial` and a human request forces `request`) or **preset** (the steps are
+chosen in advance in the config, each with its kind). Trigger kinds are always `initial`, `start`,
+`change` and `request`.
 
-The authoritative output is `events.jsonl`. The judge (`evaluation/`) consumes it as is, so the
-trajectory the judge shows is byte-identical to what the translation layer saw (D34).
+Every run writes `events.jsonl` (schema v2) for the judges. Each event records the human-visible
+material (scenario texts and the trajectory window) whatever the translator read, so the judges
+evaluate every configuration the same way.
 
 | Module | Responsibility |
 |---|---|
-| `schema.py` | Frozen scenario, target, trigger, translation and state types; event-id and record helpers |
-| `config.py` | Strict run-config and scenario YAML loading (exact key sets, no default model) |
-| `detector.py` | `DetectionModel` Protocol, `DetectorLayer`, exact state string, budget bound, System One adapter |
-| `translation.py` | `IntentModel` Protocol, `TranslationLayer`, prompt, strict output schema and parser, OpenAI adapter |
-| `pipeline.py` | Episode facts, scenario checks, deterministic schedule, budget preflight, the `Translator` loop |
-| `cli.py` | The only composition root: gate, preview, client construction, run directory, provenance, sink |
+| `config.py` | Strict run config (schema 2): triggers, inputs, prompt, call, answer, session, detector, output; checks the prompt against the selected inputs |
+| `scenario.py` | Scenario YAML, scenario rules, episode facts, what a target sees at step t |
+| `triggers.py` | Online and preset triggers, the deterministic schedule plan, the detector budget |
+| `inputs.py` | Input processors: slot -> prompt values; the event's human-visible `input` record |
+| `prompts.py` | Prompt files: load, placeholder check, list/optional blocks, follow-up turns |
+| `call_one_shot.py` | One strict-schema Responses call, its parser and the OpenAI adapter |
+| `call_session.py`, `session_backend.py` | One code session per slot: inputs bundle, preflight, loop, audit, answer; the Responses backend |
+| `answers.py` | Answer limits and validation, the same for both calls |
+| `pipeline.py` | The chronological loop: triggers -> inputs -> prompt -> call -> answer -> journal -> event |
+| `detector.py` | clef-flash detection layer (System One state, budget bound, adapter) |
+| `run_files.py` | JSONL journals (written before each send) and the `cues.jsonl` projection |
+| `events.py` | Event and scenario types, event ids, canonical JSON (frozen: it defines `request_sha256`) |
+| `cli.py` | The only composition root: gate, preview, clients, run directory, provenance |
+| `llm/`, `lag/` | LLM clients (OpenAI Responses, System One, vLLM launcher, retry); LAG episode loader and renderers |
+| `policy/`, `sandbox/` | Checkpoint reader, spec, float64 replay and its renderings; the unshare sandbox, preflight, reply protocol, audit |
 
-The layers depend on Protocols only. `cli.py` alone builds `SystemOneClient` and the OpenAI SDK
-client. The production adapters are `SystemOneDetectionModel(client, question_id=...)` and
-`OpenAIIntentModel(OpenAIResponsesClient(sdk_client), model=..., reasoning_effort=...,
-max_output_tokens=...)`; tests run them over `httpx.MockTransport` and a scripted SDK stand-in.
+## Shipped configurations
+
+| Config | Inputs | Prompt | Triggers |
+|---|---|---|---|
+| `online.example.yaml` | instructions, alarms, question, previous translation, trajectory | `translator-intent-v2` | online (clef-flash), example scenario |
+| `seed100601-trajectory{,-ja,-ja-short}.yaml` | instructions, alarms, question, previous translation, trajectory | `translator-intent-v2` | preset 45 / 145 / 245 / 315 |
+| `seed100601-policy{,-ja,-ja-short}.yaml` | instructions, previous translation, policy | `intent-b-v1` (code session) | preset 45 / 145 / 245 / 315 |
+
+The trajectory and policy configs reproduce the two former comparison methods byte for byte (the
+prompts and request bodies are pinned by `tests/translate/test_request_goldens.py`, and
+`scripts/check_request_replay.py` re-runs the recorded runs through this pipeline). The preset
+kinds of the reproduction configs (45 `initial`, the others `change`) are assumptions: the
+recorded runs had none. `prompts/translator-intent-v1.yaml` is the 2026-11-04 trajectory prompt,
+kept only to reproduce those recorded runs.
 
 ## Command
 
 ```bash
-# Preview (default): no client, no credential, no network. Writes run.json + preview.json.
-uv run python -m mtd_rl_xavier.translator.cli --scenario configs/translator/scenario.example.yaml
-
-# Real run with the default config (local detector + paid OpenAI translation layer). Keys come
-# from the environment only; never type them on the command line (shell history, sbatch files).
-# OPENAI_API_KEY lives in the gitignored, group-shared repo-root .env (set -a; . ./.env; set +a);
-# slurm/translator_vllm.sbatch generates VLLM_API_KEY per job. The real run needs the vLLM env,
-# the clef-flash snapshot and a GPU probe that still await approval (D49; llm/README.md).
-uv run python -m mtd_rl_xavier.translator.cli \
-  --scenario private/translator/<scenario>.yaml --execute --confirm-paid-api
+# Preview (default): no client, no credential, no network. Writes run.json, preview.json and
+# example_translation_request.json (the exact first request).
+.venv/bin/python -m translate --config configs/translate/seed100601-trajectory.yaml
+# Paid run (keys from the environment only; OPENAI_API_KEY lives in the group-shared repo-root .env).
+.venv/bin/python -m translate --config configs/translate/seed100601-policy.yaml --run-name <name> --execute --confirm-paid-api
 ```
+
+On Slurm: `slurm/translate.sbatch preview|paid` (preset triggers) and `slurm/translate_vllm.sbatch
+probe|paid` (online triggers: the job serves clef-flash on a local vLLM; awaits approval D49).
 
 | Flag | Meaning |
 |---|---|
-| `--config PATH` | Run config (default `configs/translator/run.yaml`) |
-| `--scenario PATH` | Scenario YAML (required) |
+| `--config PATH` | Run config (required) |
+| `--scenario PATH` | Scenario YAML; overrides the config's `scenario` (real ones live in `private/translator/`) |
 | `--output-root DIR` | Overrides `output.root` |
-| `--run-name NAME` | Run directory name (default `<UTC stamp>_<scenario_id>_<preview|execute>`). Must match `[A-Za-z0-9][A-Za-z0-9._-]{0,127}`: a name, never a path; anything else is a usage error (exit 2) before anything is read or created |
-| `--execute` | Call the layers. Alone it is enough only for a config without a paid layer |
-| `--confirm-paid-api` | Required together with `--execute` when any layer is paid (`openai_responses`) |
+| `--run-name NAME` | Run directory name (default `<UTC stamp>_<scenario_id>_<preview|execute>`); a name, never a path |
+| `--execute`, `--confirm-paid-api` | Both, or neither: every configuration makes paid translation calls |
 
-Gate: `--confirm-paid-api` without `--execute` is a usage error. `--execute` without
-`--confirm-paid-api` is a usage error when the config has a paid layer (every valid config in this
-phase has one, because the translation layer is `openai_responses` only).
-
-Execute order: gate -> config, scenario and hash-verified episode -> schedule and detector budget
-preflight -> detector client (reads the key variable named in the config) -> authenticated
-`GET /v1/models` health check -> new run directory -> OpenAI client (`make_openai_client`, the
-only reader of `OPENAI_API_KEY`) -> pipeline. A missing or wrong detector fails before any paid
-client exists.
+A code-session config passes the fail-closed sandbox preflight before any client or key exists.
 
 ### Exit codes
 
 | Code | Meaning |
 |---|---|
 | 0 | Preview written, or run `completed` |
-| 1 | Deterministic failure: config, scenario, episode data, rendering, budget, existing run directory, local server, protocol, refusal, incomplete response, invalid translation output |
+| 1 | Deterministic failure: config, scenario, episode data, rendering, budget, sandbox preflight, existing run directory, local server, protocol, refusal, incomplete response, invalid answer under `on_invalid: stop` |
 | 2 | Usage or gate misuse (argparse), including an invalid `--run-name` |
-| 3 | `uncertain`: a call may have reached the server and been billed (timeout, 5xx, unreadable response, unexpected exception or Ctrl-C during a call, or a sent call whose response could not be journaled). Never resend it blindly. Kept even if closing the journals or the detector client, or writing the final `run.json`, fails |
+| 3 | `uncertain`: a call may have reached the server and been billed. Never resend it blindly |
 | 4 | `cap_reached`: a call cap stopped the run; `events.jsonl` is partial |
+
+## Config
+
+Every key is required and explicit; unknown and duplicate keys fail (`configs/translate/*.yaml`
+are commented examples).
+
+| Section | Content |
+|---|---|
+| `scenario` | Scenario file (repository-relative), or null to require `--scenario` |
+| `triggers` | `source: online` + `tick_interval_steps`, or `source: preset` + `points: [{step, kind, targets}]` (`targets: null` = every instructed target) |
+| `visibility` | `{mode: online, future_steps: 0}` (retrospective is not implemented) |
+| `limits`, `scenario_limits` | Call caps; maximum scenario text lengths |
+| `detector` | The clef-flash System One settings (online only; null for preset) |
+| `inputs` | The selected inputs; each must be used by the prompt, and the prompt may use only values they provide |
+| `trajectory` | `{renderer: lag17-jsonl, past_steps}`: the window every event records |
+| `policy` | `{rollout_dir, seed, spec, checkpoint, past_steps}` when `policy` is selected |
+| `prompt` | `{file, vars}`: the prompt file and its free variables |
+| `translation` | `{backend: openai_responses, model, reasoning_effort, max_output_tokens, timeout_s, retry: default | none}` |
+| `answer` | `{max_intent_chars, max_evidence_items, max_evidence_chars, on_invalid: stop | skip}` |
+| `session` | Code session only: `{max_runs, max_total_tokens, max_protocol_errors, answer_at_fraction, sandbox}` |
+| `output`, `pricing` | Output root; USD per 1M tokens for the preview estimate |
+
+### Inputs and the values they provide
+
+| Input | Values (prompt placeholders) |
+|---|---|
+| always | `episode_alias`, `step`, `time_s`, `t_s`, `step_seconds`, `target_label`, `target_aircraft`, `max_intent_chars` |
+| `instructions` | `instructions` (every instruction in effect, through `blocks.instructions`), `primary_instruction` |
+| `alarms` | `alarms` (alarms for the target at or before t, through `blocks.alarms`) |
+| `question` | `question` (the request at t, through `blocks.question`) |
+| `previous_translation` | `previous_translation` (the target's latest valid answer, through `blocks.previous_translation`) |
+| `trajectory` | `trajectory`, `trajectory_start`, `trajectory_end`, `trajectory_points`, `trajectory_anchor` |
+| `policy` | `policy_alias`, `policy_task`, `policy_architecture`, `policy_inputs`, `policy_outputs`, `policy_parameters`, `policy_activations`, `window_start`, `window_end`, `window_length` |
+| code session | `max_runs`, `timeout_s`, `stdout_cap_chars`, `stderr_tail_chars` |
+
+### Prompt files
+
+`configs/translate/prompts/*.yaml`: `version` (recorded as `prompt_version`), `protocol`,
+`output_schema` (`intent_evidence`, one-shot only), `system` and `user` (`str.format` templates:
+`{t_s:g}` formats a number, literal braces are doubled), `blocks` (item template, joiner and the
+text when empty, for the list and optional inputs) and `turns` (code session: the follow-up
+messages). A new prompt is a new file with a new `version`; the judges' prompts are not
+configurable (they stay in `src/evaluation`, because the paid assess resume depends on their bytes).
 
 ## Run directory
 
-`<output.root>/<run name>/`, created with `mkdir(exist_ok=False)` and mode `0700`; an existing
-directory is refused. Nothing in it is ever rewritten except `run.json` (status updates).
+`<output.root>/<run name>/`, created with `mkdir(exist_ok=False)` and mode `0700`.
 
 | File | Content |
 |---|---|
-| `run.json` | Mode, status, start/end time, input paths + SHA-256 (config, scenario, episode CSV, manifest), git commit + dirty flag, SHA-256 of every `.py` in `translator/`, `lag/`, `llm/`, renderer versions, detector state version, question-set SHA-256, prompt version, OpenAI base URL, system-prompt and output-schema SHA-256, resolved config (detector endpoint included), schedule, budget fit, call counts, `unsent` (cap), `error` (type + message only), `api_requests_made` |
-| `preview.json` | Preview only: schedule, caps and headroom, warnings, budget fit, approximate token and cost estimate, `api_requests_made: 0` |
-| `example_translation_request.json` | Preview only: the exact Responses body of the first mandatory translation |
+| `run.json` | Mode, status, times, inputs (config, prompt, scenario, episode, policy) with SHA-256, git commit + dirty flag, SHA-256 of every `translate` module, renderer versions, resolved config (`config.pipeline.visibility` is where the judges read the visibility), schedule, detector budget, call counts, `unsent`, `error`, `api_requests_made` |
+| `preview.json`, `example_translation_request.json` | Preview only: schedule, budget, the SHA-256 of every request known in advance, an approximate cost bound; the first request |
 | `events.jsonl` | The event log (contract below) |
-| `requests.jsonl` | One record per call, written and fsynced **before** the call is sent: `call_id`, `layer`, `step`, `target`, exact `payload` (System One body or Responses body), `written_at` |
-| `responses.jsonl` | One record per sent call: `call_id`, `layer`, `status` (`ok` / `error` / `uncertain`), `latency_s` (monotonic `time.perf_counter()` seconds around the model call, rounded to 3 decimals; on every attempted call, finite and non-negative, D56), `raw` response body (kept even when parsing fails), `error` (`type`, `message`), `written_at` |
+| `requests.jsonl` | One record per call, written and fsynced **before** the call is sent (`call_id`, `layer`, `step`, `target`, exact `payload`) |
+| `responses.jsonl` | One record per sent call (`status`, `latency_s`, `raw` body or the session summary, `error`) |
+| `cues.jsonl` | Derived after the run: one line per translation slot (answer or `skipped` with the reason) for `python -m evaluation.viewer` |
+| `sessions/<sSSSS_AIRCRAFT>/` | Code session only: `inputs/` (read-only `W` and `A`), `message.txt`, `transcript.jsonl`, `tool_calls.jsonl`, `state.json`, `final_answer.md`, `preflight.json`, `audit.json` |
 
 A request without a response line means the process died mid-call: treat that call as uncertain.
-All three JSONL files are standard JSON: a non-finite number in a received body (a lax server's
-`NaN`) is stored as the string `"NaN"`, `"Infinity"` or `"-Infinity"`; nothing else is changed.
 
-Failure recording: once the run directory exists every failure ends with a terminal `run.json`
-status and the call counts. Error records hold `{type, message}`. The message is kept for errors
-whose text this project or the LLM parts control (`ValueError`, `OSError`, sanitised client
-errors); any other exception records only its class name. No traceback is written or printed.
-Ctrl-C is handled the same way: during a call the call is journaled `uncertain` (exit 3); with no
-call in flight the run ends `failed` (exit 1). A lone surrogate in a received body (an escaped
-`"\ud800"`) is journaled as the JSON escape `\ud800`, so a complete response is never reported
-`uncertain` just because it could not be encoded.
-
-## Pipeline rules
+## Pipeline rules (both trigger sources)
 
 The unit of translation is one exact target: `aircraft:<id>` or `team:<id>` (D17). Per step
 `0 .. last_complete_step` (340 / 293 / 495 for the committed episodes):
@@ -114,11 +161,13 @@ The unit of translation is one exact target: `aircraft:<id>` or `team:<id>` (D17
 2. Every instructed target that is down is closed once (`target_closed`). Aircraft: first step with
    `alive == 0`. Team: the step its last aircraft is down. A closed target never reopens (D37).
 3. Targets are processed in canonical `(kind, id)` order (aircraft before team):
-   - forced triggers: `initial` at the target's first instruction (step 0, or later per D35;
+   - online triggers: `initial` at the target's first instruction (step 0, or later per D35;
      source `first_instruction`, the bootstrap the detector needs as its previous intent) and
      `request` at a scenario request (D4, D10; the question goes into the prompt);
+   - preset triggers: the config's `triggers.points`, each step with its kind (source `preset`;
+     a preset `request` point takes the source and id of the scenario request it answers);
    - a closed target only logs its triggers as `trigger_suppressed` (no model call);
-   - on a tick (`step > 0` and `step % tick_interval_steps == 0`, a fixed grid that requests never
+   - online only, on a tick (`step > 0` and `step % tick_interval_steps == 0`, a fixed grid that requests never
      move, D28) a target that already has a translation gets exactly one detector call, even when
      other triggers exist (D9). Decision rule: `label` is the model's choice; the tick triggers
      when `label != none` and `p(label) >= threshold`, adding a `start` or `change` reason;
@@ -131,7 +180,8 @@ The unit of translation is one exact target: `aircraft:<id>` or `team:<id>` (D17
 Scenario change points are not triggers: hindsight-placed change references live in the
 evaluation annotation, never in the scenario (D50 supersedes D6).
 
-Windows (online mode, D33): translation `[max(0, step-59), step]` with `lag17-jsonl` (D22, D32);
+Windows (online visibility, D33): the trajectory window `[max(0, step-59), step]` with `lag17-jsonl` (D22, D32;
+`trajectory.past_steps`), recorded in every event and inserted into the prompt when selected;
 detector `[max(0, step-9), step]` with `lag-detector-compact` over the target's aircraft, then the
 opposing team's aircraft (D27). Downed aircraft keep rendering with `alive == 0`.
 
@@ -141,7 +191,12 @@ preview reports the exact detector call count (detector calls never depend on mo
 mandatory translations, the translation upper bound (mandatory plus one per tick without a scenario
 trigger) and the headroom; a bound above a cap is only a warning.
 
-Errors: a failed call is never retried. The response line records the error, the run stops, and
+Invalid answers: `answer.on_invalid: stop` ends the run `failed`; `skip` writes the
+`translation_event` with a blank `output` and `answer_problem`, the target keeps its last valid
+translation, and the run continues.
+
+Errors: a failed call is never resent beyond the narrow `translate.llm.retry` policy
+(`translation.retry: default`: HTTP 5xx and non-timeout connection failures only). The response line records the error, the run stops, and
 `run.json` gets `failed` or `uncertain`. If journaling itself fails while a sent call has no
 response line yet, the run stops as `uncertain` with that call's id.
 
@@ -182,14 +237,14 @@ Trajectory window: steps <a>-<b>, 0.2 s per step, one JSON line per step, newest
 
 - `float_precision: 5` (about 1 m). With 3 decimals, lon/lat resolve about 100 m while an aircraft
   moves about 50 m per step: in `mhi_v1.3_ic100601_win`, 45 of 340 consecutive A0100 positions are
-  identical at 3 decimals and none at 5 (`tests/translator/test_tr_budget.py`).
+  identical at 3 decimals and none at 5 (`tests/translate/test_tr_budget.py`).
 - Budget fit is proved before any call: for every scheduled tick, the client's conservative bound
   (UTF-8 bytes + fixed reserves) of the exact state, the scenario's actual instruction, alarm and
-  question texts included, plus a worst-case intent (4 bytes x `translation.max_intent_chars`)
+  question texts included, plus a worst-case intent (4 bytes x `answer.max_intent_chars`)
   must stay below `input_token_budget`. The scenario is known before the run, so this is exact;
   a scenario that does not fit fails in preflight, before any directory, client or call. The
   knobs: shorter scenario texts (`scenario_limits`), a shorter `detector.messages_lookback_steps`,
-  `detector.window` (steps, fields), or a lower `translation.max_intent_chars`.
+  `detector.window` (steps, fields), or a lower `answer.max_intent_chars`.
 - With the default config (`max_intent_chars: 600`, reserve 2400) the example scenario's worst
   bound is 13158 (team A, margin 3226). A dense worst case over every tick of all three episodes
   (`test_tr_budget.py`: every target instructed at step 0 with a 300-character Japanese text, a
@@ -200,28 +255,21 @@ Trajectory window: steps <a>-<b>, 0.2 s per step, one JSON line per step, newest
 - `threshold: 0.65` is provisional until a labelled LAG check.
 - `detector_call.output` = `{label, probabilities: {none, start, change}, threshold, triggered}`.
 
-## Translation layer
+## Code-session safety (the policy input)
 
-- Prompt version `translator-intent-v2` (additive to v1). The system prompt describes LAG, the
-  data format and the task, plus one sentence: "When the user message contains a question, answer
-  it at the granularity it asks for, using only the recorded data up to the current step; if the
-  data cannot answer it, say so instead of guessing." The user message carries the episode alias
-  (never the episode id, scenario id or event ids), the step and time, the target and its
-  aircraft, every instruction in effect (the target's own one marked), `Alarms for this target`
-  (every alarm for the target issued at or before t, or "(none)"), the target's previous
-  translation (intent and evidence) or "none", the 17-format window verbatim between
-  `BEGIN WINDOW DATA` / `END WINDOW DATA` and, for a request event only, `Question from a human
-  (step s)` with the question text.
-- Output: strict JSON schema `intent_translation` = `{"intent": string, "evidence": [string, ...]}`
-  (`minItems: 1`, no other keys). The parser accepts exactly one JSON object with exactly those
-  keys, a non-blank intent of at most `max_intent_chars` characters and a non-empty list of
-  non-blank evidence strings, all valid UTF-8 (a lone surrogate escape is rejected). Nothing is
-  repaired, coerced or retried; text is kept unchanged.
-- Model, `reasoning_effort`, `max_output_tokens`, `timeout_s` and the output language come from
-  the config only. `store` is always false; no temperature or sampling parameter is sent.
-- The committed config sets `translation.output_language: Japanese` (D42). clef-flash is
-  English-only and receives the previous (now Japanese) translation in its state. The detector
-  budget stays proved for any language: the intent reserve is 4 UTF-8 bytes per character.
+- **Checkpoint reader** (`policy/torch_reader.py`): stdlib-only allow-list unpickler, no torch. It accepts
+  only `OrderedDict`, `_rebuild_tensor_v2`, `_rebuild_parameter` and `torch.*Storage`, and rejects
+  every other global, compressed or unknown zip members, bad offsets, strides or sizes, and any
+  dtype other than float32.
+- **Sandbox** (`sandbox/executor.py`): `unshare` user, mount, pid and net namespaces; a tmpfs root holding
+  only `/usr`, the interpreter, numpy, `/work` and the read-only inputs, entered via `pivot_root`;
+  `env -i`, `python -I`, RLIMIT_AS/FSIZE/NPROC/CPU, a timeout, a `/work` size cap and an output cap.
+  There is no aggregate memory cgroup limit on these nodes, so run paid sessions inside a Slurm
+  job. The preflight (`sandbox/preflight.py`) must pass every check, or no request is sent.
+- **Audit** (`sandbox/audit.py`): flags nonlinearities, LayerNorm-like expressions, recurrence loops and
+  torch imports; `audit.json` records `mode: code-session` and the prompt version.
+- **Reference forward** (`policy/reference.py`): numpy float64, mirrors mtd-rl-lag (Linear -> ReLU ->
+  LayerNorm, GRU gates `[r; z; n]`). Torch parity: `slurm/policy_parity.sbatch`.
 
 ## `events.jsonl` contract (schema_version 2)
 
@@ -242,9 +290,9 @@ Trigger reason object: `{"kind", "source", "reference_id", "probability"}`.
 
 | `kind` | Point | `source` | `reference_id` | `probability` |
 |---|---|---|---|---|
-| `initial` | bootstrap at the target's first instruction (evaluated with the start rules; not a detector decision) | `first_instruction` | the instruction id | `null` |
-| `start` | 開始点: new tactic as planned | `detector` | the detector `call_id` | `p(start)` |
-| `change` | 変化点: tactic changed by an external factor | `detector` | the detector `call_id` | `p(change)` |
+| `initial` | bootstrap at the target's first instruction (evaluated with the start rules; not a detector decision) | `first_instruction` (`preset` for a preset point) | the instruction id (`preset-step-<s>`) | `null` |
+| `start` | 開始点: new tactic as planned | `detector` (`preset`) | the detector `call_id` (`preset-step-<s>`) | `p(start)` (`null`) |
+| `change` | 変化点: tactic changed by an external factor | `detector` (`preset`) | the detector `call_id` (`preset-step-<s>`) | `p(change)` (`null`) |
 | `request` | 要求点: a human asked | the request's `source` | the request id | `null` |
 
 Lists are in precedence order (`initial > start > change > request`), then by `reference_id`.
@@ -254,21 +302,24 @@ Lists are in precedence order (`initial > start > change > request`), then by `r
 | Field | Meaning |
 |---|---|
 | `event_id` | `<scenario_id>:<kind>:<target_id>:<step:06d>`; unique (one translation per target per step); also the `call_id` in `requests.jsonl` / `responses.jsonl` |
-| `request_sha256` | SHA-256 of the canonical JSON (sorted keys, `,`/`:` separators, UTF-8) of the exact request `payload` journaled under `call_id == event_id`: the full system prompt and user message |
+| `request_sha256` | SHA-256 of the canonical JSON (sorted keys, `,`/`:` separators, UTF-8) of the exact request `payload` journaled under `call_id == event_id`: the full prompt; for a code session, its first request (the later turns are in `sessions/<slot>/transcript.jsonl`) |
 | `episode` | `{episode_id, alias, csv_sha256}` |
 | `primary_trigger` | Trigger kind with the highest precedence |
 | `trigger_reasons` | Every coinciding reason |
-| `input.prompt_version` | `translator-intent-v2` |
+| `input.prompt_version` | The prompt file's `version` (e.g. `translator-intent-v2`, `intent-b-v1`) |
 | `input.target_aircraft` | The target's aircraft ids, as named in the prompt |
 | `input.instructions_in_effect` | Every instructed target's current instruction, canonical target order: `{instruction_id, issue_step, target, text}` |
 | `input.primary_instruction_id` | The instruction of this exact target |
 | `input.alarms` | Every alarm for this target issued at or before `step`, oldest first: `{alarm_id, step, targets, text}` |
 | `input.question` | `{request_id, step, text}` for a request event, else `null` |
-| `input.trajectory` | `{renderer, renderer_version, start_step, end_step, anchor_step, object_ids, fields, text, sha256}`: `text` is the exact window text in the prompt; steps are the clipped, actually rendered ones |
+| `input.trajectory` | `{renderer, renderer_version, start_step, end_step, anchor_step, object_ids, fields, text, sha256}`: the trajectory window a human rater sees, always recorded; when `trajectory` is a translator input, `text` is exactly the window text in the prompt; steps are the clipped, actually rendered ones |
 | `input.previous_translation` | `{event_id, step, intent, evidence}` of this target, or `null` |
-| `input.output_language` | Configured output language |
+| `input.output_language` | The prompt's `output_language` var, if any |
+| `input.translator_inputs` | The selected inputs (what the translator read). Absent in runs before 2026-11-08, which read every listed input |
+| `input.policy` | Policy input only: `{network_alias, checkpoint_sha256, rollout_sha256, window}` |
 | `output` | `{intent, evidence}` as parsed |
-| `model` | `{backend, model, reasoning_effort, max_output_tokens, response_model, response_id}` |
+| `model` | `{backend, protocol, model, reasoning_effort, max_output_tokens, response_model, response_id}`; `protocol` is `one_shot` or `code_session` |
+| `answer_problem` | Only when the answer was invalid and `answer.on_invalid` is `skip`: why (then `output` is blank) |
 | `usage` | `{input_tokens, cached_input_tokens, output_tokens, reasoning_tokens}` |
 | `processing_s` | Monotonic seconds from the start of processing this target at this step (before any detector call) until this parsed record is complete, immediately before its own fsynced write (one append, the same for every event). The request deadline's measure: question received to usable answer |
 
@@ -359,19 +410,9 @@ and nothing about it is judged.
  "usage": {"input_tokens": 0, "output_tokens": 0}}
 ```
 
-## Config and scenario
+## Scenario
 
-`configs/translator/run.yaml` is the full default; every key is required, unknown keys fail and
-duplicate YAML keys fail (in the scenario too). Contract v2 keys: `scenario_limits`
-(`max_instruction_chars: 300`, `max_alarm_chars: 200`, `max_question_chars: 200`),
-`detector.messages_lookback_steps: 25` (must be `>= pipeline.tick_interval_steps`),
-`detector.question` (the `choice` question), `detector.threshold: 0.65` and
-`translation.max_intent_chars: 600`.
-Phase limits: `pipeline.visibility.mode` accepts only `online` (with `future_steps: 0`);
-`retrospective` is rejected as "not implemented in this phase" (LATER, L2), and
-`translation.backend` accepts only `openai_responses`. `pricing` must have an entry for `translation.model` (preview estimates only).
-
-`configs/translator/scenario.example.yaml` documents the scenario format (`schema_version: 2`)
+`configs/translate/scenarios/example.yaml` documents the scenario format (`schema_version: 2`)
 with placeholder text: `instructions`, `alarms` (`{alarm_id, step, targets, text}`) and
 `requests` (`{request_id, step, targets, source, question}`). The v1 key
 `external_change_points` is rejected. Scenario rules: exact keys; ids unique across
@@ -384,7 +425,7 @@ alphanumeric tokens (`episode_id` likewise); no token may be an outcome word (`w
 `lose`, `won`, `lost`), and no token may be shared with `episode_id`. So `window_01` and
 `close_call` pass, while `ep-win` or a reused seed or IC token fail. Paths resolve relative to the scenario file. A
 scenario is always loaded against the run config (`load_scenario(path, limits=...)`), and
-`pipeline.validate_scenario` re-runs the same rules, so a `Scenario` built in code is held to them
+`scenario.validate_scenario` re-runs the same rules, so a `Scenario` built in code is held to them
 too.
 
 ### Detector endpoint
@@ -417,7 +458,7 @@ connection:
 
 - Real scenarios (customer instructions, D11) live under `private/translator/`; the whole
   `private/` tree is gitignored. Committed examples use `[PLACEHOLDER]` text only.
-- Outputs go under `outputs/translator/` (gitignored as a whole tree). Event logs, requests and
+- Outputs go under `outputs/translate/` (gitignored as a whole tree). Event logs, requests and
   previews contain exact model-visible text; run directories are created owner-only (`0700`).
 - Keys are never written: the config holds only the NAME of the detector key variable;
   `OPENAI_API_KEY` is read by `make_openai_client()` after the gate. That client always targets
@@ -431,13 +472,9 @@ connection:
   exception class name and, for project-controlled errors only, the message; never tracebacks or
   response bodies (raw bodies live in `responses.jsonl` only).
 - Local server requirements (UDS in a 0700 directory, or `127.0.0.1` plus a Bearer key, same SLURM
-  job): see `src/mtd_rl_xavier/llm/README.md`.
+  job): see `llm/README.md`.
 
 ## Tests
 
-`uv run pytest tests/translator -q` runs offline: no network, GPU, paid call or real key.
-`test_tr_budget.py` renders every tick of all three episodes (about 18 s).
-`test_tr_pipeline.py::test_no_payload_contains_information_after_its_step` parses every detector
-and translation payload of the example scenario (real renderers and the `data/mhi/` episode rows) and checks that
-every trajectory step, instruction, alarm and question step is `<= t` and that no later text
-appears.
+`.venv/bin/python -m pytest tests/translate tests/policy tests/sandbox -q` (via
+`slurm/validate.sbatch subset`) runs offline: no network, GPU, paid call or real key.

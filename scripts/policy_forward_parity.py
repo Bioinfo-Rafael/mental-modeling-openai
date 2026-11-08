@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Torch parity for the numpy reference forward pass (``translate.policy.reference``).
 
-Run with torch available and ``src`` on ``PYTHONPATH`` (see ``slurm/translator_method_b_parity.sbatch``);
+Run with torch available and ``src`` on ``PYTHONPATH`` (see ``slurm/policy_parity.sbatch``);
 torch is NOT a dependency of this repository. Checks, on random base states and on multi-step sequences:
 
 1. ``torch.load(weights_only=True)`` tensors equal the restricted reader's tensors bit for bit;

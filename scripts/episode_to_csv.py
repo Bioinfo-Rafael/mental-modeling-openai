@@ -286,7 +286,7 @@ def build_manifest(csv_name: str, data: bytes, info: dict[str, Any], sources: di
         "missing_value": "",
         "primary_key": ["episode_id", "step", "object_id"],
         "columns": column_dtypes(),
-        "generator": {"src/mtd_rl_xavier/intent_compare/convert.py": sha256_bytes(Path(__file__).read_bytes())},
+        "generator": {"scripts/episode_to_csv.py": sha256_bytes(Path(__file__).read_bytes())},
         "episodes": [
             {
                 "episode_id": info["episode_id"],

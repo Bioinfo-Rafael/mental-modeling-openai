@@ -1,4 +1,4 @@
-"""The shared retry policy (``translate.llm.retry``) as method A uses it: ``RetryingClient`` below
+"""The shared retry policy (``translate.llm.retry``) as a one-shot translation call uses it: ``RetryingClient`` below
 ``OpenAIResponsesClient``. Offline, real ``openai`` exception instances, no sleeping."""
 
 from __future__ import annotations

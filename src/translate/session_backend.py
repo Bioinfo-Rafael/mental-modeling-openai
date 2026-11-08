@@ -5,7 +5,7 @@ reasoning across turns through ``reasoning.encrypted_content`` items, like ``cod
 The SDK client is built only by the shared ``translate.llm.openai_responses.make_openai_client``
 (endpoint pinned, SDK retries off, the only ``OPENAI_API_KEY`` reader), which the CLI calls after
 the paid-call gate and the sandbox preflight have passed. Retries follow the shared
-``translate.llm.retry`` policy, the same one method A of the intent comparison uses.
+``translate.llm.retry`` policy, the same one a one-shot call uses (``translation.retry: default``).
 """
 
 from __future__ import annotations

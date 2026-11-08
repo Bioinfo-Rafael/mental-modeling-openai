@@ -2,7 +2,7 @@
 """Record per-decision policy inputs and outputs of an MHI 2v2 team actor in mtd-rl-lag.
 
 Run with mtd-rl-lag's interpreter (``$LAG_ROOT/.venv/bin/python``; torch + JSBSim), never on the
-login node: see ``slurm/translator_record_rollouts.sbatch``. torch is NOT a dependency of
+login node: see ``slurm/episode_record_rollouts.sbatch``. torch is NOT a dependency of
 this repository and nothing in mtd-rl-lag is modified.
 
 Each episode mirrors ``scripts/eval/evaluate_mhi_team.py`` of mtd-rl-lag exactly: a fresh
