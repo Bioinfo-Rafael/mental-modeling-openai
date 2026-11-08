@@ -1,4 +1,4 @@
-"""The core (Translator, methods A/B, judge) is independent of the workspace project.
+"""The translate/evaluation core is independent of the workspace project.
 
 The core never imports the workspace library, the vendored LLM-Xavier package or an experiment
 module, never edits ``sys.path``, and installs exactly its own packages.
@@ -18,10 +18,20 @@ from translate import paths
 from translate.output_safety import derived_path
 
 SRC = paths.ROOT / "src"
-CORE_PACKAGES = tuple(SRC / name for name in ("translate", "evaluation", "mtd_rl_xavier", "weightreading"))
+CORE_PACKAGES = tuple(SRC / name for name in ("translate", "evaluation"))
 CORE_SOURCES = sorted(path for package in CORE_PACKAGES for path in package.rglob("*.py"))
+TRANSLATE_SOURCES = sorted((SRC / "translate").rglob("*.py"))
+EVALUATION_SOURCES = sorted((SRC / "evaluation").rglob("*.py"))
+POLICY_SOURCES = sorted((SRC / "translate" / "policy").rglob("*.py"))
 TEST_SOURCES = sorted((paths.ROOT / "tests").rglob("*.py"))
 FORBIDDEN_IMPORT_ROOTS = {"workspace", "mtd_rl_xavier_workspace", "llm_x", "mentalmodeling"}
+EVALUATION_TRANSLATE_IMPORTS = {
+    "translate.events",
+    "translate.llm.openai_responses",
+    "translate.output_safety",
+    "translate.paths",
+}
+POLICY_TRANSLATE_IMPORTS = {"translate.output_safety", "translate.paths"}
 
 
 def imported_roots(path: Path) -> set[str]:
@@ -37,6 +47,22 @@ def imported_roots(path: Path) -> set[str]:
     return {name.split(".")[0] for name in names}
 
 
+def imported_modules(path: Path) -> set[str]:
+    """Absolute import modules, preserving ``from translate import paths`` as ``translate.paths``."""
+    names: list[str] = []
+    for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+        if isinstance(node, ast.Import):
+            names += [alias.name for alias in node.names]
+        if isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+            if node.module == "translate":
+                names += [f"translate.{alias.name}" for alias in node.names]
+            else:
+                names.append(node.module)
+        if isinstance(node, ast.Call) and getattr(node.func, "id", getattr(node.func, "attr", None)) == "import_module":
+            names += [arg.value for arg in node.args if isinstance(arg, ast.Constant) and isinstance(arg.value, str)]
+    return set(names)
+
+
 def sys_path_mutations(path: Path) -> list[int]:
     """Line numbers of expressions that touch ``sys.path``."""
     tree = ast.parse(path.read_text(encoding="utf-8"))
@@ -48,9 +74,43 @@ def sys_path_mutations(path: Path) -> list[int]:
 
 
 def test_core_sources_are_found() -> None:
-    assert SRC / "mtd_rl_xavier" / "translator" / "cli.py" in CORE_SOURCES
+    assert SRC / "translate" / "cli.py" in CORE_SOURCES
     assert SRC / "evaluation" / "assess_cli.py" in CORE_SOURCES
     assert SRC / "translate" / "events.py" in CORE_SOURCES
+
+
+@pytest.mark.parametrize("path", EVALUATION_SOURCES, ids=lambda p: str(p.relative_to(paths.ROOT)))
+def test_evaluation_imports_only_approved_translate_modules(path: Path) -> None:
+    translate_imports = {
+        name for name in imported_modules(path) if name == "translate" or name.startswith("translate.")
+    }
+    unexpected = {
+        name
+        for name in translate_imports
+        if name not in EVALUATION_TRANSLATE_IMPORTS and not name.startswith("translate.lag.")
+    }
+
+    assert unexpected == set()
+
+
+@pytest.mark.parametrize("path", TRANSLATE_SOURCES, ids=lambda p: str(p.relative_to(paths.ROOT)))
+def test_translate_module_does_not_import_evaluation(path: Path) -> None:
+    assert "evaluation" not in imported_roots(path)
+
+
+@pytest.mark.parametrize("path", POLICY_SOURCES, ids=lambda p: str(p.relative_to(paths.ROOT)))
+def test_translate_policy_imports_only_approved_modules(path: Path) -> None:
+    unexpected = {
+        name
+        for name in imported_modules(path)
+        if name.split(".")[0] not in sys.stdlib_module_names
+        and name != "numpy"
+        and not name.startswith("numpy.")
+        and name not in POLICY_TRANSLATE_IMPORTS
+        and not name.startswith("translate.policy")
+    }
+
+    assert unexpected == set()
 
 
 @pytest.mark.parametrize("path", CORE_SOURCES + TEST_SOURCES, ids=lambda p: str(p.relative_to(paths.ROOT)))
@@ -83,7 +143,7 @@ def test_setuptools_package_list_covers_every_package_directory() -> None:
 
 
 def test_core_package_is_importable_without_the_workspace_on_sys_path() -> None:
-    assert importlib.util.find_spec("mtd_rl_xavier.translator.cli") is not None
+    assert importlib.util.find_spec("translate.cli") is not None
     assert not any(Path(entry).resolve() == paths.ROOT / "workspace" for entry in sys.path if entry)
 
 

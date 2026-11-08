@@ -129,9 +129,5 @@
       "step315_A0200": "4200d487b863eb13fd803a680c1e977fcf901cdd0743c2e23c71ca91af2cb529"
     }
   },
-  "known_unreproduced": {
-    "trajectory/seed100601": "recorded with prompt translator-intent-v1 (2026-11-04); the code at d8b2d12 builds translator-intent-v2 (system prompt question paragraph and the 'Alarms for this target' section were added later)",
-    "trajectory/seed100601-ja": "recorded with prompt translator-intent-v1 (2026-11-04); the code at d8b2d12 builds translator-intent-v2 (system prompt question paragraph and the 'Alarms for this target' section were added later)",
-    "trajectory/seed100601-ja-short": "recorded with prompt translator-intent-v1 (2026-11-04); the code at d8b2d12 builds translator-intent-v2 (system prompt question paragraph and the 'Alarms for this target' section were added later)"
-  }
+  "known_unreproduced": {}
 }

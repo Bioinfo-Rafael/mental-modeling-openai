@@ -1,4 +1,4 @@
-"""Narrow, logged retry for transient OpenAI server errors: the one retry policy of the A/B intent comparison.
+"""Narrow, logged retry for transient OpenAI server errors: the one retry policy of the translation calls.
 
 A request is retried only when it almost certainly was not processed (so it was not billed):
 an HTTP 5xx answer, or a connection failure that is not a timeout. A timeout may have been
@@ -7,9 +7,10 @@ covers insufficient quota), bad requests, authentication errors or any non-``ope
 The SDK's own retries stay off (``make_openai_client`` sets ``max_retries=0``) so that every attempt
 is visible here. The SDK is imported lazily, only after an exception has been raised.
 
-Both methods of the intent comparison use it: method B through ``weightreading.backends`` and
-method A by wrapping its SDK client in ``RetryingClient`` (below the Translator, whose code is
-unchanged). The Translator and judge CLIs do not use it: they keep reporting a 5xx as
+A run config with ``translation.retry: default`` uses it: a code session through
+``translate.session_backend`` (each failed attempt in the turn's ``transcript.jsonl`` line), a
+one-shot call by wrapping its SDK client in ``RetryingClient`` (each failed attempt in the call's
+``responses.jsonl`` line). ``retry: none`` and the judge CLIs keep reporting a 5xx as
 "outcome uncertain, not retried" (``openai_responses``).
 
 This module imports no sibling module of ``translate.llm`` (the LLM parts stay independent).

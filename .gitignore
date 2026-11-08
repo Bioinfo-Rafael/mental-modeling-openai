@@ -44,3 +44,9 @@ outputs/weightreading/
 /outputs/evaluation/
 # intent_compare runs (rollout episodes, ACMI, npz, clips, viewers, Slurm logs) derive from partner checkpoints.
 /outputs/intent_compare/
+# translate runs, new rollout recordings and episodes, parity reports (whole trees; they hold model-visible text).
+/outputs/translate/
+/outputs/rollouts/
+/outputs/episodes/
+/outputs/policy_parity/
+/outputs/.scratch/

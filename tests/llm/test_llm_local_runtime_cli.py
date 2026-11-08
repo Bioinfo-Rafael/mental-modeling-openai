@@ -26,7 +26,7 @@ from translate.llm.vllm_server import (
 from .local_runtime_fakes import FAKE_PID, FakeClock, FakeProcess, GroupSignals, RecordingPopen, make_runtime_dir
 from .test_llm_local_runtime import KEY_ENV, KEY_VALUE, REVISION
 
-CLIENT = ["python", "-m", "mtd_rl_xavier.translator.cli", "--execute"]
+CLIENT = ["python", "-m", "translate.cli", "--execute"]
 
 
 @pytest.fixture(autouse=True)

@@ -33,7 +33,7 @@ from evaluation.schemas import (
     parse_judge_output,
     parse_key_points,
 )
-from tests.translator.tr_fakes import DELETE, SHORT_LAST_STEP, FakeIntentModel
+from tests.translate.tr_fakes import DELETE, SHORT_LAST_STEP, FakeIntentModel
 from translate import paths
 from translate.events import sha256_text
 

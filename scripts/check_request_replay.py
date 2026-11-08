@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
-"""Offline replay of recorded translation requests (restructure guard; never calls an API).
+"""Offline replay of recorded translation runs through the current pipeline (restructure guard; no API call).
 
-For every recorded trajectory-input run (``outputs/intent_compare/<run>/method_a``) this rebuilds
-each request body from the current code, chaining the recorded answers, and compares its canonical
-SHA-256 with the recorded payload. For every recorded policy-input run
-(``outputs/weightreading/intent/runs/<run>``) it rebuilds each session's first message and replays the
-whole session with the recorded model replies and sandbox results, comparing the SHA-256 of the
-conversation history sent at every turn with the recorded ``input_sha256`` (so the first message
-and every follow-up turn are covered).
+Each recorded comparison run is re-run end to end with the shipped run config of its kind, the
+model replaced by its recorded replies:
+
+- trajectory input (``outputs/intent_compare/<run>/method_a``): the ``seed100601-trajectory*``
+  config with the prompt it was recorded with (``translator-intent-v1``, without the alarm and
+  question inputs that v1 did not have); the recorded responses answer in order, and the SHA-256
+  of every journaled request body must equal the recorded one;
+- policy input (``outputs/weightreading/intent/runs/<run>``): the ``seed100601-policy*`` config;
+  every code session is driven by its recorded replies and sandbox results, and the SHA-256 of the
+  first message and of the conversation history sent at every turn must equal the recorded ones.
 
     python scripts/check_request_replay.py --source-root <checkout>
 
-The baseline ``tests/fixtures/request-replay-baseline.json`` lists every recorded hash, taken from
-the recordings themselves (the check first confirms that the recordings still hold exactly these), plus ``known_unreproduced``: runs the code cannot rebuild, with the reason.
-The check passes only when every hash of every other run is reproduced; that list may only shrink.
-Exit codes: 0 ok; 1 a hash outside ``known_unreproduced`` was not reproduced.
+The baseline ``tests/fixtures/request-replay-baseline.json`` holds the recorded hashes (the check
+first confirms the recordings still hold exactly these) and ``known_unreproduced``, which may
+only shrink. Exit codes: 0 ok; 1 a hash outside ``known_unreproduced`` was not reproduced.
 """
 
 from __future__ import annotations
@@ -23,80 +25,121 @@ import argparse
 import json
 import sys
 import tempfile
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from mtd_rl_xavier.intent_compare import load_compare
-from mtd_rl_xavier.intent_compare.method_a_requests import Slot, build_request, load_settings, prompt_for, request_body
+import yaml
+
 from translate import paths
-from translate.events import IntentTranslation, PreviousTranslation, canonical_json, sha256_text
-from translate.lag.dataset import load_episode as load_csv_episode
-from weightreading.backends import BackendReply, Usage, history_sha256
-from weightreading.config import load_config
-from weightreading.intent_episode import load_episode, plan_sessions
-from weightreading.intent_prompt import PreviousTranslation as PolicyPrevious
-from weightreading.intent_protocol import IntentAnswer, parse_intent_reply
-from weightreading.intent_run import IntentPrepared, message_for, session_limits_for
-from weightreading.intent_trace import trace_episode, validate_trace
-from weightreading.reference import build_policy
-from weightreading.sandbox import ExecResult
-from weightreading.session import RunLog, run_session
-from weightreading.spec import check_against_tensors, load_spec
-from weightreading.torch_reader import read_checkpoint
+from translate.call_one_shot import IntentModelOutput, OneShotCall, TranslationPrompt, build_openai_request
+from translate.call_session import SessionCall
+from translate.cli import session_settings
+from translate.config import RunConfig, parse_config
+from translate.events import canonical_json, sha256_text
+from translate.lag.dataset import load_episode
+from translate.llm.openai_responses import build_responses_body
+from translate.pipeline import Translator
+from translate.policy.material import load_policy_material
+from translate.sandbox.executor import ExecResult
+from translate.scenario import load_scenario
+from translate.session_backend import BackendReply, Usage, history_sha256
 
 EXIT_OK, EXIT_MISMATCH = 0, 1
 RUN_IDS = ("seed100601", "seed100601-ja", "seed100601-ja-short")
+CONFIG_SUFFIX = {"seed100601": "", "seed100601-ja": "-ja", "seed100601-ja-short": "-ja-short"}
 BASELINE = paths.ROOT / "tests" / "fixtures" / "request-replay-baseline.json"
-CONFIG_DIR = paths.CONFIGS / "intent_compare"
+TRANSLATE = paths.CONFIGS / "translate"
+SCENARIO = TRANSLATE / "scenarios" / "seed100601-neutral.yaml"
+V1_PROMPT = TRANSLATE / "prompts" / "translator-intent-v1.yaml"
+V1_INPUTS = ["instructions", "previous_translation", "trajectory"]
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
-def repo_file(recorded: str, source_root: Path) -> Path:
-    """A recorded repository path (relative, or absolute under the source checkout) in this checkout."""
-    path = Path(recorded)
-    return paths.ROOT / (path.relative_to(source_root) if path.is_absolute() else path)
+class MemorySink:
+    def __init__(self) -> None:
+        self.requests: list[dict[str, Any]] = []
+
+    def write_event(self, record: dict[str, Any]) -> None:
+        return None
+
+    def write_request(self, record: dict[str, Any]) -> None:
+        self.requests.append(record)
+
+    def write_response(self, record: dict[str, Any]) -> None:
+        return None
 
 
-def latest_answers(cues: list[dict[str, Any]], before_step: int) -> dict[str, tuple[int, str, list[str]]]:
-    """Per aircraft, its latest answered cue before ``before_step``: the chain both methods keep."""
-    chain: dict[str, tuple[int, str, list[str]]] = {}
-    for cue in cues:
-        if cue["step"] < before_step and "intent" in cue:
-            chain = {**chain, cue["aircraft"]: (cue["step"], cue["intent"], cue["evidence"])}
-    return chain
+def scenario_file(source_root: Path, scratch: Path) -> Path:
+    """The shipped scenario with its episode paths pointing into the source checkout."""
+    raw = yaml.safe_load(SCENARIO.read_text(encoding="utf-8"))
+    episode_dir = source_root / "outputs" / "intent_compare" / "episode" / "seed100601"
+    episode = {**raw["episode"], "csv_path": str(episode_dir / "seed100601.csv"), "video_path": None}
+    path = scratch / "scenario.yaml"
+    path.write_text(yaml.safe_dump({**raw, "episode": episode}, sort_keys=False), encoding="utf-8")
+    return path
 
 
-# --- trajectory-input runs (recorded by method A) -------------------------------------------------
+def run_config(name: str, scratch: Path, source_root: Path, **sections: Any) -> RunConfig:
+    path = TRANSLATE / name
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    raw = {**raw, "scenario": str(scenario_file(source_root, scratch)), "output": {"root": str(scratch)}, **sections}
+    return parse_config(raw, path=path, sha256="replay")
+
+
+def translate(config: RunConfig, translator: Translator) -> MemorySink:
+    scenario = load_scenario(config.scenario_path, limits=config.scenario_limits)
+    sink = MemorySink()
+    summary = translator.run(frame=load_episode(scenario.episode.csv_path), scenario=scenario, config=config, sink=sink)
+    if summary.status != "completed":
+        raise RuntimeError(f"replay run ended {summary.status}: {summary.error}")
+    return sink
+
+
+# --- trajectory input -----------------------------------------------------------------------------
+
+
+@dataclass
+class RecordedIntentModel:
+    """Builds the real Responses body and answers with the recorded responses, in order."""
+
+    config: RunConfig
+    responses: list[dict[str, Any]]
+    sent: int = 0
+
+    def request_payload(self, prompt: TranslationPrompt) -> dict[str, Any]:
+        translation = self.config.translation
+        request = build_openai_request(
+            prompt,
+            model=translation.model,
+            reasoning_effort=translation.reasoning_effort,
+            max_output_tokens=translation.max_output_tokens,
+        )
+        return build_responses_body(request)
+
+    def generate(self, prompt: TranslationPrompt) -> IntentModelOutput:
+        line = self.responses[self.sent]
+        self.sent += 1
+        messages = [item for item in line["raw"]["output"] if item.get("type") == "message"]
+        text = messages[0]["content"][0]["text"]
+        return IntentModelOutput(line["model"], line["response_id"], text, line["usage"], line["raw"])
 
 
 def trajectory_run(source_root: Path, run_id: str) -> dict[str, str]:
-    """call_id -> rebuilt request sha256, for every recorded request of one run."""
-    run_dir = source_root / "outputs" / "intent_compare" / run_id
-    record = json.loads((run_dir / "method_a" / "run.json").read_text(encoding="utf-8"))
-    provenance = record["provenance"]
-    config_path = repo_file(provenance["compare_config"]["path"], source_root)
-    config = load_compare(config_path, source_root)
-    frame = load_csv_episode(Path(provenance["episode_csv"]["path"]))
-    requests = read_jsonl(run_dir / "method_a" / "requests.jsonl")
-    settings = load_settings(config, requests[0]["payload"]["max_output_tokens"])
-    cues = read_jsonl(run_dir / "cues_A.jsonl")
-    rebuilt = {}
-    for line in requests:
-        slot = Slot(line["step"], line["aircraft"], None)
-        known = latest_answers(cues, slot.step).get(slot.aircraft)
-        previous = None
-        if known is not None:
-            step, intent, evidence = known
-            previous = PreviousTranslation(
-                f"step{step:03d}_{slot.aircraft}", step, IntentTranslation(intent, tuple(evidence))
-            )
-        body = request_body(prompt_for(build_request(config, frame, slot, previous), settings), config, settings)
-        rebuilt[line["call_id"]] = sha256_text(canonical_json(body))
-    return rebuilt
+    method_dir = source_root / "outputs" / "intent_compare" / run_id / "method_a"
+    recorded = read_jsonl(method_dir / "requests.jsonl")
+    with tempfile.TemporaryDirectory() as scratch:
+        name = f"seed100601-trajectory{CONFIG_SUFFIX[run_id]}.yaml"
+        base = yaml.safe_load((TRANSLATE / name).read_text(encoding="utf-8"))
+        prompt = {"file": str(V1_PROMPT), "vars": base["prompt"]["vars"]}
+        config = run_config(name, Path(scratch), source_root, prompt=prompt, inputs=V1_INPUTS)
+        model = RecordedIntentModel(config, read_jsonl(method_dir / "responses.jsonl"))
+        sink = translate(config, Translator(call=OneShotCall(model, config.prompt, config.answer.limits)))
+    journaled = [sha256_text(canonical_json(line["payload"])) for line in sink.requests]
+    return {line["call_id"]: digest for line, digest in zip(recorded, journaled, strict=False)}
 
 
 def trajectory_recorded(source_root: Path, run_id: str) -> dict[str, str]:
@@ -104,33 +147,7 @@ def trajectory_recorded(source_root: Path, run_id: str) -> dict[str, str]:
     return {line["call_id"]: sha256_text(canonical_json(line["payload"])) for line in lines}
 
 
-# --- policy-input runs (recorded by method B) -----------------------------------------------------
-
-
-@dataclass
-class RecordedBackend:
-    """Serves the recorded replies in order and keeps the history hash of every request."""
-
-    replies: list[dict[str, Any]]
-    model: str = "recorded"
-
-    def __post_init__(self) -> None:
-        self.sent: list[str] = []
-
-    def respond(self, history: tuple[dict, ...]) -> BackendReply:
-        self.sent.append(history_sha256(history))
-        line = self.replies[len(self.sent) - 1]
-        usage = line["usage"]
-        return BackendReply(
-            text=line["text"],
-            output_items=tuple(line["output_items"]),
-            usage=Usage(
-                usage["input_tokens"], usage["output_tokens"], usage["reasoning_tokens"], usage["cached_input_tokens"]
-            ),
-            status=line["status"],
-            response_id=line["response_id"],
-            request_record=line["request"],
-        )
+# --- policy input ---------------------------------------------------------------------------------
 
 
 @dataclass
@@ -144,67 +161,87 @@ class RecordedExecutor:
         return ExecResult(line["out"], line["truncated"], line["err"], line["exit"], line["timed_out"], line["s"])
 
 
-def policy_prepared(source_root: Path, record: dict[str, Any]) -> IntentPrepared:
-    inputs = record["inputs"]
-    compare_path = repo_file(inputs["compare_path"], source_root)
-    config_path = repo_file(inputs["config_path"], source_root)
-    spec_path = repo_file(inputs["spec_path"], source_root)
-    compare = load_compare(compare_path, source_root)
-    config = load_config(config_path, paths.ROOT)
-    episode = load_episode(compare)
-    checkpoint = read_checkpoint(episode.checkpoint_path)
-    spec = load_spec(spec_path)
-    check_against_tensors(spec, checkpoint.tensors, checkpoint.sha256)
-    policy = build_policy(spec, checkpoint.tensors)
-    arrays = episode.arrays
-    trace = trace_episode(policy, arrays["obs"])
-    validation = validate_trace(trace, policy, arrays["logits"], arrays["gru_out"], arrays["actions"], arrays["rnn_in"])
-    sessions = plan_sessions(episode, compare)
-    return IntentPrepared(
-        compare, config, config_path, spec, spec_path, checkpoint, episode, policy, trace, validation, sessions
-    )
+@dataclass
+class RecordedSessions:
+    """Serves every session's recorded replies and sandbox results, session by session, in run order."""
+
+    session_dirs: list[Path]
+    history: list[tuple[str, str]] = field(default_factory=list)  # (session name, history sha256)
+    current: int = -1
+    replies: list[dict[str, Any]] = field(default_factory=list)
+    model: str = "recorded"
+
+    def executor(self, work: Path, weights: Path) -> RecordedExecutor:
+        self.current += 1
+        directory = self.session_dirs[self.current]
+        self.replies = read_jsonl(directory / "transcript.jsonl")
+        tool_calls = directory / "tool_calls.jsonl"
+        return RecordedExecutor(read_jsonl(tool_calls) if tool_calls.exists() else [])
+
+    def respond(self, history: tuple[dict, ...]) -> BackendReply:
+        name = self.session_dirs[self.current].name
+        self.history.append((name, history_sha256(history)))
+        line = self.replies[sum(1 for session, _ in self.history if session == name) - 1]
+        usage = line["usage"]
+        return BackendReply(
+            text=line["text"],
+            output_items=tuple(line["output_items"]),
+            usage=Usage(
+                usage["input_tokens"], usage["output_tokens"], usage["reasoning_tokens"], usage["cached_input_tokens"]
+            ),
+            status=line["status"],
+            response_id=line["response_id"],
+            request_record=line["request"],
+        )
+
+
+@dataclass(frozen=True)
+class PassedPreflight:
+    ok: bool = True
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"ok": True, "replay": "preflight not run (no code is executed)"}
+
+
+def policy_dirs(run_dir: Path) -> list[Path]:
+    return sorted(p for p in (run_dir / "sessions").glob("s[0-9]*_*") if ".aborted-" not in p.name)
 
 
 def policy_run(source_root: Path, run_id: str) -> dict[str, str]:
-    """``<session>/message`` and ``<session>/turn-NN`` -> rebuilt sha256, for every recorded session."""
     run_dir = source_root / "outputs" / "weightreading" / "intent" / "runs" / run_id
-    prepared = policy_prepared(source_root, json.loads((run_dir / "run.json").read_text(encoding="utf-8")))
-    cues = read_jsonl(source_root / "outputs" / "intent_compare" / run_id / "cues_B.jsonl")
-    rebuilt = {}
-    for planned in prepared.sessions:
-        if planned.skipped:
-            continue
-        known = latest_answers(cues, planned.step).get(planned.aircraft)
-        previous = None if known is None else PolicyPrevious(known[0], IntentAnswer(known[1], tuple(known[2])))
-        message = message_for(prepared, planned, previous)
-        rebuilt[f"{planned.name}/message"] = sha256_text(message)
-        session_dir = run_dir / "sessions" / planned.name
-        backend = RecordedBackend(read_jsonl(session_dir / "transcript.jsonl"))
-        tool_calls = session_dir / "tool_calls.jsonl"
-        executor = RecordedExecutor(read_jsonl(tool_calls) if tool_calls.exists() else [])
-        with tempfile.TemporaryDirectory() as scratch:
-            run_session(
-                backend,
-                executor,
-                message,
-                session_limits_for(prepared.config),
-                RunLog(Path(scratch)),
-                parse_intent_reply,
-            )
-        rebuilt.update({f"{planned.name}/turn-{index:02d}": digest for index, digest in enumerate(backend.sent, 1)})
+    record = json.loads((run_dir / "run.json").read_text(encoding="utf-8"))
+    sessions = RecordedSessions(policy_dirs(run_dir))
+    with tempfile.TemporaryDirectory() as scratch:
+        name = f"seed100601-policy{CONFIG_SUFFIX[run_id]}.yaml"
+        base = yaml.safe_load((TRANSLATE / name).read_text(encoding="utf-8"))
+        rollout = Path(record["inputs"]["rollout_path"]).parent
+        config = run_config(name, Path(scratch), source_root, policy={**base["policy"], "rollout_dir": str(rollout)})
+        policy = config.policy
+        material = load_policy_material(policy.rollout_dir, policy.seed, policy.spec, policy.checkpoint)
+        options = {"model": config.translation.model}  # only the history hash is compared
+        call = SessionCall(
+            sessions, options, config.prompt, session_settings(config, material), material, sessions.executor,
+            config.answer.limits, lambda executor, hidden: PassedPreflight(),
+        )  # fmt: skip
+        sink = translate(config, Translator(call=call, policy=material, sessions_dir=Path(scratch) / "sessions"))
+    rebuilt: dict[str, str] = {}
+    for request in sink.requests:
+        message = request["payload"]["input"][0]["content"][0]["text"]
+        rebuilt[f"s{request['step']:04d}_{request['target']['id']}/message"] = sha256_text(message)
+    for index, (session, digest) in enumerate(sessions.history):
+        turn = sum(1 for name, _ in sessions.history[: index + 1] if name == session)
+        rebuilt[f"{session}/turn-{turn:02d}"] = digest
     return rebuilt
 
 
 def policy_recorded(source_root: Path, run_id: str) -> dict[str, str]:
     run_dir = source_root / "outputs" / "weightreading" / "intent" / "runs" / run_id
     recorded = {}
-    for session_json in sorted(run_dir.glob("sessions/s[0-9]*_*/session.json")):
-        if ".aborted-" in session_json.parent.name:
-            continue
-        name = session_json.parent.name
-        recorded[f"{name}/message"] = json.loads(session_json.read_text(encoding="utf-8"))["message_sha256"]
-        for index, line in enumerate(read_jsonl(session_json.parent / "transcript.jsonl"), 1):
-            recorded[f"{name}/turn-{index:02d}"] = line["request"]["input_sha256"]
+    for directory in policy_dirs(run_dir):
+        session = json.loads((directory / "session.json").read_text(encoding="utf-8"))
+        recorded[f"{directory.name}/message"] = session["message_sha256"]
+        for index, line in enumerate(read_jsonl(directory / "transcript.jsonl"), 1):
+            recorded[f"{directory.name}/turn-{index:02d}"] = line["request"]["input_sha256"]
     return recorded
 
 

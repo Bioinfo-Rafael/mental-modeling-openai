@@ -7,7 +7,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from tests.translator.tr_fakes import EPISODE_CSV, WIN01
+from tests.translate.tr_fakes import EPISODE_CSV, WIN01
 from translate.lag.dataset import load_episode
 
 from .eval_fakes import write_translator_run

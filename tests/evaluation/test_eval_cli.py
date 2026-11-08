@@ -19,7 +19,6 @@ import pytest
 
 from evaluation import cli
 from evaluation.rendering import HEADING_TRAJECTORY, WINDOW_BEGIN, WINDOW_END
-from mtd_rl_xavier.translator import cli as translator_cli
 from tests.llm.llm_fakes import (
     APITimeoutError,
     ScriptedResponsesClient,
@@ -27,7 +26,8 @@ from tests.llm.llm_fakes import (
     json_response,
     models_body,
 )
-from tests.translator.tr_fakes import EXAMPLE_SCENARIO, FakeIntentModel, over_tcp, systemone_responder
+from tests.translate.tr_fakes import EXAMPLE_SCENARIO, RUN_CONFIG, FakeIntentModel, over_tcp, systemone_responder
+from translate import cli as translator_cli
 from translate.llm.openai_responses import PROVENANCE_ENV
 
 from .eval_fakes import (
@@ -377,12 +377,23 @@ def test_e2e_real_episode_production_adapters_event_log_judge_preview(
     translator_dir = tmp_path / "translator"
 
     translator_code = translator_cli.main(
-        ["--scenario", str(EXAMPLE_SCENARIO), "--output-root", str(tmp_path), "--run-name", "translator"]
+        [
+            "--config",
+            str(RUN_CONFIG),
+            "--scenario",
+            str(EXAMPLE_SCENARIO),
+            "--output-root",
+            str(tmp_path),
+            "--run-name",
+            "translator",
+        ]
         + ["--execute", "--confirm-paid-api"],
-        detector_client_factory=lambda config: translator_cli.build_system_one_client(
-            over_tcp(config), transport=server.transport
+        factories=translator_cli.Factories(
+            detector_client=lambda config: translator_cli.build_system_one_client(
+                over_tcp(config), transport=server.transport
+            ),
+            openai_client=lambda *, timeout_s: translation_client,
         ),
-        openai_client_factory=lambda *, timeout_s: translation_client,
     )
     judge_factory = RecordingFactory()
     code = cli.main(_args(tmp_path, translator_dir, EXAMPLE_KEY_POINTS), openai_client_factory=judge_factory)

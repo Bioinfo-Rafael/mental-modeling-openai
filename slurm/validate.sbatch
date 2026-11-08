@@ -1,16 +1,16 @@
 #!/bin/bash
 # Offline validation of the core. No mode sends an API request: OPENAI_API_KEY is always unset.
 # MODE (first argument):
-#   subset            pytest of the Translator, LLM, LAG, methods A/B and judge tests
-#   full              the whole core pytest
-#   static            git diff --check, ruff check + format check, bash -n of slurm/, imports from
-#                     outside the repository, and the stale-path grep against its allowlist
-#   golden            request-path manifest, request goldens, the replay of recorded requests, the paid
-#                     assess journal and method B resume against an existing checkout's gitignored
-#                     outputs (SOURCE_ROOT below),
-#                     and the blob IDs of committed results
-#   method-a-preview  a method A preview into job scratch; it must write no requests/responses
-# SOURCE_ROOT (golden, method-a-preview): the checkout whose outputs/ hold the real runs; default
+#   subset             pytest of translate, policy, sandbox, LLM, LAG and judge tests
+#   full               the whole core pytest
+#   static             git diff --check, ruff check + format check, bash -n of slurm/, imports from
+#                      outside the repository, and the stale-path grep against its allowlist
+#   golden             request-path manifest, request goldens, the replay of recorded runs through the
+#                      pipeline and the paid assess journal against an existing checkout's gitignored
+#                      outputs (SOURCE_ROOT below), and the blob IDs of committed results
+#   translate-preview  a preview of every shipped run config into job scratch; none may write
+#                      requests or responses
+# SOURCE_ROOT (golden, translate-preview): the checkout whose outputs/ hold the real runs; default
 # this repository. Set it with --export=ALL,SOURCE_ROOT=<path> to check another checkout read-only.
 #   sbatch slurm/validate.sbatch full
 #SBATCH --partition=151-partition
@@ -34,7 +34,7 @@ golden_value() { "$PY" -c 'import json, sys; print(json.load(open(sys.argv[1]))[
 
 case "$MODE" in
   subset)
-    "$PY" -m pytest -q tests/translator tests/llm tests/lag tests/intent_compare tests/weightreading tests/evaluation
+    "$PY" -m pytest -q tests/translate tests/policy tests/sandbox tests/llm tests/lag tests/evaluation
     ;;
   full)
     "$PY" -m pytest -q
@@ -47,9 +47,8 @@ case "$MODE" in
     for job in slurm/*.sbatch; do bash -n "$job"; done
     (
       cd "$(mktemp -d)"
-      "$PY" -B -c 'import evaluation, translate, mtd_rl_xavier, mtd_rl_xavier.intent_compare, weightreading'
-      for module in evaluation.cli evaluation.assess_cli mtd_rl_xavier.translator.cli \
-          mtd_rl_xavier.intent_compare.method_a_cli weightreading; do
+      "$PY" -B -c 'import evaluation, translate, translate.cli, translate.policy.material'
+      for module in evaluation.cli evaluation.assess_cli evaluation.viewer evaluation.clips translate; do
         "$PY" -B -m "$module" --help >/dev/null
       done
       echo "imports and --help from outside the repository: ok"
@@ -64,16 +63,13 @@ case "$MODE" in
   golden)
     sha256sum -c tests/fixtures/assess-request-path.sha256
     echo "$(golden_value converter_sha256)  tests/fixtures/frozen/to_translator_run_v2.py.txt" | sha256sum -c
-    "$PY" -m pytest -q tests/intent_compare/test_migration_goldens.py tests/evaluation/test_migration_goldens.py \
-      tests/weightreading/test_wr_intent_goldens.py
+    "$PY" -m pytest -q tests/translate/test_request_goldens.py tests/evaluation/test_migration_goldens.py \
+      tests/test_frozen_moves.py
     "$PY" -B scripts/check_request_replay.py --source-root "$SOURCE_ROOT"
     "$PY" -B scripts/check_assess_resume.py \
       --translator-run "$SOURCE_ROOT/outputs/translator/$ASSESS_RUN" \
       --journal "$SOURCE_ROOT/outputs/evaluation/assess/$ASSESS_RUN/judge_requests.jsonl" \
       --expect "$(golden_value paid_assess_request_sha256)"
-    "$PY" -B scripts/check_method_b_resume.py \
-      --runs "$SOURCE_ROOT/outputs/weightreading/intent/runs" --recorded-root "$SOURCE_ROOT"
-    "$PY" -m pytest -q tests/weightreading/test_wr_intent_run.py -k 'resume or inputs'
     # Committed experiment results never change (new ones may be added): no modification, deletion or
     # rename. The pathspecs match by shape only; the core never reads these files.
     git diff --exit-code --no-renames --diff-filter=DMT --stat "$RESULTS_BASE" HEAD -- ':(glob)*/*/results/**'
@@ -82,33 +78,45 @@ case "$MODE" in
          <(git ls-tree -r HEAD | awk '$4 ~ /^[^\/]+\/outputs\// {sub("^[^/]+/outputs/", "outputs/", $4); print $3, $4}')
     echo "golden checks: ok"
     ;;
-  method-a-preview)
+  translate-preview)
     scratch="$(mktemp -d)"
     trap 'status=$?; rm -rf "$scratch"; echo "end=$(date -Is) exit=$status"' EXIT
-    episode="$SOURCE_ROOT/outputs/intent_compare/episode/seed100601"
-    mkdir -p "$scratch/out/episode/seed100601"
-    cp "$episode/seed100601.csv" "$episode/manifest.json" "$scratch/out/episode/seed100601/"
     "$PY" -B - "$scratch" "$SOURCE_ROOT" <<'PY'
 import sys
 from pathlib import Path
 
 import yaml
 
+from translate.cli import main
+
 scratch, source = Path(sys.argv[1]), Path(sys.argv[2])
-raw = yaml.safe_load(Path("configs/intent_compare/compare.yaml").read_text(encoding="utf-8"))
-raw = {**raw, "output_root": str(scratch / "out"), "rollout_dir": str(source / raw["rollout_dir"])}
-(scratch / "compare.yaml").write_text(yaml.safe_dump(raw, allow_unicode=True, sort_keys=False), encoding="utf-8")
+configs = sorted(Path("configs/translate").glob("*.yaml"))
+for config in configs:
+    raw = yaml.safe_load(config.read_text(encoding="utf-8"))
+    scenario_path = Path(raw["scenario"])
+    scenario = yaml.safe_load(scenario_path.read_text(encoding="utf-8"))
+    episode = scenario["episode"]
+    relocated = {}
+    for key in ("csv_path", "video_path"):  # generated outputs/ inputs are read from SOURCE_ROOT
+        value = episode[key]
+        relative = None if value is None else (scenario_path.parent / value).resolve().relative_to(Path.cwd())
+        relocated[key] = None if relative is None else str(source / relative if relative.parts[0] == "outputs" else relative.resolve())
+    scenario_file = scratch / f"{config.stem}.scenario.yaml"
+    scenario_file.write_text(yaml.safe_dump({**scenario, "episode": {**episode, **relocated}}), encoding="utf-8")
+    if raw["policy"] is not None:
+        raw = {**raw, "policy": {**raw["policy"], "rollout_dir": str(source / raw["policy"]["rollout_dir"])}}
+    config_file = scratch / config.name
+    config_file.write_text(yaml.safe_dump({**raw, "output": {"root": str(scratch / "out")}}), encoding="utf-8")
+    code = main(["--config", str(config_file), "--scenario", str(scenario_file), "--run-name", config.stem])
+    if code != 0:
+        sys.exit(f"{config}: preview exited {code}")
+written = sorted(p.name for p in (scratch / "out").rglob("*") if p.name in ("requests.jsonl", "responses.jsonl"))
+if written:
+    sys.exit(f"a preview wrote {written}")
+print(f"previews of {len(configs)} run configs: ok (no requests.jsonl or responses.jsonl)")
 PY
-    (cd "$scratch" && "$PY" -B -m mtd_rl_xavier.intent_compare.method_a_cli --config "$scratch/compare.yaml" \
-      --run-id migration-preview)
-    method_dir="$scratch/out/migration-preview/method_a"
-    test -f "$method_dir/preview/preview.json"
-    test ! -e "$method_dir/requests.jsonl"
-    test ! -e "$method_dir/responses.jsonl"
-    find "$method_dir" -type f | sed "s#$scratch#<scratch>#" | sort
-    echo "method A preview: ok (no requests.jsonl or responses.jsonl)"
     ;;
   *)
-    echo "MODE must be subset, full, static, golden or method-a-preview (got $MODE)" >&2; exit 2
+    echo "MODE must be subset, full, static, golden or translate-preview (got $MODE)" >&2; exit 2
     ;;
 esac

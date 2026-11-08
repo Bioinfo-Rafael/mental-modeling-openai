@@ -32,7 +32,7 @@ from evaluation.rendering import (
     build_judge_request,
 )
 from evaluation.schemas import EventKeyPoints, KeyPoint, load_translator_run
-from tests.translator.tr_fakes import WIN01
+from tests.translate.tr_fakes import WIN01
 from translate import paths
 
 from .eval_fakes import (

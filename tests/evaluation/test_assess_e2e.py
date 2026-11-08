@@ -23,7 +23,6 @@ import pytest
 
 from evaluation import assess_cli, assess_data
 from evaluation.assess_data import canonical_json, load_config, sha256_text
-from mtd_rl_xavier.translator import cli as translator_cli
 from tests.llm.llm_fakes import (
     DumpableResponse,
     ScriptedResponsesClient,
@@ -33,7 +32,16 @@ from tests.llm.llm_fakes import (
     models_body,
     responses_body,
 )
-from tests.translator.tr_fakes import CHANGE, EXAMPLE_SCENARIO, SHORT_LAST_STEP, START, over_tcp, systemone_responder
+from tests.translate.tr_fakes import (
+    CHANGE,
+    EXAMPLE_SCENARIO,
+    RUN_CONFIG,
+    SHORT_LAST_STEP,
+    START,
+    over_tcp,
+    systemone_responder,
+)
+from translate import cli as translator_cli
 from translate import events as translator_schema
 
 from .assess_fakes import find, read_jsonl, verdict_text
@@ -81,13 +89,24 @@ def v2_run(
         guard.install(patch)
         patch.setattr(translator_cli, "load_episode", lambda path: frame)
         patch.setenv("VLLM_API_KEY", "local-test-key")
-        argv = ["--scenario", str(EXAMPLE_SCENARIO), "--output-root", str(root / "translator"), "--run-name", "run1"]
+        argv = [
+            "--config",
+            str(RUN_CONFIG),
+            "--scenario",
+            str(EXAMPLE_SCENARIO),
+            "--output-root",
+            str(root / "translator"),
+            "--run-name",
+            "run1",
+        ]
         code = translator_cli.main(
             [*argv, "--execute", "--confirm-paid-api"],
-            detector_client_factory=lambda config: translator_cli.build_system_one_client(
-                over_tcp(config), transport=server.transport
+            factories=translator_cli.Factories(
+                detector_client=lambda config: translator_cli.build_system_one_client(
+                    over_tcp(config), transport=server.transport
+                ),
+                openai_client=lambda *, timeout_s: client,
             ),
-            openai_client_factory=lambda *, timeout_s: client,
         )
     assert code == 0 and guard.attempts == []
     yield root / "translator" / "run1", frame

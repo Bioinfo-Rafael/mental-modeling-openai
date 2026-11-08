@@ -16,11 +16,8 @@ import yaml
 
 from evaluation.configuration import JudgeConfig, VideoResize, parse_config
 from evaluation.frames import EncodedFrame, FrameSourceError, VideoInfo
-from mtd_rl_xavier.translator.cli import JsonlRunSink
-from mtd_rl_xavier.translator.config import load_scenario
-from mtd_rl_xavier.translator.pipeline import TranslatorSummary
 from tests.llm.llm_fakes import DumpableResponse, ScriptedResponsesClient, message_item, responses_body
-from tests.translator.tr_fakes import (
+from tests.translate.tr_fakes import (
     CHANGE,
     EXAMPLE_SCENARIO,
     WIN01,
@@ -32,8 +29,11 @@ from tests.translator.tr_fakes import (
     with_value,
 )
 from translate import paths
+from translate.cli import JsonlRunSink
 from translate.lag.dataset import last_complete_step
 from translate.lag.rendering import render_detector_compact, render_lag17_jsonl
+from translate.pipeline import TranslatorSummary
+from translate.scenario import load_scenario
 
 JUDGE_CONFIG = paths.ROOT / "src" / "evaluation" / "config" / "judge-text.yaml"
 VIDEO_CONFIG = paths.ROOT / "src" / "evaluation" / "config" / "judge-text-video.yaml"

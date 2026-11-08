@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "mtd-rl-xavier"
 version = "0.1.0"
-description = "Intent translation of RL agents (Translator, comparison methods A and B) and its LLM-as-a-judge evaluation"
+description = "Config-driven intent translation of RL agents (translate) and its LLM-as-a-judge evaluation (evaluation)"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -24,8 +24,8 @@ video = ["av>=17,<20", "Pillow>=12,<14"]
 [dependency-groups]
 dev = ["pytest>=7,<9", "ruff>=0.8", "poethepoet>=0.29"]
 
-# Core only: the Translator library (mtd_rl_xavier), method B (weightreading) and the judge
-# (evaluation). The legacy LLM-Xavier stack is the separate uv project in the workspace directory.
+# Core only: the translation pipeline (translate) and the judges (evaluation). The legacy LLM-Xavier
+# stack is the separate uv project in the workspace directory.
 # The explicit package-dir keeps the editable install from putting all of src/ on sys.path (a .pth entry).
 [tool.setuptools]
 # Subpackages are listed explicitly because `find` would map "" -> src and bring the .pth back;
@@ -34,18 +34,14 @@ packages = [
   "translate",
   "translate.lag",
   "translate.llm",
+  "translate.policy",
+  "translate.sandbox",
   "evaluation",
-  "mtd_rl_xavier",
-  "mtd_rl_xavier.intent_compare",
-  "mtd_rl_xavier.translator",
-  "weightreading",
 ]
 
 [tool.setuptools.package-dir]
 translate = "src/translate"
 evaluation = "src/evaluation"
-mtd_rl_xavier = "src/mtd_rl_xavier"
-weightreading = "src/weightreading"
 
 [tool.setuptools.package-data]
 evaluation = ["README.md", "config/*.yaml", "examples/*"]
@@ -78,5 +74,5 @@ ignore = ["E501"]
 "src/evaluation/assess_data.py" = ["I001"]
 
 [tool.poe.tasks]
-test = { cmd = "pytest", help = "Core tests (Translator, methods A/B, judge)" }
+test = { cmd = "pytest", help = "Core tests (translate, evaluation)" }
 lint = { cmd = "ruff check src tests scripts", help = "Lint both packages, their tests and scripts" }

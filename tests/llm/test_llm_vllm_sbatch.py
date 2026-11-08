@@ -1,4 +1,4 @@
-"""The one-GPU SLURM template ``slurm/translator_vllm.sbatch``: static checks and one offline run.
+"""The one-GPU SLURM template ``slurm/translate_vllm.sbatch``: static checks and one offline run.
 
 Nothing is submitted. The offline run executes the script with ``bash`` (``#SBATCH`` lines are
 comments) from the repository root, with the project interpreter and a fake ``vllm`` that records
@@ -22,8 +22,8 @@ import pytest
 from translate import paths
 from translate.llm import vllm_server
 
-SBATCH = paths.ROOT / "slurm" / "translator_vllm.sbatch"
-DEFAULT_CONFIG = paths.ROOT / "configs" / "translator" / "run.yaml"
+SBATCH = paths.ROOT / "slurm" / "translate_vllm.sbatch"
+DEFAULT_CONFIG = paths.ROOT / "configs" / "translate" / "online.example.yaml"
 DEFAULT_UDS_LINE = "uds_path: /tmp/{user}-vllm/clef-flash.sock"
 REVISION = "fb4417d31c1d0f9e7e77f1141b40aaede7491e00"
 FAKE_VLLM_EXIT = 3
