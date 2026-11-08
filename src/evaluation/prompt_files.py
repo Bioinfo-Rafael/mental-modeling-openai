@@ -8,7 +8,8 @@ A prompt file (``configs/evaluation/prompts/*.yaml``) holds:
 - ``blocks``: how each list or optional piece of material becomes text (item template, joiner,
   text when empty, ...).
 
-Templates use ``str.format`` syntax (``{name}``; literal braces are doubled). Each judge declares
+Templates use ``str.format`` syntax with bare fields only (``{name}``: no format spec, conversion,
+index or attribute, which could cut the material short; literal braces are doubled). Each judge declares
 the texts and blocks it reads and the fields each template may use (``PromptSpec`` below); the
 loader checks exact keys and every field when the judge config loads, so a typo fails before
 anything is rendered or sent. Free texts (instructions, alarms, questions, intents, evidence, key
@@ -35,14 +36,23 @@ class JudgePromptError(ValueError):
 
 
 def placeholders(template: str) -> set[str]:
-    """Base names of the ``{name}`` fields of a ``str.format`` template."""
+    """Names of the ``{name}`` fields of a template; every field must be a bare name."""
     try:
-        fields = [name for _, name, _, _ in string.Formatter().parse(template) if name is not None]
+        fields = [(name, spec, conversion) for _, name, spec, conversion in string.Formatter().parse(template)]
     except ValueError as exc:
         raise JudgePromptError(f"malformed template: {exc}") from None
-    if any(not name for name in fields):
-        raise JudgePromptError("a template has an empty {} field; name every value")
-    return {name.split(".")[0].split("[")[0] for name in fields}
+    names = set()
+    for name, spec, conversion in fields:
+        if name is None:
+            continue
+        if not name:
+            raise JudgePromptError("a template has an empty {} field; name every value")
+        if not name.isidentifier() or spec or conversion is not None:
+            raise JudgePromptError(
+                f"field {{{name}}} must be a bare name (no format spec, conversion, index or attribute)"
+            )
+        names.add(name)
+    return names
 
 
 def fill(template: str, values: Mapping[str, object]) -> str:

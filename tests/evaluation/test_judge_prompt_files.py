@@ -106,6 +106,10 @@ def test_the_default_key_point_prompt_calls_the_trajectory_human_visible() -> No
         ('    item: "- step {step}: {text}"', '    item: "- step {stepp}: {text}"', "blocks.alarms.item uses unknown"),
         ('    item: "- step {step}: {text}"', '    item: "- step {}: {text}"', "name every value"),
         ('    item: "- step {step}: {text}"', '    item: "- step {step: {text}"', "malformed template"),
+        ("    {trajectory}\n", "    {trajectory:.1}\n", "must be a bare name"),  # would cut the material
+        ("Intent: {intent}", "Intent: {intent[0]}", "must be a bare name"),
+        ("Intent: {intent}", "Intent: {intent!r}", "must be a bare name"),
+        ('    item: "- step {step}: {text}"', '    item: "- step {step.real}: {text}"', "must be a bare name"),
         ('    no_later: "- none"\n', "", "blocks.future must have exactly"),
         ('    empty: "- none"\n', '    empty: "- none"\n    extra: ""\n', "must have exactly"),
         ("blocks:\n", "blocks:\n  extra_block: {item: x}\n", "blocks must have exactly"),
