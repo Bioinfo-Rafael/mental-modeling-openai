@@ -43,6 +43,19 @@ def test_preset_triggers_with_points_projects_exact_targets_and_request_source()
     }
 
 
+def test_preset_request_point_at_a_late_first_instruction_is_that_instruction() -> None:
+    scenario = make_scenario([instruction("a1", 0, "aircraft", "A0100"), instruction("t1", 5, "team", "A")])
+
+    found = preset_triggers(scenario, (PresetPoint(5, "request", (TEAM,)),))
+
+    assert found[(5, TEAM)][0].to_json() == {
+        "kind": "request",
+        "source": "instruction",
+        "reference_id": "t1",
+        "probability": None,
+    }
+
+
 def test_preset_request_point_without_scenario_request_raises_pipeline_error() -> None:
     scenario = make_scenario([instruction("a1", 0, "aircraft", "A0100")])
 

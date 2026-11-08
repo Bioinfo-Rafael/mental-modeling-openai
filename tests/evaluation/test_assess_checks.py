@@ -166,6 +166,8 @@ def test_the_default_rubric_words_the_2026_11_09_point_definitions() -> None:
     assert "計画どおりの進行" in criteria["correctness.change_cause"].levels["1"]  # a planned tactic is no cause
     for criterion_id in QUESTION_ONLY:
         assert "指示による要求点" in criteria[criterion_id].not_applicable
+    unknown = criteria["correctness.unknown_not_asserted"].levels  # asked at every request, with or without a question
+    assert all("質問が無ければ主な意図" in unknown[level] for level in ("3", "1"))
     relation = criteria["elements.instruction_relation"]  # a start may have no instruction in effect
     assert relation.conditional and "none" in relation.not_applicable
     assert sorted(config.triggers) == [3]  # schema 2 runs: assess-legacy.yaml only

@@ -290,7 +290,7 @@ Trajectory window: steps <a>-<b>, 0.2 s per step, one JSON line per step, newest
 
 One JSON object per line, in emission order. Four record types only. `requests.jsonl` and
 `responses.jsonl` records carry the same `schema_version`. Schema 3 (2026-11-08) has three trigger
-kinds; schema 2 runs (kinds `initial`, `start`, `change`, `request`, where `initial` was the first
+kinds, with the meanings of 2026-11-09 (no schema 3 run was written before them); schema 2 runs (kinds `initial`, `start`, `change`, `request`, where `initial` was the first
 instruction and `start` a detector label) stay readable by the judges through an explicit table
 (`src/evaluation/trigger_kinds.py`). A v1 run is not accepted.
 Every record has:

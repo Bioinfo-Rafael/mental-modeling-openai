@@ -30,6 +30,7 @@ from translate.detector import (
 from translate.events import (
     TRIGGER_REQUEST,
     TRIGGER_START,
+    Instruction,
     IntentTranslation,
     PreviousTranslation,
     Scenario,
@@ -64,6 +65,13 @@ def _detector(config: RunConfig) -> DetectorConfig:
     return config.detector
 
 
+def _late_first_instruction(scenario: Scenario, target: TargetRef) -> Instruction | None:
+    """The target's first instruction when it arrives after the episode start (a request point)."""
+    own = [item for item in scenario.instructions if item.target == target]
+    first = min(own, key=lambda item: (item.issue_step, item.instruction_id), default=None)
+    return first if first is not None and first.issue_step > EPISODE_START_STEP else None
+
+
 def scenario_triggers(scenario: Scenario) -> Triggers:
     """Forced trigger reasons per (step, target): ``start`` at the episode start for every target, and
     ``request`` at each question and at a target's first instruction when it arrives after the start."""
@@ -79,12 +87,9 @@ def scenario_triggers(scenario: Scenario) -> Triggers:
             target,
             TriggerReason(TRIGGER_START, EPISODE_START_SOURCE, EPISODE_START_REFERENCE, None),
         )
-        own = [item for item in scenario.instructions if item.target == target]
-        first = min(own, key=lambda item: (item.issue_step, item.instruction_id), default=None)
-        if first is not None and first.issue_step > EPISODE_START_STEP:
-            add(
-                first.issue_step, target, TriggerReason(TRIGGER_REQUEST, INSTRUCTION_SOURCE, first.instruction_id, None)
-            )
+        late = _late_first_instruction(scenario, target)
+        if late is not None:
+            add(late.issue_step, target, TriggerReason(TRIGGER_REQUEST, INSTRUCTION_SOURCE, late.instruction_id, None))
     for request in scenario.requests:
         for target in request.targets:
             add(request.step, target, TriggerReason(TRIGGER_REQUEST, request.source, request.request_id, None))
@@ -99,9 +104,14 @@ def _preset_reason(scenario: Scenario, point: PresetPoint, target: TargetRef) ->
     if point.kind != TRIGGER_REQUEST:
         return TriggerReason(point.kind, PRESET_SOURCE, f"preset-step-{point.step}", None)
     request = target_request(scenario, target, point.step)
-    if request is None:
-        raise PipelineError(f"preset request point at step {point.step} has no scenario request for {target.label}")
-    return TriggerReason(TRIGGER_REQUEST, request.source, request.request_id, None)
+    if request is not None:
+        return TriggerReason(TRIGGER_REQUEST, request.source, request.request_id, None)
+    late = _late_first_instruction(scenario, target)
+    if late is not None and late.issue_step == point.step:
+        return TriggerReason(TRIGGER_REQUEST, INSTRUCTION_SOURCE, late.instruction_id, None)
+    raise PipelineError(
+        f"preset request point at step {point.step} has no scenario request or late first instruction for {target.label}"
+    )
 
 
 def preset_triggers(scenario: Scenario, points: tuple[PresetPoint, ...]) -> Triggers:
