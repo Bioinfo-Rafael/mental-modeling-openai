@@ -5,8 +5,9 @@
 #   full              the whole core pytest
 #   static            git diff --check, ruff check + format check, bash -n of slurm/, imports from
 #                     outside the repository, and the stale-path grep against its allowlist
-#   golden            request-path manifest, request goldens, the paid assess journal and method B
-#                     resume against an existing checkout's gitignored outputs (SOURCE_ROOT below),
+#   golden            request-path manifest, request goldens, the replay of recorded requests, the paid
+#                     assess journal and method B resume against an existing checkout's gitignored
+#                     outputs (SOURCE_ROOT below),
 #                     and the blob IDs of committed results
 #   method-a-preview  a method A preview into job scratch; it must write no requests/responses
 # SOURCE_ROOT (golden, method-a-preview): the checkout whose outputs/ hold the real runs; default
@@ -63,7 +64,9 @@ case "$MODE" in
   golden)
     sha256sum -c tests/fixtures/assess-request-path.sha256
     echo "$(golden_value converter_sha256)  src/mtd_rl_xavier/intent_compare/to_translator_run.py" | sha256sum -c
-    "$PY" -m pytest -q tests/intent_compare/test_migration_goldens.py tests/evaluation/test_migration_goldens.py
+    "$PY" -m pytest -q tests/intent_compare/test_migration_goldens.py tests/evaluation/test_migration_goldens.py \
+      tests/weightreading/test_wr_intent_goldens.py
+    "$PY" -B scripts/check_request_replay.py --source-root "$SOURCE_ROOT"
     "$PY" -B scripts/check_assess_resume.py \
       --translator-run "$SOURCE_ROOT/outputs/translator/$ASSESS_RUN" \
       --journal "$SOURCE_ROOT/outputs/evaluation/assess/$ASSESS_RUN/judge_requests.jsonl" \
