@@ -8,17 +8,27 @@
 # The judge sees the same material for every Translator method; its TRAJECTORY block is the
 # human-visible telemetry up to t, not necessarily what the Translator read. Judged runs of the
 # 2026-11-05 assessment resume only with configs/evaluation/assess-legacy.yaml.
-schema_version: 3                # 2: per-criterion level anchors (D65); 3: the prompt file below
-rubric_version: pilot-2          # bump whenever you edit criteria, anchors or scale wording below. Ratings
-                                 # and judge results carry it; the report compares one version at a time.
+schema_version: 3                # 2: per-criterion level anchors (D65); 3: the prompt file and triggers below
+rubric_version: pilot-3          # bump whenever you edit criteria, anchors, scale wording or triggers below.
+                                 # Ratings and judge results carry it; the report compares one version at a time.
+                                 # pilot-3: the three trigger kinds (the detector's start merged into change).
 prompt: configs/evaluation/prompts/assess-judge-v3.yaml   # every word of the judge request (repo-relative)
+triggers:                        # trigger kind of an event -> the point kind whose criteria rate it, per Translator
+                                 # event schema version; a run of an unlisted version fails to load
+  - event_schema_version: 3      # start = first instruction (or a preset start), change = clef-flash, request
+    point_kinds: {start: start, change: change, request: request}
+    forced: [start]              # the forced first translation: its start-only timing is not_evaluated
+  - event_schema_version: 2      # runs written before 2026-11-08: initial was the first instruction, and the
+                                 # detector's start label is part of change now
+    point_kinds: {initial: start, start: change, change: change, request: request}
+    forced: [initial]
 
 timing:                          # machine measurements (evaluator "machine"); never merged with human/judge timing
   request_deadline_s: 3.0        # D55. 要求点: processing_s <= this passes. null => processing_s reported, no verdict
   min_question_interval_s: 10.0  # D55. Requests of one target closer than this => protocol warning. null => intervals reported, no check
   start_min_lead_steps: null     # 開始点: explanation >= N steps before the annotated action_onset_step. null => lead reported only
   change_max_delay_steps: null   # 変化点 "in time": delay <= N steps after the annotated point. null => delay reported only
-  max_events_per_segment: null   # "too many": same-kind detector events in one annotated segment. null => counts only
+  max_events_per_segment: null   # "too many": same-kind events in one annotated segment. null => counts only
   max_utterances_per_target: null  # translation events per target in one run. null => counts only
 
 future_evidence:                 # evaluation input only (start/change events); never shown to the Translator
@@ -127,7 +137,7 @@ criteria:   # judge and humans rate every criterion of an event's point kinds (e
         "2": 「バランスよく」「最適に」など、何を重視するかも行動の対比も無い語だけがある
         "1": 重視点に触れていない
       not_applicable: ALARMS も INSTRUCTIONS IN EFFECT も none で、WINDOW に同時に別々の対応を求める二つ以上の相手・事象が無い（例：生存している敵が 1 機だけで警報も無い）
-  start:                         # 開始点 (also the forced first translation, trigger "initial")
+  start:                         # 開始点: the forced first translation of a target (its first instruction)
     - id: correctness.start_plan
       reference: observable_records
       text: これから何を、何のためにするかが説明されているか
@@ -183,7 +193,7 @@ criteria:   # judge and humans rate every criterion of an event's point kinds (e
         "3": 四点のうちちょうど一点が欠けており、記録と食い違わない
         "2": 二点以上が欠けている、または場面に固有の内容が無い
         "1": 危険を安全と述べる、無い指示の反映を主張するなど、記録と食い違い判断を誤らせる記述がある
-  change:                        # 変化点
+  change:                        # 変化点: the clef-flash detector's change (a new or changed tactic, any cause)
     - id: correctness.change_cause
       reference: observable_records
       text: 何が起きたかが警報・指示・観測の記録と一致するか

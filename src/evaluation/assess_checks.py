@@ -30,13 +30,14 @@ from .assess_data import (
     RECORD_TRANSLATION_EVENT,
     STATUS_EVALUATED,
     STATUS_NOT_EVALUATED,
-    TRIGGER_INITIAL,
     Annotation,
     AssessConfig,
     ReferencePoint,
     TranslatorRun,
     canonical_json,
+    is_forced,
     is_int,
+    point_kind,
     point_kinds,
     sha256_text,
     strict_json_loads,
@@ -287,7 +288,7 @@ def invalid_targets(checks: tuple[CallCheck, ...]) -> frozenset[tuple[str, str]]
 class PointMatch:
     point: ReferencePoint
     segment_end: int  # exclusive
-    forced: bool  # the point lies at the target's forced initial step
+    forced: bool  # the point lies at the step of the target's forced first translation
     events: tuple[dict[str, Any], ...]  # same-kind detector events inside the segment, in step order
 
     @property
@@ -295,35 +296,45 @@ class PointMatch:
         return self.events[0] if self.events else None
 
 
-def kind_events(run: TranslatorRun, target: tuple[str, str], trigger_kind: str) -> list[dict[str, Any]]:
-    """Translation events of the target with a reason of this trigger kind, in log order."""
+def kind_events(
+    run: TranslatorRun, config: AssessConfig, target: tuple[str, str], kind: str, *, forced: bool = False
+) -> list[dict[str, Any]]:
+    """Translation events of the target with a reason of this point kind, in log order: the forced
+    first-translation reasons (``forced=True``) or every other one (detector, request, preset)."""
     return [
         event
         for event in run.events
-        if target_key(event["target"]) == target and any(r["kind"] == trigger_kind for r in event["trigger_reasons"])
+        if target_key(event["target"]) == target
+        and any(
+            point_kind(r, event, config) == kind and is_forced(r, event, config) == forced
+            for r in event["trigger_reasons"]
+        )
     ]
 
 
-def match_points(annotation: Annotation | None, run: TranslatorRun) -> tuple[PointMatch, ...]:
+def match_points(annotation: Annotation | None, run: TranslatorRun, config: AssessConfig) -> tuple[PointMatch, ...]:
     if annotation is None:
         return ()
     points, matches = annotation.points, []
     for point in sorted(points, key=lambda item: (item.target, item.step)):
         later = [other.step for other in points if other.target == point.target and other.step > point.step]
         end = min([*later, target_end_step(run, point.target)])
-        events = tuple(e for e in kind_events(run, point.target, point.kind) if point.step <= e["step"] < end)
-        initial = kind_events(run, point.target, TRIGGER_INITIAL)
-        forced = bool(initial) and initial[0]["step"] == point.step
+        own = kind_events(run, config, point.target, point.kind)
+        events = tuple(e for e in own if point.step <= e["step"] < end)
+        first = kind_events(run, config, point.target, POINT_START, forced=True)
+        forced = bool(first) and first[0]["step"] == point.step
         matches.append(PointMatch(point, end, forced, events))
     return tuple(matches)
 
 
-def excess_events(run: TranslatorRun, matches: tuple[PointMatch, ...], target: tuple[str, str]) -> dict[str, int]:
-    """Detector start/change events of an annotated target that lie in no segment of their own kind."""
+def excess_events(
+    run: TranslatorRun, config: AssessConfig, matches: tuple[PointMatch, ...], target: tuple[str, str]
+) -> dict[str, int]:
+    """Start/change events of an annotated target (forced ones aside) that lie in no segment of their kind."""
     counts = {}
     for kind in (POINT_START, POINT_CHANGE):
         segments = [(m.point.step, m.segment_end) for m in matches if m.point.target == target and m.point.kind == kind]
-        events = kind_events(run, target, kind)
+        events = kind_events(run, config, target, kind)
         counts[kind] = sum(1 for e in events if not any(a <= e["step"] < b for a, b in segments))
     return counts
 
@@ -416,12 +427,12 @@ def _event_results(context: MachineContext, event: dict[str, Any]) -> list[dict[
             "passed": bool(output["evidence"]) and blank == 0,
         },
     }
-    subject = event_subject(event, context.run)
+    subject = event_subject(event, context.run, point_kinds(event, context.config))
     records = [
         _machine_record(context, event_id, subject, criterion_id, _measured(measurement), event)
         for criterion_id, measurement in elements.items()
     ]
-    if POINT_REQUEST in point_kinds(event):
+    if POINT_REQUEST in point_kinds(event, context.config):
         measurement = {"processing_s": event["processing_s"], "latency_s": context.run.latency_s.get(event_id)}
         outcome = _threshold(
             measurement,
@@ -508,7 +519,7 @@ def _target_results(
     counted = _threshold(
         {"utterances": utterances}, "max_utterances_per_target", limit, lambda value: utterances <= value
     )
-    request_times = sorted(e["time_s"] for e in events if POINT_REQUEST in point_kinds(e))
+    request_times = sorted(e["time_s"] for e in events if POINT_REQUEST in point_kinds(e, context.config))
     records = [
         _machine_record(context, key, _subject(run, target, ()), "timing.utterance_count", counted),
         _machine_record(
@@ -520,7 +531,7 @@ def _target_results(
         ),
     ]
     if any(match.point.target == target for match in matches):
-        counts = excess_events(run, matches, target)
+        counts = excess_events(run, context.config, matches, target)
         subject = _subject(run, target, (POINT_START, POINT_CHANGE))
         records.append(_machine_record(context, key, subject, "timing.excess_events", _measured(counts)))
     return records

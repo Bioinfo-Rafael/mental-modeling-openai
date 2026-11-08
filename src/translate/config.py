@@ -4,7 +4,7 @@ One file per run configuration (``configs/translate/*.yaml``); every key is requ
 unknown keys fail, and there is no default model in code. Sections:
 
 - ``scenario``: the scenario file (repository-relative; the CLI's ``--scenario`` overrides it);
-- ``triggers``: ``online`` (forced ``initial`` / ``request`` + the clef-flash detector every
+- ``triggers``: ``online`` (forced ``start`` / ``request`` + the clef-flash detector every
   ``tick_interval_steps``) or ``preset`` (``points``: steps chosen in advance, each with its kind);
 - ``inputs``: the selected inputs; ``trajectory`` (the window every event records for the judge,
   inserted into the prompt when selected) and ``policy`` (rollout, spec, window) configure them;
@@ -61,7 +61,7 @@ NO_RETRY_POLICY = RetryPolicy(max_retries=0)  # every request is sent once; a 5x
 ON_INVALID_STOP = "stop"
 ON_INVALID_SKIP = "skip"
 ENTITY_SCOPES = ("target_and_opponents",)
-QUESTION_TYPES = ("choice",)  # one choice question over DETECTOR_LABELS (none / start / change)
+QUESTION_TYPES = ("choice",)  # one choice question over DETECTOR_LABELS (none / change)
 TRAJECTORY_RENDERERS = (LAG17_RENDERER,)
 # clef-flash serves at most 16384 tokens; the budget must equal min(16384, --max-model-len).
 MAX_DETECTOR_INPUT_TOKEN_BUDGET = 16384
@@ -172,7 +172,7 @@ class ConfigError(ValueError):
 @dataclass(frozen=True)
 class PresetPoint:
     step: int
-    kind: str  # initial | start | change | request
+    kind: str  # start | change | request
     targets: tuple[TargetRef, ...] | None  # None: every instructed target
 
 

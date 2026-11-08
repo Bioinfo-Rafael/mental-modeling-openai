@@ -6,10 +6,10 @@
 schema_version: 2
 scenario: configs/translate/scenarios/seed100601-neutral.yaml
 triggers:
-  source: preset                    # the steps chosen in advance, each with its kind (initial | start | change | request)
+  source: preset                    # the steps chosen in advance, each with its kind (start | change | request)
   tick_interval_steps: null
   points:                           # kinds are assumptions for the reproduction (the recorded runs had none); edit freely
-    - {step: 45, kind: initial, targets: null}     # null: every instructed target
+    - {step: 45, kind: start, targets: null}       # null: every instructed target
     - {step: 145, kind: change, targets: null}
     - {step: 245, kind: change, targets: null}
     - {step: 315, kind: change, targets: null}

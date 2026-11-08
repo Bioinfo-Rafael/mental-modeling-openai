@@ -1,4 +1,4 @@
-"""Pipeline: initial/tick/trigger rules, precedence, mid-episode targets, windows, death, caps, errors."""
+"""Pipeline: start/tick/trigger rules, precedence, mid-episode targets, windows, death, caps, errors."""
 
 from __future__ import annotations
 
@@ -37,7 +37,6 @@ from .tr_fakes import (
     EXAMPLE_SCENARIO,
     LOSS01,
     NONE,
-    START,
     WIN01,
     Answer,
     FakeDetectionModel,
@@ -87,7 +86,7 @@ def _answer_at(answers: dict[tuple[str, int], Answer]) -> FakeDetectionModel:
 A1 = ("aircraft", "A0100")
 
 
-def test_first_instruction_gives_every_target_an_initial_translation_in_canonical_order(
+def test_first_instruction_gives_every_target_a_start_translation_in_canonical_order(
     frames: dict[str, pd.DataFrame],
 ) -> None:
     scenario = make_scenario([instruction("t1", 0, "team", "A"), instruction("a1", 0, *A1)])
@@ -96,15 +95,15 @@ def test_first_instruction_gives_every_target_an_initial_translation_in_canonica
 
     first, second = sink.of_type("translation_event")[:2]
     assert summary.status == STATUS_COMPLETED
-    assert _translations(sink) == [(0, "aircraft A0100", "initial"), (0, "team A", "initial")]
+    assert _translations(sink) == [(0, "aircraft A0100", "start"), (0, "team A", "start")]
     assert first["event_id"] == "test-scenario:aircraft:A0100:000000"
-    assert first["schema_version"] == 2 and first["input"]["prompt_version"] == "translator-intent-v2"
+    assert first["schema_version"] == 3 and first["input"]["prompt_version"] == "translator-intent-v2"
     assert [i["instruction_id"] for i in first["input"]["instructions_in_effect"]] == ["a1", "t1"]
     assert first["input"]["primary_instruction_id"] == "a1" and second["input"]["primary_instruction_id"] == "t1"
     assert first["input"]["previous_translation"] is None
     assert (first["input"]["alarms"], first["input"]["question"]) == ([], None)
     assert first["trigger_reasons"] == [
-        {"kind": "initial", "source": "first_instruction", "reference_id": "a1", "probability": None}
+        {"kind": "start", "source": "first_instruction", "reference_id": "a1", "probability": None}
     ]
     assert first["time_s"] == 0.0 and first["episode"]["csv_sha256"] == frames[WIN01].attrs["csv_sha256"]
 
@@ -115,7 +114,7 @@ def test_detector_ticks_stay_on_the_fixed_grid(frames: dict[str, pd.DataFrame]) 
     summary, sink = _run(frames[WIN01], scenario)
 
     assert _detector_steps(sink, "aircraft A0100") == list(range(5, 341, 5))
-    assert _translations(sink) == [(0, "aircraft A0100", "initial"), (3, "aircraft A0100", "request")]
+    assert _translations(sink) == [(0, "aircraft A0100", "start"), (3, "aircraft A0100", "request")]
     assert summary.detector.completed == 68 and summary.translation.completed == 2
 
 
@@ -144,8 +143,7 @@ def test_tick_with_coinciding_triggers_gives_one_detector_call_and_one_translati
 @pytest.mark.parametrize(
     ("instructions", "requests", "answer", "step", "expected"),
     [
-        ([], [request("r1", 0, A1)], NONE, 0, ["initial", "request"]),
-        ([], [request("r1", 20, A1)], START, 20, ["start", "request"]),
+        ([], [request("r1", 0, A1)], NONE, 0, ["start", "request"]),
         ([], [request("r1", 20, A1)], CHANGE, 20, ["change", "request"]),
         ([], [request("r1", 20, A1)], NONE, 20, ["request"]),
         ([instruction("a2", 20, *A1)], [request("r1", 20, A1)], NONE, 20, ["request"]),  # D50: no instruction kind
@@ -169,7 +167,7 @@ def test_primary_trigger_precedence(
     assert [reason["kind"] for reason in event["trigger_reasons"]] == expected
 
 
-def test_later_instruction_only_feeds_the_detector_and_a_mid_episode_target_starts_with_initial(
+def test_later_instruction_only_feeds_the_detector_and_a_mid_episode_target_gets_its_start(
     frames: dict[str, pd.DataFrame],
 ) -> None:
     instructions = [
@@ -184,7 +182,7 @@ def test_later_instruction_only_feeds_the_detector_and_a_mid_episode_target_star
     by_key = {(e["step"], e["target"]["id"]): e for e in sink.of_type("translation_event")}
     first_b = by_key[(23, "B")]
     assert sorted(by_key) == [(0, "A"), (0, "A0100"), (23, "B")]  # no translation for the replacement at 20
-    assert first_b["primary_trigger"] == "initial" and first_b["input"]["previous_translation"] is None
+    assert first_b["primary_trigger"] == "start" and first_b["input"]["previous_translation"] is None
     assert first_b["trigger_reasons"][0]["reference_id"] == "tb1"
     assert [i["instruction_id"] for i in first_b["input"]["instructions_in_effect"]] == ["a1", "ta2", "tb1"]
     assert _detector_steps(sink, "team B")[:2] == [25, 30]  # no detector before its first translation
@@ -199,21 +197,16 @@ def test_later_instruction_only_feeds_the_detector_and_a_mid_episode_target_star
     assert [i["instruction_id"] for i in aircraft["input"]["instructions_in_effect"]] == ["a1", "ta2"]  # own + team
 
 
-@pytest.mark.parametrize(("answer", "kind"), [(START, "start"), (CHANGE, "change")])
-def test_detector_start_or_change_triggers_a_translation(
-    frames: dict[str, pd.DataFrame], answer: Answer, kind: str
-) -> None:
-    scenario = make_scenario([instruction("a1", 0, *A1)])
+def test_a_detector_change_triggers_a_translation(frames: dict[str, pd.DataFrame]) -> None:
+    scenario, kind = make_scenario([instruction("a1", 0, *A1)]), "change"
 
-    _, sink = _run(frames[WIN01], scenario, detection=_answer_at({("aircraft A0100", 15): answer}))
+    _, sink = _run(frames[WIN01], scenario, detection=_answer_at({("aircraft A0100", 15): CHANGE}))
 
     call = next(e for e in sink.of_type("detector_call") if e["step"] == 15)
-    assert _translations(sink) == [(0, "aircraft A0100", "initial"), (15, "aircraft A0100", kind)]
+    assert _translations(sink) == [(0, "aircraft A0100", "start"), (15, "aircraft A0100", kind)]
     assert call["output"] == {
         "label": kind,
-        "probabilities": {
-            label: 0.9 if label == kind else pytest.approx(0.05) for label in ("none", "start", "change")
-        },
+        "probabilities": {"none": pytest.approx(0.1), "change": 0.9},  # the detector's two options
         "threshold": 0.65,
         "triggered": True,
     }
@@ -224,11 +217,11 @@ def test_detector_start_or_change_triggers_a_translation(
     assert event["input"]["previous_translation"]["event_id"] == "test-scenario:aircraft:A0100:000000"
 
 
-@pytest.mark.parametrize("answer", [("start", 0.64), ("change", 0.6499), ("none", 1.0), ("none", 0.4)])
+@pytest.mark.parametrize("answer", [("change", 0.64), ("change", 0.6499), ("none", 1.0), ("none", 0.4)])
 def test_none_or_a_label_below_the_threshold_triggers_nothing(frames: dict[str, pd.DataFrame], answer: Answer) -> None:
     _, sink = _run(frames[WIN01], make_scenario([instruction("a1", 0, *A1)]), detection=FakeDetectionModel(answer))
 
-    assert _translations(sink) == [(0, "aircraft A0100", "initial")]
+    assert _translations(sink) == [(0, "aircraft A0100", "start")]
     assert all(
         e["output"]["triggered"] is False and e["output"]["label"] == answer[0] for e in sink.of_type("detector_call")
     )
@@ -307,7 +300,7 @@ def test_instruction_for_an_already_down_target_is_suppressed(frames: dict[str, 
     (closed,) = sink.of_type("target_closed")
     (suppressed,) = sink.of_type("trigger_suppressed")
     assert (closed["step"], closed["down_step"], closed["last_event_id"]) == (150, 137, None)
-    assert (suppressed["step"], suppressed["primary_trigger"]) == (150, "initial")
+    assert (suppressed["step"], suppressed["primary_trigger"]) == (150, "start")
     assert all(e["target"]["id"] != "B0200" for e in sink.of_type("translation_event"))
 
 
@@ -346,7 +339,7 @@ def test_translation_cap_at_cap_minus_one_cap_and_cap_plus_one(
     summary, sink = _run(
         frames[WIN01],
         make_scenario([instruction("a1", 0, *A1)]),
-        detection=FakeDetectionModel(("start", 1.0)),
+        detection=FakeDetectionModel(("change", 1.0)),
         intent=intent,
         limits__max_translation_calls=cap,
     )
@@ -433,7 +426,7 @@ def test_invalid_translation_output_fails_after_logging_the_raw_response(frames:
     assert sink.of_type("translation_event") == []
 
 
-@pytest.mark.parametrize("answer", [NONE, ("start", 1.0), ("change", 1.0)])
+@pytest.mark.parametrize("answer", [NONE, ("change", 1.0)])
 def test_plan_schedule_matches_the_run(frames: dict[str, pd.DataFrame], answer: Answer) -> None:
     instructions = [instruction("a2", 0, "aircraft", "A0200"), instruction("tb", 30, "team", "B")]
     requests = [request("r1", 7, ("aircraft", "A0200")), request("r2", 250, ("aircraft", "A0200"))]
@@ -603,7 +596,7 @@ def test_no_payload_contains_information_after_its_step(short_frame: pd.DataFram
     """User minimum test 1: real renderers, real 13_LAG rows, the v2 example scenario, both layers."""
     config = make_config()
     scenario = load_scenario(EXAMPLE_SCENARIO, limits=config.scenario_limits)
-    answers = {("aircraft A0100", 5): START, ("aircraft A0100", 15): CHANGE, ("team A", 20): CHANGE}
+    answers = {("aircraft A0100", 5): CHANGE, ("aircraft A0100", 15): CHANGE, ("team A", 20): CHANGE}
     translator = make_translator(
         FakeDetectionModel(answers_at(answers)),
         config=config,

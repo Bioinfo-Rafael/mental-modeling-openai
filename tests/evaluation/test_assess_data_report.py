@@ -12,6 +12,7 @@ import pytest
 
 from evaluation import assess_cli
 from evaluation.assess_data import (
+    DEFAULT_CONFIG,
     REASON_INPUT_INVALID,
     STATUS_EVALUATED,
     STATUS_NOT_EVALUATED,
@@ -167,7 +168,8 @@ def test_missing_ratings_are_no_human_rating_and_forced_timing_is_marked(
 def test_example_ratings_import_cleanly(tmp_path: Path) -> None:
     run_dir = make_run(tmp_path)
 
-    assert _cli(tmp_path, "import-ratings", run_dir, "--ratings", str(EXAMPLES / "human-ratings.example.jsonl")) == 0
+    ratings = str(EXAMPLES / "human-ratings.example.jsonl")  # the examples follow the default rubric
+    assert _cli(tmp_path, "import-ratings", run_dir, "--ratings", ratings, "--config", str(DEFAULT_CONFIG)) == 0
 
     human = read_jsonl(tmp_path / "out" / "run" / "human_results.jsonl")
     reasons = {r["evaluator"].get("rating_id"): r["reason"] for r in human}
@@ -179,7 +181,7 @@ def test_example_ratings_import_cleanly(tmp_path: Path) -> None:
 def test_example_annotation_loads(tmp_path: Path) -> None:
     annotation = load_annotation(EXAMPLES / "assess-points.example.yaml", load_run(make_run(tmp_path)))
 
-    assert [p.kind for p in annotation.points] == ["start", "start", "change"]
+    assert [p.kind for p in annotation.points] == ["start", "change", "change"]
 
 
 @pytest.mark.parametrize(

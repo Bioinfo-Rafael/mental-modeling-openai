@@ -152,8 +152,19 @@ def assess_hashes(root: Path) -> dict[str, list[str]]:
 # --- tests ------------------------------------------------------------------------------------------
 
 
+# The example run's trigger kinds, event schema 2 -> 3 (it has no detector start, which schema 3 merged
+# into change): the first-instruction trigger was renamed, nothing else changed.
+V2_TO_V3_KINDS = {"initial": "start", "change": "change", "request": "request"}
+
+
+def as_schema_3(event: dict[str, Any]) -> dict[str, Any]:
+    reasons = [{**reason, "kind": V2_TO_V3_KINDS[reason["kind"]]} for reason in event["trigger_reasons"]]
+    primary = V2_TO_V3_KINDS[event["primary_trigger"]]
+    return {**event, "schema_version": 3, "primary_trigger": primary, "trigger_reasons": reasons}
+
+
 def test_frozen_run_is_the_example_run_of_the_fixture(translator_run: Path) -> None:
-    """The frozen v2 events are the translation events the example run had when the goldens were taken."""
+    """The frozen v2 events are the example run's translation events, but for the trigger-kind rename."""
     generated = load_translator_run(translator_run).translation_events
     frozen = load_translator_run(FROZEN_RUN).translation_events
 
@@ -161,7 +172,8 @@ def test_frozen_run_is_the_example_run_of_the_fixture(translator_run: Path) -> N
         return {key: value for key, value in event.items() if key not in ("sequence", "processing_s")}
 
     assert [event["event_id"] for event in frozen] == list(EVENT_IDS)
-    assert [strip(event) for event in frozen] == [strip(event) for event in generated]
+    assert {event["schema_version"] for event in frozen} == {2} and {e["schema_version"] for e in generated} == {3}
+    assert [strip(as_schema_3(event)) for event in frozen] == [strip(event) for event in generated]
 
 
 def test_key_point_judge_request_bytes_are_unchanged() -> None:

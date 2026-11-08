@@ -21,7 +21,7 @@ def test_preset_triggers_with_points_projects_exact_targets_and_request_source()
         [request("r1", 10, ("aircraft", "A0100"), source="human")],
     )
     points = (
-        PresetPoint(0, "initial", (AIRCRAFT,)),
+        PresetPoint(0, "start", (AIRCRAFT,)),
         PresetPoint(10, "request", (AIRCRAFT,)),
         PresetPoint(20, "change", None),
     )
@@ -57,4 +57,4 @@ def test_preset_triggers_with_uncovered_scenario_request_raises_pipeline_error()
     )
 
     with pytest.raises(PipelineError, match="scenario request r1 is not a preset request point"):
-        preset_triggers(scenario, (PresetPoint(0, "initial", (AIRCRAFT,)),))
+        preset_triggers(scenario, (PresetPoint(0, "start", (AIRCRAFT,)),))

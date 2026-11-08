@@ -115,7 +115,7 @@ class _RetriedModel(FakeIntentModel):
 
 def test_pipeline_writes_the_retried_attempts_into_the_response_line(short_frame: pd.DataFrame) -> None:
     config = make_config(triggers__source="preset", triggers__tick_interval_steps=None,
-                         triggers__points=[{"step": 0, "kind": "initial", "targets": None}], detector=None)  # fmt: skip
+                         triggers__points=[{"step": 0, "kind": "start", "targets": None}], detector=None)  # fmt: skip
     journal, sink = RetryJournal(), MemorySink()
     translator = Translator(
         call=OneShotCall(_RetriedModel(journal), config.prompt, config.answer.limits),

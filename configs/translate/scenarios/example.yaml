@@ -6,7 +6,7 @@
 # target to have an instruction at or before its step; texts within the run config's
 # scenario_limits; the alias is lowercased and split into alphanumeric tokens: no token may be an
 # outcome word (win, loss, lose, won, lost), and no token may be shared with the episode id.
-# A target is translated at its first instruction (trigger "initial") and at each request; otherwise
+# A target is translated at its first instruction (trigger "start") and at each request; otherwise
 # only when the detector reports "start" or "change". A later instruction (team A at step 20) only
 # reaches the detector state. Change-point references for evaluation live in the evaluation
 # annotation, never here.

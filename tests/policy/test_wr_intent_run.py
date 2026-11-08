@@ -85,7 +85,7 @@ def policy_harness(small_files: tuple[Path, Path], tmp_path: Path) -> PolicyHarn
         "source": "preset",
         "tick_interval_steps": None,
         "points": [
-            {"step": 3, "kind": "initial", "targets": None},
+            {"step": 3, "kind": "start", "targets": None},
             {"step": 6, "kind": "change", "targets": None},
             {"step": 7, "kind": "change", "targets": [{"kind": "aircraft", "id": "A0100"}]},
         ],

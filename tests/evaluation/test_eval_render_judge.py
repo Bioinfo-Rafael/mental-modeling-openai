@@ -202,7 +202,7 @@ def test_timestamps_cover_only_this_targets_earlier_translations(events: tuple[d
     text = _user_text(_request_body(events, A1_CHANGE, make_judge_config()))
 
     block = text[text.index(HEADING_TIMESTAMPS) : text.index(HEADING_TRAJECTORY)]
-    assert "- step 0 (0.0 s): initial\n- step 10 (2.0 s): request\n" in block
+    assert "- step 0 (0.0 s): start\n- step 10 (2.0 s): request\n" in block
     assert "This translation: step 15 (3.0 s)." in block
     assert "- change (source detector, probability 0.9)" in block
     assert "step 20" not in block  # the team's later event and anything after this one are never shown

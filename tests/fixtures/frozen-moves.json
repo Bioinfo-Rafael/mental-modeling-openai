@@ -39,10 +39,6 @@
     ]
   ],
   "files": {
-    "src/evaluation/assess_store.py": {
-      "pinned_path": "evaluation/assess_store.py",
-      "pinned_sha256": "ad2b4d48c39ec379c806c5a8940ea281d4c300dff2c5b8da167fd1da96b23078"
-    },
     "src/translate/llm/openai_responses.py": {
       "pinned_path": "src/mtd_rl_xavier/llm/openai_responses.py",
       "pinned_sha256": "f8856661ba5b68ee90bdfed75a4d853c8604ecbea74ba891357fc7ef5af5d716"
@@ -54,10 +50,6 @@
     "src/translate/lag/rendering.py": {
       "pinned_path": "src/mtd_rl_xavier/lag/rendering.py",
       "pinned_sha256": "effc44bcb53efc801ccd8641889fb7fee8563064ba8129eea424f397b8181a17"
-    },
-    "src/translate/events.py": {
-      "pinned_path": "src/mtd_rl_xavier/translator/schema.py",
-      "pinned_sha256": "5c1d49078a1b39421b59660716a62978581cd971ebfa9336264f782c946e89ae"
     }
   },
   "pinned_without_move": {
@@ -67,6 +59,9 @@
     "src/evaluation/assess_data.py": "loads the prompt file named by the config",
     "src/evaluation/assess_cli.py": "records the prompt file and refuses to re-judge an event with other request bytes",
     "src/evaluation/prompt_files.py": "loads and checks the prompt file and fills its templates",
-    "src/evaluation/strict_yaml.py": "parses the prompt file and the judge config (duplicate keys rejected)"
+    "src/evaluation/strict_yaml.py": "parses the prompt file and the judge config (duplicate keys rejected)",
+    "src/evaluation/assess_store.py": "event_subject takes the event's point kinds from the caller (the judge config maps trigger kinds)",
+    "src/translate/events.py": "event schema 3: three trigger kinds (start, change, request); the paid run stays schema 2 and is read through the legacy config",
+    "src/evaluation/trigger_kinds.py": "the trigger kinds of event schemas 2 and 3 that the run loader checks"
   }
 }

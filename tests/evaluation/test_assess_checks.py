@@ -18,6 +18,7 @@ from evaluation.assess_checks import (
     match_points,
 )
 from evaluation.assess_data import (
+    DEFAULT_CONFIG,
     REASON_INPUT_INVALID,
     STATUS_EVALUATED,
     STATUS_NOT_EVALUATED,
@@ -68,7 +69,7 @@ def _machine(run_dir: Path, *, points: Path | None = None, **config_overrides: o
     run, config = load_run(run_dir), make_config(**config_overrides)
     checks = check_generation_inputs(run, config)
     annotation = load_annotation(points, run) if points else None
-    return machine_results(run, config, match_points(annotation, run), checks, "batch-1")
+    return machine_results(run, config, match_points(annotation, run, config), checks, "batch-1")
 
 
 # --- config ---------------------------------------------------------------------------------------
@@ -119,12 +120,13 @@ def test_correctness_criterion_without_observable_reference_is_rejected() -> Non
 LEVELS = {value: f"レベル{value}の条件" for value in ("1", "2", "3", "4", "5")}
 
 
-def test_every_committed_criterion_has_one_non_blank_anchor_per_level() -> None:
-    config = load_config()
+@pytest.mark.parametrize(("name", "rubric"), [("assess.yaml", "pilot-3"), ("assess-legacy.yaml", "pilot-2")])
+def test_every_committed_criterion_has_one_non_blank_anchor_per_level(name: str, rubric: str) -> None:
+    config = load_config(DEFAULT_CONFIG.parent / name)
 
     criteria = {c.criterion_id: c for items in config.criteria.values() for c in items}
 
-    assert config.rubric_version == "pilot-2" and config.scale.values == ("1", "2", "3", "4", "5")
+    assert config.rubric_version == rubric and config.scale.values == ("1", "2", "3", "4", "5")
     assert len(criteria) == 24
     for criterion in criteria.values():
         assert list(criterion.levels) == ["1", "2", "3", "4", "5"], criterion.criterion_id

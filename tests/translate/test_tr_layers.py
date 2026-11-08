@@ -122,9 +122,6 @@ def test_detector_state_without_messages_says_none() -> None:
 @pytest.mark.parametrize(
     ("label", "probability", "triggered"),
     [
-        ("start", 0.64, False),
-        ("start", 0.65, True),
-        ("start", 0.66, True),
         ("change", 0.64, False),
         ("change", 0.65, True),
         ("change", 0.66, True),
@@ -194,7 +191,7 @@ def _system_one_client(monkeypatch: pytest.MonkeyPatch, outcomes: list[Any]) -> 
 
 
 def test_system_one_adapter_sends_exactly_the_logged_payload(monkeypatch: pytest.MonkeyPatch) -> None:
-    probabilities = {"change": 0.72, "none": 0.2, "start": 0.08}  # server order differs from the option order
+    probabilities = {"change": 0.72, "none": 0.28}  # server order differs from the option order
     body = systemone_body({"point_kind": choice_answer("change", probabilities)}, vllm_extras=True)
     client, server = _system_one_client(monkeypatch, [json_response(200, body)])
     model = SystemOneDetectionModel(client, question_id="point_kind")
@@ -204,10 +201,10 @@ def test_system_one_adapter_sends_exactly_the_logged_payload(monkeypatch: pytest
 
     assert server.requests[0].body == model.request_payload(state)
     assert server.requests[0].body["state"] == state
-    assert list(server.requests[0].body["questions"]["point_kind"]["criteria"]) == ["none", "start", "change"]
+    assert list(server.requests[0].body["questions"]["point_kind"]["criteria"]) == ["none", "change"]
     assert model.question == {**make_config().detector.question.to_json()}
     assert (reply.label, reply.model, reply.raw) == ("change", "clef-flash", body)
-    assert reply.probabilities == (("none", 0.2), ("start", 0.08), ("change", 0.72))
+    assert reply.probabilities == (("none", 0.28), ("change", 0.72))
     assert reply.usage == {"input_tokens": 500, "output_tokens": 0}
 
 
@@ -245,18 +242,31 @@ def test_system_one_timeout_is_uncertain_and_server_error_keeps_raw(monkeypatch:
 
 @pytest.mark.parametrize(
     ("index", "match"),
-    [(0, "exactly one choice"), (1, "exactly one choice"), (2, "exactly the options"), (3, "question_id")],
+    [
+        (0, "exactly one choice"),
+        (1, "exactly one choice"),
+        (2, "exactly the options"),
+        (3, "question_id"),
+        (4, "exactly the options"),
+    ],
 )
-def test_system_one_adapter_requires_one_choice_question_with_the_three_options(
+def test_system_one_adapter_requires_one_choice_question_with_the_two_options(
     monkeypatch: pytest.MonkeyPatch, index: int, match: str
 ) -> None:
     monkeypatch.setenv(KEY_ENV, "local-test-key")
-    labels = (("none", "n"), ("start", "s"), ("change", "c"))
+    labels = (("none", "n"), ("change", "c"))
     choice = ChoiceQuestion("point_kind", "Pick one.", labels)
-    wrong_options = ChoiceQuestion("point_kind", "Pick one.", (("none", "n"), ("start", "s"), ("other", "o")))
+    wrong_options = ChoiceQuestion("point_kind", "Pick one.", (("none", "n"), ("other", "o")))
     other_id = ChoiceQuestion("other_id", "Pick one.", labels)
+    retired = ChoiceQuestion("point_kind", "Pick one.", (("none", "n"), ("start", "s"), ("change", "c")))
     noul = NoulQuestion("point_kind", "Q", "yes", "no")
-    question_sets = ((noul,), (choice, NoulQuestion("extra", "Q", "yes", "no")), (wrong_options,), (other_id,))
+    question_sets = (
+        (noul,),
+        (choice, NoulQuestion("extra", "Q", "yes", "no")),
+        (wrong_options,),
+        (other_id,),
+        (retired,),  # the three options of event schema 2
+    )
     client = SystemOneClient(
         base_url="http://127.0.0.1:8000",
         uds_path=None,

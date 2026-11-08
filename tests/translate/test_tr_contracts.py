@@ -71,7 +71,7 @@ def test_default_run_yaml_loads_with_explicit_values() -> None:
     assert config.detector.messages_lookback_steps == 25
     assert (LIMITS.max_instruction_chars, LIMITS.max_alarm_chars, LIMITS.max_question_chars) == (300, 200, 200)
     assert (config.detector.question.question_id, config.detector.question.question_type) == ("point_kind", "choice")
-    assert [label for label, _ in config.detector.question.criteria] == ["none", "start", "change"]
+    assert [label for label, _ in config.detector.question.criteria] == ["none", "change"]
     assert config.detector.threshold == 0.65
 
 
@@ -160,9 +160,23 @@ def test_detector_budget_above_serving_cap_is_rejected_and_cap_is_accepted() -> 
     )
 
 
-@pytest.mark.parametrize("label", ["none", "start", "change"])
+@pytest.mark.parametrize("label", ["none", "change"])
 def test_detector_question_needs_every_choice_option(label: str) -> None:
     _config_error(f"detector.question.criteria.{label}", DELETE, "missing")
+
+
+def test_detector_question_rejects_the_retired_start_option() -> None:
+    """Event schema 3: the detector's start merged into change, so a start option is an unknown key."""
+    _config_error("detector.question.criteria.start", "The target begins a new tactic.", r"unknown \['start'\]")
+
+
+@pytest.mark.parametrize("kind", ["initial", "detector"])
+def test_preset_points_accept_only_the_three_trigger_kinds(kind: str) -> None:
+    raw = with_value(run_config_raw(), "triggers", {"source": "preset", "tick_interval_steps": None, "points": []})
+    raw = with_value(raw, "detector", None)
+    points = [{"step": 0, "kind": kind, "targets": None}]
+    with pytest.raises(ConfigError, match=r"must be one of \['start', 'change', 'request'\]"):
+        _parse_config(with_value(raw, "triggers.points", points))
 
 
 @pytest.mark.parametrize("value", ["noul", "score", None])

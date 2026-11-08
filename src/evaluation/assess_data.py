@@ -1,7 +1,8 @@
 """Translator evaluation, 3 time points x 4 aspects: vocabulary, config, Translator run, annotation, criteria.
 
-- The Translator event contract v2 constants are an own copy; ``test_assess_e2e`` checks them
-  against ``translator.schema``.
+- The Translator event contract constants are an own copy; the trigger kinds of each event schema
+  version (2 and 3) come from ``trigger_kinds`` and ``test_assess_e2e`` checks the current one
+  against ``translate.events``. The judge config maps them to point kinds (``triggers``).
 - The judge config (``configs/evaluation/assess*.yaml``), its prompt file, the run files and the
   annotation load strictly: exact keys (``null`` = undecided), JSONL split on ``"\\n"`` only, and a
   repeated JSON or YAML key is an error.
@@ -26,12 +27,10 @@ from translate.events import strict_json_loads
 
 from .configuration import JUDGE_MODEL, read_strict_yaml
 from .prompt_files import ASSESS_PROMPT_SPEC, JudgePrompt, JudgePromptError, load_judge_prompt
+from .trigger_kinds import ALL_TRIGGER_KINDS, EVENT_SCHEMA_VERSIONS, TRIGGER_KINDS
 
-# --- Translator event contract v2 (own copy; see the module docstring) ----------------------------
+# --- Translator event contract v2 and v3 (own copy; see the module docstring) ---------------------
 
-EVENT_SCHEMA_VERSION = 2
-TRIGGER_INITIAL, TRIGGER_START, TRIGGER_CHANGE, TRIGGER_REQUEST = "initial", "start", "change", "request"
-TRIGGER_PRECEDENCE = (TRIGGER_INITIAL, TRIGGER_START, TRIGGER_CHANGE, TRIGGER_REQUEST)
 RECORD_DETECTOR_CALL, RECORD_TRANSLATION_EVENT = "detector_call", "translation_event"
 RECORD_TARGET_CLOSED, RECORD_TRIGGER_SUPPRESSED = "target_closed", "trigger_suppressed"
 RECORD_TYPES = (RECORD_DETECTOR_CALL, RECORD_TRANSLATION_EVENT, RECORD_TARGET_CLOSED, RECORD_TRIGGER_SUPPRESSED)
@@ -43,14 +42,7 @@ SAFE_ID_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}")  # used with f
 # --- evaluation vocabulary ------------------------------------------------------------------------
 
 POINT_START, POINT_CHANGE, POINT_REQUEST = "start", "change", "request"
-POINT_KINDS = (POINT_START, POINT_CHANGE, POINT_REQUEST)
-# 開始点 = the forced "initial" bootstrap or a detector start; 変化点 = detector change; 要求点 = request.
-POINT_KIND_OF_TRIGGER = {
-    TRIGGER_INITIAL: POINT_START,
-    TRIGGER_START: POINT_START,
-    TRIGGER_CHANGE: POINT_CHANGE,
-    TRIGGER_REQUEST: POINT_REQUEST,
-}
+POINT_KINDS = (POINT_START, POINT_CHANGE, POINT_REQUEST)  # 開始点, 変化点, 要求点 (trigger kinds map via config)
 ASPECT_ELEMENTS, ASPECT_CORRECTNESS, ASPECT_TIMING = "elements", "correctness", "timing"
 ASPECTS = (ASPECT_ELEMENTS, ASPECT_CORRECTNESS, ASPECT_TIMING, "contribution")
 ASPECT_OVERALL = "overall"
@@ -60,7 +52,7 @@ EVALUATOR_MACHINE, EVALUATOR_HUMAN, EVALUATOR_JUDGE = "machine", "human", "judge
 STATUS_EVALUATED, STATUS_NOT_EVALUATED = "evaluated", "not_evaluated"
 JUDGEMENT_CANNOT_JUDGE, JUDGEMENT_NOT_APPLICABLE = "cannot_judge", "not_applicable"
 REASON_AGGREGATION_UNSET = "aggregation_unset"  # D54
-REASON_FORCED_TRIGGER = "forced_trigger"  # the start timing of a forced "initial" translation
+REASON_FORCED_TRIGGER = "forced_trigger"  # the start timing of a forced first translation
 REASON_INPUT_INVALID = "generation_input_invalid"  # a leak or error on any call of the target
 RESULT_SCHEMA_VERSION = 1
 RUN_FILES = ("run.json", "events.jsonl", "requests.jsonl", "responses.jsonl")
@@ -203,9 +195,10 @@ def target_key(target: dict[str, Any]) -> tuple[str, str]:
 
 # --- config ---------------------------------------------------------------------------------------
 
-CONFIG_SCHEMA_VERSION = 3  # v2: per-criterion level anchors (D65); v3: the prompt file
+CONFIG_SCHEMA_VERSION = 3  # v2: per-criterion level anchors (D65); v3: the prompt file and the trigger map
 CONFIG_KEYS = {"schema_version", "rubric_version", "timing", "future_evidence", "leakage", "judge"}
-CONFIG_KEYS |= {"open_items", "scale", "criteria", "output", "prompt"}
+CONFIG_KEYS |= {"open_items", "scale", "criteria", "output", "prompt", "triggers"}
+TRIGGER_MAP_KEYS = {"event_schema_version", "point_kinds", "forced"}
 POSITIVE = (lambda value: is_number(value) and value > 0, "a number > 0")
 NON_NEGATIVE = (is_non_negative, "a number >= 0")
 INT_GE_0, INT_GE_1 = (is_count, "an integer >= 0"), (lambda value: is_int(value) and value >= 1, "an integer >= 1")
@@ -293,6 +286,14 @@ class ScaleConfig:
 
 
 @dataclass(frozen=True)
+class TriggerMap:
+    """How the trigger kinds of one event schema version are rated."""
+
+    point_kinds: dict[str, str]  # trigger kind -> point kind whose criteria rate it
+    forced: frozenset[str]  # kinds of the forced first translation: start-only timing is not_evaluated
+
+
+@dataclass(frozen=True)
 class AssessConfig:
     path: Path
     sha256: str  # of the config file bytes
@@ -306,6 +307,7 @@ class AssessConfig:
     criteria: dict[str, tuple[Criterion, ...]]  # elements / start / change / request -> criteria
     output_root: Path
     prompt: JudgePrompt  # every word of the judge request
+    triggers: dict[int, TriggerMap]  # event schema version -> its trigger map; other versions fail
 
 
 def _section(raw: object, spec: dict[str, tuple[Check, str]], name: str, *, allow_null: bool = False) -> dict[str, Any]:
@@ -378,6 +380,29 @@ def _criteria(raw: object, values: tuple[str, ...]) -> dict[str, tuple[Criterion
     return parsed
 
 
+def _trigger_map(raw: object, name: str) -> tuple[int, TriggerMap]:
+    section = exact_keys(raw, TRIGGER_MAP_KEYS, name)
+    version = section["event_schema_version"]
+    if not is_int(version) or version not in TRIGGER_KINDS:
+        raise ConfigError(f"{name}.event_schema_version must be one of {list(EVENT_SCHEMA_VERSIONS)}")
+    kinds = exact_keys(section["point_kinds"], set(TRIGGER_KINDS[version]), f"{name}.point_kinds")
+    if not all(value in POINT_KINDS for value in kinds.values()):
+        raise ConfigError(f"{name}.point_kinds must map each trigger kind to one of {list(POINT_KINDS)}")
+    forced = section["forced"]
+    if not list_of(lambda kind: kinds.get(kind) == POINT_START)(forced) or len(set(forced)) != len(forced):
+        raise ConfigError(f"{name}.forced must list distinct trigger kinds that map to {POINT_START!r}")
+    return version, TriggerMap(dict(kinds), frozenset(forced))
+
+
+def _triggers(raw: object) -> dict[int, TriggerMap]:
+    if not isinstance(raw, list) or not raw:
+        raise ConfigError("triggers must list the trigger map of at least one event schema version")
+    maps = [_trigger_map(item, f"triggers[{index}]") for index, item in enumerate(raw)]
+    if len({version for version, _ in maps}) != len(maps):
+        raise ConfigError("triggers lists an event schema version twice")
+    return dict(maps)
+
+
 def _prompt(raw: object, root: Path) -> JudgePrompt:
     if not is_text(raw):
         raise ConfigError("prompt must be the path of a prompt file (configs/evaluation/prompts/)")
@@ -418,6 +443,7 @@ def parse_config(raw: object, *, path: Path, sha256: str, root: Path = paths.ROO
         criteria=_criteria(section["criteria"], scale.values),
         output_root=output_root if output_root.is_absolute() else root / output_root,
         prompt=_prompt(section["prompt"], root),
+        triggers=_triggers(section["triggers"]),
     )
 
 
@@ -436,10 +462,10 @@ TRAJECTORY = shaped(
     {"text": is_str, "sha256": is_str, "renderer": is_str, "start_step": is_count, "end_step": is_count}
 )
 REASON = shaped(
-    {"kind": one_of(*TRIGGER_PRECEDENCE), "source": is_str, "reference_id": is_str, "probability": nullable(is_number)}
+    {"kind": one_of(*ALL_TRIGGER_KINDS), "source": is_str, "reference_id": is_str, "probability": nullable(is_number)}
 )
 COMMON_SHAPE = {
-    "schema_version": lambda v: is_int(v) and v == EVENT_SCHEMA_VERSION,
+    "schema_version": lambda v: is_int(v) and v in TRIGGER_KINDS,
     "record_type": one_of(*RECORD_TYPES),
     "scenario_id": is_safe_id,
     "episode_id": is_safe_id,
@@ -499,6 +525,7 @@ class TranslatorRun:
     last_step: int  # last complete step of the episode
     future_steps: int | None  # declared visible future: 0 online, F retrospective, None undeclared
     retrospective: bool
+    event_schema_version: int  # one version per run (trigger_kinds.TRIGGER_KINDS)
 
     @property
     def status(self) -> object:
@@ -536,6 +563,11 @@ def _records(run_dir: Path) -> tuple[dict[str, Any], ...]:
         expected = f"{record['scenario_id']}:{target['kind']}:{target['id']}:{record['step']:0{STEP_DIGITS}d}"
         if record["record_type"] == RECORD_TRANSLATION_EVENT and record["event_id"] != expected:
             raise RunFormatError(f"{where}.event_id must be {expected!r}")
+        if record["schema_version"] != records[0]["schema_version"]:
+            raise RunFormatError(f"{where}: schema_version differs from line 1 (one event schema per run)")
+        kinds = TRIGGER_KINDS[record["schema_version"]]
+        if any(reason["kind"] not in kinds for reason in record.get("trigger_reasons", [])):
+            raise RunFormatError(f"{where}: event schema {record['schema_version']} has only the trigger kinds {kinds}")
     return tuple(records)
 
 
@@ -580,6 +612,7 @@ def load_run(run_dir: Path) -> TranslatorRun:
         last_step=last_step,
         future_steps=future_steps,
         retrospective=retrospective,
+        event_schema_version=records[0]["schema_version"] if records else max(EVENT_SCHEMA_VERSIONS),
     )
 
 
@@ -645,10 +678,30 @@ def load_annotation(path: Path, run: TranslatorRun) -> Annotation:
 # --- points of an event and the criteria it is rated on -------------------------------------------
 
 
-def point_kinds(event: dict[str, Any]) -> tuple[str, ...]:
+def trigger_map(config: AssessConfig, event_schema_version: int) -> TriggerMap:
+    """The config's map for this event schema version; a version it does not list fails explicitly."""
+    found = config.triggers.get(event_schema_version)
+    if found is None:
+        listed = sorted(config.triggers)
+        raise ConfigError(
+            f"{config.path.name} rates event schema versions {listed} only, not {event_schema_version} "
+            "(triggers): judge this run with a config that maps its trigger kinds"
+        )
+    return found
+
+
+def point_kind(reason: dict[str, Any], event: dict[str, Any], config: AssessConfig) -> str:
+    return trigger_map(config, event["schema_version"]).point_kinds[reason["kind"]]
+
+
+def point_kinds(event: dict[str, Any], config: AssessConfig) -> tuple[str, ...]:
     """Point kinds of every trigger reason of the event, in ``POINT_KINDS`` order."""
-    kinds = {POINT_KIND_OF_TRIGGER[reason["kind"]] for reason in event["trigger_reasons"]}
+    kinds = {point_kind(reason, event, config) for reason in event["trigger_reasons"]}
     return tuple(kind for kind in POINT_KINDS if kind in kinds)
+
+
+def is_forced(reason: dict[str, Any], event: dict[str, Any], config: AssessConfig) -> bool:
+    return reason["kind"] in trigger_map(config, event["schema_version"]).forced
 
 
 @dataclass(frozen=True)
@@ -661,17 +714,18 @@ class EventCriteria:
 def event_criteria(event: dict[str, Any], config: AssessConfig) -> EventCriteria:
     """Union of ``criteria.elements`` and the criteria of each point kind; a shared id is asked once.
 
-    The forced ``initial`` translation is rated with the start rules, but its start timing is
-    ``not_evaluated/forced_trigger``: every ``timing.*`` criterion that only the start kind brings.
+    The forced first translation (the config's ``triggers[].forced``) is rated with the start rules,
+    but its start timing is ``not_evaluated/forced_trigger``: every ``timing.*`` criterion that only
+    the start kind brings.
     """
-    kinds = point_kinds(event)
+    kinds = point_kinds(event, config)
     by_id = {criterion.criterion_id: criterion for criterion in config.criteria[ASPECT_ELEMENTS]}
     kinds_of = dict.fromkeys(by_id, kinds)
     for kind in kinds:
         for criterion in config.criteria[kind]:
             by_id.setdefault(criterion.criterion_id, criterion)
             kinds_of[criterion.criterion_id] = (*kinds_of.get(criterion.criterion_id, ()), kind)
-    forced = any(reason["kind"] == TRIGGER_INITIAL for reason in event["trigger_reasons"])
+    forced = any(is_forced(reason, event, config) for reason in event["trigger_reasons"])
     excluded_ids = {
         criterion_id
         for criterion_id, criterion in by_id.items()

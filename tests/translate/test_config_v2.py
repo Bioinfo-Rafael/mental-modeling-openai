@@ -55,7 +55,7 @@ def test_config_selected_but_unused_input_raises_config_error(tmp_path: Path) ->
             {
                 "source": "preset",
                 "tick_interval_steps": None,
-                "points": [{"step": 0, "kind": "initial", "targets": None}],
+                "points": [{"step": 0, "kind": "start", "targets": None}],
             },
             "keep",
             "must be null for preset",

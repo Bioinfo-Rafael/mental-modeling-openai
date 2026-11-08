@@ -50,7 +50,7 @@ def criterion_key(criterion: Criterion) -> tuple[str, str, str | None]:
     return (criterion.criterion_id, criterion.aspect, criterion.reference)
 
 
-def event_subject(event: dict[str, Any], run: TranslatorRun, kinds: tuple[str, ...] | None = None) -> dict[str, Any]:
+def event_subject(event: dict[str, Any], run: TranslatorRun, kinds: tuple[str, ...]) -> dict[str, Any]:
     return {
         "scenario_id": run.scenario_id,
         "episode_id": run.episode_id,
@@ -59,7 +59,7 @@ def event_subject(event: dict[str, Any], run: TranslatorRun, kinds: tuple[str, .
         "step": event["step"],
         "time_s": event["time_s"],
         "event_id": event["event_id"],
-        "point_kinds": list(point_kinds(event) if kinds is None else kinds),
+        "point_kinds": list(kinds),
         "reference_point_id": None,
     }
 
@@ -297,7 +297,7 @@ def human_results(
         overall = result_record(
             result_id=overall_id,
             evaluator=evaluator,
-            subject=event_subject(event, run),
+            subject=event_subject(event, run, point_kinds(event, config)),
             criterion=OVERALL,
             outcome=overall_verdict(),
             **common,

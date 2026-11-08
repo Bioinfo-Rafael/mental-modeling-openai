@@ -25,18 +25,17 @@ from pathlib import Path
 from typing import Any
 
 from translate.events import (
-    EVENT_SCHEMA_VERSION,
     RECORD_TRANSLATION_EVENT,
     RECORD_TYPES,
     SAFE_ID_PATTERN,
     STEP_DIGITS,
     TARGET_KINDS,
-    TRIGGER_PRECEDENCE,
     sha256_text,
     strict_json_loads,
 )
 
 from .configuration import read_strict_yaml
+from .trigger_kinds import EVENT_SCHEMA_VERSIONS, TRIGGER_KINDS
 
 RUN_JSON = "run.json"
 EVENTS_FILE = "events.jsonl"
@@ -201,12 +200,13 @@ def _check_trajectory_text(trajectory: dict[str, Any], where: str) -> None:
 
 
 def _check_reasons(event: dict[str, Any], where: str) -> None:
-    if _field(event, "primary_trigger", where) not in TRIGGER_PRECEDENCE:
-        raise EventLogError(f"{where}.primary_trigger must be one of {list(TRIGGER_PRECEDENCE)}")
+    kinds = TRIGGER_KINDS[event["schema_version"]]  # the event's own vocabulary (trigger_kinds)
+    if _field(event, "primary_trigger", where) not in kinds:
+        raise EventLogError(f"{where}.primary_trigger must be one of {list(kinds)}")
     for index, reason in enumerate(_items(event, "trigger_reasons", where, dict)):
         name = f"{where}.trigger_reasons[{index}]"
-        if _field(reason, "kind", name) not in TRIGGER_PRECEDENCE:
-            raise EventLogError(f"{name}.kind must be one of {list(TRIGGER_PRECEDENCE)}")
+        if _field(reason, "kind", name) not in kinds:
+            raise EventLogError(f"{name}.kind must be one of {list(kinds)}")
         _safe_id(reason, "source", name)
         _string(reason, "reference_id", name)
         probability = _field(reason, "probability", name)
@@ -278,8 +278,10 @@ def _parse_records(text: str) -> tuple[dict[str, Any], ...]:
         if not isinstance(record, dict):
             raise EventLogError(f"{where} must be a JSON object")
         version = record.get("schema_version")
-        if not isinstance(version, int) or isinstance(version, bool) or version != EVENT_SCHEMA_VERSION:
-            raise EventLogError(f"{where}: schema_version must be {EVENT_SCHEMA_VERSION}")
+        if not isinstance(version, int) or isinstance(version, bool) or version not in EVENT_SCHEMA_VERSIONS:
+            raise EventLogError(f"{where}: schema_version must be one of {list(EVENT_SCHEMA_VERSIONS)}")
+        if records and version != records[0]["schema_version"]:
+            raise EventLogError(f"{where}: schema_version differs from line 1 (one event schema per run)")
         sequence = record.get("sequence")
         if not isinstance(sequence, int) or isinstance(sequence, bool) or sequence != index + 1:
             raise EventLogError(f"{where}: sequence must be {index + 1} (1..n without gaps)")

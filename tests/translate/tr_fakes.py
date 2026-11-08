@@ -181,7 +181,6 @@ def fake_translation_renderer(
 
 Answer = tuple[str, float]  # a scripted detector answer: (label, p(label))
 NONE: Answer = ("none", 1.0)
-START: Answer = ("start", 0.9)
 CHANGE: Answer = ("change", 0.9)
 
 
@@ -194,7 +193,7 @@ def state_key(state: str) -> tuple[str, int]:
 
 
 def answer_probabilities(answer: Answer) -> dict[str, float]:
-    """``p(label)`` for the label; the rest is split evenly over the other two options."""
+    """``p(label)`` for the label; the rest is split evenly over the other options."""
     label, probability = answer
     rest = (1.0 - probability) / (len(DETECTOR_LABELS) - 1)
     return {name: probability if name == label else rest for name in DETECTOR_LABELS}

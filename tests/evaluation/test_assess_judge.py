@@ -77,8 +77,10 @@ def _no_git(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def _event(kinds: tuple[str, ...]) -> dict[str, Any]:
+    """A bare event of the hand-written v2 run's vocabulary (rated with the legacy config)."""
     return {
-        "trigger_reasons": [{"kind": kind, "source": "x", "reference_id": "x", "probability": None} for kind in kinds]
+        "schema_version": 2,
+        "trigger_reasons": [{"kind": kind, "source": "x", "reference_id": "x", "probability": None} for kind in kinds],
     }
 
 

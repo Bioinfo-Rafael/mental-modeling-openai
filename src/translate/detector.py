@@ -6,7 +6,7 @@
   applies the decision rule: ``label`` is the model's choice; the tick triggers when
   ``label != none`` and ``p(label) >= threshold``.
 - ``SystemOneDetectionModel`` adapts a ``SystemOneClient`` (one ``choice`` question over
-  ``none`` / ``start`` / ``change``). The client itself is constructed only in the composition root
+  ``none`` / ``change``). The client itself is constructed only in the composition root
   (``translator/cli.py``).
 - ``detector_state_bound`` is the conservative token bound used by the preflight budget check:
   the exact state (instruction, alarm and question texts included) plus the worst-case UTF-8 size

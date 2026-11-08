@@ -1,8 +1,8 @@
 """When to translate: the two trigger sources, the deterministic schedule plan and the detector budget.
 
-Trigger kinds are the event vocabulary: ``initial`` (the start point at a target's first
-instruction), ``start`` and ``change`` (the clef-flash detector's labels) and ``request`` (a human
-request). ``online`` triggers come as the episode advances: the forced ``initial`` and ``request``
+Trigger kinds are the event vocabulary: ``start`` (the start point at a target's first
+instruction), ``change`` (the clef-flash detector's label) and ``request`` (a human request).
+``online`` triggers come as the episode advances: the forced ``start`` and ``request``
 from the scenario, and the detector on its tick grid. ``preset`` triggers are listed in the config
 in advance, each step with its kind; a preset ``request`` point needs the scenario request it
 answers, and every scenario request must be a preset point (a request is never dropped).
@@ -25,9 +25,9 @@ from translate.detector import (
     detector_state_bound,
 )
 from translate.events import (
-    INITIAL_SOURCE,
-    TRIGGER_INITIAL,
+    FIRST_INSTRUCTION_SOURCE,
     TRIGGER_REQUEST,
+    TRIGGER_START,
     IntentTranslation,
     PreviousTranslation,
     Scenario,
@@ -51,7 +51,7 @@ def _detector(config: RunConfig) -> DetectorConfig:
 
 
 def scenario_triggers(scenario: Scenario) -> Triggers:
-    """Forced trigger reasons per (step, target): ``initial`` at each target's first instruction, ``request``."""
+    """Forced trigger reasons per (step, target): ``start`` at each target's first instruction, ``request``."""
     found: Triggers = {}
 
     def add(step: int, target: TargetRef, reason: TriggerReason) -> None:
@@ -60,7 +60,8 @@ def scenario_triggers(scenario: Scenario) -> Triggers:
 
     for target in sorted({item.target for item in scenario.instructions}):
         first = min((item for item in scenario.instructions if item.target == target), key=lambda i: i.issue_step)
-        add(first.issue_step, target, TriggerReason(TRIGGER_INITIAL, INITIAL_SOURCE, first.instruction_id, None))
+        reason = TriggerReason(TRIGGER_START, FIRST_INSTRUCTION_SOURCE, first.instruction_id, None)
+        add(first.issue_step, target, reason)
     for request in scenario.requests:
         for target in request.targets:
             add(request.step, target, TriggerReason(TRIGGER_REQUEST, request.source, request.request_id, None))

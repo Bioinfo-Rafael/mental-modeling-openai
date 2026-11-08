@@ -15,6 +15,10 @@ schema_version: 3                # 2: per-criterion level anchors (D65); 3: the 
 rubric_version: pilot-2          # bump whenever you edit criteria, anchors or scale wording below. Ratings
                                  # and judge results carry it; the report compares one version at a time.
 prompt: configs/evaluation/prompts/assess-judge-v2.yaml   # every word of the judge request (repo-relative)
+triggers:                        # trigger kind of an event -> the point kind whose criteria rate it
+  - event_schema_version: 2      # the only event schema this rubric was written for
+    point_kinds: {initial: start, start: start, change: change, request: request}
+    forced: [initial]            # the forced first translation: its start-only timing is not_evaluated
 
 timing:                          # machine measurements (evaluator "machine"); never merged with human/judge timing
   request_deadline_s: 3.0        # D55. 要求点: processing_s <= this passes. null => processing_s reported, no verdict

@@ -63,6 +63,7 @@ from .assess_data import (
     sha256_file,
     strict_json_loads,
     target_key,
+    trigger_map,
 )
 from .assess_judge import (
     INTERRUPTIONS,
@@ -262,7 +263,7 @@ def run_check(session: Session) -> int:
         directory / LEAKAGE_FILE,
         [c.to_json(retrospective=run.retrospective, batch_id=batch_id) for c in session.checks],
     )
-    matches = match_points(annotation, run)
+    matches = match_points(annotation, run, session.config)
     records = machine_results(run, session.config, matches, session.checks, batch_id)
     path = directory / RESULT_FILES[EVALUATOR_MACHINE]
     appended = append_jsonl(path, with_supersedes(records, read_results(path)))
@@ -509,6 +510,7 @@ def main(
     try:
         config = load_config(args.config)
         run = load_run(args.translator_run)
+        trigger_map(config, run.event_schema_version)  # a run the config cannot rate fails before any write
         checks = check_generation_inputs(run, config)
         session = Session(args, config, run, checks, assessment_dir(args, config, run), new_batch_id())
         return commands[args.command](session)

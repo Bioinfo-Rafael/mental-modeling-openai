@@ -16,7 +16,7 @@ from typing import Any
 
 from translate.lag.rendering import SECONDS_DECIMALS, STEP_SECONDS, RenderedTrajectory
 
-EVENT_SCHEMA_VERSION = 2
+EVENT_SCHEMA_VERSION = 3  # 3: three trigger kinds (start / change / request)
 RECORD_DETECTOR_CALL = "detector_call"
 RECORD_TRANSLATION_EVENT = "translation_event"
 RECORD_TARGET_CLOSED = "target_closed"
@@ -27,20 +27,20 @@ TARGET_AIRCRAFT = "aircraft"
 TARGET_TEAM = "team"
 TARGET_KINDS = (TARGET_AIRCRAFT, TARGET_TEAM)
 
-# Trigger kinds in primary-trigger precedence order (first = highest). ``initial`` is the forced
-# bootstrap at a target's first instruction; ``start`` (開始点) and ``change`` (変化点) are detector
-# labels, exclusive by construction; ``request`` (要求点) is forced at a scenario request.
-TRIGGER_INITIAL = "initial"
+# Trigger kinds in primary-trigger precedence order (first = highest), exactly three: ``start``
+# (開始点) is forced at a target's first instruction (or set at a preset point); ``change`` (変化点)
+# is the clef-flash detector's one label (a new or changed tactic, whatever its cause); ``request``
+# (要求点) is forced at a scenario request. Event schema 2 had a fourth kind; the judges map it.
 TRIGGER_START = "start"
 TRIGGER_CHANGE = "change"
 TRIGGER_REQUEST = "request"
-TRIGGER_PRECEDENCE = (TRIGGER_INITIAL, TRIGGER_START, TRIGGER_CHANGE, TRIGGER_REQUEST)
-INITIAL_SOURCE = "first_instruction"
+TRIGGER_PRECEDENCE = (TRIGGER_START, TRIGGER_CHANGE, TRIGGER_REQUEST)
+FIRST_INSTRUCTION_SOURCE = "first_instruction"
 DETECTOR_SOURCE = "detector"
 DOWN_REASON = "target_down"
 # The detector's one choice question: its option names, in request order. ``none`` triggers nothing.
 DETECTOR_LABEL_NONE = "none"
-DETECTOR_LABELS = (DETECTOR_LABEL_NONE, TRIGGER_START, TRIGGER_CHANGE)
+DETECTOR_LABELS = (DETECTOR_LABEL_NONE, TRIGGER_CHANGE)
 
 STEP_DIGITS = 6
 # Identifiers that end up in event ids, file names and prompts: no spaces, slashes or colons.
@@ -157,7 +157,7 @@ class Scenario:
 class TriggerReason:
     kind: str  # one of TRIGGER_PRECEDENCE
     source: str  # "first_instruction", "detector", or the request source label
-    reference_id: str  # instruction id (initial), request id, or the detector call id
+    reference_id: str  # instruction id (start), request id, the detector call id, or preset-step-<s>
     probability: float | None  # detector p(label); None for forced triggers
 
     def to_json(self) -> dict[str, Any]:
@@ -211,7 +211,7 @@ def sort_reasons(reasons: tuple[TriggerReason, ...]) -> tuple[TriggerReason, ...
 
 
 def primary_trigger(reasons: tuple[TriggerReason, ...]) -> str:
-    """initial > start > change > request."""
+    """start > change > request."""
     if not reasons:
         raise ValueError("a translation needs at least one trigger reason")
     return sort_reasons(reasons)[0].kind

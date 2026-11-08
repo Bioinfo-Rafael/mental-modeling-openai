@@ -39,7 +39,6 @@ from .assess_data import (
     JUDGEMENT_NOT_APPLICABLE,
     LAYER_OF_RECORD,
     POINT_CHANGE,
-    POINT_KIND_OF_TRIGGER,
     POINT_START,
     REFERENCE_FUTURE,
     STATUS_NOT_EVALUATED,
@@ -51,6 +50,7 @@ from .assess_data import (
     TranslatorRun,
     canonical_json,
     event_criteria,
+    point_kind,
     point_kinds,
     sha256_text,
     strict_json_loads,
@@ -191,10 +191,11 @@ def _joined(prompt: JudgePrompt, block: str, texts: list[str]) -> str:
     return prompt.word(block, "joiner").join(texts)
 
 
-def _trigger_reasons(prompt: JudgePrompt, event: dict[str, Any]) -> str:
+def _trigger_reasons(event: dict[str, Any], config: AssessConfig) -> str:
+    prompt = config.prompt
     reasons = [
         prompt.part(
-            "trigger_reason", "item", kind=r["kind"], point_kind=POINT_KIND_OF_TRIGGER[r["kind"]], source=r["source"]
+            "trigger_reason", "item", kind=r["kind"], point_kind=point_kind(r, event, config), source=r["source"]
         )
         for r in event["trigger_reasons"]
     ]
@@ -211,18 +212,18 @@ def _previous_translation(prompt: JudgePrompt, previous: dict[str, Any] | None) 
     return prompt.part("previous_translation", "present", step=previous["step"], intent=intent, evidence=evidence)
 
 
-def _event_values(prompt: JudgePrompt, event: dict[str, Any], kinds: tuple[str, ...]) -> dict[str, Any]:
+def _event_values(event: dict[str, Any], kinds: tuple[str, ...], config: AssessConfig) -> dict[str, Any]:
     """Header, the inputs the Translator was given (instructions, alarms, question, previous), the output."""
     payload, question, output = event["input"], event["input"]["question"], event["output"]
     instructions = sorted(payload["instructions_in_effect"], key=lambda i: (i["issue_step"], i["instruction_id"]))
-    trajectory = payload["trajectory"]
+    trajectory, prompt = payload["trajectory"], config.prompt
     return {
         "target": _label(event["target"]),
         "target_aircraft": ", ".join(payload["target_aircraft"]),
         "step": event["step"],
         "time_s": event["time_s"],
         "point_kinds": ", ".join(kinds),
-        "trigger_reasons": _trigger_reasons(prompt, event),
+        "trigger_reasons": _trigger_reasons(event, config),
         "instructions": prompt.items(
             "instructions",
             [
@@ -244,7 +245,8 @@ def _event_values(prompt: JudgePrompt, event: dict[str, Any], kinds: tuple[str, 
     }
 
 
-def _timeline(prompt: JudgePrompt, items: list[dict[str, Any]], current: dict[str, Any]) -> str:
+def _timeline(items: list[dict[str, Any]], current: dict[str, Any], config: AssessConfig) -> str:
+    prompt = config.prompt
     lines = [
         prompt.part(
             "timeline",
@@ -252,7 +254,7 @@ def _timeline(prompt: JudgePrompt, items: list[dict[str, Any]], current: dict[st
             step=item["step"],
             time_s=item["time_s"],
             kinds=", ".join(r["kind"] for r in item["trigger_reasons"]),
-            point_kinds=", ".join(point_kinds(item)),
+            point_kinds=", ".join(point_kinds(item, config)),
             processing_s=item["processing_s"],
             mark=prompt.word("timeline", "this_event") if item["event_id"] == current["event_id"] else "",
         )
@@ -284,7 +286,7 @@ def _future(
         stride_steps=config.future_evidence.stride_steps,
         fields=", ".join(config.future_evidence.fields),
         rows=prompt.word("future", "row_joiner").join(rows) if rows else prompt.word("future", "no_rows"),
-        later=_timeline(prompt, later, event) if later else prompt.word("future", "no_later"),
+        later=_timeline(later, event, config) if later else prompt.word("future", "no_later"),
     )
 
 
@@ -353,14 +355,14 @@ def build_packet(
     frame: pd.DataFrame | None,
 ) -> Packet:
     """The prompt's ``user`` text: the event and its inputs, TIMELINE, FUTURE (start/change), the rubric."""
-    kinds = point_kinds(event)
+    kinds = point_kinds(event, config)
     criteria = event_criteria(event, config)
     window = future_window(event, run, annotation, config) if FUTURE_KINDS & set(kinds) else None
     own = [item for item in run.events if item["target"] == event["target"]]
     text = config.prompt.text(
         "user",
-        **_event_values(config.prompt, event, kinds),
-        timeline=_timeline(config.prompt, [item for item in own if item["step"] <= event["step"]], event),
+        **_event_values(event, kinds, config),
+        timeline=_timeline([item for item in own if item["step"] <= event["step"]], event, config),
         future=_future(event, own, window, frame, config),
         **_rubric_values(criteria, window is not None, config),
     )
@@ -509,7 +511,7 @@ def plan_calls(
     load_frame: Callable[[], pd.DataFrame],
 ) -> list[PlannedCall]:
     """One call per event, in order. The episode frame is loaded only when a FUTURE block needs it."""
-    needs_frame = any(FUTURE_KINDS & set(point_kinds(event)) for event in events)
+    needs_frame = any(FUTURE_KINDS & set(point_kinds(event, config)) for event in events)
     frame = load_frame() if needs_frame else None
     calls = []
     for event in events:
@@ -577,7 +579,7 @@ def judge_records(
         )
         for criterion in criteria.asked
     ]
-    rows.append((OVERALL, point_kinds(event), overall_verdict()))
+    rows.append((OVERALL, point_kinds(event, config), overall_verdict()))
     return [
         result_record(
             result_id=f"{EVALUATOR_JUDGE}:{batch_id}:{event['event_id']}:{key[0]}",

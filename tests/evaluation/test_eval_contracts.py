@@ -310,7 +310,8 @@ def _without(record: dict[str, Any], dotted: str) -> dict[str, Any]:
     ("edit", "match"),
     [
         (lambda r: {**r, "schema_version": 1}, "schema_version"),  # a v1 record is no longer accepted
-        (lambda r: {**r, "schema_version": 3}, "schema_version"),
+        (lambda r: {**r, "schema_version": 4}, "schema_version"),  # an unknown version
+        (lambda r: {**r, "schema_version": 2}, "schema_version"),  # one event schema per run (the others are 3)
         (lambda r: {**r, "sequence": r["sequence"] + 1}, "without gaps"),
         (lambda r: {**r, "record_type": "translation"}, "record_type"),
         (lambda r: _without(r, "event_id"), "event_id"),
@@ -318,6 +319,8 @@ def _without(record: dict[str, Any], dotted: str) -> dict[str, Any]:
         (lambda r: {**r, "step": True}, "step"),
         (lambda r: {**r, "primary_trigger": "manual"}, "primary_trigger"),
         (lambda r: {**r, "primary_trigger": "external_change"}, "primary_trigger"),  # a v1 kind
+        (lambda r: {**r, "primary_trigger": "initial"}, "primary_trigger"),  # a v2 kind in a v3 record
+        (lambda r: with_value(r, "trigger_reasons", [{**r["trigger_reasons"][0], "kind": "initial"}]), "kind"),
         (lambda r: with_value(r, "trigger_reasons", [{**r["trigger_reasons"][0], "kind": "instruction"}]), "kind"),
         (lambda r: {**r, "trigger_reasons": []}, "trigger_reasons"),
         (lambda r: _without(r, "input.trajectory"), "trajectory"),

@@ -33,9 +33,9 @@ class RecordingFactory:
 
 
 def _preset_config(tmp_path: Path, late_step: int, retry: str = "none") -> Path:
-    """The online example as preset points: initial at 0, the scenario's request at 10, a change at ``late_step``."""
+    """The online example as preset points: start at 0, the scenario's request at 10, a change at ``late_step``."""
     points = [
-        {"step": 0, "kind": "initial", "targets": None},
+        {"step": 0, "kind": "start", "targets": None},
         {"step": 10, "kind": "request", "targets": [{"kind": "aircraft", "id": "A0100"}]},
         {"step": late_step, "kind": "change", "targets": [{"kind": "aircraft", "id": "A0100"}]},
     ]
@@ -91,7 +91,7 @@ def test_api_requests_made_counts_a_retried_one_shot_request(
     monkeypatch.setattr(cli, "load_episode", lambda path: short_frame)
     monkeypatch.setattr("translate.llm.retry.time.sleep", lambda _: None)
     server_error = openai.InternalServerError("boom", response=httpx.Response(503, request=REQUEST), body=None)
-    # initial for aircraft A0100 and team A at 0, the request at 10, the change at 20: four calls, one retried
+    # start for aircraft A0100 and team A at 0, the request at 10, the change at 20: four calls, one retried
     client = ScriptedResponsesClient([server_error, _ok(), _ok(), _ok(), _ok()])
     config = _preset_config(tmp_path, SHORT_LAST_STEP - 10, retry="default")
 

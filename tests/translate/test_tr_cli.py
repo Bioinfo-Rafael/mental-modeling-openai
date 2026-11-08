@@ -37,7 +37,6 @@ from .tr_fakes import (
     CHANGE,
     EXAMPLE_SCENARIO,
     RUN_CONFIG,
-    START,
     Answer,
     over_tcp,
     read_jsonl,
@@ -50,7 +49,7 @@ KEY_ENV = "VLLM_API_KEY"  # the variable NAME in run.yaml; tests set a fake valu
 SENTINEL_KEY = "local-test-key-0123"
 TRANSLATION_ANSWER = json.dumps({"intent": "[FAKE] intent", "evidence": ["[FAKE] evidence"]})
 # Detector answers on the example scenario: A0100 starts a tactic at tick 5 and changes it at tick 15.
-EXAMPLE_ANSWERS = {("aircraft A0100", 5): START, ("aircraft A0100", 15): CHANGE}
+EXAMPLE_ANSWERS = {("aircraft A0100", 5): CHANGE, ("aircraft A0100", 15): CHANGE}
 
 
 class RecordingFactory:
@@ -148,7 +147,7 @@ def test_preview_builds_no_client_reads_no_credential_and_writes_artifacts(
     assert run_dir.stat().st_mode & 0o777 == 0o700
     preview = json.loads((run_dir / "preview.json").read_text())
     assert preview["api_requests_made"] == 0
-    # initial x {A0100, team A} at step 0 + the request at 10; team A's instruction at 20 forces nothing (D50)
+    # start x {A0100, team A} at step 0 + the request at 10; team A's instruction at 20 forces nothing (D50)
     assert preview["plan"]["mandatory_translations"] == 3 and preview["plan"]["detector_calls"] == 136
     assert preview["detector_budget"]["margin"] > 0 and preview["detector_budget"]["intent_reserve_bytes"] == 2400
     record = json.loads((run_dir / "run.json").read_text())
@@ -207,7 +206,7 @@ def test_cli_config_with_local_translation_backend_fails_before_clients(
 def test_execute_runs_both_layers_and_records_provenance(tmp_path: Path, short_episode: pd.DataFrame) -> None:
     order: list[str] = []
     server = SystemOneServer(_systemone_ok(12, EXAMPLE_ANSWERS))  # 6 ticks (5..30) x A0100 and team A
-    client = _openai_ok(5)  # initial at step 0 x 2, start 5, request 10, change 15
+    client = _openai_ok(5)  # start at step 0 x 2, change 5, request 10, change 15
 
     code = _main(
         _args(tmp_path, "--execute", "--confirm-paid-api"),
@@ -239,13 +238,13 @@ def test_execute_runs_both_layers_and_records_provenance(tmp_path: Path, short_e
     assert SENTINEL_KEY not in (run_dir / "run.json").read_text() + (run_dir / "requests.jsonl").read_text()
     translations = [e for e in events if e["record_type"] == "translation_event"]
     assert [(e["step"], e["target"]["id"], e["primary_trigger"]) for e in translations] == [
-        (0, "A0100", "initial"),
-        (0, "A", "initial"),
-        (5, "A0100", "start"),
+        (0, "A0100", "start"),
+        (0, "A", "start"),
+        (5, "A0100", "change"),
         (10, "A0100", "request"),
         (15, "A0100", "change"),
     ]
-    assert all(e["schema_version"] == 2 and e["processing_s"] >= 0 for e in events if "processing_s" in e)
+    assert all(e["schema_version"] == 3 and e["processing_s"] >= 0 for e in events if "processing_s" in e)
     assert len([e for e in events if "processing_s" in e]) == len(translations)
     _assert_exact_model_inputs(events, server, client, short_episode)
 

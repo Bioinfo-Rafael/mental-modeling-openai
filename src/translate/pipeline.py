@@ -5,10 +5,10 @@ For every step ``0 .. last_complete_step``:
 1. apply the instructions issued at this step (a later one replaces the target's current one);
 2. close every instructed target that is down (aircraft: ``alive == 0``; team: all its aircraft);
 3. for each instructed target in canonical (kind, id) order: take the run's trigger reasons for
-   this (step, target) (online: the forced ``initial`` and ``request``; preset: the configured
+   this (step, target) (online: the forced ``start`` and ``request``; preset: the configured
    points); a closed target only logs them as ``trigger_suppressed``; in an online run, on a tick
    (``step > 0``, ``step % T == 0``) a target that already has a translation gets one detector call,
-   which may add ``start`` or ``change``; if any reason remains, the target gets one translation:
+   which may add ``change``; if any reason remains, the target gets one translation:
    the selected inputs become the prompt's values, the configured prompt is filled, the call is
    made, the answer is validated, and the event is written.
 
