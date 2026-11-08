@@ -64,7 +64,7 @@ case "$MODE" in
     sha256sum -c tests/fixtures/assess-request-path.sha256
     echo "$(golden_value converter_sha256)  tests/fixtures/frozen/to_translator_run_v2.py.txt" | sha256sum -c
     "$PY" -m pytest -q tests/translate/test_request_goldens.py tests/evaluation/test_migration_goldens.py \
-      tests/test_frozen_moves.py
+      tests/evaluation/test_judge_request_goldens.py tests/test_frozen_moves.py
     "$PY" -B scripts/check_request_replay.py --source-root "$SOURCE_ROOT"
     "$PY" -B scripts/check_assess_resume.py \
       --translator-run "$SOURCE_ROOT/outputs/translator/$ASSESS_RUN" \

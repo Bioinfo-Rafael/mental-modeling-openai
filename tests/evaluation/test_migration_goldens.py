@@ -24,6 +24,7 @@ from .assess_fakes import make_config, make_frame, make_run
 from .eval_fakes import A1_REQUEST, make_judge_config
 
 GOLDENS = Path(__file__).resolve().parents[1] / "fixtures" / "prompt-request-goldens.json"
+FROZEN_RUN = Path(__file__).resolve().parents[1] / "fixtures" / "frozen" / "translator-run-v2"
 KEY_POINTS = (KeyPoint("kp-001", "[PLACEHOLDER] judge key point one"), KeyPoint("kp-002", "[PLACEHOLDER] two"))
 # initial + start + change/request: every point kind, and a FUTURE block from the synthetic frame.
 ASSESS_PLAN = ((0, ("initial",)), (5, ("start",)), (15, ("change", "request")))
@@ -53,8 +54,9 @@ def assess_request_sha256s(root: Path) -> list[str]:
     return [call.request_sha256 for call in calls]
 
 
-def test_d29_keypoint_judge_request_bytes_are_unchanged(translator_run: Path) -> None:
-    assert d29_request_sha256(translator_run) == goldens()["d29_keypoint_judge_request_sha256"]
+def test_d29_keypoint_judge_request_bytes_are_unchanged() -> None:
+    """Rendered from the frozen v2 run (``test_judge_request_goldens`` ties it to the example run)."""
+    assert d29_request_sha256(FROZEN_RUN) == goldens()["d29_keypoint_judge_request_sha256"]
 
 
 def test_assess_judge_request_bytes_are_unchanged(tmp_path: Path) -> None:
