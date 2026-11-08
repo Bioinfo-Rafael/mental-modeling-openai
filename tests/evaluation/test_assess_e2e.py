@@ -2,9 +2,9 @@
 
 The Translator CLI runs the example scenario on the real 13_LAG episode (cut at step 30) with the
 production adapters over fakes: ``SystemOneClient`` over ``httpx.MockTransport`` and the OpenAI
-client over a scripted SDK stand-in. The detector answers ``change`` for A0100 at ticks 5 and 15
-(the second after the alarm at 12), so the run holds the forced ``start`` events (開始点), one
-要求点 (step 10, with its question) and two 変化点. The evaluation then runs
+client over a scripted SDK stand-in. The detector answers ``change`` for A0100 at tick 15 (after the
+alarm at 12) and ``none`` elsewhere, so the run holds the forced ``start`` events at the episode start
+(開始点), one 要求点 (step 10, with its question) and one 変化点. The evaluation then runs
 ``check -> judge preview -> judge --execute -> import-ratings -> report`` with the default judge
 config and the committed example annotation and ratings. No socket is opened anywhere.
 """
@@ -48,10 +48,9 @@ from .assess_fakes import find, read_jsonl, verdict_text
 EXAMPLES = Path(__file__).resolve().parents[2] / "src" / "evaluation" / "examples"
 POINTS, RATINGS = EXAMPLES / "assess-points.example.yaml", EXAMPLES / "human-ratings.example.jsonl"
 SCENARIO_ID = "placeholder-episode-01"
-DETECTOR_ANSWERS = {("aircraft A0100", 5): CHANGE, ("aircraft A0100", 15): CHANGE}
-DETECTOR_CALLS, TRANSLATION_CALLS = 12, 5  # ticks 5..30 x {A0100, team A}; start x 2, change, request, change
-STEPS = (0, 5, 10, 15)
-E_START, E_EARLY_CHANGE, E_REQUEST, E_CHANGE = (f"{SCENARIO_ID}:aircraft:A0100:{step:06d}" for step in STEPS)
+DETECTOR_ANSWERS = {("aircraft A0100", 15): CHANGE}
+DETECTOR_CALLS, TRANSLATION_CALLS = 12, 4  # ticks 5..30 x {A0100, team A}; start x 2, request, change
+E_START, E_REQUEST, E_CHANGE = (f"{SCENARIO_ID}:aircraft:A0100:{step:06d}" for step in (0, 10, 15))
 E_TEAM_START = f"{SCENARIO_ID}:team:A:000000"
 
 
@@ -157,10 +156,8 @@ def test_contract_constants_match_the_translator() -> None:
     assert assess_data.STEP_DIGITS == translator_schema.STEP_DIGITS
     assert assess_data.SAFE_ID_PATTERN.pattern == translator_schema.SAFE_ID_PATTERN.pattern
     default = load_config()
-    assert sorted(default.triggers) == [2, 3]  # the default config rates both event schemas
-    for version, kinds in trigger_kinds.TRIGGER_KINDS.items():
-        assert set(default.triggers[version].point_kinds) == set(kinds)
-    assert default.triggers[2].point_kinds["start"] == "change"  # the detector's start merged into change
+    assert sorted(default.triggers) == [3]  # schema 2 runs: assess-legacy.yaml only (2026-11-09)
+    assert set(default.triggers[3].point_kinds) == set(trigger_kinds.TRIGGER_KINDS[3])
 
 
 def test_the_legacy_config_refuses_a_schema_3_run_before_writing(
@@ -194,7 +191,7 @@ def test_start_change_and_request_run_end_to_end(
     # check: every call of both layers is ok; timing thresholds come from assess.yaml
     code, checked = _assess(capsys, frame, ["check", *base, "--points", str(POINTS)])
     assert code == 0
-    assert checked["leakage"] == {"calls": 17, "ok": 17, "leak": 0, "error": 0, "invalid_targets": []}
+    assert checked["leakage"] == {"calls": 16, "ok": 16, "leak": 0, "error": 0, "invalid_targets": []}
     assert {line["layer"] for line in read_jsonl(directory / "leakage.jsonl")} == {"translation", "detector"}
     machine = read_jsonl(directory / "machine_results.jsonl")
     (latency,) = find(machine, criterion_id="timing.request_latency")
@@ -207,20 +204,16 @@ def test_start_change_and_request_run_end_to_end(
         ("fewer_than_two_requests", 0),  # team A
     }
     points = {r["subject"]["reference_point_id"]: r for r in find(machine, criterion_id="timing.point_matched")}
-    assert points["p-start-000"]["reason"] == "forced_trigger"
+    assert points["p-start-000"]["reason"] == "forced_trigger"  # the episode start
     assert (
         points["p-change-001"]["measurement"]["delay_steps"] == 1
-        and points["p-change-001"]["subject"]["event_id"] == E_EARLY_CHANGE
-    )
-    assert (
-        points["p-change-002"]["measurement"]["delay_steps"] == 1
-        and points["p-change-002"]["subject"]["event_id"] == E_CHANGE
+        and points["p-change-001"]["subject"]["event_id"] == E_CHANGE
     )
 
     # judge preview: packets, no client, no call; each point kind gets its own criteria
     preview_factory = Factory()
     code, preview = _assess(capsys, frame, ["judge", *base, "--points", str(POINTS)], preview_factory)
-    assert code == 0 and preview_factory.calls == 0 and preview["plan"]["to_send"] == 5
+    assert code == 0 and preview_factory.calls == 0 and preview["plan"]["to_send"] == TRANSLATION_CALLS
     assert not (directory / "judge_requests.jsonl").exists()
     (packets_file,) = directory.glob("packets-*.jsonl")
     packets = {packet["event_id"]: packet for packet in read_jsonl(packets_file)}
@@ -228,11 +221,9 @@ def test_start_change_and_request_run_end_to_end(
     assert "correctness.start_future" in asked[E_START] - asked[E_CHANGE] - asked[E_REQUEST]
     assert "correctness.change_cause" in asked[E_CHANGE] - asked[E_START] - asked[E_REQUEST]
     assert "correctness.unknown_not_asserted" in asked[E_REQUEST] - asked[E_START] - asked[E_CHANGE]
-    assert packets[E_START]["excluded_criteria"] == {"timing.start_in_time": "forced_trigger"}
-    assert asked[E_EARLY_CHANGE] == asked[E_CHANGE]  # a new tactic and a changed one are both 変化点
+    assert packets[E_START]["excluded_criteria"] == {}  # no start timing: the episode start is fixed
     assert packets[E_REQUEST]["future_end_step"] is None and "## FUTURE" not in packets[E_REQUEST]["text"]
-    assert packets[E_START]["future_end_step"] == 4  # the annotated change at 4 ends the start's FUTURE block
-    assert packets[E_EARLY_CHANGE]["future_end_step"] == 12  # the alarm at 12 ends the first change's block
+    assert packets[E_START]["future_end_step"] == 12  # the alarm at 12 ends the start's FUTURE block
     assert "## TRAJECTORY (human-visible telemetry up to t)" in packets[E_START]["text"]
     assert packets[E_CHANGE]["future_end_step"] == 20  # team A's new instruction reaches A0100 at 20
     assert "it ends before step 20 (next_instruction)" in packets[E_CHANGE]["text"]
@@ -242,7 +233,7 @@ def test_start_change_and_request_run_end_to_end(
     client = AutoClient()
     flags = ["--execute", "--confirm-paid-api"]
     code, judged = _assess(capsys, frame, ["judge", *base, "--points", str(POINTS), *flags], Factory(client))
-    assert code == 0 and judged["counts"]["judged"] == 5 and len(client.bodies) == 5
+    assert code == 0 and judged["counts"]["judged"] == TRANSLATION_CALLS == len(client.bodies)
     assert all(body["model"] == "gpt-6.1-sol" and body["store"] is False for body in client.bodies)
     judge = read_jsonl(directory / "judge_results.jsonl")
     assert {r["evaluator"]["kind"] for r in judge} == {"judge"}
@@ -264,7 +255,7 @@ def test_start_change_and_request_run_end_to_end(
     assert code == 0
     report = json.loads(Path(reported["report"]).read_text(encoding="utf-8"))
     section = report["sections"]["online"]
-    assert report["sections"]["retrospective"] is None and section["leakage"]["ok"] == 17
+    assert report["sections"]["retrospective"] is None and section["leakage"]["ok"] == 16
     unknown = section["cells"]["request"]["correctness"]["correctness.unknown_not_asserted"]
     assert unknown["reference"] == "observable_records"
     assert (unknown["human"]["n_evaluated"], unknown["human"]["mean"]) == (0, None)
@@ -272,10 +263,9 @@ def test_start_change_and_request_run_end_to_end(
     assert (unknown["judge"]["n_evaluated"], unknown["judge"]["mean"]) == (1, 4.0)
     resolved = section["cells"]["request"]["contribution"]["contribution.question_resolved"]
     assert (resolved["human"]["mean"], resolved["judge"]["mean"]) == (3.0, 4.0)  # r-0004 supersedes r-0001
-    start_timing = section["cells"]["start"]["timing"]["timing.start_in_time"]["judge"]
-    assert start_timing["n_evaluated"] == 0 and start_timing["not_evaluated"] == {"forced_trigger": 2}
+    assert "timing.start_in_time" not in json.dumps(section["cells"]["start"])
     assert section["cells"]["change"]["correctness"]["correctness.change_cause"]["human"]["not_evaluated"] == {
-        "no_human_rating": 2
+        "no_human_rating": 1
     }
     assert report["overall"]["status"] == "not_evaluated" and report["overall"]["reason"] == "aggregation_unset"
     assert guard.attempts == []
@@ -349,7 +339,9 @@ def test_a_future_step_in_one_payload_is_a_leak_that_invalidates_its_target(
     code, preview = _assess(
         capsys, frame, ["judge", "--translator-run", str(run_dir), "--output-root", str(tmp_path / "out")]
     )
-    assert code == 0 and preview["plan"]["packets"] == 1 and preview["plan"]["generation_input_invalid"] == 4
+    assert (
+        code == 0 and preview["plan"]["packets"] == 1 and preview["plan"]["generation_input_invalid"] == 3
+    )  # A0100: start, request, change
 
 
 def _write_jsonl(path: Path, records: list[dict[str, Any]]) -> None:

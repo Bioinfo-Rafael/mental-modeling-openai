@@ -31,6 +31,7 @@ from .assess_fakes import (
     E_START,
     EPISODE_ID,
     LEGACY_CONFIG,
+    V3_PLAN,
     find,
     make_frame,
     make_run,
@@ -166,9 +167,9 @@ def test_missing_ratings_are_no_human_rating_and_forced_timing_is_marked(
 
 
 def test_example_ratings_import_cleanly(tmp_path: Path) -> None:
-    run_dir = make_run(tmp_path)
+    run_dir = make_run(tmp_path, plan=V3_PLAN, schema_version=3)  # the examples follow the default rubric
 
-    ratings = str(EXAMPLES / "human-ratings.example.jsonl")  # the examples follow the default rubric
+    ratings = str(EXAMPLES / "human-ratings.example.jsonl")
     assert _cli(tmp_path, "import-ratings", run_dir, "--ratings", ratings, "--config", str(DEFAULT_CONFIG)) == 0
 
     human = read_jsonl(tmp_path / "out" / "run" / "human_results.jsonl")
@@ -181,7 +182,7 @@ def test_example_ratings_import_cleanly(tmp_path: Path) -> None:
 def test_example_annotation_loads(tmp_path: Path) -> None:
     annotation = load_annotation(EXAMPLES / "assess-points.example.yaml", load_run(make_run(tmp_path)))
 
-    assert [p.kind for p in annotation.points] == ["start", "change", "change"]
+    assert [(p.kind, p.step) for p in annotation.points] == [("start", 0), ("change", 14)]  # no planned tactic
 
 
 @pytest.mark.parametrize(

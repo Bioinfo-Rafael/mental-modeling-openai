@@ -1,15 +1,16 @@
 # Example Translator scenario (schema v2): PLACEHOLDER TEXT ONLY. Never commit real instructions.
 # Real scenarios live under the gitignored private/translator/ directory.
-# Paths resolve relative to this file. Rules: at least one instruction at step 0; ids unique across
-# instructions, alarms and requests; steps in [0, last complete step] (340 for this episode); at most
-# one instruction and at most one request per exact target per step; an alarm or request needs every
-# target to have an instruction at or before its step; texts within the run config's
+# Paths resolve relative to this file. Rules: at least one translation target (a target named by an
+# instruction or a request); ids unique across instructions, alarms and requests; steps in
+# [0, last complete step] (340 for this episode); at most one instruction and at most one request per
+# exact target per step; every alarm target is a translation target; texts within the run config's
 # scenario_limits; the alias is lowercased and split into alphanumeric tokens: no token may be an
 # outcome word (win, loss, lose, won, lost), and no token may be shared with the episode id.
-# A target is translated at its first instruction (trigger "start") and at each request; otherwise
-# only when the detector reports "start" or "change". A later instruction (team A at step 20) only
-# reaches the detector state. Change-point references for evaluation live in the evaluation
-# annotation, never here.
+# Every target is translated at the episode start (trigger "start", step 0, with or without an
+# instruction in effect), at each request, and at its first instruction if that arrives after the
+# start (trigger "request"); otherwise only when the detector reports "change". A later instruction
+# for a target that already has one (team A at step 20) only reaches the detector state.
+# Change-point references for evaluation live in the evaluation annotation, never here.
 schema_version: 2
 scenario_id: placeholder-episode-01
 episode:

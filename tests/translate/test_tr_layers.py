@@ -75,7 +75,9 @@ MESSAGES = (
 
 
 def _context(
-    previous: PreviousTranslation = PREVIOUS, messages: tuple[DetectorMessage, ...] = MESSAGES
+    previous: PreviousTranslation = PREVIOUS,
+    messages: tuple[DetectorMessage, ...] = MESSAGES,
+    instructions: tuple[Instruction, ...] = (TEAM_INSTRUCTION,),
 ) -> DetectionContext:
     trajectory = fake_detector_renderer(
         None,
@@ -87,7 +89,7 @@ def _context(
         float_precision=5,
     )
     return DetectionContext(
-        TEAM_A, 10, ("A0100", "A0200"), ("B0100", "B0200"), previous, (TEAM_INSTRUCTION,), messages, trajectory
+        TEAM_A, 10, ("A0100", "A0200"), ("B0100", "B0200"), previous, instructions, messages, trajectory
     )
 
 
@@ -111,6 +113,12 @@ def test_detector_state_is_target_previous_intent_instructions_messages_and_comp
         "FAKE-COMPACT anchor=10 start=1 objects=A0100,A0200,B0100,B0200"
     )
     assert "[FAKE] e1" not in state  # evidence is not part of the detector input
+
+
+def test_detector_state_without_an_instruction_in_effect_says_none() -> None:
+    state = render_detector_state(_context(instructions=()))
+
+    assert "Instructions in effect for this target:\n- none\n\nRecent messages" in state
 
 
 def test_detector_state_without_messages_says_none() -> None:

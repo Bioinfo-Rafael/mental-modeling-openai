@@ -15,7 +15,7 @@ from evaluation.rendering import build_judge_request
 from evaluation.schemas import EventKeyPoints, KeyPoint, load_translator_run
 from translate import paths
 
-from .assess_fakes import E_START, config_raw, make_frame, make_run
+from .assess_fakes import E_CHANGE, V3_PLAN, config_raw, make_frame, make_run
 
 CONFIGS = paths.ROOT / "configs" / "evaluation"
 PROMPTS = CONFIGS / "prompts"
@@ -56,14 +56,17 @@ def test_each_key_point_config_loads_its_prompt(config: str, version: str) -> No
 
 
 def test_the_default_assess_prompt_calls_the_trajectory_human_visible(tmp_path: Path) -> None:
-    run = load_run(make_run(tmp_path))
-    event = next(item for item in run.events if item["event_id"] == E_START)
+    """The change at 15 of the same episode: schema 2 under the legacy config, schema 3 under the default."""
     default, legacy = load_config(CONFIGS / "assess.yaml"), load_config(CONFIGS / "assess-legacy.yaml")
-
-    texts = {
-        name: build_packet(event, run=run, config=config, annotation=None, frame=make_frame()).text
-        for name, config in (("default", default), ("legacy", legacy))
+    runs = {
+        "default": load_run(make_run(tmp_path, "v3", plan=V3_PLAN, schema_version=3)),
+        "legacy": load_run(make_run(tmp_path, "v2")),
     }
+    texts = {}
+    for name, config in (("default", default), ("legacy", legacy)):
+        run = runs[name]
+        event = next(item for item in run.events if item["event_id"] == E_CHANGE)
+        texts[name] = build_packet(event, run=run, config=config, annotation=None, frame=make_frame()).text
 
     assert LEGACY_HEADING in texts["legacy"] and LEGACY_HEADING not in texts["default"]
     assert "## TRAJECTORY (human-visible telemetry up to t)" in texts["default"]
@@ -90,6 +93,28 @@ def test_the_default_key_point_prompt_calls_the_trajectory_human_visible() -> No
     assert saw in texts["judge-text-legacy.yaml"] and saw not in texts["judge-text.yaml"]
     assert "The human-visible telemetry window up to the current step" in texts["judge-text.yaml"]
     assert event["input"]["trajectory"]["text"] in texts["judge-text.yaml"]  # the same material
+
+
+@pytest.mark.parametrize(
+    ("config", "expected"),
+    [("judge-text.yaml", "\n- none (no instruction is in effect)"), ("judge-text-legacy.yaml", "")],
+)
+def test_the_key_point_instructions_block_words_no_instruction_in_effect(config: str, expected: str) -> None:
+    events = load_translator_run(FROZEN_RUN).translation_events
+    payload = {**events[0]["input"], "instructions_in_effect": [], "primary_instruction_id": None}
+    event = {**events[0], "input": payload}
+
+    request = build_judge_request(
+        event=event,
+        event_log=events,
+        key_points=EventKeyPoints(event["event_id"], ()),
+        config=configuration.load_config(CONFIGS / config),
+    )
+
+    (block,) = [
+        item["text"] for item in request.openai_request.input_items if item["text"].startswith("## INSTRUCTIONS")
+    ]
+    assert block.endswith("marks the translation target's own instruction." + expected)
 
 
 # --- strict loading ---------------------------------------------------------------------------------

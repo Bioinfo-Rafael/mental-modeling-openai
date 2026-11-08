@@ -78,7 +78,8 @@ a status other than `completed` is a preview warning) and `events.jsonl` with on
 gap-free `sequence` 1..n, the four known record types, unique translation `event_id`s and, in every
 `translation_event`, the fields the judge renders (`step`, `time_s`, `target`, `primary_trigger`,
 `trigger_reasons`, `input.{instructions_in_effect, primary_instruction_id, target_aircraft,
-trajectory}`, `output.{intent, evidence}`). The trajectory text must match its `sha256`.
+trajectory}`, `output.{intent, evidence}`). The trajectory text must match its `sha256`;
+`primary_instruction_id` is `null` when the target has no instruction yet (a start without one).
 
 The log is read strictly, because it is untrusted input to a paid judge:
 
@@ -133,9 +134,9 @@ unknown field, or a template that drops judge material (the trajectory, the inte
 
 | Config (`configs/evaluation/`) | Prompt | Use |
 |---|---|---|
-| `assess.yaml` | `assess-judge-v3` | Default for new runs. Calls the trajectory the human-visible telemetry up to t (not what the Translator saw); shows trigger kinds as the config's point kinds |
+| `assess.yaml` | `assess-judge-v3` | Default for new runs. Calls the trajectory the human-visible telemetry up to t (not what the Translator saw); shows trigger kinds as the config's point kinds; an empty INSTRUCTIONS or QUESTION block reads `- none` |
 | `assess-legacy.yaml` | `assess-judge-v2` | Byte-identical to the former in-code prompt. The paid 2026-11-05 assessment resumes only with this config |
-| `judge-text.yaml`, `judge-text-video.yaml` | `judge-text-v4` | Default for new runs; same neutral trajectory wording |
+| `judge-text.yaml`, `judge-text-video.yaml` | `judge-text-v4` | Default for new runs; same neutral trajectory wording; no instruction in effect reads `- none (no instruction is in effect)` |
 | `judge-text-legacy.yaml` | `judge-text-v3` | Byte-identical to the former in-code prompt |
 
 Never edit a legacy prompt file: `tests/fixtures/judge-request-goldens.json` and
@@ -326,14 +327,18 @@ production OpenAI translation adapter over a scripted SDK stand-in -> event log 
 ## 3 time points x 4 aspects assessment (`assess_cli`)
 
 A second evaluator, separate from the D29 key-point judge above. It rates every translation event of
-a translation run on the user's 3 points (開始点 `start`: the forced first translation; 変化点
-`change`: the clef-flash detector; 要求点 `request`) x 4 aspects (要素 `elements`, 正しさ
-`correctness`, タイミング `timing`, 判断への寄与 `contribution`). The event is judged on the union
-of the criteria of all its trigger reasons. Which point kind rates a trigger kind is the judge
-config's `triggers` map, per event schema: schema 3 maps one to one; for schema 2 runs (before
-2026-11-08) the default config maps `initial` to `start` and the detector's `start` to `change`,
-and `assess-legacy.yaml` keeps `initial` and `start` as `start`. A run of a schema the config does
-not map fails before anything is written. Machine, human and judge results are stored apart and
+a translation run on the user's 3 points x 4 aspects (要素 `elements`, 正しさ `correctness`,
+タイミング `timing`, 判断への寄与 `contribution`). The points (2026-11-09): 開始点 `start` is the
+episode start (step 0), with or without an instruction in effect, and its timing is fixed by
+definition; 変化点 `change` is where the detector judges that the previous intent no longer explains
+the behaviour because of an external factor or a human instruction (a tactic that follows the plan
+is no point); 要求点 `request` is a human question, or a target's first instruction arriving after
+the start (then the packet's QUESTION is none and the two question-only criteria are conditional).
+The event is judged on the union of the criteria of all its trigger reasons. Which point kind rates
+a trigger kind is the judge config's `triggers` map, per event schema: the default config maps
+schema 3 one to one and refuses schema 2; schema 2 runs (before 2026-11-08) are rated by
+`assess-legacy.yaml`, which keeps `initial` and the detector's `start` as `start`. A run of a schema
+the config does not map fails before anything is written. Machine, human and judge results are stored apart and
 never merged; nothing is aggregated into an overall score (D54).
 
 | Module | Responsibility |
@@ -449,13 +454,14 @@ behaviour is written next to each key. Unknown, missing or duplicate keys fail. 
 values (detector question and threshold, text limits, `max_intent_chars`) stay in
 the run config (`configs/translate/*.yaml`).
 
-Score anchors (`pilot-3` default and `pilot-2` legacy, the same criteria; D65-D67): every criterion has its
+Score anchors (`pilot-4` default and `pilot-2` legacy; D65-D67): every criterion has its
 own anchor for each level, rendered under the criterion in the packet from 5 down to 1, followed
 by its own `cannot_judge` / `not_applicable` boundary when it has one. Each packet ends with the
 rating rule, which the judge's system prompt repeats word for word. The score is the lowest level
 whose condition holds. The rationale names that level and says which part of the next level's
 condition does not hold. A criterion shared by several point kinds is written once with a YAML
-anchor (`&name`) and repeated as an alias (`*name`). The start and change timing anchors use only
+anchor (`&name`) and repeated as an alias (`*name`). The default rubric has no start timing
+criterion (the episode start's timing is fixed). The change timing anchors (and the legacy start ones) use only
 orderings and counts visible in the packet; their undecided thresholds stay in the machine checks.
 `timing.request_in_time` quotes the decided 3.0 s and 10.0 s in its anchor text, so editing
 `timing.request_deadline_s` or `timing.min_question_interval_s` means editing that anchor too. The
@@ -464,11 +470,11 @@ rubric; anything before them is material.
 
 | Key | Default | When `null` |
 |---|---|---|
-| `rubric_version` | `pilot-3` (legacy `pilot-2`) | Required. Bump it after editing criteria, anchors, scale wording or `triggers`; ratings must match it |
+| `rubric_version` | `pilot-4` (legacy `pilot-2`) | Required. Bump it after editing criteria, anchors, scale wording or `triggers`; ratings must match it |
 | `prompt` | `prompts/assess-judge-v3.yaml` (legacy `assess-judge-v2`) | Required: the prompt file (repo-relative) |
-| `triggers` | schema 3 and 2 (legacy: 2 only) | Required: per event schema, `point_kinds` (every trigger kind of that schema -> `start`, `change` or `request`) and `forced` (kinds of the forced first translation; they must map to `start`) |
+| `triggers` | schema 3 (legacy: 2 only) | Required: per event schema, `point_kinds` (every trigger kind of that schema -> `start`, `change` or `request`) and `forced` (kinds of the forced first translation; they must map to `start`) |
 | `timing.request_deadline_s` | 3.0 (D55) | `processing_s` reported, `not_evaluated/request_deadline_s_unset` |
-| `timing.min_question_interval_s` | 10.0 (D55) | Intervals reported, no verdict |
+| `timing.min_question_interval_s` | 10.0 (D55) | Intervals between questions reported, no verdict (a request opened by an instruction is no question) |
 | `timing.start_min_lead_steps` | null | Lead before the annotated action onset reported only |
 | `timing.change_max_delay_steps` | null | Delay of a change point reported only |
 | `timing.max_events_per_segment` | null | Same-kind events per segment counted only |

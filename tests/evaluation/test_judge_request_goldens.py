@@ -152,19 +152,24 @@ def assess_hashes(root: Path) -> dict[str, list[str]]:
 # --- tests ------------------------------------------------------------------------------------------
 
 
-# The example run's trigger kinds, event schema 2 -> 3 (it has no detector start, which schema 3 merged
-# into change): the first-instruction trigger was renamed, nothing else changed.
+# The example run's trigger kinds, event schema 2 -> 3 (2026-11-09). Its initial translations are at
+# step 0, the episode start, so they are the start; it has no detector start, which is no point now.
 V2_TO_V3_KINDS = {"initial": "start", "change": "change", "request": "request"}
+EPISODE_START = {"source": "episode_start", "reference_id": "episode-start"}
 
 
 def as_schema_3(event: dict[str, Any]) -> dict[str, Any]:
-    reasons = [{**reason, "kind": V2_TO_V3_KINDS[reason["kind"]]} for reason in event["trigger_reasons"]]
+    assert all(r["kind"] != "initial" or event["step"] == 0 for r in event["trigger_reasons"])
+    reasons = [
+        {**reason, "kind": V2_TO_V3_KINDS[reason["kind"]], **(EPISODE_START if reason["kind"] == "initial" else {})}
+        for reason in event["trigger_reasons"]
+    ]
     primary = V2_TO_V3_KINDS[event["primary_trigger"]]
     return {**event, "schema_version": 3, "primary_trigger": primary, "trigger_reasons": reasons}
 
 
 def test_frozen_run_is_the_example_run_of_the_fixture(translator_run: Path) -> None:
-    """The frozen v2 events are the example run's translation events, but for the trigger-kind rename."""
+    """The frozen v2 events are the example run's translation events, but for the start's new vocabulary."""
     generated = load_translator_run(translator_run).translation_events
     frozen = load_translator_run(FROZEN_RUN).translation_events
 

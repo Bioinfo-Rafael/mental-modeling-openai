@@ -1,11 +1,14 @@
 """When to translate: the two trigger sources, the deterministic schedule plan and the detector budget.
 
-Trigger kinds are the event vocabulary: ``start`` (the start point at a target's first
-instruction), ``change`` (the clef-flash detector's label) and ``request`` (a human request).
-``online`` triggers come as the episode advances: the forced ``start`` and ``request``
-from the scenario, and the detector on its tick grid. ``preset`` triggers are listed in the config
-in advance, each step with its kind; a preset ``request`` point needs the scenario request it
-answers, and every scenario request must be a preset point (a request is never dropped).
+Trigger kinds are the event vocabulary: ``start`` (the episode start, the first translatable step of
+every target, with or without an instruction in effect), ``change`` (the clef-flash detector: the
+previous intent no longer explains the behaviour because of an external factor or a human
+instruction; progress along the plan is no change) and ``request`` (a human question, or a target's
+first instruction arriving after the start). ``online`` triggers come as the episode advances: the
+forced ``start`` and ``request`` from the scenario, and the detector on its tick grid. ``preset``
+triggers are listed in the config in advance, each step with its kind; a preset ``request`` point
+needs the scenario request it answers, and every scenario request must be a preset point (a request
+is never dropped). A later instruction for a target that already has one only reaches the detector.
 """
 
 from __future__ import annotations
@@ -25,7 +28,6 @@ from translate.detector import (
     detector_state_bound,
 )
 from translate.events import (
-    FIRST_INSTRUCTION_SOURCE,
     TRIGGER_REQUEST,
     TRIGGER_START,
     IntentTranslation,
@@ -37,9 +39,21 @@ from translate.events import (
 )
 from translate.lag.rendering import RenderedTrajectory
 from translate.llm.system_one import SystemOneQuestion
-from translate.scenario import EpisodeFacts, PipelineError, target_alarms, target_instructions, target_request
+from translate.scenario import (
+    EpisodeFacts,
+    PipelineError,
+    target_alarms,
+    target_instructions,
+    target_request,
+    translation_targets,
+)
 
 PRESET_SOURCE = "preset"
+# Every input window clips at step 0 (``[max(0, t - past + 1), t]``), so step 0 is every target's first
+# translatable step: the episode start.
+EPISODE_START_STEP = 0
+EPISODE_START_SOURCE, EPISODE_START_REFERENCE = "episode_start", "episode-start"
+INSTRUCTION_SOURCE = "instruction"  # a target's first instruction arriving after the start: a request
 
 Triggers = dict[tuple[int, TargetRef], tuple[TriggerReason, ...]]
 
@@ -51,17 +65,26 @@ def _detector(config: RunConfig) -> DetectorConfig:
 
 
 def scenario_triggers(scenario: Scenario) -> Triggers:
-    """Forced trigger reasons per (step, target): ``start`` at each target's first instruction, ``request``."""
+    """Forced trigger reasons per (step, target): ``start`` at the episode start for every target, and
+    ``request`` at each question and at a target's first instruction when it arrives after the start."""
     found: Triggers = {}
 
     def add(step: int, target: TargetRef, reason: TriggerReason) -> None:
         nonlocal found
         found = {**found, (step, target): (*found.get((step, target), ()), reason)}
 
-    for target in sorted({item.target for item in scenario.instructions}):
-        first = min((item for item in scenario.instructions if item.target == target), key=lambda i: i.issue_step)
-        reason = TriggerReason(TRIGGER_START, FIRST_INSTRUCTION_SOURCE, first.instruction_id, None)
-        add(first.issue_step, target, reason)
+    for target in translation_targets(scenario):
+        add(
+            EPISODE_START_STEP,
+            target,
+            TriggerReason(TRIGGER_START, EPISODE_START_SOURCE, EPISODE_START_REFERENCE, None),
+        )
+        own = [item for item in scenario.instructions if item.target == target]
+        first = min(own, key=lambda item: (item.issue_step, item.instruction_id), default=None)
+        if first is not None and first.issue_step > EPISODE_START_STEP:
+            add(
+                first.issue_step, target, TriggerReason(TRIGGER_REQUEST, INSTRUCTION_SOURCE, first.instruction_id, None)
+            )
     for request in scenario.requests:
         for target in request.targets:
             add(request.step, target, TriggerReason(TRIGGER_REQUEST, request.source, request.request_id, None))
@@ -70,11 +93,6 @@ def scenario_triggers(scenario: Scenario) -> Triggers:
 
 def _add(found: Triggers, step: int, target: TargetRef, reason: TriggerReason) -> Triggers:
     return {**found, (step, target): (*found.get((step, target), ()), reason)}
-
-
-def _first_instruction_steps(scenario: Scenario) -> dict[TargetRef, int]:
-    targets = {item.target for item in scenario.instructions}
-    return {t: min(i.issue_step for i in scenario.instructions if i.target == t) for t in targets}
 
 
 def _preset_reason(scenario: Scenario, point: PresetPoint, target: TargetRef) -> TriggerReason:
@@ -87,13 +105,14 @@ def _preset_reason(scenario: Scenario, point: PresetPoint, target: TargetRef) ->
 
 
 def preset_triggers(scenario: Scenario, points: tuple[PresetPoint, ...]) -> Triggers:
-    """Trigger reasons per (step, target) from the config's preset points."""
-    first_steps = _first_instruction_steps(scenario)
+    """Trigger reasons per (step, target) from the config's preset points (``targets: null``: every
+    translation target); a target needs no instruction in effect to be translated."""
+    targets = translation_targets(scenario)
     found: Triggers = {}
     for point in points:
-        for target in point.targets or tuple(sorted(first_steps)):
-            if target not in first_steps or first_steps[target] > point.step:
-                raise PipelineError(f"preset point at step {point.step}: {target.label} has no instruction by then")
+        for target in point.targets or targets:
+            if target not in targets:
+                raise PipelineError(f"preset point at step {point.step}: {target.label} is not a translation target")
             found = _add(found, point.step, target, _preset_reason(scenario, point, target))
     for request in scenario.requests:
         for target in request.targets:
@@ -154,7 +173,7 @@ def is_tick(step: int, tick_interval_steps: int) -> bool:
 @dataclass(frozen=True)
 class TargetPlan:
     target: TargetRef
-    first_instruction_step: int
+    first_translation_step: int | None  # the first trigger (None: the target has none)
     down_step: int | None
     mandatory_translation_steps: tuple[int, ...]  # scenario triggers while the target is up
     detector_tick_steps: tuple[int, ...]  # exact: every tick after the first translation while up
@@ -194,20 +213,20 @@ def plan_schedule(
     ``tick_interval_steps`` is ``None`` for preset triggers (no detector).
     """
     plans = []
-    for target in sorted({item.target for item in scenario.instructions}):
-        first = min(item.issue_step for item in scenario.instructions if item.target == target)
-        down = facts.down_step(target)
-        end = facts.last_step + 1 if down is None else max(first, down)
+    for target in translation_targets(scenario):
         trigger_steps = sorted(step for step, key in triggers if key == target)
+        first = trigger_steps[0] if trigger_steps else None
+        down = facts.down_step(target)
+        end = facts.last_step + 1 if down is None else down
         ticks = (
             ()
-            if tick_interval_steps is None
+            if tick_interval_steps is None or first is None
             else tuple(step for step in range(first + 1, end) if is_tick(step, tick_interval_steps))
         )
         plans.append(
             TargetPlan(
                 target=target,
-                first_instruction_step=first,
+                first_translation_step=first,
                 down_step=down,
                 mandatory_translation_steps=tuple(step for step in trigger_steps if down is None or step < down),
                 detector_tick_steps=ticks,

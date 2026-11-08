@@ -1,10 +1,11 @@
 """The translation pipeline: one chronological loop, per slot: inputs -> prompt -> call -> answer -> event.
 
-For every step ``0 .. last_complete_step``:
+Every translation target (each target the scenario instructs or asks about) exists from the episode
+start, with or without an instruction in effect. For every step ``0 .. last_complete_step``:
 
 1. apply the instructions issued at this step (a later one replaces the target's current one);
-2. close every instructed target that is down (aircraft: ``alive == 0``; team: all its aircraft);
-3. for each instructed target in canonical (kind, id) order: take the run's trigger reasons for
+2. close every target that is down (aircraft: ``alive == 0``; team: all its aircraft);
+3. for each target in canonical (kind, id) order: take the run's trigger reasons for
    this (step, target) (online: the forced ``start`` and ``request``; preset: the configured
    points); a closed target only logs them as ``trigger_suppressed``; in an online run, on a tick
    (``step > 0``, ``step % T == 0``) a target that already has a translation gets one detector call,
@@ -64,7 +65,7 @@ from translate.events import (
 from translate.inputs import RunInputs, SlotState, event_input, slot_values, trajectory_window
 from translate.lag.rendering import RenderedTrajectory, render_detector_compact, render_lag17_jsonl
 from translate.policy.material import PolicyMaterial
-from translate.scenario import episode_facts, validate_scenario
+from translate.scenario import episode_facts, translation_targets, validate_scenario
 from translate.triggers import check_preset_points, detector_context, is_tick, run_triggers, tick_interval
 
 STATUS_COMPLETED = "completed"
@@ -143,7 +144,12 @@ class _Run:
         self.triggers = run_triggers(self.scenario, self.config)
         self.tick = tick_interval(self.config)
         self.instructions_at = _instructions_by_step(self.scenario)
-        self.states: dict[TargetRef, TargetState] = {}
+        # instruction=None until the target's first instruction (the byte-frozen events.TargetState
+        # annotation predates instruction-free starts).
+        self.states: dict[TargetRef, TargetState] = {
+            target: TargetState(target=target, instruction=None, previous=None, closed=False)  # type: ignore[arg-type]
+            for target in translation_targets(self.scenario)
+        }
         self.counts = {LAYER_DETECTOR: CallCounts(), LAYER_TRANSLATION: CallCounts()}
         self.sequence = 0
         self.in_flight: tuple[str, str] | None = None  # (layer, call_id) sent but not yet journaled
@@ -229,13 +235,7 @@ class Translator:
 
     def _step(self, run: _Run, step: int) -> None:
         for instruction in run.instructions_at.get(step, ()):
-            known = run.states.get(instruction.target)
-            state = TargetState(
-                target=instruction.target,
-                instruction=instruction,
-                previous=known.previous if known else None,
-                closed=known.closed if known else False,
-            )
+            state = replace(run.states[instruction.target], instruction=instruction)
             run.states = {**run.states, instruction.target: state}
         for target in sorted(run.states):
             down = run.facts.down_step(target)

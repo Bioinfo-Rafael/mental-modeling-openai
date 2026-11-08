@@ -15,11 +15,21 @@ run config (`configs/translate/*.yaml`):
    OpenAI Responses request) or `code_session` (the model reads the policy's weights and replay
    activations with Python in a sandbox, then answers in JSON).
 
-When to translate is the trigger source (`triggers:`): **online** (the clef-flash change-point
-detector decides `change` every tick as the episode advances; a target's first instruction forces
-`start` and a human request forces `request`) or **preset** (the steps are chosen in advance in the
-config, each with its kind). Trigger kinds are exactly `start` (開始点), `change` (変化点: a new or
-changed tactic, whatever its cause) and `request` (要求点).
+When to translate is the trigger source (`triggers:`): **online** (every target is translated at
+the episode start; a human question, or a target's first instruction arriving after the start,
+forces a translation; the clef-flash change-point detector decides every tick whether the previous
+intent still explains the behaviour) or **preset** (the steps are chosen in advance in the config,
+each with its kind). Trigger kinds are exactly three (2026-11-09):
+
+- `start` (開始点): the episode start, step 0, every target's first translatable step (every input
+  window clips at step 0). An episode may start with or without an instruction in effect; the start
+  is translated either way.
+- `change` (変化点): the detector judges that the previous intent translation no longer explains the
+  behaviour, because of an external factor (an alarm, an observed event), a human instruction or
+  similar. A tactic that follows the plan is no change: the plan is already in the previous intent.
+- `request` (要求点): a human question, or a target's first instruction arriving after the start. A
+  later instruction for a target that already has one forces nothing; it only reaches the detector
+  (D61).
 
 Every run writes `events.jsonl` (schema 3) for the judges. Each event records the human-visible
 material (scenario texts and the trajectory window) whatever the translator read, so the judges
@@ -55,7 +65,8 @@ The trajectory and policy configs reproduce the two former comparison methods by
 prompts and request bodies are pinned by `tests/translate/test_request_goldens.py`, and
 `scripts/check_request_replay.py` re-runs the recorded runs through this pipeline). The preset
 kinds of the reproduction configs (45 `start`, the others `change`) are assumptions: the
-recorded runs had none. `prompts/translator-intent-v1.yaml` is the 2026-11-04 trajectory prompt,
+recorded runs had none. Step 45 is not the episode start (step 0 is translatable too); the four
+steps were chosen for large movement changes, and a preset run translates exactly its points. `prompts/translator-intent-v1.yaml` is the 2026-11-04 trajectory prompt,
 kept only to reproduce those recorded runs.
 
 ## Command
@@ -99,7 +110,7 @@ are commented examples).
 | Section | Content |
 |---|---|
 | `scenario` | Scenario file (repository-relative), or null to require `--scenario` |
-| `triggers` | `source: online` + `tick_interval_steps`, or `source: preset` + `points: [{step, kind, targets}]` (`targets: null` = every instructed target) |
+| `triggers` | `source: online` + `tick_interval_steps`, or `source: preset` + `points: [{step, kind, targets}]` (`targets: null` = every translation target) |
 | `visibility` | `{mode: online, future_steps: 0}` (retrospective is not implemented) |
 | `limits`, `scenario_limits` | Call caps; maximum scenario text lengths |
 | `detector` | The clef-flash System One settings (online only; null for preset) |
@@ -117,7 +128,7 @@ are commented examples).
 | Input | Values (prompt placeholders) |
 |---|---|
 | always | `episode_alias`, `step`, `time_s`, `t_s`, `step_seconds`, `target_label`, `target_aircraft`, `max_intent_chars` |
-| `instructions` | `instructions` (every instruction in effect, through `blocks.instructions`), `primary_instruction` |
+| `instructions` | `instructions` (every instruction in effect, through `blocks.instructions`; its `empty` text when none is), `primary_instruction` (this target's own instruction through `blocks.primary_instruction`, `{text}` or its `empty` text; required when the prompt uses it) |
 | `alarms` | `alarms` (alarms for the target at or before t, through `blocks.alarms`) |
 | `question` | `question` (the request at t, through `blocks.question`) |
 | `previous_translation` | `previous_translation` (the target's latest valid answer, through `blocks.previous_translation`) |
@@ -155,15 +166,18 @@ A request without a response line means the process died mid-call: treat that ca
 The unit of translation is one exact target: `aircraft:<id>` or `team:<id>` (D17). Per step
 `0 .. last_complete_step` (340 / 293 / 495 for the committed episodes):
 
+0. Every translation target (each target an instruction or a request names) exists from step 0,
+   with or without an instruction in effect.
 1. Instructions issued at this step are applied (in `instruction_id` order). A later instruction
    replaces the target's current one; the target keeps its previous translation (D21). A later
-   instruction forces no translation: it only reaches the detector state (D50, D61).
-2. Every instructed target that is down is closed once (`target_closed`). Aircraft: first step with
+   instruction forces no translation: it only reaches the detector state (D61).
+2. Every target that is down is closed once (`target_closed`). Aircraft: first step with
    `alive == 0`. Team: the step its last aircraft is down. A closed target never reopens (D37).
 3. Targets are processed in canonical `(kind, id)` order (aircraft before team):
-   - online triggers: `start` at the target's first instruction (step 0, or later per D35;
-     source `first_instruction`, the bootstrap the detector needs as its previous intent) and
-     `request` at a scenario request (D4, D10; the question goes into the prompt);
+   - online triggers: `start` at step 0 for every target (source `episode_start`; the bootstrap
+     the detector needs as its previous intent), `request` at a scenario request (D4, D10; the
+     question goes into the prompt) and `request` at a target's first instruction when it arrives
+     after the start (source `instruction`, reference the instruction id; no question);
    - preset triggers: the config's `triggers.points`, each step with its kind (source `preset`;
      a preset `request` point takes the source and id of the scenario request it answers);
    - a closed target only logs its triggers as `trigger_suppressed` (no model call);
@@ -173,8 +187,9 @@ The unit of translation is one exact target: `aircraft:<id>` or `team:<id>` (D17
      when `label != none` and `p(label) >= threshold`, adding a `change` reason;
    - if any trigger remains, the target gets exactly one translation. Coinciding reasons are all
      kept; the primary trigger follows `start > change > request`.
-4. A target first instructed after step 0 gets its `start` translation at its issue step with no
-   previous translation; its detector ticks start after that (D35).
+4. A target first instructed after step 0 is translated at the start without an instruction, then
+   at its issue step as a `request` (supersedes D35); its detector ticks start after its start
+   translation.
 
 Scenario change points are not triggers: hindsight-placed change references live in the
 evaluation annotation, never in the scenario (D50 supersedes D6).
@@ -293,9 +308,9 @@ Trigger reason object: `{"kind", "source", "reference_id", "probability"}`.
 
 | `kind` | Point | `source` | `reference_id` | `probability` |
 |---|---|---|---|---|
-| `start` | 開始点: the target's first instruction (forced; also the bootstrap the detector needs as its previous intent) | `first_instruction` (`preset` for a preset point) | the instruction id (`preset-step-<s>`) | `null` |
-| `change` | 変化点: a new or changed tactic, as planned or because of an external factor | `detector` (`preset`) | the detector `call_id` (`preset-step-<s>`) | `p(change)` (`null`) |
-| `request` | 要求点: a human asked | the request's `source` | the request id | `null` |
+| `start` | 開始点: the episode start, step 0 (forced, with or without an instruction in effect; also the bootstrap the detector needs as its previous intent) | `episode_start` (`preset` for a preset point) | `episode-start` (`preset-step-<s>`) | `null` |
+| `change` | 変化点: the previous intent no longer explains the behaviour, because of an external factor or a human instruction (progress along the plan is none) | `detector` (`preset`) | the detector `call_id` (`preset-step-<s>`) | `p(change)` (`null`) |
+| `request` | 要求点: a human asked, or a target's first instruction arrived after the start | the request's `source` (`instruction`) | the request id (the instruction id) | `null` |
 
 Lists are in precedence order (`start > change > request`), then by `reference_id`.
 
@@ -311,9 +326,9 @@ Lists are in precedence order (`start > change > request`), then by `reference_i
 | `input.prompt_version` | The prompt file's `version` (e.g. `translator-intent-v2`, `intent-b-v1`) |
 | `input.target_aircraft` | The target's aircraft ids, as named in the prompt |
 | `input.instructions_in_effect` | Every instructed target's current instruction, canonical target order: `{instruction_id, issue_step, target, text}` |
-| `input.primary_instruction_id` | The instruction of this exact target |
+| `input.primary_instruction_id` | The instruction of this exact target; `null` before its first one |
 | `input.alarms` | Every alarm for this target issued at or before `step`, oldest first: `{alarm_id, step, targets, text}` |
-| `input.question` | `{request_id, step, text}` for a request event, else `null` |
+| `input.question` | `{request_id, step, text}` for a question's request event, else `null` (also for a request opened by an instruction) |
 | `input.trajectory` | `{renderer, renderer_version, start_step, end_step, anchor_step, object_ids, fields, text, sha256}`: the trajectory window a human rater sees, always recorded; when `trajectory` is a translator input, `text` is exactly the window text in the prompt; steps are the clipped, actually rendered ones |
 | `input.previous_translation` | `{event_id, step, intent, evidence}` of this target, or `null` |
 | `input.output_language` | The prompt's `output_language` var, if any |
@@ -340,7 +355,7 @@ lets a consumer check that join.
 | `input.instructions_in_effect` | The target's own instruction and, for an aircraft, its team's: `{instruction_id, issue_step, target, text}` |
 | `input.messages` | Every alarm and question for this target in the lookback, oldest first: `{kind: alarm \| question, id, step, text}` |
 | `input.state_text` | The exact state string sent |
-| `input.question` | Full question object `{id, type: choice, instructions, criteria: {none, start, change}}` |
+| `input.question` | Full question object `{id, type: choice, instructions, criteria: {none, change}}` |
 | `output` | `{label, probabilities: {none, start, change}, threshold, triggered}`; `triggered = label != none and probabilities[label] >= threshold` |
 | `raw_response` | The full server response body |
 | `model` | `{backend, model, revision, served_model_name, response_model}` |
@@ -418,9 +433,10 @@ and nothing about it is judged.
 with placeholder text: `instructions`, `alarms` (`{alarm_id, step, targets, text}`) and
 `requests` (`{request_id, step, targets, source, question}`). The v1 key
 `external_change_points` is rejected. Scenario rules: exact keys; ids unique across
-instructions, alarms and requests; at least one instruction at step 0; at most one instruction
-and at most one request per exact target per step; every alarm or request target already
-instructed at or before its step; every text within `scenario_limits` (longer fails the load,
+instructions, alarms and requests; at least one translation target (a target an instruction or a
+request names; no instruction need be issued at step 0); at most one instruction and at most one
+request per exact target per step; every alarm target is a translation target; every text within
+`scenario_limits` (longer fails the load,
 nothing is truncated); all steps within `[0, last_complete_step]`; aircraft and team ids must
 exist in the episode. Alias outcome check (D58): `episode.alias` is lowercased and split into
 alphanumeric tokens (`episode_id` likewise); no token may be an outcome word (`win`, `loss`,

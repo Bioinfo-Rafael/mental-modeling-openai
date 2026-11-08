@@ -1,6 +1,7 @@
 # Trajectory-input translation prompt (one Responses call, strict JSON answer).
 # Byte-identical to the former Translator prompt translator-intent-v2 (M1 and the trajectory-based
-# comparison method); tests/fixtures/prompt-request-goldens.json pins the rendered requests.
+# comparison method); tests/fixtures/prompt-request-goldens.json pins the rendered requests. With no
+# instruction in effect (a start without one, which the recorded runs never had) the block reads (none).
 # Values: see src/translate/README.md. Vars: output_language, limits_paragraph.
 schema_version: 1
 version: translator-intent-v2
@@ -72,7 +73,7 @@ blocks:
     primary_marker: ' | THIS TARGET''S INSTRUCTION'
     joiner: |2+
 
-    empty: ''
+    empty: (none)
   alarms:
     item: |-
       - issued at step {step} for {targets}:

@@ -2,6 +2,7 @@
 # for new runs (configs/evaluation/judge-text.yaml, judge-text-video.yaml). Same blocks as
 # judge-text-v3, with neutral wording: the TRAJECTORY block is the human-visible telemetry up to the
 # current step (the judge sees it for every Translator method), not necessarily the Translator's input.
+# An empty INSTRUCTIONS block says so (a start may have no instruction in effect).
 # Fields of every template: src/evaluation/prompt_files.py (KEY_POINT_PROMPT_SPEC).
 # Each text is one input_text item, in the config's block order; legends: renderer -> meaning.
 schema_version: 1
@@ -95,7 +96,7 @@ blocks:
     issue_step: "issued at step {issue_step}"
     part_joiner: ", "
     joiner: ""
-    empty: ""
+    empty: "\n- none (no instruction is in effect)"
   time:
     present: " ({time_s} s)"
     empty: ""

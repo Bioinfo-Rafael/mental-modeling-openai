@@ -519,7 +519,9 @@ def _target_results(
     counted = _threshold(
         {"utterances": utterances}, "max_utterances_per_target", limit, lambda value: utterances <= value
     )
-    request_times = sorted(e["time_s"] for e in events if POINT_REQUEST in point_kinds(e, context.config))
+    # Questions only: a request point opened by an instruction is no question (min_question_interval_s).
+    asked = [e for e in events if POINT_REQUEST in point_kinds(e, context.config) and e["input"]["question"]]
+    request_times = sorted(e["time_s"] for e in asked)
     records = [
         _machine_record(context, key, _subject(run, target, ()), "timing.utterance_count", counted),
         _machine_record(

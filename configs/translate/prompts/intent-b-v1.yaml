@@ -1,7 +1,8 @@
 # Policy-input translation prompt (code session: the model reads weights W and replayed activations A
 # with Python in the sandbox and ends with one ```json answer). Byte-identical to the former
 # intent-b-v1 prompt; tests/fixtures/intent-b-v1-goldens.json pins it. Vars: language_instruction,
-# limits_line. Literal braces are doubled ({{ }}).
+# limits_line. Literal braces are doubled ({{ }}). primary_instruction words the target's own
+# instruction, or its absence at a start without one (a case the recorded runs never had).
 schema_version: 1
 version: intent-b-v1
 protocol: code_session
@@ -75,6 +76,9 @@ user: |
   {limits_line}Treat the intent as a hypothesis supported by evidence; do not invent missile targets, hits,
   cooperation or outcomes. {language_instruction} Text outside the ```json block is ignored.
 blocks:
+  primary_instruction:
+    present: '{text}'
+    empty: '(none: no instruction is in effect)'
   previous_translation:
     present: |-
       From step {step}:

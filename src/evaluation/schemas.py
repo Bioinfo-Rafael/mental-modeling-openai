@@ -155,10 +155,10 @@ def _object(mapping: dict[str, Any], key: str, where: str) -> dict[str, Any]:
     return value
 
 
-def _items(mapping: dict[str, Any], key: str, where: str, item_type: type) -> list[Any]:
+def _items(mapping: dict[str, Any], key: str, where: str, item_type: type, *, empty: bool = False) -> list[Any]:
     value = _field(mapping, key, where)
-    if not isinstance(value, list) or not value or not all(isinstance(item, item_type) for item in value):
-        raise EventLogError(f"{where}.{key} must be a non-empty list of {item_type.__name__}")
+    if not isinstance(value, list) or not (value or empty) or not all(isinstance(item, item_type) for item in value):
+        raise EventLogError(f"{where}.{key} must be a {'' if empty else 'non-empty '}list of {item_type.__name__}")
     return value
 
 
@@ -218,13 +218,15 @@ def _check_input(event: dict[str, Any], where: str) -> None:
     payload = _object(event, "input", where)
     name = f"{where}.input"
     instruction_ids = []
-    for index, instruction in enumerate(_items(payload, "instructions_in_effect", name, dict)):
+    # empty: a start may have no instruction in effect
+    for index, instruction in enumerate(_items(payload, "instructions_in_effect", name, dict, empty=True)):
         item = f"{name}.instructions_in_effect[{index}]"
         instruction_ids.append(_safe_id(instruction, "instruction_id", item))
         _count(instruction, "issue_step", item)
         _check_target(instruction, "target", item)
         _text(instruction, "text", item)
-    if _text(payload, "primary_instruction_id", name) not in instruction_ids:
+    primary = _field(payload, "primary_instruction_id", name)  # null: the target has no instruction yet
+    if primary is not None and _text(payload, "primary_instruction_id", name) not in instruction_ids:
         raise EventLogError(f"{name}.primary_instruction_id is not among instructions_in_effect")
     _safe_ids(payload, "target_aircraft", name)
     trajectory = _object(payload, "trajectory", name)

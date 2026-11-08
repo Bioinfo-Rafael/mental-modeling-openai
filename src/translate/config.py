@@ -4,7 +4,7 @@ One file per run configuration (``configs/translate/*.yaml``); every key is requ
 unknown keys fail, and there is no default model in code. Sections:
 
 - ``scenario``: the scenario file (repository-relative; the CLI's ``--scenario`` overrides it);
-- ``triggers``: ``online`` (forced ``start`` / ``request`` + the clef-flash detector every
+- ``triggers``: ``online`` (forced ``start`` at the episode start / ``request`` + the clef-flash detector every
   ``tick_interval_steps``) or ``preset`` (``points``: steps chosen in advance, each with its kind);
 - ``inputs``: the selected inputs; ``trajectory`` (the window every event records for the judge,
   inserted into the prompt when selected) and ``policy`` (rollout, spec, window) configure them;
@@ -173,7 +173,7 @@ class ConfigError(ValueError):
 class PresetPoint:
     step: int
     kind: str  # start | change | request
-    targets: tuple[TargetRef, ...] | None  # None: every instructed target
+    targets: tuple[TargetRef, ...] | None  # None: every translation target (instructed or asked about)
 
 
 @dataclass(frozen=True)
@@ -654,6 +654,8 @@ def _check_prompt(config: RunConfig) -> None:
     ]
     if unformatted:
         raise ConfigError(f"prompt {prompt.path.name} has no blocks entry for {unformatted}")
+    if "primary_instruction" in used and "primary_instruction" not in prompt.blocks:  # a start may have none
+        raise ConfigError(f"prompt {prompt.path.name} uses primary_instruction but has no primary_instruction block")
 
 
 def _check_consistency(config: RunConfig) -> None:

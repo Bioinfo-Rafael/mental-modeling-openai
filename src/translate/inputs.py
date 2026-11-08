@@ -51,7 +51,7 @@ class RunInputs:
 class SlotState:
     step: int
     target: TargetRef
-    instruction: Instruction  # the target's current instruction
+    instruction: Instruction | None  # the target's current instruction; None before its first one
     previous: PreviousTranslation | None  # the target's latest valid translation
 
 
@@ -81,16 +81,23 @@ def _base(inputs: RunInputs, slot: SlotState) -> dict[str, object]:
 
 
 def _instructions(inputs: RunInputs, slot: SlotState) -> dict[str, object]:
-    """All instructions in effect as a block (when the prompt defines one) and this target's own text."""
-    values: dict[str, object] = {"primary_instruction": slot.instruction.text}
-    block = inputs.config.prompt.blocks.get("instructions")
+    """All instructions in effect as a block and this target's own one through its optional block (each
+    when the prompt defines it); either may be empty: no instruction need be in effect."""
+    blocks, own = inputs.config.prompt.blocks, slot.instruction
+    values: dict[str, object] = {}
+    if "primary_instruction" in blocks:
+        values = {
+            "primary_instruction": optional_block(blocks["primary_instruction"], {"text": own.text} if own else None)
+        }
+    block = blocks.get("instructions")
     if block is None:
         return values
+    own_id = own.instruction_id if own else None
     items = [
         {
             "issue_step": item.issue_step,
             "target": item.target.label,
-            "primary": block["primary_marker"] if item.instruction_id == slot.instruction.instruction_id else "",
+            "primary": block["primary_marker"] if item.instruction_id == own_id else "",
             "text": item.text,
         }
         for item in instructions_in_effect(inputs.scenario, slot.step)
@@ -177,7 +184,7 @@ def event_input(inputs: RunInputs, slot: SlotState, trajectory: RenderedTrajecto
         "prompt_version": config.prompt.version,
         "target_aircraft": list(inputs.facts.target_aircraft(slot.target)),
         "instructions_in_effect": [item.to_json() for item in instructions_in_effect(inputs.scenario, slot.step)],
-        "primary_instruction_id": slot.instruction.instruction_id,
+        "primary_instruction_id": slot.instruction.instruction_id if slot.instruction else None,
         "alarms": [item.to_json() for item in target_alarms(inputs.scenario, inputs.facts, slot.target, slot.step)],
         "question": None
         if request is None

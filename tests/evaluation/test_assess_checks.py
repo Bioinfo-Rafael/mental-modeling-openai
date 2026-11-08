@@ -120,31 +120,55 @@ def test_correctness_criterion_without_observable_reference_is_rejected() -> Non
 LEVELS = {value: f"レベル{value}の条件" for value in ("1", "2", "3", "4", "5")}
 
 
-@pytest.mark.parametrize(("name", "rubric"), [("assess.yaml", "pilot-3"), ("assess-legacy.yaml", "pilot-2")])
-def test_every_committed_criterion_has_one_non_blank_anchor_per_level(name: str, rubric: str) -> None:
+# The default rubric (pilot-4, 2026-11-09) dropped timing.start_in_time (the episode start's timing is
+# fixed) and made the two question-only request criteria conditional (a request may be an instruction).
+QUESTION_ONLY = {"correctness.question_granularity", "contribution.question_resolved"}
+CONDITIONAL = {
+    "elements.target",
+    "elements.wingman_role",
+    "elements.instruction_relation",
+    "elements.priority",
+    "correctness.change_delta",  # no PREVIOUS (first explanation of the target) => not_applicable
+    "correctness.consistent_with_latest",
+}
+
+
+@pytest.mark.parametrize(
+    ("name", "rubric", "count", "conditional"),
+    [("assess.yaml", "pilot-4", 23, CONDITIONAL | QUESTION_ONLY), ("assess-legacy.yaml", "pilot-2", 24, CONDITIONAL)],
+)
+def test_every_committed_criterion_has_one_non_blank_anchor_per_level(
+    name: str, rubric: str, count: int, conditional: set[str]
+) -> None:
     config = load_config(DEFAULT_CONFIG.parent / name)
 
     criteria = {c.criterion_id: c for items in config.criteria.values() for c in items}
 
     assert config.rubric_version == rubric and config.scale.values == ("1", "2", "3", "4", "5")
-    assert len(criteria) == 24
+    assert len(criteria) == count
     for criterion in criteria.values():
         assert list(criterion.levels) == ["1", "2", "3", "4", "5"], criterion.criterion_id
         assert all(anchor.strip() for anchor in criterion.levels.values()), criterion.criterion_id
         assert len(set(criterion.levels.values())) == len(LEVELS), criterion.criterion_id  # no copied level
         assert (criterion.not_applicable is not None) == criterion.conditional, criterion.criterion_id
-    conditional = {c.criterion_id for c in criteria.values() if c.conditional}
-    assert conditional == {
-        "elements.target",
-        "elements.wingman_role",
-        "elements.instruction_relation",
-        "elements.priority",
-        "correctness.change_delta",  # no PREVIOUS (first explanation of the target) => not_applicable
-        "correctness.consistent_with_latest",
-    }
+    assert {c.criterion_id for c in criteria.values() if c.conditional} == conditional
     for criterion_id in ("correctness.change_delta", "correctness.consistent_with_latest"):
         assert criteria[criterion_id].not_applicable == "PREVIOUS が無い（この対象の最初の説明）"
         assert criteria[criterion_id].cannot_judge is None  # no PREVIOUS is no longer cannot_judge
+
+
+def test_the_default_rubric_words_the_2026_11_09_point_definitions() -> None:
+    config = load_config(DEFAULT_CONFIG)
+    criteria = {c.criterion_id: c for items in config.criteria.values() for c in items}
+
+    assert "timing.start_in_time" not in criteria
+    assert "以前の意図を当てはまらなくした外的要因" in criteria["correctness.change_cause"].text
+    assert "計画どおりの進行" in criteria["correctness.change_cause"].levels["1"]  # a planned tactic is no cause
+    for criterion_id in QUESTION_ONLY:
+        assert "指示による要求点" in criteria[criterion_id].not_applicable
+    relation = criteria["elements.instruction_relation"]  # a start may have no instruction in effect
+    assert relation.conditional and "none" in relation.not_applicable
+    assert sorted(config.triggers) == [3]  # schema 2 runs: assess-legacy.yaml only
 
 
 def _with_first_criterion(**changes: object) -> dict:

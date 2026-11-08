@@ -2,7 +2,8 @@
 # default for new runs (configs/evaluation/assess.yaml). Same material and rubric layout as
 # assess-judge-v2, with neutral wording: the TRAJECTORY block is the human-visible telemetry up to t
 # (the judge sees it for every Translator method, also when the Translator read the policy instead),
-# and trigger kinds are shown as the config's point kinds (start / change / request).
+# and trigger kinds are shown as the config's point kinds (start / change / request). A start may have
+# no instruction in effect, and a request may come from an instruction instead of a question.
 # Fields of every template: src/evaluation/prompt_files.py (ASSESS_PROMPT_SPEC). Free texts arrive
 # quoted as JSON string literals. Literal braces are doubled ({{ }}).
 schema_version: 1
@@ -116,7 +117,7 @@ blocks:
     empty: "- none"
   question:
     present: "- step {step}: {text}"
-    empty: "- none (this is not a request point)"
+    empty: "- none"
   previous_translation:
     present: "- step {step}: intent {intent}{evidence}"
     evidence_item: "\n  - {item}"

@@ -48,7 +48,7 @@ from .tr_fakes import (
 KEY_ENV = "VLLM_API_KEY"  # the variable NAME in run.yaml; tests set a fake value
 SENTINEL_KEY = "local-test-key-0123"
 TRANSLATION_ANSWER = json.dumps({"intent": "[FAKE] intent", "evidence": ["[FAKE] evidence"]})
-# Detector answers on the example scenario: A0100 starts a tactic at tick 5 and changes it at tick 15.
+# Scripted detector answers on the example scenario: a change for A0100 at ticks 5 and 15.
 EXAMPLE_ANSWERS = {("aircraft A0100", 5): CHANGE, ("aircraft A0100", 15): CHANGE}
 
 

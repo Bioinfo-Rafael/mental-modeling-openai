@@ -23,6 +23,7 @@ from translate.scenario import (
     episode_facts,
     load_scenario,
     parse_scenario,
+    translation_targets,
     validate_scenario,
 )
 
@@ -73,6 +74,17 @@ def test_default_run_yaml_loads_with_explicit_values() -> None:
     assert (config.detector.question.question_id, config.detector.question.question_type) == ("point_kind", "choice")
     assert [label for label, _ in config.detector.question.criteria] == ["none", "change"]
     assert config.detector.threshold == 0.65
+
+
+def test_the_detector_criteria_word_the_2026_11_09_change_definition() -> None:
+    criteria = dict(load_config(RUN_CONFIG).detector.question.criteria)
+
+    assert criteria == {
+        "none": "The target's behaviour is still explained by its previous intent translation, including progress "
+        "along the plan that translation describes.",
+        "change": "The previous intent translation no longer explains the target's behaviour, because of an "
+        "external factor (an alarm or an observed event), a human instruction or similar.",
+    }
 
 
 @pytest.mark.parametrize(
@@ -282,9 +294,22 @@ def test_example_scenario_resolves_paths_relative_to_its_file() -> None:
     assert [(item.request_id, item.step) for item in scenario.requests] == [("placeholder-request-001", 10)]
 
 
-def test_scenario_without_step_zero_instruction_is_rejected() -> None:
-    with pytest.raises(ScenarioError, match="step 0"):
-        make_scenario([instruction("i1", 3, "aircraft", "A0100")])
+def test_scenario_without_an_instruction_at_step_zero_is_accepted() -> None:
+    """An episode may start with no instruction in effect (2026-11-09): the start is translated anyway."""
+    scenario = make_scenario([instruction("i1", 3, "aircraft", "A0100")])
+
+    assert translation_targets(scenario) == (TargetRef("aircraft", "A0100"),)
+
+
+def test_scenario_with_only_a_question_has_its_target() -> None:
+    scenario = make_scenario([], [request("r1", 10, ("aircraft", "A0200"))])
+
+    assert scenario.instructions == () and translation_targets(scenario) == (TargetRef("aircraft", "A0200"),)
+
+
+def test_scenario_naming_no_translation_target_is_rejected() -> None:
+    with pytest.raises(ScenarioError, match="no translation target"):
+        make_scenario([], alarms=[])
 
 
 @pytest.mark.parametrize(
@@ -313,24 +338,22 @@ def test_two_instructions_for_one_target_at_one_step_are_rejected() -> None:
         make_scenario([instruction("i1", 0, "team", "A"), instruction("i2", 0, "team", "A")])
 
 
-def test_request_before_the_targets_first_instruction_is_rejected() -> None:
+def test_request_before_the_targets_first_instruction_is_accepted() -> None:
+    """Team B is a translation target from the start; its question at 19 needs no instruction."""
     instructions = [instruction("i1", 0, "aircraft", "A0100"), instruction("i2", 20, "team", "B")]
 
-    with pytest.raises(ScenarioError, match="r1 references team B"):
-        make_scenario(instructions, [request("r1", 19, ("team", "B"))])
+    assert make_scenario(instructions, [request("r1", 19, ("team", "B"))]).requests
 
 
-def test_alarm_for_a_never_instructed_target_is_rejected() -> None:
-    with pytest.raises(ScenarioError, match="c1 references aircraft B0100"):
+def test_alarm_for_a_target_no_instruction_or_request_names_is_rejected() -> None:
+    with pytest.raises(ScenarioError, match=r"c1 names \['aircraft B0100'\]"):
         make_scenario([instruction("i1", 0, "aircraft", "A0100")], alarms=[alarm("c1", 5, ("aircraft", "B0100"))])
 
 
-def test_alarm_before_one_of_its_targets_first_instruction_is_rejected() -> None:
+def test_alarm_before_one_of_its_targets_first_instruction_is_accepted() -> None:
     instructions = [instruction("i1", 0, "aircraft", "A0100"), instruction("i2", 20, "team", "B")]
 
-    with pytest.raises(ScenarioError, match="w1 references team B"):
-        make_scenario(instructions, alarms=[alarm("w1", 19, ("aircraft", "A0100"), ("team", "B"))])
-    assert make_scenario(instructions, alarms=[alarm("w1", 20, ("aircraft", "A0100"), ("team", "B"))]).alarms
+    assert make_scenario(instructions, alarms=[alarm("w1", 19, ("aircraft", "A0100"), ("team", "B"))]).alarms
 
 
 def test_two_requests_for_one_target_at_one_step_are_rejected() -> None:
@@ -433,7 +456,7 @@ def test_request_at_the_targets_first_instruction_step_is_accepted() -> None:
     [
         ("episode.alias", WIN01, "alias must differ"),
         ("extra", 1, "unknown"),
-        ("instructions", [], "must not be empty"),
+        ("instructions", [], "no translation target"),
         ("requests", None, "list"),
         ("alarms", None, "list"),
         ("alarms", [{"alarm_id": "w1", "step": 1, "targets": [], "text": "x"}], "distinct"),

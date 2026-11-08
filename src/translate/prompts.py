@@ -9,7 +9,8 @@ A prompt file (``configs/translate/prompts/*.yaml``) holds:
 - ``system`` (one-shot only; ``null`` for a code session) and ``user``: templates with ``{name}``
   placeholders, filled from the values of the selected inputs and the run config's ``prompt.vars``
   (``str.format`` syntax: ``{t_s:g}`` formats a number, literal braces are doubled);
-- ``blocks``: how list and optional inputs become text (item template, joiner, text when empty);
+- ``blocks``: how list and optional inputs become text (item template, joiner, text when empty;
+  ``primary_instruction`` words the target's own instruction, or its absence);
 - ``turns`` (code session only): the wording of the follow-up messages.
 
 Every placeholder is checked when the run config is loaded, so a typo fails before anything is
@@ -36,12 +37,14 @@ PROMPT_KEYS = {"schema_version", "version", "protocol", "output_schema", "system
 # The fields each block template may use, per block name; the block's keys are fixed too.
 BLOCK_KEYS = {
     "instructions": {"item", "primary_marker", "joiner", "empty"},
+    "primary_instruction": {"present", "empty"},
     "alarms": {"item", "joiner", "empty"},
     "question": {"present", "empty"},
     "previous_translation": {"present", "evidence_item", "evidence_joiner", "empty"},
 }
 BLOCK_FIELDS = {
     "instructions": {"item": {"issue_step", "target", "primary", "text"}},
+    "primary_instruction": {"present": {"text"}},
     "alarms": {"item": {"step", "targets", "text"}},
     "question": {"present": {"step", "text"}},
     "previous_translation": {"present": {"step", "intent", "evidence"}, "evidence_item": {"item"}},

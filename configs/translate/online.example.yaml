@@ -1,7 +1,8 @@
-# Online translation (the two-layer Translator): the clef-flash change-point detector (System One on
-# a local vLLM, slurm/translate_vllm.sbatch) decides change points every tick as the episode
-# advances; a target's first instruction (start) and every human request (request) force a
-# translation. Every model input holds only data at or before t. Real scenarios live in the
+# Online translation (the two-layer Translator): every target is translated at the episode start
+# (start), with or without an instruction in effect; a human question, or a target's first
+# instruction arriving after the start, forces a translation (request); the clef-flash change-point
+# detector (System One on a local vLLM, slurm/translate_vllm.sbatch) decides every tick whether the
+# previous intent still explains the behaviour (change). Every model input holds only data at or before t. Real scenarios live in the
 # gitignored private/translator/; pass one with --scenario.
 # python -m translate --config configs/translate/online.example.yaml   (preview; real runs: translate_vllm.sbatch)
 schema_version: 2
@@ -45,8 +46,8 @@ detector:
       Classify the target's behaviour in the trajectory window against its previous intent
       translation, its instructions in effect and the recent messages listed in the state.
     criteria:
-      none: The target continues the tactic described by its previous intent translation.
-      change: The target begins a new tactic or changes its tactic, whether it follows its existing plan or instruction or responds to an external factor (an alarm, a new instruction or an observed event).
+      none: The target's behaviour is still explained by its previous intent translation, including progress along the plan that translation describes.
+      change: The previous intent translation no longer explains the target's behaviour, because of an external factor (an alarm or an observed event), a human instruction or similar.
   window:
     past_steps: 10                  # D27 short window: [step-9, step]
     entity_scope: target_and_opponents   # the target's aircraft first, then the opposing team

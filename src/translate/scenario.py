@@ -159,14 +159,22 @@ def _check_text_limits(scenario: Scenario, limits: ScenarioLimitsConfig) -> None
             raise ScenarioError(f"{item_id} text has {len(content)} characters; the limit is {limit} (scenario_limits)")
 
 
+def translation_targets(scenario: Scenario) -> tuple[TargetRef, ...]:
+    """Every target the scenario instructs or asks about, in canonical order: each is translated from the
+    episode start, whether or not an instruction is in effect then."""
+    targets = {item.target for item in scenario.instructions}
+    targets |= {target for item in scenario.requests for target in item.targets}
+    return tuple(sorted(targets))
+
+
 def check_scenario_rules(scenario: Scenario, limits: ScenarioLimitsConfig) -> None:
-    """Rules that need no episode: ids, step-0 instruction, per-step uniqueness, references, text limits.
+    """Rules that need no episode: ids, a translation target, per-step uniqueness, alarm targets, text limits.
 
     ``parse_scenario`` and ``pipeline.validate_scenario`` both run it, so a ``Scenario`` built in
     code obeys the same rules as a loaded one (and ``plan_schedule`` matches the run).
     """
-    if not scenario.instructions:
-        raise ScenarioError("instructions must not be empty")
+    if not translation_targets(scenario):
+        raise ScenarioError("the scenario names no translation target (no instruction and no request)")
     ids = [
         *(item.instruction_id for item in scenario.instructions),
         *(item.alarm_id for item in scenario.alarms),
@@ -174,23 +182,17 @@ def check_scenario_rules(scenario: Scenario, limits: ScenarioLimitsConfig) -> No
     ]
     if len(set(ids)) != len(ids):
         raise ScenarioError("instruction, alarm and request ids must be unique across the scenario")
-    if not any(item.issue_step == 0 for item in scenario.instructions):
-        raise ScenarioError("at least one instruction must be issued at step 0")
     keys = [(item.target, item.issue_step) for item in scenario.instructions]
     if len(set(keys)) != len(keys):
         raise ScenarioError("at most one instruction per exact target per step")
     request_keys = [(target, item.step) for item in scenario.requests for target in item.targets]
     if len(set(request_keys)) != len(request_keys):
         raise ScenarioError("at most one request per exact target per step")
-    targets = {item.target for item in scenario.instructions}
-    first_step = {t: min(i.issue_step for i in scenario.instructions if i.target == t) for t in targets}
-    references = [(item.request_id, t, item.step) for item in scenario.requests for t in item.targets]
-    references += [(item.alarm_id, t, item.step) for item in scenario.alarms for t in item.targets]
-    for reference_id, target, step in references:
-        if target not in first_step or first_step[target] > step:
-            raise ScenarioError(
-                f"{reference_id} references {target.label}, which has no instruction at or before {step}"
-            )
+    targets = set(translation_targets(scenario))
+    for alarm in scenario.alarms:
+        unknown = [target.label for target in alarm.targets if target not in targets]
+        if unknown:
+            raise ScenarioError(f"{alarm.alarm_id} names {unknown}, which no instruction or request names")
     _check_text_limits(scenario, limits)
 
 
@@ -199,8 +201,6 @@ def parse_scenario(raw: object, *, base: Path, limits: ScenarioLimitsConfig) -> 
     if section["schema_version"] != SCENARIO_SCHEMA_VERSION or isinstance(section["schema_version"], bool):
         raise ScenarioError(f"scenario schema_version must be {SCENARIO_SCHEMA_VERSION}")
     instructions = _list(section["instructions"], "instructions")
-    if not instructions:
-        raise ScenarioError("instructions must not be empty")
     scenario = Scenario(
         schema_version=SCENARIO_SCHEMA_VERSION,
         scenario_id=safe_id(section["scenario_id"], "scenario_id", ScenarioError),
@@ -258,12 +258,12 @@ def episode_facts(frame: pd.DataFrame) -> EpisodeFacts:
 
 def validate_scenario(scenario: Scenario, facts: EpisodeFacts, limits: ScenarioLimitsConfig) -> None:
     """The loader's scenario rules, then episode id, steps within ``[0, last_step]``, known aircraft and teams."""
-    check_scenario_rules(scenario, limits)  # e.g. no request or alarm before its target's first instruction
+    check_scenario_rules(scenario, limits)  # e.g. an alarm naming no translation target
     if scenario.episode.episode_id != facts.episode_id:
         raise PipelineError("scenario episode_id does not match the loaded episode")
     steps = [item.issue_step for item in scenario.instructions]
     steps += [item.step for item in (*scenario.alarms, *scenario.requests)]
-    if max(steps) > facts.last_step:
+    if max(steps, default=0) > facts.last_step:
         raise PipelineError(f"scenario steps must lie in [0, {facts.last_step}] (last complete step)")
     targets = {item.target for item in scenario.instructions}
     targets |= {target for item in (*scenario.alarms, *scenario.requests) for target in item.targets}

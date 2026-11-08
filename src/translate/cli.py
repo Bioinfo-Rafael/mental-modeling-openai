@@ -224,7 +224,7 @@ def mandatory_bodies(inputs: Inputs) -> list[dict[str, Any]]:
     for target_plan in inputs.plan.targets:
         for step in target_plan.mandatory_translation_steps:
             in_effect = instructions_in_effect(inputs.scenario, step)
-            instruction = next(i for i in in_effect if i.target == target_plan.target)
+            instruction = next((i for i in in_effect if i.target == target_plan.target), None)  # none yet: None
             slot = SlotState(step, target_plan.target, instruction, None)
             values = slot_values(run_inputs, slot, trajectory_window(run_inputs, step))
             bodies.append((step, target_plan.target, _request_body(config, values)))
@@ -305,7 +305,7 @@ def _plan_json(inputs: Inputs) -> dict[str, Any]:
     targets = [
         {
             "target": item.target.to_json(),
-            "first_instruction_step": item.first_instruction_step,
+            "first_translation_step": item.first_translation_step,
             "down_step": item.down_step,
             "mandatory_translation_steps": list(item.mandatory_translation_steps),
             "detector_ticks": len(item.detector_tick_steps),

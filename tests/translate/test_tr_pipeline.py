@@ -17,7 +17,6 @@ from translate.events import (
     RECORD_TYPES,
     Alarm,
     ModelCallError,
-    RequestPoint,
     Scenario,
     TargetRef,
 )
@@ -86,7 +85,7 @@ def _answer_at(answers: dict[tuple[str, int], Answer]) -> FakeDetectionModel:
 A1 = ("aircraft", "A0100")
 
 
-def test_first_instruction_gives_every_target_a_start_translation_in_canonical_order(
+def test_every_target_gets_its_start_translation_at_the_episode_start_in_canonical_order(
     frames: dict[str, pd.DataFrame],
 ) -> None:
     scenario = make_scenario([instruction("t1", 0, "team", "A"), instruction("a1", 0, *A1)])
@@ -103,7 +102,7 @@ def test_first_instruction_gives_every_target_a_start_translation_in_canonical_o
     assert first["input"]["previous_translation"] is None
     assert (first["input"]["alarms"], first["input"]["question"]) == ([], None)
     assert first["trigger_reasons"] == [
-        {"kind": "start", "source": "first_instruction", "reference_id": "a1", "probability": None}
+        {"kind": "start", "source": "episode_start", "reference_id": "episode-start", "probability": None}
     ]
     assert first["time_s"] == 0.0 and first["episode"]["csv_sha256"] == frames[WIN01].attrs["csv_sha256"]
 
@@ -167,7 +166,7 @@ def test_primary_trigger_precedence(
     assert [reason["kind"] for reason in event["trigger_reasons"]] == expected
 
 
-def test_later_instruction_only_feeds_the_detector_and_a_mid_episode_target_gets_its_start(
+def test_later_instruction_only_feeds_the_detector_and_a_late_first_instruction_is_a_request(
     frames: dict[str, pd.DataFrame],
 ) -> None:
     instructions = [
@@ -180,12 +179,17 @@ def test_later_instruction_only_feeds_the_detector_and_a_mid_episode_target_gets
     _, sink = _run(frames[WIN01], make_scenario(instructions))
 
     by_key = {(e["step"], e["target"]["id"]): e for e in sink.of_type("translation_event")}
-    first_b = by_key[(23, "B")]
-    assert sorted(by_key) == [(0, "A"), (0, "A0100"), (23, "B")]  # no translation for the replacement at 20
-    assert first_b["primary_trigger"] == "start" and first_b["input"]["previous_translation"] is None
-    assert first_b["trigger_reasons"][0]["reference_id"] == "tb1"
-    assert [i["instruction_id"] for i in first_b["input"]["instructions_in_effect"]] == ["a1", "ta2", "tb1"]
-    assert _detector_steps(sink, "team B")[:2] == [25, 30]  # no detector before its first translation
+    start_b, late_b = by_key[(0, "B")], by_key[(23, "B")]
+    assert sorted(by_key) == [(0, "A"), (0, "A0100"), (0, "B"), (23, "B")]  # no translation for the replacement at 20
+    assert start_b["primary_trigger"] == "start" and start_b["input"]["primary_instruction_id"] is None
+    assert [i["instruction_id"] for i in start_b["input"]["instructions_in_effect"]] == ["a1", "ta1"]
+    assert late_b["trigger_reasons"] == [
+        {"kind": "request", "source": "instruction", "reference_id": "tb1", "probability": None}
+    ]
+    assert late_b["input"]["question"] is None and late_b["input"]["primary_instruction_id"] == "tb1"
+    assert late_b["input"]["previous_translation"]["event_id"] == "test-scenario:team:B:000000"
+    assert [i["instruction_id"] for i in late_b["input"]["instructions_in_effect"]] == ["a1", "ta2", "tb1"]
+    assert _detector_steps(sink, "team B")[:2] == [5, 10]  # from the tick after its start translation
     assert 20 in _detector_steps(sink, "team A")  # the replaced target is still checked at its tick
     team_a = {e["step"]: e for e in sink.of_type("detector_call") if e["target"]["id"] == "A"}
     assert [i["instruction_id"] for i in team_a[15]["input"]["instructions_in_effect"]] == ["ta1"]
@@ -292,16 +296,17 @@ def test_team_closes_when_its_last_aircraft_is_down(frames: dict[str, pd.DataFra
     assert max(_detector_steps(sink, "team B")) == 330
 
 
-def test_instruction_for_an_already_down_target_is_suppressed(frames: dict[str, pd.DataFrame]) -> None:
+def test_a_late_first_instruction_for_a_down_target_is_suppressed(frames: dict[str, pd.DataFrame]) -> None:
     instructions = [instruction("a1", 0, *A1), instruction("late", 150, "aircraft", "B0200")]
 
     _, sink = _run(frames[LOSS01], make_scenario(instructions, episode_id=LOSS01))
 
     (closed,) = sink.of_type("target_closed")
     (suppressed,) = sink.of_type("trigger_suppressed")
-    assert (closed["step"], closed["down_step"], closed["last_event_id"]) == (150, 137, None)
-    assert (suppressed["step"], suppressed["primary_trigger"]) == (150, "start")
-    assert all(e["target"]["id"] != "B0200" for e in sink.of_type("translation_event"))
+    start = "test-scenario:aircraft:B0200:000000"  # translated at the episode start, before its instruction
+    assert (closed["step"], closed["down_step"], closed["last_event_id"]) == (137, 137, start)
+    assert (suppressed["step"], suppressed["primary_trigger"]) == (150, "request")
+    assert [e["step"] for e in sink.of_type("translation_event") if e["target"]["id"] == "B0200"] == [0]
 
 
 @pytest.mark.parametrize(
@@ -492,15 +497,13 @@ def test_unexpected_exception_text_is_never_recorded(frames: dict[str, pd.DataFr
 
 def test_scenario_built_in_code_obeys_the_loader_rules(frames: dict[str, pd.DataFrame]) -> None:
     scenario = make_scenario([instruction("a1", 0, *A1), instruction("t1", 5, "team", "A")])
-    team_a = (TargetRef("team", "A"),)
-    early_request = replace(scenario, requests=(RequestPoint("r1", 2, team_a, "human", "[PLACEHOLDER] q"),))
-    early_alarm = replace(scenario, alarms=(Alarm("c1", 3, team_a, "[PLACEHOLDER] warning"),))
+    team_a, team_b = (TargetRef("team", "A"),), (TargetRef("team", "B"),)
+    stray_alarm = replace(scenario, alarms=(Alarm("c1", 3, team_b, "[PLACEHOLDER] warning"),))
     long_alarm = replace(scenario, alarms=(Alarm("c2", 6, team_a, "x" * 201),))
     limits = make_config().scenario_limits
 
     for invalid, match in (
-        (early_request, "no instruction at or before"),
-        (early_alarm, "no instruction at or before"),
+        (stray_alarm, "no instruction or request names"),
         (long_alarm, "the limit is 200"),
     ):
         with pytest.raises(ScenarioError, match=match):

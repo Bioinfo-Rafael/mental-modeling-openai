@@ -45,6 +45,14 @@ EVENT_PLAN: tuple[tuple[int, tuple[str, ...]], ...] = (
     (40, ("request",)),
 )
 PROCESSING_S = {0: 1.5, 5: 2.0, 10: 2.5, 15: 2.2, 40: 2.8}
+# The same episode in event schema 3 (2026-11-09 definitions): the start at the episode start, the two
+# questions and the change after the alarm at 12; a tactic begun along the plan (step 5) is no point.
+V3_PLAN: tuple[tuple[int, tuple[str, ...]], ...] = (
+    (0, ("start",)),
+    (10, ("request",)),
+    (15, ("change",)),
+    (40, ("request",)),
+)
 DETECTOR_LABELS = {5: "start", 15: "change"}  # every other tick answers "none"
 
 
@@ -103,7 +111,9 @@ def instructions_at(step: int) -> list[dict[str, Any]]:
     return [max((i for i in INSTRUCTIONS if i["issue_step"] <= step), key=lambda i: i["issue_step"])]
 
 
-def _reason(kind: str, step: int) -> dict[str, Any]:
+def _reason(kind: str, step: int, schema_version: int) -> dict[str, Any]:
+    if kind == "start" and schema_version == 3:
+        return {"kind": kind, "source": "episode_start", "reference_id": "episode-start", "probability": None}
     if kind == "initial":
         return {
             "kind": kind,
@@ -171,12 +181,15 @@ def payload_of(record: dict[str, Any], extra: str = "") -> dict[str, Any]:
     }
 
 
-def _common(record_type: str, step: int, target: dict[str, str]) -> dict[str, Any]:
-    base = {"schema_version": 2, "record_type": record_type, "scenario_id": SCENARIO_ID, "episode_id": EPISODE_ID}
+def _common(record_type: str, step: int, target: dict[str, str], schema_version: int = 2) -> dict[str, Any]:
+    base = {"schema_version": schema_version, "record_type": record_type, "scenario_id": SCENARIO_ID}
+    base = {**base, "episode_id": EPISODE_ID}
     return {**base, "step": step, "time_s": round(step * 0.2, 1), "target": target}
 
 
-def build_records(plan: tuple[tuple[int, tuple[str, ...]], ...] = EVENT_PLAN, future: int = 0) -> list[dict[str, Any]]:
+def build_records(
+    plan: tuple[tuple[int, tuple[str, ...]], ...] = EVENT_PLAN, future: int = 0, schema_version: int = 2
+) -> list[dict[str, Any]]:
     """events.jsonl records (no sequence or request_sha256 yet), in emission order."""
     kinds_at = dict(plan)
     records, previous = [], None
@@ -190,6 +203,8 @@ def build_records(plan: tuple[tuple[int, tuple[str, ...]], ...] = EVENT_PLAN, fu
             ]
             messages = sorted((m for m in messages if step - LOOKBACK < m["step"] <= step), key=lambda m: m["step"])
             label = DETECTOR_LABELS.get(step, "none")
+            if schema_version == 3:  # the detector's options are none and change
+                label = "change" if "change" in kinds_at.get(step, ()) else "none"
             record_input = {
                 "trajectory": trajectory(step, DETECTOR_WINDOW, future, compact_line, "lag-detector-compact"),
                 "instructions_in_effect": instructions_at(step),
@@ -202,12 +217,17 @@ def build_records(plan: tuple[tuple[int, tuple[str, ...]], ...] = EVENT_PLAN, fu
             }
             output = {
                 "label": label,
-                "probabilities": {"none": 0.1, "start": 0.1, "change": 0.1, label: 0.8},
+                "probabilities": {
+                    "none": 0.1,
+                    **({"start": 0.1} if schema_version == 2 else {}),
+                    "change": 0.1,
+                    label: 0.8,
+                },
                 "threshold": 0.65,
             }
             records.append(
                 {
-                    **_common("detector_call", step, A1),
+                    **_common("detector_call", step, A1, schema_version),
                     "call_id": detector_id(step),
                     "input": record_input,
                     "output": {**output, "triggered": label != "none"},
@@ -215,7 +235,7 @@ def build_records(plan: tuple[tuple[int, tuple[str, ...]], ...] = EVENT_PLAN, fu
             )
         if step not in kinds_at:
             continue
-        reasons = [_reason(kind, step) for kind in kinds_at[step]]
+        reasons = [_reason(kind, step, schema_version) for kind in kinds_at[step]]
         record_input = {
             "prompt_version": "translator-intent-v2",
             "target_aircraft": ["A0100"],
@@ -237,7 +257,7 @@ def build_records(plan: tuple[tuple[int, tuple[str, ...]], ...] = EVENT_PLAN, fu
         }
         records.append(
             {
-                **_common("translation_event", step, A1),
+                **_common("translation_event", step, A1, schema_version),
                 **body,
                 "output": output,
                 "processing_s": PROCESSING_S.get(step, 2.0),
@@ -266,12 +286,14 @@ def build_run(
     input_changes: dict[str, dict[str, Any]] | None = None,
     output_changes: dict[str, dict[str, Any]] | None = None,
     status: str = "completed",
+    schema_version: int = 2,
 ) -> dict[str, Any]:
-    """The four files of a Translator run v2. Changes apply before hashing unless named ``after_hash``."""
+    """The four files of a Translator run (event schema 2 unless given; schema 3 takes ``V3_PLAN``-style
+    kinds). Changes apply before hashing unless named ``after_hash``."""
     extra_text, after_hash_text = extra_text or {}, after_hash_text or {}
     input_changes, output_changes = input_changes or {}, output_changes or {}
     events, requests, responses = [], [], []
-    for sequence, record in enumerate(build_records(plan, rendered_future), start=1):
+    for sequence, record in enumerate(build_records(plan, rendered_future, schema_version), start=1):
         identifier = call_id(record)
         record = {**record, "sequence": sequence, "input": {**record["input"], **input_changes.get(identifier, {})}}
         if record["record_type"] == "translation_event":
@@ -280,7 +302,7 @@ def build_run(
         record = {**record, "request_sha256": sha256_text(canonical(payload))}
         sent = payload_of(record, extra_text.get(identifier, "") + after_hash_text.get(identifier, ""))
         layer = "translation" if record["record_type"] == "translation_event" else "detector"
-        common = {"schema_version": 2, "call_id": identifier, "layer": layer}
+        common = {"schema_version": schema_version, "call_id": identifier, "layer": layer}
         requests.append({**common, "scenario_id": SCENARIO_ID, "step": record["step"], "target": A1, "payload": sent})
         latency = round(record.get("processing_s", 0.5) * 0.8, 3)
         responses.append({**common, "status": "ok", "raw": {}, "error": None, "latency_s": latency})

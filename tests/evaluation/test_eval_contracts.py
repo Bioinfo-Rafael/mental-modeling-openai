@@ -338,6 +338,19 @@ def test_event_log_violations_are_rejected(tmp_path: Path, translator_run: Path,
         load_translator_run(_tampered(tmp_path, translator_run, edit))
 
 
+def test_an_event_with_no_instruction_in_effect_loads(tmp_path: Path, translator_run: Path) -> None:
+    """A start may have no instruction in effect: no primary instruction, and nothing listed."""
+
+    def without_instructions(record: dict[str, Any]) -> dict[str, Any]:
+        record = with_value(record, "input.instructions_in_effect", [])
+        return with_value(record, "input.primary_instruction_id", None)
+
+    run = load_translator_run(_tampered(tmp_path, translator_run, without_instructions))
+
+    first = run.translation_events[0]["input"]
+    assert (first["instructions_in_effect"], first["primary_instruction_id"]) == ([], None)
+
+
 def test_duplicate_translation_event_id_is_rejected(tmp_path: Path, translator_run: Path) -> None:
     copy = tmp_path / "run"
     shutil.copytree(translator_run, copy)

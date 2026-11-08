@@ -9,19 +9,22 @@
 # human-visible telemetry up to t, not necessarily what the Translator read. Judged runs of the
 # 2026-11-05 assessment resume only with configs/evaluation/assess-legacy.yaml.
 schema_version: 3                # 2: per-criterion level anchors (D65); 3: the prompt file and triggers below
-rubric_version: pilot-3          # bump whenever you edit criteria, anchors, scale wording or triggers below.
+rubric_version: pilot-4          # bump whenever you edit criteria, anchors, scale wording or triggers below.
                                  # Ratings and judge results carry it; the report compares one version at a time.
-                                 # pilot-3: the three trigger kinds (the detector's start merged into change).
+                                 # pilot-4: start = the episode start, change = an external cause, request
+                                 # = a question or a late first instruction (2026-11-09).
 prompt: configs/evaluation/prompts/assess-judge-v3.yaml   # every word of the judge request (repo-relative)
 triggers:                        # trigger kind of an event -> the point kind whose criteria rate it, per Translator
                                  # event schema version; a run of an unlisted version fails to load
-  - event_schema_version: 3      # start = first instruction (or a preset start), change = clef-flash, request
+  - event_schema_version: 3      # start = the episode start (step 0, with or without an instruction in effect);
+                                 # change = the detector: the previous intent no longer explains the behaviour
+                                 # because of an external factor or a human instruction (progress along the plan
+                                 # is no change); request = a human question, or a first instruction after the start
     point_kinds: {start: start, change: change, request: request}
-    forced: [start]              # the forced first translation: its start-only timing is not_evaluated
-  - event_schema_version: 2      # runs written before 2026-11-08: initial was the first instruction, and the
-                                 # detector's start label is part of change now
-    point_kinds: {initial: start, start: change, change: change, request: request}
-    forced: [initial]
+    forced: [start]              # the episode start: its timing is fixed by definition
+# Event schema 2 runs (before 2026-11-08) are rated only by assess-legacy.yaml: their detector start (a
+# tactic begun along the plan) is no point here, and a preset initial (such as the paid run's step 45) is
+# neither this start nor a request, so this config refuses them rather than guess.
 
 timing:                          # machine measurements (evaluator "machine"); never merged with human/judge timing
   request_deadline_s: 3.0        # D55. 要求点: processing_s <= this passes. null => processing_s reported, no verdict
@@ -137,7 +140,7 @@ criteria:   # judge and humans rate every criterion of an event's point kinds (e
         "2": 「バランスよく」「最適に」など、何を重視するかも行動の対比も無い語だけがある
         "1": 重視点に触れていない
       not_applicable: ALARMS も INSTRUCTIONS IN EFFECT も none で、WINDOW に同時に別々の対応を求める二つ以上の相手・事象が無い（例：生存している敵が 1 機だけで警報も無い）
-  start:                         # 開始点: the forced first translation of a target (its first instruction)
+  start:                         # 開始点: the episode start (step 0), with or without an instruction in effect; its timing is fixed by definition
     - id: correctness.start_plan
       reference: observable_records
       text: これから何を、何のためにするかが説明されているか
@@ -157,15 +160,6 @@ criteria:   # judge and humans rate every criterion of an event's point kinds (e
         "2": 2 要素以上が FUTURE と食い違う（どれも反対ではない）
         "1": OUTPUT に FUTURE と照合できる行動の要素が無い、いずれかの要素が FUTURE と反対（例：「接近」だが距離が開き続ける）、または説明した行動が FUTURE の中で一度も始まらない
       cannot_judge: FUTURE に行が無い、または B チームの対象で状態の推移からも行動を判別できない。FUTURE の終端より後の行動は根拠にしない
-    - id: timing.start_in_time
-      text: AIが行動する前、または人が介入できる余裕を残して説明できたか（TIMELINE と FUTURE を参照）
-      levels:   # judged on the current continuous stretch of the explained action; step thresholds stay in machine checks
-        "5": 説明した行動が t の時点では始まっておらず（WINDOW に該当する action id・状態変化が無い）、t より後に FUTURE の中で始まる
-        "4": 説明した行動が step t か t-1 で始まり、t でも続いている
-        "3": 説明した行動が WINDOW の中の t-1 より前に始まり、t まで途切れず続いている（後追いの説明）
-        "2": 説明した行動が WINDOW の最初の行より前から t まで途切れず続いている（WINDOW 全体がその行動中）
-        "1": OUTPUT から行動を特定できない、または説明した行動が WINDOW に現れて t までに終わっている
-      cannot_judge: 行動は特定できるが、WINDOW にも FUTURE にもその記録が無い。秒・ステップの閾値（timing.start_min_lead_steps）は機械判定が扱い、ここでは使わない
     - id: contribution.intent_gap
       text: 自分の意図とAIの意図のずれに気づきやすくなるか
       levels:
@@ -193,17 +187,17 @@ criteria:   # judge and humans rate every criterion of an event's point kinds (e
         "3": 四点のうちちょうど一点が欠けており、記録と食い違わない
         "2": 二点以上が欠けている、または場面に固有の内容が無い
         "1": 危険を安全と述べる、無い指示の反映を主張するなど、記録と食い違い判断を誤らせる記述がある
-  change:                        # 変化点: the clef-flash detector's change (a new or changed tactic, any cause)
+  change:                        # 変化点: the previous intent no longer explains the behaviour because of an external factor (alarm, observed event) or a human instruction; progress along the plan is no change point
     - id: correctness.change_cause
       reference: observable_records
-      text: 何が起きたかが警報・指示・観測の記録と一致するか
+      text: 以前の意図を当てはまらなくした外的要因（警報・観測された事象・人の指示など）を特定し、それが記録と一致するか
       levels:
-        "5": 原因が ALARMS・INSTRUCTIONS・WINDOW の記録と一致し、step か内容でどの記録か特定できる（例：「step 312 のミサイル警報を受けて」）
-        "4": 原因の種類（警報・指示・観測）は記録と一致するが、どの記録か特定できない、または時刻の表現がずれる
-        "3": 原因の種類が記録と違う（警報を指示と述べるなど）、または記録に無い原因をちょうど 1 件挙げている。記録上の原因を否定はしていない
-        "2": 記録にある原因を挙げず、記録に無い原因を 2 件以上挙げている
-        "1": 原因に触れていない、または記録上の原因が起きていないと否定している（例：警報が出ているのに「警報なしで旋回」）
-      cannot_judge: 変化の引き金となった警報・指示・観測事象がパケットのどこにも無い（例：観測事象が WINDOW の最初の行より前に起きた）
+        "5": 外的要因が ALARMS・INSTRUCTIONS・WINDOW の記録と一致し、step か内容でどの記録か特定でき、それによって PREVIOUS の意図が当てはまらなくなったことを述べている（例：「step 312 のミサイル警報で B0100 への接近を続けられなくなった」）
+        "4": 外的要因の種類（警報・指示・観測）は記録と一致するが、どの記録か特定できない、または時刻の表現がずれる
+        "3": 外的要因の種類が記録と違う（警報を指示と述べるなど）、または記録に無い要因をちょうど 1 件挙げている。記録上の要因を否定はしていない
+        "2": 記録にある外的要因を挙げず、記録に無い要因を 2 件以上挙げている
+        "1": 外的要因に触れていない（計画どおりの進行としてだけ述べる場合を含む）、または記録上の要因が起きていないと否定している（例：警報が出ているのに「警報なしで旋回」）
+      cannot_judge: 以前の意図を当てはまらなくした警報・指示・観測事象がパケットのどこにも無い（例：観測事象が WINDOW の最初の行より前に起きた）
     - id: correctness.change_delta
       conditional: true
       reference: observable_records
@@ -255,6 +249,7 @@ criteria:   # judge and humans rate every criterion of an event's point kinds (e
     - *contribution_delegation
   request:                       # 要求点 (never gets a FUTURE block)
     - id: correctness.question_granularity
+      conditional: true
       reference: observable_records
       text: 質問に対応する粒度で答えているか
       levels:
@@ -263,6 +258,7 @@ criteria:   # judge and humans rate every criterion of an event's point kinds (e
         "3": 複数の問われた点のうちちょうど一点に答えていない
         "2": 質問の対象には触れるが、型が合わない（「なぜ」に「何をしているか」で答える）、または問われた点に答えない現状の説明だけ
         "1": OUTPUT が空か拒否だけ、または質問を取り違えている（別の機体について答える）
+      not_applicable: QUESTION が none（質問ではなく、開始後に初めて届いた指示による要求点）
     - id: correctness.records_to_t
       reference: observable_records
       text: 回答が時刻 t 以前の記録と一致するか
@@ -294,14 +290,15 @@ criteria:   # judge and humans rate every criterion of an event's point kinds (e
       not_applicable: PREVIOUS が無い（この対象の最初の説明）
     - id: timing.request_in_time
       text: 問いを受けてから十分速く応答できたか（processing_s を参照）
-      levels:   # q = QUESTION step; D = (t - q) x 0.2 s + processing_s. 3.0 and 10.0 mirror timing.request_deadline_s and timing.min_question_interval_s: edit them together
-        "5": TIMELINE のこの説明の processing_s が 3.0 秒（timing.request_deadline_s）以下で、t が QUESTION の step q と同じ
+      levels:   # q = QUESTION step, or the issue step of the instruction that made t a request point; D = (t - q) x 0.2 s + processing_s. 3.0 and 10.0 mirror timing.request_deadline_s and timing.min_question_interval_s: edit them together
+        "5": TIMELINE のこの説明の processing_s が 3.0 秒（timing.request_deadline_s）以下で、t が q（QUESTION の step、質問が無ければ要求点にした指示の step）と同じ
         "4": processing_s が 3.0 秒以下で t が q より後、かつ D =（t − q）× 0.2 秒 + processing_s が 10.0 秒（timing.min_question_interval_s）未満
         "3": processing_s が 3.0 秒を超えるが、D が 10.0 秒未満
         "2": t が q と同じで、D（= processing_s）が 10.0 秒以上
         "1": t が q より後で、D が 10.0 秒以上（応答の開始も遅れ、次の質問が来うる時刻までに返せていない）
       cannot_judge: TIMELINE のこの説明に processing_s が無い
     - id: contribution.question_resolved
+      conditional: true
       text: 疑問が解消されるか
       levels:
         "5": 必要な二点（質問への直接の答え、その根拠となる記録上の事実）がどちらも OUTPUT にあり、step・機体 id・記録値などで一つに特定でき、記録と食い違わない（例：質問「なぜ左旋回？」→「B0200 の後方に回り込むため。B0100 は A0200 が担当している」）
@@ -309,6 +306,7 @@ criteria:   # judge and humans rate every criterion of an event's point kinds (e
         "3": 直接の答えはあるが根拠が無い、または根拠らしき事実だけで直接の答えが無い。記録と食い違わない
         "2": 二点とも無い、または場面に固有の内容が無い
         "1": 記録と食い違う答えなど、疑問を誤った方向に解消させる記述がある
+      not_applicable: QUESTION が none（質問ではなく、開始後に初めて届いた指示による要求点）
     - *contribution_delegation
 
 output:

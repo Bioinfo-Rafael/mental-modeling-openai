@@ -14,7 +14,6 @@ import pytest
 from evaluation import assess_cli
 from evaluation.assess_checks import check_generation_inputs
 from evaluation.assess_data import (
-    DEFAULT_CONFIG,
     JUDGEMENT_CANNOT_JUDGE,
     JUDGEMENT_NOT_APPLICABLE,
     REASON_FORCED_TRIGGER,
@@ -489,13 +488,13 @@ def test_execute_never_resends_an_uncertain_request(tmp_path: Path) -> None:
 def test_an_event_judged_with_other_request_bytes_is_never_judged_again(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    """A config whose bytes differ (here the default prompt) would bill every judged event twice: refused."""
+    """A config whose bytes differ (here the rationale language) would bill every judged event twice: refused."""
     run_dir, flags = make_run(tmp_path), ("--execute", "--confirm-paid-api")
     assert _judge(tmp_path, run_dir, *flags, factory=Factory(AutoClient())) == 0
     capsys.readouterr()
-    second = AutoClient()
+    second, other = AutoClient(), write_config(tmp_path / "other.yaml", judge__rationale_language="English")
 
-    code = _judge(tmp_path, run_dir, *flags, factory=Factory(second), config=DEFAULT_CONFIG)
+    code = _judge(tmp_path, run_dir, *flags, factory=Factory(second), config=other)
 
     journal = read_jsonl(tmp_path / "out" / "run" / "judge_requests.jsonl")
     assert code == 1 and second.bodies == [] and len(journal) == 5

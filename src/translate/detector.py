@@ -119,7 +119,8 @@ class DetectionResult:
 
 
 def _instruction_lines(instructions: tuple[Instruction, ...]) -> list[str]:
-    return [f"- {item.target.label}, issued at step {item.issue_step}: {item.text}" for item in instructions]
+    lines = [f"- {item.target.label}, issued at step {item.issue_step}: {item.text}" for item in instructions]
+    return lines or ["- none"]  # no instruction need be in effect
 
 
 def _message_lines(messages: tuple[DetectorMessage, ...]) -> list[str]:
