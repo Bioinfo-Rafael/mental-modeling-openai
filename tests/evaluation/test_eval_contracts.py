@@ -568,3 +568,30 @@ def test_ids_and_trajectory_that_could_carry_a_heading_are_rejected(
 def test_parser_rejects_repeated_keys_and_deep_nesting(text: str) -> None:
     with pytest.raises(JudgeSchemaError, match="repeated keys"):
         parse_judge_output(text, ())
+
+
+# --- skipped invalid answers (translate: answer.on_invalid skip) ----------------------------------
+
+SKIP_PROBLEM = "invalid final answer: intent has 1200 characters; the limit is 1000"
+
+
+def _skipped(record: dict[str, Any], problem: object = SKIP_PROBLEM) -> dict[str, Any]:
+    """The event as the pipeline writes a skipped invalid answer: blank output plus ``answer_problem``."""
+    return {**record, "output": {"intent": "", "evidence": []}, "answer_problem": problem}
+
+
+def test_skipped_invalid_answer_with_blank_output_loads(tmp_path: Path, translator_run: Path) -> None:
+    run = load_translator_run(_tampered(tmp_path, translator_run, _skipped))
+
+    first = run.translation_events[0]
+    assert first["output"] == {"intent": "", "evidence": []}
+    assert first["answer_problem"] == SKIP_PROBLEM
+    assert run.event_ids() == EVENT_IDS
+
+
+@pytest.mark.parametrize("problem", ["", "   ", None, 3, ["invalid"]])
+def test_blank_output_with_an_empty_or_malformed_answer_problem_is_rejected(
+    tmp_path: Path, translator_run: Path, problem: object
+) -> None:
+    with pytest.raises(EventLogError, match="answer_problem"):
+        load_translator_run(_tampered(tmp_path, translator_run, lambda r: _skipped(r, problem)))

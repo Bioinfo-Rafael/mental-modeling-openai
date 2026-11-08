@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from translate.sandbox.audit import audit_code, audit_run, write_audit
+from translate.sandbox.audit import audit_code, audit_run, write_session_audit
 
 
 def _rules(code: str) -> set[str]:
@@ -64,9 +64,19 @@ def test_audit_run_without_tool_calls_reports_zero_runs(tmp_path: Path) -> None:
     assert audit_run(tmp_path)["runs_audited"] == 0
 
 
-def test_write_audit_refuses_to_overwrite_human_verdict(tmp_path: Path) -> None:
+def test_write_session_audit_refuses_to_overwrite_human_verdict(tmp_path: Path) -> None:
     _write_calls(tmp_path, ["print(1)"])
     (tmp_path / "audit.json").write_text(json.dumps({"human_verdict": "pass"}))
 
     with pytest.raises(FileExistsError):
-        write_audit(tmp_path)
+        write_session_audit(tmp_path, "intent-b-v1")
+
+    assert json.loads((tmp_path / "audit.json").read_text())["human_verdict"] == "pass"
+
+
+def test_write_session_audit_records_the_prompt_version(tmp_path: Path) -> None:
+    _write_calls(tmp_path, ["print(1)"])
+
+    audit = json.loads(write_session_audit(tmp_path, "intent-b-v1").read_text())
+
+    assert (audit["mode"], audit["prompt_version"], audit["human_verdict"]) == ("code-session", "intent-b-v1", None)

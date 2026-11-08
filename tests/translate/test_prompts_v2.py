@@ -5,7 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+import yaml
 
+from translate import paths
 from translate.prompts import ConfiguredTurns, PromptError, list_block, load_prompt, optional_block
 
 from .tr_fakes import write_yaml
@@ -93,3 +95,51 @@ def test_configured_turns_render_run_protocol_and_budget_messages() -> None:
     assert turns.run_result(2, 2, "", "", None, True, False) == ("run 2/2: timed out\n```text\n\n```\nnone left")
     assert turns.protocol_error(("bad one", "bad two"), 0) == ("problems:\n- bad one\n- bad two\nnone left")
     assert turns.budget_exhausted() == "answer now"
+
+
+POLICY_PROMPT = paths.CONFIGS / "translate" / "prompts" / "intent-b-v1.yaml"
+POLICY_VARS = {"language_instruction": "Write both fields in English.", "limits_line": ""}
+
+
+@pytest.mark.parametrize(
+    ("turn", "key", "template"),
+    [
+        ("run_result", "header", "OUTPUT of run {run_idx} of at most {max_runs} ({status}):"),
+        ("run_result", "status_exit", "exit code {code}"),
+        ("run_result", "truncated_note", "(stdout was truncated at {limit})"),
+        ("protocol_error", "text", "Missing:\n{problem_list}\n{remaining}"),
+        ("protocol_error", "problem_item", "- {problems}"),
+    ],
+)
+def test_load_prompt_turn_with_unknown_field_raises_prompt_error(
+    tmp_path: Path, turn: str, key: str, template: str
+) -> None:
+    raw = yaml.safe_load(POLICY_PROMPT.read_text(encoding="utf-8"))
+    raw["turns"][turn][key] = template
+    path = write_yaml(tmp_path / "prompt.yaml", raw)
+
+    with pytest.raises(PromptError, match=rf"turns.{turn}.{key}"):
+        load_prompt(path, POLICY_VARS)
+
+
+def test_load_prompt_budget_turn_with_a_field_raises_prompt_error(tmp_path: Path) -> None:
+    raw = yaml.safe_load(POLICY_PROMPT.read_text(encoding="utf-8"))
+    raw["turns"]["budget_exhausted"] = "The budget of {max_runs} runs is used up."
+    path = write_yaml(tmp_path / "prompt.yaml", raw)
+
+    with pytest.raises(PromptError, match="turns.budget_exhausted"):
+        load_prompt(path, POLICY_VARS)
+
+
+def test_shipped_policy_prompt_turns_load() -> None:
+    assert load_prompt(POLICY_PROMPT, POLICY_VARS).turns is not None
+
+
+def test_load_prompt_with_duplicate_key_raises_prompt_error(tmp_path: Path) -> None:
+    path = tmp_path / "prompt.yaml"
+    path.write_text(
+        yaml.safe_dump(_one_shot_prompt(), sort_keys=False) + "user: a second user template\n", encoding="utf-8"
+    )
+
+    with pytest.raises(PromptError, match="duplicate key 'user'"):
+        load_prompt(path, {"language": "English"})

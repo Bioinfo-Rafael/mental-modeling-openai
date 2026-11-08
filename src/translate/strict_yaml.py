@@ -81,13 +81,18 @@ def _unique_mapping(loader: yaml.SafeLoader, node: yaml.MappingNode, deep: bool 
 _StrictLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _unique_mapping)
 
 
+def parse_yaml(text: str, where: object, error: type[ValueError]) -> object:
+    """Decode YAML text with the duplicate-rejecting safe loader; ``where`` names it in errors."""
+    try:
+        return yaml.load(text, Loader=_StrictLoader)  # a SafeLoader subclass: no arbitrary objects
+    except yaml.YAMLError as exc:
+        problem = getattr(exc, "problem", None)
+        raise error(f"{where} is not valid YAML" + (f": {problem}" if problem else "")) from exc
+
+
 def read_yaml(path: Path, error: type[ValueError]) -> object:
     try:
         text = Path(path).read_text(encoding="utf-8")
     except OSError as exc:
         raise error(f"cannot read {path}: {type(exc).__name__}") from exc
-    try:
-        return yaml.load(text, Loader=_StrictLoader)  # a SafeLoader subclass: no arbitrary objects
-    except yaml.YAMLError as exc:
-        problem = getattr(exc, "problem", None)
-        raise error(f"{path} is not valid YAML" + (f": {problem}" if problem else "")) from exc
+    return parse_yaml(text, path, error)

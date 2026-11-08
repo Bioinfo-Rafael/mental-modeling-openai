@@ -107,7 +107,7 @@ are commented examples).
 | `trajectory` | `{renderer: lag17-jsonl, past_steps}`: the window every event records |
 | `policy` | `{rollout_dir, seed, spec, checkpoint, past_steps}` when `policy` is selected |
 | `prompt` | `{file, vars}`: the prompt file and its free variables |
-| `translation` | `{backend: openai_responses, model, reasoning_effort, max_output_tokens, timeout_s, retry: default | none}` |
+| `translation` | `{backend: openai_responses, model, reasoning_effort, max_output_tokens, timeout_s, retry: default | none}`; `none` sends every request once (a 5xx is reported, not resent) |
 | `answer` | `{max_intent_chars, max_evidence_items, max_evidence_chars, on_invalid: stop | skip}` |
 | `session` | Code session only: `{max_runs, max_total_tokens, max_protocol_errors, answer_at_fraction, sandbox}` |
 | `output`, `pricing` | Output root; USD per 1M tokens for the preview estimate |
@@ -140,7 +140,7 @@ configurable (they stay in `src/evaluation`, because the paid assess resume depe
 
 | File | Content |
 |---|---|
-| `run.json` | Mode, status, times, inputs (config, prompt, scenario, episode, policy) with SHA-256, git commit + dirty flag, SHA-256 of every `translate` module, renderer versions, resolved config (`config.pipeline.visibility` is where the judges read the visibility), schedule, detector budget, call counts, `unsent`, `error`, `api_requests_made` |
+| `run.json` | Mode, status, times, inputs (config, prompt, scenario, episode, policy) with SHA-256, git commit + dirty flag, SHA-256 of every `translate` module, renderer versions, resolved config (`config.pipeline.visibility` is where the judges read the visibility), schedule, detector budget, call counts, `unsent`, `error`, `api_requests_made` (every request sent: detector calls plus every OpenAI request, each code-session turn and each retried attempt included; `counts.openai_requests` is the OpenAI part) |
 | `preview.json`, `example_translation_request.json` | Preview only: schedule, budget, the SHA-256 of every request known in advance, an approximate cost bound; the first request |
 | `events.jsonl` | The event log (contract below) |
 | `requests.jsonl` | One record per call, written and fsynced **before** the call is sent (`call_id`, `layer`, `step`, `target`, exact `payload`) |
@@ -316,7 +316,7 @@ Lists are in precedence order (`initial > start > change > request`), then by `r
 | `input.previous_translation` | `{event_id, step, intent, evidence}` of this target, or `null` |
 | `input.output_language` | The prompt's `output_language` var, if any |
 | `input.translator_inputs` | The selected inputs (what the translator read). Absent in runs before 2026-11-08, which read every listed input |
-| `input.policy` | Policy input only: `{network_alias, checkpoint_sha256, rollout_sha256, window}` |
+| `input.policy` | Policy input only: `{network_alias, checkpoint_sha256, rollout_sha256, session_dir, inputs_manifest_sha256, window}`; the last three describe the bundle the sandbox read (`sessions/<session_dir>/inputs/manifest.json`, its SHA-256 and the window it states), which the assess leak check verifies |
 | `output` | `{intent, evidence}` as parsed |
 | `model` | `{backend, protocol, model, reasoning_effort, max_output_tokens, response_model, response_id}`; `protocol` is `one_shot` or `code_session` |
 | `answer_problem` | Only when the answer was invalid and `answer.on_invalid` is `skip`: why (then `output` is blank) |

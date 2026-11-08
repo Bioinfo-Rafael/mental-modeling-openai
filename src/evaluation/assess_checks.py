@@ -43,6 +43,7 @@ from .assess_data import (
     target_end_step,
     target_key,
 )
+from .assess_policy import policy_problems
 from .assess_store import event_subject, invalidated, overall_verdict, result_record, verdict
 
 # --- 1. time-range check of the generation inputs --------------------------------------------------
@@ -68,19 +69,6 @@ def reads_trajectory(record: dict[str, Any]) -> bool:
     input) still records the window as the material the judge and the human rater see.
     """
     return TRAJECTORY_INPUT in record["input"].get("translator_inputs", [TRAJECTORY_INPUT])
-
-
-def _policy_problems(record: dict[str, Any], step: int) -> list[dict[str, str]]:
-    """A policy input's activation window must end at or before t."""
-    policy = record["input"].get("policy")
-    if not isinstance(policy, dict):
-        return []
-    end = policy.get("window", [None, None])[-1]
-    if not is_int(end):
-        return [_problem("policy_window", "the recorded policy window has no integer end step")]
-    if end > step:
-        return [_problem("trajectory_future", f"the policy window ends at step {end} > t")]
-    return []
 
 
 @dataclass(frozen=True)
@@ -179,7 +167,6 @@ def _record_problems(request: dict[str, Any], record: dict[str, Any], joined: st
     if not reads_trajectory(record):
         if sha256_text(trajectory["text"]) != trajectory["sha256"]:
             problems.append(_problem("trajectory_record", "the recorded trajectory text does not match its sha256"))
-        problems += _policy_problems(record, request["step"])
     elif sha256_text(trajectory["text"]) != trajectory["sha256"] or trajectory["text"] not in joined:
         problems.append(_problem("trajectory_record", "the recorded trajectory text is not the one in the payload"))
     for label, issued, _ in listed_messages(record):
@@ -204,11 +191,14 @@ def _check_call(
     problems: list[dict[str, str]] = []
     if counts != (1, 1):
         problems.append(_problem("join", f"{counts[0]} event records and {counts[1]} request lines; one each expected"))
-    if record is not None:
-        problems += _record_problems(request, record, joined)
     if run.future_steps is None:
         problems.append(_problem("visibility", "run.json declares no valid config.pipeline.visibility"))
     future = run.future_steps or 0
+    policy_end = None
+    if record is not None:
+        problems += _record_problems(request, record, joined)
+        policy_end, found = policy_problems(record, run.run_dir, step, future, config.allow_action_at_t)
+        problems += found
     lines, line_problems = _trajectory_lines(texts)
     problems += line_problems
     if not lines and (record is None or reads_trajectory(record)):
@@ -236,17 +226,11 @@ def _check_call(
         layer=request["layer"],
         target=request["target"],
         step=step,
-        visible_end_step=max((line["step"] for line in lines), default=_policy_end(record)),
+        visible_end_step=max((line["step"] for line in lines), default=policy_end),
         request_sha256=record["request_sha256"] if record is not None else None,
         status=CHECK_LEAK if leaked else CHECK_ERROR if problems else CHECK_OK,
         problems=tuple(problems),
     )
-
-
-def _policy_end(record: dict[str, Any] | None) -> int | None:
-    policy = record["input"].get("policy") if record is not None else None
-    end = policy.get("window", [None, None])[-1] if isinstance(policy, dict) else None
-    return end if is_int(end) else None
 
 
 def check_generation_inputs(run: TranslatorRun, config: AssessConfig) -> tuple[CallCheck, ...]:
@@ -258,8 +242,9 @@ def check_generation_inputs(run: TranslatorRun, config: AssessConfig) -> tuple[C
     question shown must be issued at or before ``t``; the previous translation must be older than
     ``t``; and the run's own episode and scenario ids must not appear. ``run.json`` must declare
     the visibility. A translator that did not read the trajectory (``input.translator_inputs``)
-    needs no window in its payload; its recorded window must still match its hash, and a policy
-    window must end at or before ``t``.
+    needs no window in its payload; its recorded window must still match its hash. A translator
+    that read the policy input must record the bundle the sandbox read, which is verified against
+    its session directory and must end at or before ``t`` (``assess_policy``).
     """
     calls = [r for r in run.records if r["record_type"] in LAYER_OF_RECORD]
     record_counts = Counter(record_call_id(record) for record in calls)

@@ -329,9 +329,13 @@ sbatch slurm/judge_assess.sbatch preview --translator-run $RUN
 Every translation run (`outputs/translate/<run>/`) is a judge input, whatever its inputs were: each
 event records the human-visible material (scenario texts and the trajectory window), so every
 configuration is judged the same way. For a translator that did not read the trajectory
-(`input.translator_inputs`, e.g. the policy input) the leak check needs no window in the payload,
-checks the recorded window against its hash and requires the activation window to end at or
-before t. The judges' prompts are fixed in code, not configurable. The one paid assessment judged
+(`input.translator_inputs`, e.g. the policy input) the leak check needs no window in the payload
+and checks the recorded window against its hash. Whenever the policy input was read, the event must
+record the bundle the sandbox read (`input.policy`: session directory, manifest SHA-256, window);
+`assess_policy.py` verifies it against `sessions/<dir>/inputs/manifest.json` and requires the window
+to end at or before t (before t when `leakage.allow_action_at_t` is false); a missing or unverifiable
+record is an error. A skipped invalid answer (blank output plus `answer_problem`) is loaded and
+judged as given by both judges. The judges' prompts are fixed in code, not configurable. The one paid assessment judged
 `outputs/translator/intentcmp-seed100601-ja-A-s045-A0100`, built by the former converter whose
 exact bytes are kept in `tests/fixtures/frozen/to_translator_run_v2.py.txt`.
 

@@ -57,6 +57,7 @@ TRANSLATION_OPENAI = "openai_responses"
 TRANSLATION_BACKENDS = (TRANSLATION_OPENAI,)
 RETRY_DEFAULT = "default"  # the shared narrow retry of translate.llm.retry
 RETRY_NONE = "none"
+NO_RETRY_POLICY = RetryPolicy(max_retries=0)  # every request is sent once; a 5xx is reported, not resent
 ON_INVALID_STOP = "stop"
 ON_INVALID_SKIP = "skip"
 ENTITY_SCOPES = ("target_and_opponents",)
@@ -263,7 +264,7 @@ class TranslationConfig:
     reasoning_effort: str
     max_output_tokens: int
     timeout_s: float
-    retry: RetryPolicy | None  # None: no retry
+    retry: RetryPolicy  # ``retry: none`` is the zero-retry policy (NO_RETRY_POLICY)
 
 
 @dataclass(frozen=True)
@@ -594,7 +595,7 @@ def _translation(raw: object) -> TranslationConfig:
         ),
         max_output_tokens=positive_int(section["max_output_tokens"], "translation.max_output_tokens", ConfigError),
         timeout_s=timeout_s,
-        retry=DEFAULT_RETRY_POLICY if retry == RETRY_DEFAULT else None,
+        retry=DEFAULT_RETRY_POLICY if retry == RETRY_DEFAULT else NO_RETRY_POLICY,
     )
 
 

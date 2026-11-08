@@ -1,7 +1,7 @@
 # mtd-rl-xavier
 
 強化学習エージェントの振る舞いをLLMで「意図」の文章に翻訳し（`translate`）、その翻訳をLLM-as-a-judgeで評価する（`evaluation`）ためのリポジトリです。
-`src/` には `translate/` と `evaluation/` の2つだけがあります。旧LLM-Xavierの研究コードは独立したプロジェクト [`workspace/`](workspace/README.md) にあり、coreとは無関係です。
+`src/` には `src/translate/` と `src/evaluation/` の2つだけがあります。旧LLM-Xavierの研究コードは独立したプロジェクト [`workspace/`](workspace/README.md) にあり、coreとは無関係です。
 
 ## 翻訳の流れ
 

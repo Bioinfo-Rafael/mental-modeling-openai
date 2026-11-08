@@ -1,4 +1,4 @@
-`src/` には `translate/` と `evaluation/` の2つだけがあります。旧LLM-Xavierの研究コードは独立したプロジェクト [`workspace/`](workspace/README.md) にあり、coreとは無関係です。
+`src/` には `src/translate/` と `src/evaluation/` の2つだけがあります。旧LLM-Xavierの研究コードは独立したプロジェクト [`workspace/`](workspace/README.md) にあり、coreとは無関係です。
 | `workspace/` | 独立した自由実験の場（旧LLM-Xavier実験00〜17） |
 ## workspace/ について
 `workspace/` は、自由に実験してよい独立したuvプロジェクトです。独自の `pyproject.toml`、`uv.lock`、`.venv` を持ちます。

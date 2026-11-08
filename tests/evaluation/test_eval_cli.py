@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 import socket
 from pathlib import Path
 from typing import Any
@@ -594,3 +595,37 @@ def test_ctrl_c_before_the_run_directory_exists_prints_no_traceback(
     err = capsys.readouterr().err
     assert code == cli.EXIT_FAILED and "KeyboardInterrupt" in err and "Traceback" not in err
     assert not (tmp_path / "out").exists()
+
+
+def _strings(value: object) -> list[str]:
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, dict):
+        return [text for item in value.values() for text in _strings(item)]
+    if isinstance(value, list):
+        return [text for item in value for text in _strings(item)]
+    return []
+
+
+def test_preview_judges_a_skipped_invalid_answer_like_any_other_event(
+    tmp_path: Path, translator_run: Path, offline: None
+) -> None:
+    """A blank event with ``answer_problem`` is judged as given, as the assess judge does (rubric level 1)."""
+    copy = tmp_path / "translator-run"
+    shutil.copytree(translator_run, copy)
+    lines = (copy / "events.jsonl").read_text(encoding="utf-8").splitlines()
+    records = [json.loads(line) for line in lines]
+    records = [
+        {**r, "output": {"intent": "", "evidence": []}, "answer_problem": "invalid final answer: too long"}
+        if r.get("event_id") == EXAMPLE_JUDGED[0]
+        else r
+        for r in records
+    ]
+    (copy / "events.jsonl").write_text("".join(json.dumps(r) + "\n" for r in records), encoding="utf-8")
+
+    code = cli.main(_args(tmp_path, copy), openai_client_factory=RecordingFactory())
+
+    preview = json.loads((tmp_path / "out" / RUN_NAME / "preview.json").read_text())
+    assert code == cli.EXIT_OK and preview["plan"]["judged"] == len(EXAMPLE_JUDGED)
+    example = json.loads((tmp_path / "out" / RUN_NAME / "example_judge_request.json").read_text())
+    assert any('Intent: ""' in text for text in _strings(example))

@@ -9,6 +9,7 @@ import yaml
 
 from translate import paths
 from translate.config import ConfigError, parse_config
+from translate.llm.retry import RetryPolicy
 
 from .tr_fakes import RUN_CONFIG, run_config_raw, with_value, write_yaml
 
@@ -99,3 +100,15 @@ def test_config_policy_session_and_prompt_protocol_mismatch_raises_config_error(
 
     with pytest.raises(ConfigError, match=match):
         _parse(raw, POLICY_CONFIG)
+
+
+def test_config_retry_none_is_a_zero_retry_policy() -> None:
+    config = _parse(with_value(run_config_raw(), "translation.retry", "none"))
+
+    assert config.translation.retry == RetryPolicy(max_retries=0)
+
+
+def test_config_retry_default_is_the_shared_policy() -> None:
+    config = _parse(with_value(run_config_raw(), "translation.retry", "default"))
+
+    assert config.translation.retry == RetryPolicy()

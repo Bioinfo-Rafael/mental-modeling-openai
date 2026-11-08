@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from translate.events import INTENT_OUTPUT_KEYS
 
 MAX_INTENT_CHARS = 1000  # default intent cap (characters)
+INVALID_ANSWER_PREFIX = "invalid final answer: "  # how a rejected answer's reason starts (events, cues)
 
 
 @dataclass(frozen=True)

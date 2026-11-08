@@ -186,10 +186,10 @@ def _raw_config(retry: object) -> tuple[dict, object]:
     return raw, path
 
 
-def test_parse_config_with_retry_block_overrides_policy() -> None:
+def test_parse_config_with_retry_none_is_the_zero_retry_policy() -> None:
     raw, path = _raw_config("none")
 
-    assert parse_config(raw, path=path, sha256="test").translation.retry is None
+    assert parse_config(raw, path=path, sha256="test").translation.retry == RetryPolicy(max_retries=0)
 
 
 @pytest.mark.parametrize("block", [None, "", "retry", 1, True, {"max_retries": 2}])

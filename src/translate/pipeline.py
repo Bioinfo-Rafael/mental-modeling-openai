@@ -29,7 +29,8 @@ from typing import Any, Protocol
 
 import pandas as pd
 
-from translate.call_one_shot import INVALID_PREFIX, CallResult, RetryJournal, SlotRef
+from translate.answers import INVALID_ANSWER_PREFIX
+from translate.call_one_shot import CallResult, RetryJournal, SlotRef
 from translate.call_session import SandboxRefused
 from translate.config import ON_INVALID_STOP, RunConfig
 from translate.detector import DetectorLayer
@@ -64,7 +65,7 @@ from translate.inputs import RunInputs, SlotState, event_input, slot_values, tra
 from translate.lag.rendering import RenderedTrajectory, render_detector_compact, render_lag17_jsonl
 from translate.policy.material import PolicyMaterial
 from translate.scenario import episode_facts, validate_scenario
-from translate.triggers import detector_context, is_tick, run_triggers, tick_interval
+from translate.triggers import check_preset_points, detector_context, is_tick, run_triggers, tick_interval
 
 STATUS_COMPLETED = "completed"
 STATUS_CAP_REACHED = "cap_reached"
@@ -138,6 +139,7 @@ class _Run:
         self.inputs, self.sink, self.sessions_dir = inputs, sink, sessions_dir
         self.frame, self.scenario, self.config, self.facts = inputs.frame, inputs.scenario, inputs.config, inputs.facts
         validate_scenario(self.scenario, self.facts, self.config.scenario_limits)
+        check_preset_points(self.config, self.facts)
         self.triggers = run_triggers(self.scenario, self.config)
         self.tick = tick_interval(self.config)
         self.instructions_at = _instructions_by_step(self.scenario)
@@ -419,12 +421,13 @@ class Translator:
         self._answered(run, LAYER_TRANSLATION, current_id, latency_s, result.raw)
         translation, problem = self._call.answer(result)
         if translation is None and run.config.answer.on_invalid == ON_INVALID_STOP:
-            message = (problem or "no answer").removeprefix(INVALID_PREFIX)
+            message = (problem or "no answer").removeprefix(INVALID_ANSWER_PREFIX)
             error = {"layer": LAYER_TRANSLATION, "call_id": current_id, "type": INVALID_ANSWER_ERROR}
             raise _Stop(STATUS_FAILED, error={**error, "message": message, "uncertain": False})
-        body = _translation_body(
-            run, current_id, reasons, result, translation, event_input(run.inputs, slot_state, trajectory)
-        )
+        record_input = event_input(run.inputs, slot_state, trajectory)
+        if result.observed_inputs is not None:  # code session: the bundle the sandbox read
+            record_input = {**record_input, "policy": {**record_input.get("policy", {}), **result.observed_inputs}}
+        body = _translation_body(run, current_id, reasons, result, translation, record_input)
         body = {**body, "request_sha256": request_sha256, **({"answer_problem": problem} if problem else {})}
         run.emit(RECORD_TRANSLATION_EVENT, step, target, body, started=started)
         if translation is not None:

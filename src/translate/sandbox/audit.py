@@ -148,15 +148,6 @@ def audit_run(run_dir: Path) -> dict:
     }
 
 
-def write_audit(run_dir: Path) -> Path:
-    """Write ``audit.json``; refuses to overwrite one that already carries a human verdict."""
-    target = run_dir / AUDIT_FILE
-    if target.exists() and json.loads(target.read_text(encoding="utf-8")).get("human_verdict") is not None:
-        raise FileExistsError(f"{target} already has a human verdict; not overwriting")
-    target.write_text(json.dumps(audit_run(run_dir), indent=2) + "\n", encoding="utf-8")
-    return target
-
-
 def _root_name(node: ast.expr) -> str | None:
     while isinstance(node, ast.Subscript | ast.Attribute):
         node = node.value

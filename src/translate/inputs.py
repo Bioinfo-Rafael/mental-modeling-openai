@@ -27,7 +27,6 @@ from translate.events import (
 )
 from translate.lag.rendering import STEP_SECONDS, RenderedTrajectory
 from translate.policy.material import PolicyMaterial, policy_values
-from translate.policy.trace import window_bounds
 from translate.prompts import list_block, optional_block
 from translate.scenario import EpisodeFacts, instructions_in_effect, target_alarms, target_request
 
@@ -188,12 +187,12 @@ def event_input(inputs: RunInputs, slot: SlotState, trajectory: RenderedTrajecto
         "output_language": config.prompt.vars.get("output_language"),
         "translator_inputs": list(config.inputs),
     }
-    if inputs.policy is None or config.policy is None:
+    if inputs.policy is None:
         return record
+    # The window and the bundle the sandbox read are added by the call (pipeline: observed_inputs).
     policy = {
         "network_alias": inputs.policy.spec.alias,
         "checkpoint_sha256": inputs.policy.checkpoint.sha256,
         "rollout_sha256": inputs.policy.rollout.sha256,
-        "window": list(window_bounds(slot.step, config.policy.past_steps)),
     }
     return {**record, "policy": policy}

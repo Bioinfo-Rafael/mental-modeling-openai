@@ -12,14 +12,14 @@ from __future__ import annotations
 
 import json
 from collections.abc import Callable, Mapping
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any
 
-from translate.answers import AnswerLimits
+from translate.answers import INVALID_ANSWER_PREFIX, AnswerLimits
 from translate.call_one_shot import CallResult, SlotRef
 from translate.events import IntentTranslation
-from translate.policy.bundle import verify_bundle
+from translate.policy.bundle import MANIFEST_FILE, verify_bundle
 from translate.policy.material import PolicyMaterial, write_session_inputs
 from translate.policy.session_inputs import PRELOAD, SessionInputs
 from translate.prompts import ConfiguredTurns, PromptTemplate
@@ -31,7 +31,6 @@ from translate.sandbox.session import FINAL_ANSWER, RunLog, SessionLimits, Sessi
 from translate.session_backend import ChatBackend, user_item
 
 STOP_FINAL_ANSWER = "final_answer"
-INVALID_PREFIX = "invalid final answer: "
 
 ExecutorFactory = Callable[[Path, Path], SandboxExecutor]  # (work dir, weights dir) -> executor
 Preflight = Callable[[SandboxExecutor, list[Path]], Any]  # returns an object with ``ok`` and ``to_dict()``
@@ -119,7 +118,7 @@ class SessionCall:
         )
         verify_bundle(prepared.inputs.bundle.path, prepared.inputs.bundle.manifest_sha256)
         write_session_audit(prepared.directory, self._template.version)
-        return _result(prepared.directory, state)
+        return replace(_result(prepared.directory, state), observed_inputs=observed_inputs(prepared))
 
     def answer(self, result: CallResult) -> tuple[IntentTranslation | None, str | None]:
         """(translation, None) or (None, why there is no valid answer)."""
@@ -128,8 +127,19 @@ class SessionCall:
         try:
             answer = parse_answer(result.answer_text, self._limits)
         except IntentAnswerError as exc:
-            return None, f"{INVALID_PREFIX}{exc}"
+            return None, f"{INVALID_ANSWER_PREFIX}{exc}"
         return IntentTranslation(answer.intent, answer.evidence), None
+
+
+def observed_inputs(prepared: PreparedSession) -> dict[str, Any]:
+    """The bundle the sandbox read, as written to disk: its manifest's SHA-256 and the window it states."""
+    bundle = prepared.inputs.bundle
+    manifest = json.loads((bundle.path / MANIFEST_FILE).read_text(encoding="utf-8"))
+    return {
+        "session_dir": prepared.directory.name,
+        "inputs_manifest_sha256": bundle.manifest_sha256,
+        "window": manifest["window"],
+    }
 
 
 def _result(directory: Path, state: SessionState) -> CallResult:

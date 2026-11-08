@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from dataclasses import dataclass, replace
 from pathlib import Path
@@ -10,6 +11,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from evaluation.assess_checks import check_generation_inputs
+from evaluation.assess_data import load_run
+from tests.evaluation.assess_fakes import make_config as make_assess_config
 from tests.sandbox.test_wr_sandbox import LIMITS as SANDBOX_LIMITS
 from tests.sandbox.test_wr_session import CODE, FakeBackend, FakeExecutor
 from tests.translate.tr_fakes import fake_translation_renderer
@@ -234,6 +238,52 @@ def test_intent_run_with_fakes_chains_previous_and_writes_cues(
     assert all(request["reasoning"] == {"effort": "high"} for request in client.requests)
     assert all(request["max_output_tokens"] == 25_000 for request in client.requests)
     assert all("tools" not in request for request in client.requests)
+
+
+def test_policy_run_counts_every_session_request_in_api_requests_made(
+    policy_harness: PolicyHarness, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_inputs(monkeypatch, policy_harness)
+    client = ScriptedClient([ANSWER, "no answer", "still none", "nope", INVALID, ANSWER])
+    output = tmp_path / "execute"
+
+    code = cli.main(
+        _args(policy_harness, output, "--execute", "--confirm-paid-api"),
+        factories=cli.Factories(openai_client=Factory(client), preflight=lambda *_: PASSED),
+    )
+
+    record = json.loads((output / "run1" / "run.json").read_text(encoding="utf-8"))
+    assert code == cli.EXIT_OK
+    assert record["counts"]["translation"]["attempted"] == 4  # four sessions
+    assert record["api_requests_made"] == len(client.requests) == 6  # six turns
+
+
+def test_policy_run_records_the_bundle_each_session_read_and_passes_the_leak_check(
+    policy_harness: PolicyHarness, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_inputs(monkeypatch, policy_harness)
+    client = ScriptedClient([ANSWER, ANSWER, ANSWER, ANSWER])
+    output = tmp_path / "execute"
+
+    code = cli.main(
+        _args(policy_harness, output, "--execute", "--confirm-paid-api"),
+        factories=cli.Factories(openai_client=Factory(client), preflight=lambda *_: PASSED),
+    )
+
+    run_dir = output / "run1"
+    events = [json.loads(line) for line in (run_dir / "events.jsonl").read_text(encoding="utf-8").splitlines()]
+    translated = [event for event in events if event["record_type"] == "translation_event"]
+    assert code == cli.EXIT_OK and translated
+    for event in translated:
+        policy = event["input"]["policy"]
+        manifest = run_dir / "sessions" / policy["session_dir"] / "inputs" / "manifest.json"
+        assert policy["inputs_manifest_sha256"] == hashlib.sha256(manifest.read_bytes()).hexdigest()
+        recorded = json.loads(manifest.read_text(encoding="utf-8"))
+        assert policy["window"] == recorded["window"] and recorded["window"][1] == event["step"] == recorded["step"]
+    checks = check_generation_inputs(load_run(run_dir), make_assess_config())
+    translation_checks = [check for check in checks if check.layer == "translation"]
+    assert len(translation_checks) == len(translated)
+    assert {check.status for check in translation_checks} == {"ok"}
 
 
 def test_invalid_final_answer_is_terminal_and_keeps_the_last_valid_chain(

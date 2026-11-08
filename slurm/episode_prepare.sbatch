@@ -8,7 +8,7 @@
 # 2. run mtd-rl-lag's unmodified evaluate_mhi_team.py --acmi and require a byte-identical ACMI;
 # 3. copy the ACMI + reports to EPISODE_DIR and convert npz + ACMI to the 64-column LAG episode CSV
 #    (the trajectory input; same format as data/mhi/processed/), scripts/episode_to_csv.py;
-# 4. render the full episode with mtd-rl-lag scripts/render/acmi_to_mp4.py (imageio-ffmpeg binary
+# 4. render the full episode with $LAG_ROOT/scripts/render/acmi_to_mp4.py (imageio-ffmpeg binary
 #    shimmed onto PATH) and trim one clip per step of STEPS for the viewer (python -m evaluation.clips).
 # Paths must be on the shared filesystem: compute nodes do not see the login node's /tmp.
 # Required: ROLLOUT_DIR, SEED, EPISODE_DIR, STEPS. Optional: LAG_ROOT (default ../mtd-rl-lag), MODEL_DIR,

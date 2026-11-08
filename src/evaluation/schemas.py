@@ -113,6 +113,9 @@ def run_episode(run: TranslatorRun) -> RunEpisode:
     return RunEpisode(episode_id=episode_id, last_complete_step=last_step)
 
 
+ANSWER_PROBLEM = "answer_problem"  # set by the translation pipeline on a skipped invalid answer
+
+
 def jsonl_lines(text: str) -> list[str]:
     """The lines of a JSONL text: split on ``"\\n"`` only, without the empty tail after the last one."""
     lines = text.split(JSONL_SEPARATOR)
@@ -243,9 +246,25 @@ def _check_translation_event(event: dict[str, Any], where: str) -> None:
     _check_target(event, "target", where)
     _check_reasons(event, where)
     _check_input(event, where)
+    _check_output(event, where)
+
+
+def _check_output(event: dict[str, Any], where: str) -> None:
+    """A non-blank answer, or a skipped invalid one: blank output allowed only with ``answer_problem``.
+
+    The translation pipeline writes a rejected answer (``answer.on_invalid: skip``) as a blank output
+    plus the reason. It is judged as given, like the assess judge does (rubric level 1: empty intent).
+    """
     output = _object(event, "output", where)
-    _text(output, "intent", f"{where}.output")
-    _items(output, "evidence", f"{where}.output", str)
+    if ANSWER_PROBLEM not in event:
+        _text(output, "intent", f"{where}.output")
+        _items(output, "evidence", f"{where}.output", str)
+        return
+    _text(event, ANSWER_PROBLEM, where)
+    _string(output, "intent", f"{where}.output")
+    evidence = _field(output, "evidence", f"{where}.output")
+    if not isinstance(evidence, list) or not all(isinstance(item, str) for item in evidence):
+        raise EventLogError(f"{where}.output.evidence must be a list of str")
 
 
 def _parse_records(text: str) -> tuple[dict[str, Any], ...]:

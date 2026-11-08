@@ -85,6 +85,7 @@ from translate.triggers import (
     BudgetFit,
     SchedulePlan,
     check_detector_budget,
+    check_preset_points,
     plan_schedule,
     run_triggers,
     tick_interval,
@@ -177,6 +178,7 @@ def load_inputs(config: RunConfig, scenario_path: Path | None) -> Inputs:
     frame = load_episode(scenario.episode.csv_path)
     facts = episode_facts(frame)
     validate_scenario(scenario, facts, config.scenario_limits)
+    check_preset_points(config, facts)  # preview and execute fail alike, before any directory or client
     plan = plan_schedule(scenario, facts, run_triggers(scenario, config), tick_interval(config))
     budget = _budget(config, scenario, frame, facts, plan) if config.online else None
     policy = None
@@ -490,7 +492,7 @@ def _preview(args: argparse.Namespace, inputs: Inputs) -> int:
 def _one_shot_call(config: RunConfig, openai_client: Any, journal: RetryJournal) -> OneShotCall:
     translation = config.translation
     client = openai_client
-    if translation.retry is not None:
+    if translation.retry.max_retries > 0:  # retry: none keeps the bare client (a 5xx is not resent)
         client = RetryingClient(openai_client, translation.retry, log=journal.record)
     model = OpenAIIntentModel(
         OpenAIResponsesClient(client),
@@ -558,22 +560,39 @@ def sandbox_selftest(inputs: Inputs, preflight: Preflight = run_preflight) -> bo
         shutil.rmtree(scratch, ignore_errors=True)
 
 
-def _final_record(record: dict[str, Any], summary: TranslatorSummary) -> dict[str, Any]:
+class CountingClient:
+    """The OpenAI SDK client with every ``responses.create`` counted.
+
+    It sits below the retry and session layers, so the count is every request sent to the paid API:
+    each one-shot call, each code-session turn and each retried attempt.
+    """
+
+    def __init__(self, client: Any) -> None:
+        self._client = client
+        self.responses = self
+        self.created = 0
+
+    def create(self, **kwargs: Any) -> Any:
+        self.created += 1
+        return self._client.responses.create(**kwargs)
+
+
+def _final_record(record: dict[str, Any], summary: TranslatorSummary, openai_requests: int) -> dict[str, Any]:
     counts = {"detector": asdict(summary.detector), "translation": asdict(summary.translation)}
     return {
         **record,
         "status": summary.status,
         "ended_at": utc_now(),
-        "counts": {**counts, "events_written": summary.events_written},
+        "counts": {**counts, "events_written": summary.events_written, "openai_requests": openai_requests},
         "unsent": summary.unsent,
         "error": summary.error,
-        "api_requests_made": summary.detector.attempted + summary.translation.attempted,
+        "api_requests_made": summary.detector.attempted + openai_requests,
     }
 
 
-def _finish(run_dir: Path, record: dict[str, Any], summary: TranslatorSummary) -> int:
+def _finish(run_dir: Path, record: dict[str, Any], summary: TranslatorSummary, openai_requests: int) -> int:
     """Final ``run.json`` and ``cues.jsonl``. If they cannot be written, an uncertain or capped run keeps its exit code."""
-    final = _final_record(record, summary)
+    final = _final_record(record, summary, openai_requests)
     exit_code = EXIT_BY_STATUS[summary.status]
     try:
         write_json(run_dir / "run.json", final)
@@ -615,10 +634,9 @@ def _execute(args: argparse.Namespace, inputs: Inputs, factories: Factories) -> 
 
 
 def _build_translator(
-    inputs: Inputs, run_dir: Path, detector_client: SystemOneClient | None, factories: Factories
+    inputs: Inputs, run_dir: Path, detector_client: SystemOneClient | None, factories: Factories, openai_client: Any
 ) -> Translator:
     config = inputs.config
-    openai_client = factories.openai_client(timeout_s=config.translation.timeout_s)
     journal = RetryJournal()
     if config.code_session:
         call = _session_call(inputs, openai_client, factories.preflight)
@@ -640,10 +658,12 @@ def _execute_with(
     run_dir = _new_run_dir(args, inputs, MODE_EXECUTE)
     record: dict[str, Any] = {"schema_version": RUN_SCHEMA_VERSION, "mode": MODE_EXECUTE, "started_at": utc_now()}
     summary: TranslatorSummary | None = None
+    counter = CountingClient(None)
     try:
         record = _run_record(inputs, mode=MODE_EXECUTE, status=STATUS_RUNNING)
         write_json(run_dir / "run.json", record)
-        translator = _build_translator(inputs, run_dir, detector_client, factories)
+        counter = CountingClient(factories.openai_client(timeout_s=inputs.config.translation.timeout_s))
+        translator = _build_translator(inputs, run_dir, detector_client, factories, counter)
         with JsonlRunSink(run_dir) as sink:
             # never raises: call failures, journal failures and Ctrl-C become a summary status
             summary = translator.run(frame=inputs.frame, scenario=inputs.scenario, config=inputs.config, sink=sink)
@@ -651,13 +671,13 @@ def _execute_with(
         error = _redact(exc)
         if summary is not None:  # closing the journals failed after every line was fsynced
             print(f"error: closing the journals failed: {error['type']} ({run_dir})", file=sys.stderr)
-            return _finish(run_dir, record, summary)
+            return _finish(run_dir, record, summary, counter.created)
         # before the pipeline (or Ctrl-C there): no model call is in flight; recorded, then a failure exit
         failed = {**record, "status": STATUS_FAILED, "error": error, "ended_at": utc_now()}
         write_json(run_dir / "run.json", failed)
         print(f"error: {error['type']}: {error['message']} ({run_dir})", file=sys.stderr)
         return EXIT_FAILED
-    return _finish(run_dir, record, summary)
+    return _finish(run_dir, record, summary, counter.created)
 
 
 def main(argv: list[str] | None = None, *, factories: Factories | None = None) -> int:

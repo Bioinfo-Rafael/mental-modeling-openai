@@ -102,6 +102,16 @@ def preset_triggers(scenario: Scenario, points: tuple[PresetPoint, ...]) -> Trig
     return {key: sort_reasons(reasons) for key, reasons in found.items()}
 
 
+def check_preset_points(config: RunConfig, facts: EpisodeFacts) -> None:
+    """Every preset point must lie within the episode (``[0, last complete step]``).
+
+    The loop stops at the last complete step, so a later point would silently never fire.
+    """
+    late = sorted({point.step for point in config.triggers.points if point.step > facts.last_step})
+    if late:
+        raise PipelineError(f"preset points at steps {late} are after the last complete step {facts.last_step}")
+
+
 def run_triggers(scenario: Scenario, config: RunConfig) -> Triggers:
     """The forced or preset trigger reasons of a run (the detector adds its own while running)."""
     if config.triggers.source == TRIGGER_SOURCE_ONLINE:

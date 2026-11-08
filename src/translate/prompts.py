@@ -25,7 +25,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import yaml
+from translate.strict_yaml import parse_yaml
 
 PROMPT_SCHEMA_VERSION = 1
 PROTOCOL_ONE_SHOT = "one_shot"
@@ -58,6 +58,21 @@ RUN_RESULT_KEYS = {
 }
 PROTOCOL_ERROR_KEYS = {"text", "problem_item", "runs_remaining", "no_runs_remaining"}
 TURN_KEYS = {"run_result", "protocol_error", "budget_exhausted"}
+# The fields each follow-up template may use (``ConfiguredTurns`` fills exactly these); keys absent here
+# are plain text with no field.
+TURN_FIELDS = {
+    "run_result": {
+        "header": {"run_index", "max_runs", "status"},
+        "status_exit": {"exit_code"},
+        "merged_note": {"blocks"},
+        "runs_remaining": {"remaining"},
+    },
+    "protocol_error": {
+        "text": {"problems", "remaining"},
+        "problem_item": {"problem"},
+        "runs_remaining": {"remaining"},
+    },
+}
 CODE_FENCE_OPEN = "```text"
 CODE_FENCE_CLOSE = "```"
 
@@ -105,16 +120,26 @@ def _blocks(raw: object) -> dict[str, dict[str, str]]:
     return blocks
 
 
+def _check_fields(template: str, allowed: set[str], name: str) -> None:
+    unknown = placeholders(template) - allowed
+    if unknown:
+        raise PromptError(f"{name} uses unknown fields {sorted(unknown)} (allowed: {sorted(allowed)})")
+
+
 def _turns(raw: object) -> dict[str, Any]:
     if not isinstance(raw, dict) or set(raw) != TURN_KEYS:
         raise PromptError(f"turns must have exactly {sorted(TURN_KEYS)}")
     if not isinstance(raw["budget_exhausted"], str):
         raise PromptError("turns.budget_exhausted must be a string")
-    return {
+    turns = {
         "run_result": _mapping(raw["run_result"], RUN_RESULT_KEYS, "turns.run_result"),
         "protocol_error": _mapping(raw["protocol_error"], PROTOCOL_ERROR_KEYS, "turns.protocol_error"),
-        "budget_exhausted": raw["budget_exhausted"],
     }
+    for turn, words in turns.items():
+        for key, template in words.items():
+            _check_fields(template, TURN_FIELDS[turn].get(key, set()), f"turns.{turn}.{key}")
+    _check_fields(raw["budget_exhausted"], set(), "turns.budget_exhausted")
+    return {**turns, "budget_exhausted": raw["budget_exhausted"]}
 
 
 @dataclass(frozen=True)
@@ -158,9 +183,10 @@ def _check_protocol(raw: dict[str, Any]) -> None:
 def load_prompt(path: Path, prompt_vars: Mapping[str, str]) -> PromptTemplate:
     data = Path(path).read_bytes()
     try:
-        raw = yaml.safe_load(data.decode("utf-8"))
-    except (UnicodeDecodeError, yaml.YAMLError) as exc:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError as exc:
         raise PromptError(f"{path} is not valid UTF-8 YAML") from exc
+    raw = parse_yaml(text, path, PromptError)  # duplicate keys are rejected, as in run configs
     if not isinstance(raw, dict) or set(raw) != PROMPT_KEYS:
         raise PromptError(f"{path} must have exactly {sorted(PROMPT_KEYS)}")
     if raw["schema_version"] != PROMPT_SCHEMA_VERSION:

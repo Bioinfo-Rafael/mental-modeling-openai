@@ -15,7 +15,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Protocol
 
-from translate.answers import AnswerLimits, payload_problem
+from translate.answers import INVALID_ANSWER_PREFIX, AnswerLimits, payload_problem
 from translate.events import INTENT_OUTPUT_KEYS, IntentTranslation, ModelCallError, TargetRef, strict_json_loads
 from translate.llm.openai_responses import (
     OpenAIClientError,
@@ -29,7 +29,6 @@ from translate.prompts import PromptTemplate
 
 OUTPUT_SCHEMA_NAME = "intent_translation"
 OUTPUT_KEYS = INTENT_OUTPUT_KEYS  # the shared intent output contract (events.py)
-INVALID_PREFIX = "invalid final answer: "  # the wording of a rejected answer in events and cues
 
 
 class TranslationOutputError(ValueError):
@@ -151,6 +150,9 @@ class CallResult:
     response_id: str | None
     usage: dict[str, int]
     ended_without_answer: str | None = None  # why there is no answer text
+    # Code session only: the bundle the sandbox read ({session_dir, inputs_manifest_sha256, window}),
+    # recorded in the event's input.policy so the judge's leak check can verify it.
+    observed_inputs: dict[str, Any] | None = None
 
 
 class OneShotCall:
@@ -175,9 +177,9 @@ class OneShotCall:
         try:
             translation = parse_intent_output(result.answer_text or "", max_intent_chars=self._limits.max_intent_chars)
         except TranslationOutputError as exc:
-            return None, f"{INVALID_PREFIX}{exc}"
+            return None, f"{INVALID_ANSWER_PREFIX}{exc}"
         problem = payload_problem({"intent": translation.intent, "evidence": list(translation.evidence)}, self._limits)
-        return (None, f"{INVALID_PREFIX}{problem}") if problem else (translation, None)
+        return (None, f"{INVALID_ANSWER_PREFIX}{problem}") if problem else (translation, None)
 
 
 # --- OpenAI Responses adapter ---------------------------------------------------------------------
