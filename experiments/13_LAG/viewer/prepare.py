@@ -9,6 +9,8 @@ import subprocess
 import shutil
 import tempfile
 
+from foresight import build_foresight
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT.parent.parent))
 lag = importlib.import_module('experiments.13_LAG.lag_data.dataset')
@@ -76,6 +78,8 @@ def prepare():
         (OUT / f'{eid}.json').write_text(json.dumps(payload, ensure_ascii=False, allow_nan=False), encoding='utf-8')
         catalog.append(item)
     (OUT / 'index.json').write_text(json.dumps(catalog, ensure_ascii=False), encoding='utf-8')
+    (OUT / 'foresight.json').write_text(
+        json.dumps(build_foresight(ROOT.parent), ensure_ascii=False), encoding='utf-8')
     return catalog
 
 

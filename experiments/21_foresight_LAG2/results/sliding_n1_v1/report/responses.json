@@ -1,0 +1,2944 @@
+[
+  {
+    "sample_id": "window_0000_0030",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "8248051e00e3f2b7782bdc3782eaf68728a749f64577987dd1aae249fdac7c2f",
+    "query_id": "22e914da6f4641216c9fe39230876ab7016b930c6cf0bbe18a45d2e037d78106",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      29,
+      59
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59
+      ]
+    },
+    "observation_range": [
+      0,
+      30
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue accelerating northward in a controlled descent, maintaining near-reciprocal geometry with B0100 to close toward a missile-engagement opportunity.",
+      "A0200": "A0200 is likely to descend and accelerate northward while making modest rightward corrections, seeking alignment with the approaching B0200 lane for an engagement.",
+      "B0100": "B0100 is likely to press southward in a steep, accelerating descent toward A0100, aiming to reduce separation while preserving head-on attack geometry.",
+      "B0200": "B0200 is likely to continue rapidly southward and downward on a near-reciprocal course with A0200, seeking to close into a viable engagement position."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue accelerating northward in a controlled descent, maintaining near-reciprocal geometry with B0100 to close toward a missile-engagement opportunity.\",\"A0200\":\"A0200 is likely to descend and accelerate northward while making modest rightward corrections, seeking alignment with the approaching B0200 lane for an engagement.\",\"B0100\":\"B0100 is likely to press southward in a steep, accelerating descent toward A0100, aiming to reduce separation while preserving head-on attack geometry.\",\"B0200\":\"B0200 is likely to continue rapidly southward and downward on a near-reciprocal course with A0200, seeking to close into a viable engagement position.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793620959,
+      "id": "chatcmpl-Efl2FxOJAOmNQEhiVEJXgZqYLeDqX",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 670,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 512,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 19799,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 19796,
+          "cached_tokens": 0
+        },
+        "total_tokens": 20469
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 670,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 512,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 19799,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 19796,
+        "cached_tokens": 0
+      },
+      "total_tokens": 20469
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 22,
+        "A0200": 23,
+        "B0100": 22,
+        "B0200": 23
+      },
+      "total_words": 90,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0015_0045",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "5d33f2ca4d2dcf141873a6cf2015e53dcbc86b34813081477193fdd7c0e653dc",
+    "query_id": "464715f79d1bd4052cb69dcd116e0b25bfccd7a4ed8ce7e8dd12f6601e1d67df",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      44,
+      74
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74
+      ]
+    },
+    "observation_range": [
+      15,
+      45
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue accelerating and descending while correcting right toward B0100, seeking a favorable head-on missile engagement.",
+      "A0200": "A0200 is likely to maintain its fast descending approach with modest rightward corrections toward B0200, aiming to establish a missile-firing opportunity.",
+      "B0100": "B0100 is likely to continue its accelerating descent on a near-reciprocal course toward A0100, seeking to preserve alignment for a head-on engagement.",
+      "B0200": "B0200 is likely to sustain its fast descending intercept toward A0200, using small course corrections to maintain a potential firing geometry."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue accelerating and descending while correcting right toward B0100, seeking a favorable head-on missile engagement.\",\"A0200\":\"A0200 is likely to maintain its fast descending approach with modest rightward corrections toward B0200, aiming to establish a missile-firing opportunity.\",\"B0100\":\"B0100 is likely to continue its accelerating descent on a near-reciprocal course toward A0100, seeking to preserve alignment for a head-on engagement.\",\"B0200\":\"B0200 is likely to sustain its fast descending intercept toward A0200, using small course corrections to maintain a potential firing geometry.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793621118,
+      "id": "chatcmpl-Efl4o2Nrzit6OgjiLzR1t0f7hzg96",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 655,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 512,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 19779,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 18042,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 20434
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 655,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 512,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 19779,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 18042,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 20434
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 19,
+        "A0200": 21,
+        "B0100": 22,
+        "B0200": 21
+      },
+      "total_words": 83,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0030_0060",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "04a9c7dedb22d48dae19cc33009b8610c85f8108ffb58769a7dd8a81a391f0d2",
+    "query_id": "03b2bf1db09ca69c5971ddcc7315fe44e3f0bd692cb4949accfcf7db11aa55ae",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      59,
+      89
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89
+      ]
+    },
+    "observation_range": [
+      30,
+      60
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to sustain a hard right, descending offset after firing, supporting its outbound missile while reducing exposure to the opposing missiles.",
+      "A0200": "A0200 is likely to arrest its developing right turn, continue descending and accelerating northward, and maintain a modest offset while supporting its missile and limiting exposure.",
+      "B0100": "B0100 is likely to continue a fast, largely straight southward descent after firing, pressing the head-on engagement while keeping its missile supported.",
+      "B0200": "B0200 is likely to maintain its southward descending approach with little lateral maneuver, supporting its outbound missile and continuing to close on Team A."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to sustain a hard right, descending offset after firing, supporting its outbound missile while reducing exposure to the opposing missiles.\",\"A0200\":\"A0200 is likely to arrest its developing right turn, continue descending and accelerating northward, and maintain a modest offset while supporting its missile and limiting exposure.\",\"B0100\":\"B0100 is likely to continue a fast, largely straight southward descent after firing, pressing the head-on engagement while keeping its missile supported.\",\"B0200\":\"B0200 is likely to maintain its southward descending approach with little lateral maneuver, supporting its outbound missile and continuing to close on Team A.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793620959,
+      "id": "chatcmpl-Efl2FlFmD8Owqi05XnxJg8fZyCbhr",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 604,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 459,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 24423,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 22686,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 25027
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 604,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 459,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 24423,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 22686,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 25027
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 23,
+        "A0200": 26,
+        "B0100": 22,
+        "B0200": 24
+      },
+      "total_words": 95,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0045_0075",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "03b0459cea6fdd1f22448bc1730a554c4e9372ae0d254cccf7f630724e92e252",
+    "query_id": "707cd56b1e495b99e33fe824e84e9269b28a2e903de583063039cde95377de07",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      74,
+      104
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104
+      ]
+    },
+    "observation_range": [
+      45,
+      75
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue its hard rightward offset while arresting the descent and accelerating, seeking lateral separation from the head-on missile exchange while remaining engaged.",
+      "A0200": "A0200 is likely to press northward with acceleration, continued descent, and a modest right adjustment to close the opposing formation while maintaining an attack opportunity.",
+      "B0100": "B0100 is likely to continue rapidly southward in a shallow descent, pressing the head-on engagement and reducing range while retaining its remaining missile.",
+      "B0200": "B0200 is likely to continue southward in a steeper descent, closing the opposing aircraft while attempting to preserve offensive pressure through the missile exchange."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue its hard rightward offset while arresting the descent and accelerating, seeking lateral separation from the head-on missile exchange while remaining engaged.\",\"A0200\":\"A0200 is likely to press northward with acceleration, continued descent, and a modest right adjustment to close the opposing formation while maintaining an attack opportunity.\",\"B0100\":\"B0100 is likely to continue rapidly southward in a shallow descent, pressing the head-on engagement and reducing range while retaining its remaining missile.\",\"B0200\":\"B0200 is likely to continue southward in a steeper descent, closing the opposing aircraft while attempting to preserve offensive pressure through the missile exchange.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793620959,
+      "id": "chatcmpl-Efl2FRn1SFV4v6ro3GJUOQO57MOJg",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 574,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 424,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 30216,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 28479,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 30790
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 574,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 424,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 30216,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 28479,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 30790
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 26,
+        "A0200": 25,
+        "B0100": 23,
+        "B0200": 24
+      },
+      "total_words": 98,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0060_0090",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "fdba1c881275c5d16d3f835e5378048bbfd0d68a8f03c826f6756dfad205b35b",
+    "query_id": "370a69cb401bd5666a12fd48c9408bb50ae50e37debe3886cbc08f352fe1d32e",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      89,
+      119
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119
+      ]
+    },
+    "observation_range": [
+      60,
+      90
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue accelerating eastward while leveling from its descent, maintaining a beam-like separation maneuver to reduce exposure to the approaching Team B missiles.",
+      "A0200": "A0200 is likely to accelerate through a descending right turn toward an easterly course, seeking a defensive offset from the approaching Team B missiles.",
+      "B0100": "B0100 is likely to continue its fast southbound descent toward Team A, pressing the engagement while its previously fired missile advances ahead.",
+      "B0200": "B0200 is likely to maintain a fast southbound, gradually descending approach toward Team A, sustaining offensive pressure behind its previously fired missile."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue accelerating eastward while leveling from its descent, maintaining a beam-like separation maneuver to reduce exposure to the approaching Team B missiles.\",\"A0200\":\"A0200 is likely to accelerate through a descending right turn toward an easterly course, seeking a defensive offset from the approaching Team B missiles.\",\"B0100\":\"B0100 is likely to continue its fast southbound descent toward Team A, pressing the engagement while its previously fired missile advances ahead.\",\"B0200\":\"B0200 is likely to maintain a fast southbound, gradually descending approach toward Team A, sustaining offensive pressure behind its previously fired missile.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793620962,
+      "id": "chatcmpl-Efl2IetXkHw140MXyUm4Qb7T1SsEp",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1150,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 1001,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 31757,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 30020,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 32907
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1150,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1001,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 31757,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 30020,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 32907
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 26,
+        "A0200": 24,
+        "B0100": 22,
+        "B0200": 22
+      },
+      "total_words": 94,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0075_0105",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "7e2b3dd3727450b7d1d6d06b7185c028c734ad1da6cf33571dec82323b849791",
+    "query_id": "c3cddea232e0f74eb08c91290a4d6c9ce8f34b3b5dd733c8b7be96bcf9189f3d",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      104,
+      134
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134
+      ]
+    },
+    "observation_range": [
+      75,
+      105
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue accelerating eastward near level altitude, maintaining a beam-like offset to reduce closure and complicate the approaching Team B missile threat.",
+      "A0200": "A0200 is likely to sustain its hard right turn while descending and accelerating, seeking an eastward defensive offset from the closer Team B missile.",
+      "B0100": "B0100 is likely to continue accelerating southward in a shallow descent, closing on Team A while sustaining pressure from its outbound missile.",
+      "B0200": "B0200 is likely to maintain its fast southward descent toward Team A, pressing the engagement while remaining exposed to the northbound Team A missiles."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue accelerating eastward near level altitude, maintaining a beam-like offset to reduce closure and complicate the approaching Team B missile threat.\",\"A0200\":\"A0200 is likely to sustain its hard right turn while descending and accelerating, seeking an eastward defensive offset from the closer Team B missile.\",\"B0100\":\"B0100 is likely to continue accelerating southward in a shallow descent, closing on Team A while sustaining pressure from its outbound missile.\",\"B0200\":\"B0200 is likely to maintain its fast southward descent toward Team A, pressing the engagement while remaining exposed to the northbound Team A missiles.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793620966,
+      "id": "chatcmpl-Efl2Mo2weqDeWeRe4ZZZTX6DKCUhH",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1364,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 1206,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 31785,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 30048,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 33149
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1364,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1206,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 31785,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 30048,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 33149
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 25,
+        "A0200": 24,
+        "B0100": 22,
+        "B0200": 24
+      },
+      "total_words": 95,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0090_0120",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "4989e181073f4954472082c97e91ac72d91c8aad907a09ab5c55d27c2f50e234",
+    "query_id": "48869d8cf5936ef90b0302b5cf8e940f81c766d4488c3e7995175d70624180ee",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      119,
+      149
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149
+      ]
+    },
+    "observation_range": [
+      90,
+      120
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue accelerating east near level flight, using lateral separation to complicate the apparent southbound missile threat and survive the engagement.",
+      "A0200": "A0200 is likely to sustain its hard right descending turn while accelerating, seeking to disengage from the immediate threat axis and establish safer lateral separation.",
+      "B0100": "B0100 is likely to continue its fast southbound descent toward Team A, pressing closure for a close engagement while attempting to pass beneath or complicate the approaching Team A missile.",
+      "B0200": "B0200 is likely to maintain its parallel southbound dive toward Team A, preserving offensive closure while using speed and altitude loss to reduce exposure to the approaching Team A missile."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue accelerating east near level flight, using lateral separation to complicate the apparent southbound missile threat and survive the engagement.\",\"A0200\":\"A0200 is likely to sustain its hard right descending turn while accelerating, seeking to disengage from the immediate threat axis and establish safer lateral separation.\",\"B0100\":\"B0100 is likely to continue its fast southbound descent toward Team A, pressing closure for a close engagement while attempting to pass beneath or complicate the approaching Team A missile.\",\"B0200\":\"B0200 is likely to maintain its parallel southbound dive toward Team A, preserving offensive closure while using speed and altitude loss to reduce exposure to the approaching Team A missile.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793620968,
+      "id": "chatcmpl-Efl2OfJTsfRfFU2MVShqQejQb64hG",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1980,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 1804,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 31827,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 30090,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 33807
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1980,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1804,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 31827,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 30090,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 33807
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 24,
+        "A0200": 25,
+        "B0100": 30,
+        "B0200": 30
+      },
+      "total_words": 109,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0105_0135",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "4b953ea78c2e2758a78b1e51059d6fe551f00bb917d9a6c5d345becea0bcc6b5",
+    "query_id": "cadd2c3b2175c63b326e6b623a951d914112ec38f6c4f0df0ad45f6ce96398f7",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      134,
+      164
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164
+      ]
+    },
+    "observation_range": [
+      105,
+      135
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue accelerating east near level flight, extending away from the main engagement and keeping approaching Team B missiles on an unfavorable crossing geometry.",
+      "A0200": "A0200 is likely to sustain its accelerating, descending right turn to disengage from the northern threat axis and complicate any interception.",
+      "B0100": "B0100 is likely to continue its fast southbound descent with only minor heading change, closing toward Team A while altering the vertical engagement geometry.",
+      "B0200": "B0200 is likely to continue a hard descending left break to spoil the interception geometry of the nearby northbound Team A missiles."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue accelerating east near level flight, extending away from the main engagement and keeping approaching Team B missiles on an unfavorable crossing geometry.\",\"A0200\":\"A0200 is likely to sustain its accelerating, descending right turn to disengage from the northern threat axis and complicate any interception.\",\"B0100\":\"B0100 is likely to continue its fast southbound descent with only minor heading change, closing toward Team A while altering the vertical engagement geometry.\",\"B0200\":\"B0200 is likely to continue a hard descending left break to spoil the interception geometry of the nearby northbound Team A missiles.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793620968,
+      "id": "chatcmpl-Efl2Omtw1RVk1fkO0sJnEmbx1OKBW",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1852,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 1693,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 31845,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 30108,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 33697
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1852,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1693,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 31845,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 30108,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 33697
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 27,
+        "A0200": 21,
+        "B0100": 24,
+        "B0200": 22
+      },
+      "total_words": 94,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0120_0150",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "dfff734b37d5e8240b8f159e2066ed952b860d91ded92d0edd345c99ed7402a7",
+    "query_id": "4f87e8a57308faa10c924025e17a25e24a9991c2583228814a2fdc2ece550238",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      149,
+      179
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179
+      ]
+    },
+    "observation_range": [
+      120,
+      150
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue a fast, nearly level eastward extension to widen separation from B0100 and reduce exposure to Team B’s missiles.",
+      "A0200": "A0200 is likely to accelerate through a descending left turn toward the east or southeast, extending from B0100 and complicating any missile pursuit.",
+      "B0100": "B0100 is likely to continue descending south-southeast, plausibly pursuing A0200 to reduce separation and sustain offensive pressure.",
+      "B0200": "B0200 remains inactive throughout the interval and has no further tactical behavior."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue a fast, nearly level eastward extension to widen separation from B0100 and reduce exposure to Team B’s missiles.\",\"A0200\":\"A0200 is likely to accelerate through a descending left turn toward the east or southeast, extending from B0100 and complicating any missile pursuit.\",\"B0100\":\"B0100 is likely to continue descending south-southeast, plausibly pursuing A0200 to reduce separation and sustain offensive pressure.\",\"B0200\":\"B0200 remains inactive throughout the interval and has no further tactical behavior.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793620969,
+      "id": "chatcmpl-Efl2P4pt5G82wAck0ldhZvm80i5mV",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1160,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 1024,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 27980,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 26243,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 29140
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1160,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 27980,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 26243,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 29140
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 23,
+        "A0200": 23,
+        "B0100": 17,
+        "B0200": 12
+      },
+      "total_words": 75,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0135_0165",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "3df61bd3be4738d3757168ad0fddfa1e8aab592dd41e2246c5c59e298962f3e0",
+    "query_id": "91730102a281052ca617719abe7268ef9ea614884afe5f8b0993541f9b042f6d",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      164,
+      194
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194
+      ]
+    },
+    "observation_range": [
+      135,
+      165
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue accelerating east in near-level flight to extend from B0100 and complicate the approaching missiles’ pursuit.",
+      "A0200": "A0200 is likely to maintain a fast descending east-southeast extension with further maneuvering to disengage from B0100 and reduce missile vulnerability.",
+      "B0100": "B0100 is likely to continue turning southeast while arresting its descent, seeking to close on the retreating Team A aircraft and improve its attack geometry.",
+      "B0200": "B0200 remains inactive throughout the interval and has no further tactical behavior."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue accelerating east in near-level flight to extend from B0100 and complicate the approaching missiles’ pursuit.\",\"A0200\":\"A0200 is likely to maintain a fast descending east-southeast extension with further maneuvering to disengage from B0100 and reduce missile vulnerability.\",\"B0100\":\"B0100 is likely to continue turning southeast while arresting its descent, seeking to close on the retreating Team A aircraft and improve its attack geometry.\",\"B0200\":\"B0200 remains inactive throughout the interval and has no further tactical behavior.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793620978,
+      "id": "chatcmpl-Efl2YVsIx0eCWbzRCmZPiWunkIQRI",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1162,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 1024,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 23991,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 22254,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 25153
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1162,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 23991,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 22254,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 25153
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 20,
+        "A0200": 21,
+        "B0100": 25,
+        "B0200": 12
+      },
+      "total_words": 78,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0150_0180",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "5d57a5201edb23eecb566ebb7b758088ac546dc95ed12aea800b303d7441e19d",
+    "query_id": "1b87cb90229981898e45c1658abcee81b216bae9269020c2e93963265eba479b",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      179,
+      209
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209
+      ]
+    },
+    "observation_range": [
+      150,
+      180
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue nearly level eastward acceleration, extending from B0100 and the missile engagement to preserve separation and energy.",
+      "A0200": "A0200 is likely to keep accelerating through a descending hard-right maneuver to complicate the likely B01001 attack and escape B0100’s pursuit.",
+      "B0100": "B0100 is likely to continue descending and turning southeast behind A0200 to support its likely missile attack and maintain pursuit pressure.",
+      "B0200": "B0200 remains inactive during the interval and therefore has no active tactical purpose or behavior."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue nearly level eastward acceleration, extending from B0100 and the missile engagement to preserve separation and energy.\",\"A0200\":\"A0200 is likely to keep accelerating through a descending hard-right maneuver to complicate the likely B01001 attack and escape B0100’s pursuit.\",\"B0100\":\"B0100 is likely to continue descending and turning southeast behind A0200 to support its likely missile attack and maintain pursuit pressure.\",\"B0200\":\"B0200 remains inactive during the interval and therefore has no active tactical purpose or behavior.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793620984,
+      "id": "chatcmpl-Efl2ewXhV2L4CpfAi6nCklX2HLfDT",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1609,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 1467,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 23993,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 22256,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 25602
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1609,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1467,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 23993,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 22256,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 25602
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 21,
+        "A0200": 21,
+        "B0100": 21,
+        "B0200": 15
+      },
+      "total_words": 78,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0165_0195",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "93dcd7df060121107013e371686e6a80090fbc4f03c095f33b4303f387e7b952",
+    "query_id": "23919159eb1814a58263e1a6bb0dcd265f72c88f8d9912231585b2d87379f33d",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      194,
+      224
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        194,
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224
+      ]
+    },
+    "observation_range": [
+      165,
+      195
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue accelerating east in level flight, opening separation from the engagement while preserving its remaining missile for a later opportunity.",
+      "A0200": "A0200 is likely to sustain a fast descending rightward maneuver to complicate the apparent missile pursuit and deny B0100 an easy follow-up.",
+      "B0100": "B0100 is likely to continue descending southeast toward A0200, maintaining pressure after expending its missiles and seeking a closer engagement.",
+      "B0200": "B0200 remains inactive throughout the interval and has no active tactical behavior."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue accelerating east in level flight, opening separation from the engagement while preserving its remaining missile for a later opportunity.\",\"A0200\":\"A0200 is likely to sustain a fast descending rightward maneuver to complicate the apparent missile pursuit and deny B0100 an easy follow-up.\",\"B0100\":\"B0100 is likely to continue descending southeast toward A0200, maintaining pressure after expending its missiles and seeking a closer engagement.\",\"B0200\":\"B0200 remains inactive throughout the interval and has no active tactical behavior.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793620984,
+      "id": "chatcmpl-Efl2eU9OGVSHh0bBgJcVGAzmkmDR5",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1157,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 1024,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 25446,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 23709,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 26603
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1157,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1024,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 25446,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 23709,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 26603
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 24,
+        "A0200": 22,
+        "B0100": 20,
+        "B0200": 12
+      },
+      "total_words": 78,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0180_0210",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "85a8d6c5168e8debdd8b326fafbdaa299c39ef5b1ba68c7d93ab26d9da00d194",
+    "query_id": "535e7d35c325aebb03689a7a093e97f28f7820aa00b345a78f0508706f567cf1",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      209,
+      239
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234,
+        235,
+        236,
+        237,
+        238,
+        239
+      ]
+    },
+    "observation_range": [
+      180,
+      210
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue its fast, nearly level eastward extension to preserve energy and separation from the lower engagement and trailing Team B missiles.",
+      "A0200": "A0200 is likely to keep descending and accelerating eastward with maneuvering turns to complicate B01001’s pursuit and widen separation from B0100.",
+      "B0100": "B0100 is likely to continue a descending southeastward turn toward A0200’s track, plausibly seeking to sustain pursuit or favorable geometry for its outbound missile despite having no missiles remaining.",
+      "B0200": "B0200 remains inactive throughout the interval and has no plausible active tactical purpose or course of behavior."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue its fast, nearly level eastward extension to preserve energy and separation from the lower engagement and trailing Team B missiles.\",\"A0200\":\"A0200 is likely to keep descending and accelerating eastward with maneuvering turns to complicate B01001’s pursuit and widen separation from B0100.\",\"B0100\":\"B0100 is likely to continue a descending southeastward turn toward A0200’s track, plausibly seeking to sustain pursuit or favorable geometry for its outbound missile despite having no missiles remaining.\",\"B0200\":\"B0200 remains inactive throughout the interval and has no plausible active tactical purpose or course of behavior.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793620992,
+      "id": "chatcmpl-Efl2mYuOKLCC607wxRDxFHBrhoJUn",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1695,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 1536,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 26620,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 24883,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 28315
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1695,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1536,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 26620,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 24883,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 28315
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 25,
+        "A0200": 21,
+        "B0100": 29,
+        "B0200": 17
+      },
+      "total_words": 92,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0195_0225",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "a299941f50a6542447011ed508313d9970c3b40cbd154c36ebf8580b2a376350",
+    "query_id": "a86724a541a90e6817f531eb159f4b34c714e866ccf43206ce8cc561bbb536d2",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      224,
+      254
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234,
+        235,
+        236,
+        237,
+        238,
+        239,
+        240,
+        241,
+        242,
+        243,
+        244,
+        245,
+        246,
+        247,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253,
+        254
+      ]
+    },
+    "observation_range": [
+      195,
+      225
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue a fast, nearly level eastward extension to preserve separation and outrun or outlast the two trailing Team B missiles.",
+      "A0200": "A0200 is likely to continue descending eastward with alternating banking turns and speed adjustments to spoil B01001’s apparent intercept while opening distance from B0100.",
+      "B0100": "B0100 is likely to keep descending and arcing southeast behind A0200 to maintain a close pursuit, despite having no recorded missiles remaining.",
+      "B0200": "B0200 remains inactive throughout the target interval and has no active tactical purpose or course of behavior."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue a fast, nearly level eastward extension to preserve separation and outrun or outlast the two trailing Team B missiles.\",\"A0200\":\"A0200 is likely to continue descending eastward with alternating banking turns and speed adjustments to spoil B01001’s apparent intercept while opening distance from B0100.\",\"B0100\":\"B0100 is likely to keep descending and arcing southeast behind A0200 to maintain a close pursuit, despite having no recorded missiles remaining.\",\"B0200\":\"B0200 remains inactive throughout the target interval and has no active tactical purpose or course of behavior.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793620993,
+      "id": "chatcmpl-Efl2nOb9SY2KqBdiPKkYZR2gbiiYr",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1497,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 1345,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 26623,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 24886,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 28120
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1497,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1345,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 26623,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 24886,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 28120
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 24,
+        "A0200": 24,
+        "B0100": 22,
+        "B0200": 17
+      },
+      "total_words": 87,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0210_0240",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "3e0d92daaac3aef9ace0fc36ed770de963205f89fca1f4199597ca52be771c6b",
+    "query_id": "48a52472d853b1d97717b040f3046881c64a81e49d19659b678a56c19c4735fc",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      239,
+      269
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        239,
+        240,
+        241,
+        242,
+        243,
+        244,
+        245,
+        246,
+        247,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253,
+        254,
+        255,
+        256,
+        257,
+        258,
+        259,
+        260,
+        261,
+        262,
+        263,
+        264,
+        265,
+        266,
+        267,
+        268,
+        269
+      ]
+    },
+    "observation_range": [
+      210,
+      240
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue a fast, nearly level eastward extension, opening separation from B0100 and nearby missile tracks to preserve survival and its remaining weapon.",
+      "A0200": "A0200 is likely to work toward leveling from its descent while extending east-northeast and gently left, frustrating B0100’s pursuit and reducing exposure to the nearby B missile.",
+      "B0100": "B0100 is likely to continue its descending leftward turn into an eastward tail chase of A0200, seeking a closer rear-quarter position despite having no missiles remaining.",
+      "B0200": "B0200 remains inactive throughout the interval and has no active tactical purpose or course of behavior."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue a fast, nearly level eastward extension, opening separation from B0100 and nearby missile tracks to preserve survival and its remaining weapon.\",\"A0200\":\"A0200 is likely to work toward leveling from its descent while extending east-northeast and gently left, frustrating B0100’s pursuit and reducing exposure to the nearby B missile.\",\"B0100\":\"B0100 is likely to continue its descending leftward turn into an eastward tail chase of A0200, seeking a closer rear-quarter position despite having no missiles remaining.\",\"B0200\":\"B0200 remains inactive throughout the interval and has no active tactical purpose or course of behavior.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793620995,
+      "id": "chatcmpl-Efl2pmcTvLOC84nddpACzZKMT9FWb",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 2403,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 2227,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 26389,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 24652,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 28792
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 2403,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2227,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 26389,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 24652,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 28792
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 26,
+        "A0200": 27,
+        "B0100": 26,
+        "B0200": 16
+      },
+      "total_words": 95,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0225_0255",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "740f0d908ff3550d1e4cb1dbb8c1ebccb548a46616ecde56a4f7d36696c16d55",
+    "query_id": "28c5daeb7b7de9f5df7d4beddc73552e86bc15274a4367ddf420839be92e980d",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      254,
+      284
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        254,
+        255,
+        256,
+        257,
+        258,
+        259,
+        260,
+        261,
+        262,
+        263,
+        264,
+        265,
+        266,
+        267,
+        268,
+        269,
+        270,
+        271,
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281,
+        282,
+        283,
+        284
+      ]
+    },
+    "observation_range": [
+      225,
+      255
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue a hard descending left reversal toward north or northwest to turn back toward B0100 and seek a missile-engagement opportunity.",
+      "A0200": "A0200 is likely to extend generally east-northeast while making hard course changes to complicate B01001’s possible approach and preserve separation from B0100.",
+      "B0100": "B0100 is likely to continue an eastward, maneuvering pursuit near A0200’s altitude to close the gap and maintain pressure on it.",
+      "B0200": "B0200 remains inactive throughout the interval and has no active tactical purpose or behavior."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue a hard descending left reversal toward north or northwest to turn back toward B0100 and seek a missile-engagement opportunity.\",\"A0200\":\"A0200 is likely to extend generally east-northeast while making hard course changes to complicate B01001’s possible approach and preserve separation from B0100.\",\"B0100\":\"B0100 is likely to continue an eastward, maneuvering pursuit near A0200’s altitude to close the gap and maintain pressure on it.\",\"B0200\":\"B0200 remains inactive throughout the interval and has no active tactical purpose or behavior.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793621000,
+      "id": "chatcmpl-Efl2uZTXPUcBt4uYeZXtHXBxGzHrQ",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1953,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 1796,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 23717,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 21980,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 25670
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1953,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1796,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 23717,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 21980,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 25670
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 24,
+        "A0200": 22,
+        "B0100": 21,
+        "B0200": 14
+      },
+      "total_words": 81,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0240_0270",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "7e396eae75f12e62a4e38f842b0752ab062702085b93d5879e728caea82a0240",
+    "query_id": "31ca2e4cacd019e04e2561d9ab41382ed579fb537274c28a8825f76451902704",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      269,
+      299
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        269,
+        270,
+        271,
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281,
+        282,
+        283,
+        284,
+        285,
+        286,
+        287,
+        288,
+        289,
+        290,
+        291,
+        292,
+        293,
+        294,
+        295,
+        296,
+        297,
+        298,
+        299
+      ]
+    },
+    "observation_range": [
+      240,
+      270
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue its descending left-hand reversal toward B0100, seeking favorable missile geometry from above.",
+      "A0200": "A0200 is likely to sustain a fast turning maneuver, possibly reversing right, to complicate B01001’s approach while preserving separation from B0100.",
+      "B0100": "B0100 is likely to continue eastward behind Team A, maintaining pressure while its in-flight missile remains active and avoiding an unfavorable close engagement.",
+      "B0200": "B0200 remains inactive throughout the interval and has no active tactical purpose or behavior."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue its descending left-hand reversal toward B0100, seeking favorable missile geometry from above.\",\"A0200\":\"A0200 is likely to sustain a fast turning maneuver, possibly reversing right, to complicate B01001’s approach while preserving separation from B0100.\",\"B0100\":\"B0100 is likely to continue eastward behind Team A, maintaining pressure while its in-flight missile remains active and avoiding an unfavorable close engagement.\",\"B0200\":\"B0200 remains inactive throughout the interval and has no active tactical purpose or behavior.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793621004,
+      "id": "chatcmpl-Efl2yRZj0GpJe8ua9EGhorGr997Ix",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1909,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 1760,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 20917,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 19180,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 22826
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1909,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1760,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 20917,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 19180,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 22826
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 17,
+        "A0200": 21,
+        "B0100": 23,
+        "B0200": 14
+      },
+      "total_words": 75,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0255_0285",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "c610e00719ceb3fa57564784434859a96b450a4c11d12673653bafaf270907da",
+    "query_id": "1e50427c7330910230156913a9914a3b5887ffcf558bbe0912da35b570d6e4ef",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      284,
+      314
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        284,
+        285,
+        286,
+        287,
+        288,
+        289,
+        290,
+        291,
+        292,
+        293,
+        294,
+        295,
+        296,
+        297,
+        298,
+        299,
+        300,
+        301,
+        302,
+        303,
+        304,
+        305,
+        306,
+        307,
+        308,
+        309,
+        310,
+        311,
+        312,
+        313,
+        314
+      ]
+    },
+    "observation_range": [
+      255,
+      285
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue its hard descending left turn toward B0100’s western bearing, seeking to establish a missile firing alignment from above.",
+      "A0200": "A0200 is likely to continue its left-hand reversal near B0100’s altitude, aiming to bring the nearby opponent onto its forward arc for an attack.",
+      "B0100": "B0100 is likely to sustain a hard left defensive break and modest descent, attempting to disrupt Team A’s converging attack geometry and survive without remaining missiles.",
+      "B0200": "B0200 remains inactive throughout the interval and has no plausible active tactical purpose or behavior."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue its hard descending left turn toward B0100’s western bearing, seeking to establish a missile firing alignment from above.\",\"A0200\":\"A0200 is likely to continue its left-hand reversal near B0100’s altitude, aiming to bring the nearby opponent onto its forward arc for an attack.\",\"B0100\":\"B0100 is likely to sustain a hard left defensive break and modest descent, attempting to disrupt Team A’s converging attack geometry and survive without remaining missiles.\",\"B0200\":\"B0200 remains inactive throughout the interval and has no plausible active tactical purpose or behavior.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793621011,
+      "id": "chatcmpl-Efl35cio0nyKfGCjtqHDPFS8yWs6y",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1687,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 1536,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 20552,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 18815,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 22239
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1687,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1536,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 20552,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 18815,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 22239
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 23,
+        "A0200": 24,
+        "B0100": 26,
+        "B0200": 15
+      },
+      "total_words": 88,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0270_0300",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "6ba1803f624591d327d6c43d1899088a3aebad5c73a531ea2cab64f3305cf982",
+    "query_id": "335e583b342f8d2c8b55e4d829e08f322fe1641369893cd8bdcc9ea73ac39c8f",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      299,
+      329
+    ],
+    "target_coverage": {
+      "complete": true,
+      "missing_steps": [],
+      "available_steps": [
+        299,
+        300,
+        301,
+        302,
+        303,
+        304,
+        305,
+        306,
+        307,
+        308,
+        309,
+        310,
+        311,
+        312,
+        313,
+        314,
+        315,
+        316,
+        317,
+        318,
+        319,
+        320,
+        321,
+        322,
+        323,
+        324,
+        325,
+        326,
+        327,
+        328,
+        329
+      ]
+    },
+    "observation_range": [
+      270,
+      300
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to sustain an accelerating descending left turn toward B0100’s sector, reducing altitude and angular separation to create a missile-engagement opportunity.",
+      "A0200": "A0200 is likely to continue its left reversal while trying to stabilize altitude, turning back toward B0100 to establish a firing position with its remaining missile.",
+      "B0100": "B0100 is likely to continue a descending left break and curve away from the converging Team A aircraft, seeking to spoil their firing geometry and survive while unarmed.",
+      "B0200": "B0200 remains inactive throughout the interval and has no active tactical purpose or course of behavior."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to sustain an accelerating descending left turn toward B0100’s sector, reducing altitude and angular separation to create a missile-engagement opportunity.\",\"A0200\":\"A0200 is likely to continue its left reversal while trying to stabilize altitude, turning back toward B0100 to establish a firing position with its remaining missile.\",\"B0100\":\"B0100 is likely to continue a descending left break and curve away from the converging Team A aircraft, seeking to spoil their firing geometry and survive while unarmed.\",\"B0200\":\"B0200 remains inactive throughout the interval and has no active tactical purpose or course of behavior.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793621012,
+      "id": "chatcmpl-Efl36gkUpSbT3CQWYBx3wYxtagzIy",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1692,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 1536,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 20539,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 18802,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 22231
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1692,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1536,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 20539,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 18802,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 22231
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 23,
+        "A0200": 26,
+        "B0100": 28,
+        "B0200": 16
+      },
+      "total_words": 93,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0285_0315",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "0d48e82d451e23776ef5d599c471846bd1623bd60ab44859c2a41dc472e278a9",
+    "query_id": "b205e2f8aed3a25707b6db93fd86aecce6ab7799b9c0400cf66048b5343fa428",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      314,
+      344
+    ],
+    "target_coverage": {
+      "complete": false,
+      "missing_steps": [
+        341,
+        342,
+        343,
+        344
+      ],
+      "available_steps": [
+        314,
+        315,
+        316,
+        317,
+        318,
+        319,
+        320,
+        321,
+        322,
+        323,
+        324,
+        325,
+        326,
+        327,
+        328,
+        329,
+        330,
+        331,
+        332,
+        333,
+        334,
+        335,
+        336,
+        337,
+        338,
+        339,
+        340
+      ]
+    },
+    "observation_range": [
+      285,
+      315
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue descending and turning southwest toward B0100, supporting its newly launched missile while seeking a favorable post-launch separation.",
+      "A0200": "A0200 is likely to continue its leftward turn from a northbound escape, attempting to evade the trailing B missile and potentially bring the pursuing B0100 into missile geometry.",
+      "B0100": "B0100 is likely to continue closing northeastward on A0200 despite having no missiles, while maneuvering to survive the incoming A0100 missile threat.",
+      "B0200": "B0200 remains inactive throughout the interval and has no active tactical purpose or behavior."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue descending and turning southwest toward B0100, supporting its newly launched missile while seeking a favorable post-launch separation.\",\"A0200\":\"A0200 is likely to continue its leftward turn from a northbound escape, attempting to evade the trailing B missile and potentially bring the pursuing B0100 into missile geometry.\",\"B0100\":\"B0100 is likely to continue closing northeastward on A0200 despite having no missiles, while maneuvering to survive the incoming A0100 missile threat.\",\"B0200\":\"B0200 remains inactive throughout the interval and has no active tactical purpose or behavior.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793621024,
+      "id": "chatcmpl-Efl3IHiqJDZqkESMuzBYCMQtbLUL3",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 1126,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 979,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 20927,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 19190,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 22053
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 1126,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 979,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 20927,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 19190,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 22053
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 22,
+        "A0200": 28,
+        "B0100": 22,
+        "B0200": 14
+      },
+      "total_words": 86,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  },
+  {
+    "sample_id": "window_0300_0330",
+    "model": "gpt-5.6-sol",
+    "requested_model": "gpt-5.6-sol",
+    "model_alias": "sol",
+    "repeat_id": 1,
+    "condition_id": "gpt-5.6-sol/n+1/H31/stride15",
+    "request_sha256": "b68d37ab45b47dd01952fe3007097af26d85e00d51be9c910351f12c98446cbc",
+    "query_id": "eb95620c2eafea9396357007d7f80ff51dcbe1d6ef37aa5a6fc82703d16f6991",
+    "offset": 1,
+    "condition_kind": "forecast",
+    "target_interval": [
+      329,
+      359
+    ],
+    "target_coverage": {
+      "complete": false,
+      "missing_steps": [
+        341,
+        342,
+        343,
+        344,
+        345,
+        346,
+        347,
+        348,
+        349,
+        350,
+        351,
+        352,
+        353,
+        354,
+        355,
+        356,
+        357,
+        358,
+        359
+      ],
+      "available_steps": [
+        329,
+        330,
+        331,
+        332,
+        333,
+        334,
+        335,
+        336,
+        337,
+        338,
+        339,
+        340
+      ]
+    },
+    "observation_range": [
+      300,
+      330
+    ],
+    "status": "valid",
+    "narratives": {
+      "A0100": "A0100 is likely to continue accelerating through a descending right turn from westward flight, opening separation for survival while its expended missile converges on B0100.",
+      "A0200": "A0200 is likely to continue a northward, descending left-turning maneuver to maintain separation from the nearby B missile while preserving its remaining weapon for B0100.",
+      "B0100": "B0100 is likely to continue its steep northeast climb toward A0200 to maintain pressure and survive, though A0100’s rapidly converging missile may end its maneuver during the interval.",
+      "B0200": "B0200 remains inactive throughout the interval and has no plausible active tactical purpose or behavior."
+    },
+    "raw_response": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "annotations": [],
+            "content": "{\"A0100\":\"A0100 is likely to continue accelerating through a descending right turn from westward flight, opening separation for survival while its expended missile converges on B0100.\",\"A0200\":\"A0200 is likely to continue a northward, descending left-turning maneuver to maintain separation from the nearby B missile while preserving its remaining weapon for B0100.\",\"B0100\":\"B0100 is likely to continue its steep northeast climb toward A0200 to maintain pressure and survive, though A0100’s rapidly converging missile may end its maneuver during the interval.\",\"B0200\":\"B0200 remains inactive throughout the interval and has no plausible active tactical purpose or behavior.\"}",
+            "refusal": null,
+            "role": "assistant"
+          }
+        }
+      ],
+      "created": 1793621025,
+      "id": "chatcmpl-Efl3J8dmHs9Kvpo5xo1KFBB58m4El",
+      "model": "gpt-5.6-sol",
+      "object": "chat.completion",
+      "service_tier": "default",
+      "system_fingerprint": null,
+      "usage": {
+        "completion_tokens": 2716,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 2541,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens": 22390,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 20653,
+          "cached_tokens": 1734
+        },
+        "total_tokens": 25106
+      }
+    },
+    "error": null,
+    "usage": {
+      "completion_tokens": 2716,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 2541,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens": 22390,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 20653,
+        "cached_tokens": 1734
+      },
+      "total_tokens": 25106
+    },
+    "length_metrics": {
+      "counting_method": "whitespace_split",
+      "words_by_aircraft": {
+        "A0100": 25,
+        "A0200": 25,
+        "B0100": 28,
+        "B0200": 15
+      },
+      "total_words": 93,
+      "max_words_per_aircraft": 55,
+      "over_limit_by_aircraft": {
+        "A0100": false,
+        "A0200": false,
+        "B0100": false,
+        "B0200": false
+      }
+    },
+    "sentence_counts_heuristic": {
+      "A0100": 1,
+      "A0200": 1,
+      "B0100": 1,
+      "B0200": 1
+    }
+  }
+]

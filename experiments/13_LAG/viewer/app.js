@@ -3,15 +3,8 @@ import {Playback} from './playback.js';
 import {renderProbabilities,renderSeries} from './charts.js';
 import {Commentary} from './commentary.js';
 const $=id=>document.getElementById(id);
-let data, step=0, uid='A0100', activeTab='series', rows=new Map(), selected=new Set(defaults), request=0;
-const commentary=new Commentary($('commentaryPanel'),()=>{
-  if(!data)return;
-  data.lastStep=Math.max(data.recordingLastStep,commentary.replay?.last_step || 0);
-  $('scrubber').max=$('stepInput').max=data.lastStep;$('timeInput').max=(data.lastStep*data.dt).toFixed(1);
-  $('duration').textContent=`${(data.lastStep*data.dt).toFixed(1)} s / ${data.lastStep} steps${data.lastStep>data.recordingLastStep?'（結果待ちを含む）':''}`;
-  if(commentary.replay && activeTab==='series')switchTab('commentary');
-  else render();
-});
+let data, step=0, uid='A0100', activeTab='commentary', rows=new Map(), selected=new Set(defaults), request=0;
+const commentary=new Commentary($('commentaryPanel'),()=>{if(data)render();});
 const allFields=[...stateFields,...actionFields,...derivedFields];
 const playback=new Playback($('video'), s=>{step=s;render();}, playing=>{$('play').textContent=playing?'Ⅱ 停止':'▶ 再生';}, (frame,pending,error)=>{
   $('videoTime').textContent=frame?`映像 ${(frame.simulationTime).toFixed(1)} s${pending?' · 同期中':''}`:'映像を読み込み中';
@@ -30,7 +23,7 @@ function buildRows(){
 function launches(){return data.launches.filter(e=>e.launcher_id===uid).sort((a,b)=>a.action_step-b.action_step);}
 function renderAnalysis(){
   if(!data)return;
-  $('analysisContext').textContent=`${uid} · step ${step} · ${(step*data.dt).toFixed(1)} s`;
+  $('analysisContext').textContent=`${activeTab==='commentary'?'チーム '+commentary.teams.value:uid} · step ${step} · ${(step*data.dt).toFixed(1)} s`;
   if(activeTab==='commentary'){commentary.render(step*data.dt);return;}
   if(activeTab==='probability')renderProbabilities($('probabilities'),rows.get(step),data.actions);
   else {const scroll=$('charts').scrollTop;renderSeries($('charts'),{fields:allFields.filter(f=>selected.has(f[0])),rows,step,dt:data.dt,lastStep:data.lastStep,windowSize:$('window').value,launches:launches(),onSeek:s=>playback.seek(s)});$('charts').scrollTop=scroll;}
