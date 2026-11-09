@@ -6,8 +6,8 @@ Three committed LAG 2v2 matches, shared by the core (Translator, judge, tests) a
 
 | Path | Content | Readers |
 |---|---|---|
-| `processed/{mhi_v1.3_ic100601_win,ours_seed100100_ic100601_loss,ours_seed100100_ic100606_win}.csv` | 64-column episode CSVs, one row per (step, object) | `translate.lag.dataset.load_episode`, the Translator example scenario, tests |
-| `processed/manifest.json` | schema, SHA-256 of every CSV, provenance | `load_episode` verifies each CSV against it (keep CSV and manifest together) |
+| `processed/{mhi_v1.3_ic100601_win,ours_seed100100_ic100601_loss,ours_seed100100_ic100606_win}.csv` | 64-column episode CSVs, one row per (step, object) | `translate.episode.load_episode`, the example scenario, the judge (FUTURE, trajectory), tests |
+| `processed/manifest.json` | schema, SHA-256 of every CSV, provenance | `translate.episode.load_episode` verifies each CSV against it (keep CSV and manifest together) |
 | `processed/README.md` | column definitions and loading rules | humans |
 | `action_videos/*_with_actions.mp4` | recording + A-team action plots, 20 fps, 1920x1080, frame = step | human raters (the judge reads no video yet) |
 

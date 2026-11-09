@@ -2,8 +2,8 @@
 # Offline validation of the core. No mode sends an API request: OPENAI_API_KEY is always unset.
 # MODE (first argument):
 #   full     the whole core pytest
-#   static   git diff --check, ruff check + format check, bash -n of slurm/, imports from outside
-#            the repository
+#   static   git diff --check, ruff check + format check, bash -n of slurm/, imports and --help from
+#            outside the repository, and the line ceilings (src/ and tests/ <= 4000 lines of Python)
 #   preview  a preview of every shipped config of both packages with API client factories that
 #            raise: the translate configs, then the judge configs over a synthetic run made in job
 #            scratch; no preview may write a request or response journal
@@ -21,6 +21,7 @@ source "${SLURM_SUBMIT_DIR:-.}/slurm/common.sh"
 unset OPENAI_API_KEY OPENAI_LOG OPENAI_CUSTOM_HEADERS
 MODE="${1:-full}"
 SOURCE_ROOT="${SOURCE_ROOT:-$REPO_ROOT}"
+LINE_CEILING=4000
 require_python
 log_header "$0" "$MODE" "source_root=$SOURCE_ROOT"
 
@@ -42,6 +43,11 @@ case "$MODE" in
       done
       echo "imports and --help from outside the repository: ok"
     )
+    for tree in src tests; do  # the line budgets (design section 2b): a ceiling, not a target
+      lines="$(find "$tree" -name '*.py' -print0 | xargs -0 cat | wc -l)"
+      echo "$tree: $lines lines of Python (ceiling $LINE_CEILING)"
+      [ "$lines" -le "$LINE_CEILING" ] || { echo "$tree exceeds $LINE_CEILING lines" >&2; exit 1; }
+    done
     ;;
   preview)
     scratch="$(mktemp -d)"
