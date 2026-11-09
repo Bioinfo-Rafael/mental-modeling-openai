@@ -5,7 +5,7 @@ from collections import defaultdict
 from statistics import mean
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
-from mtd_rl_xavier.experiment import common
+from mtd_rl_xavier_workspace.experiment import common
 
 HERE = Path(__file__).resolve().parents[1]
 

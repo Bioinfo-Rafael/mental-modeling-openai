@@ -13,13 +13,13 @@ from pathlib import Path
 
 import pandas as pd
 
-from mtd_rl_xavier.paths import MENTALMODELING
+from mtd_rl_xavier_workspace.paths import MENTALMODELING
 
-from mtd_rl_xavier.lag.dataset import index_records, load_episode
+from mtd_rl_xavier_workspace.lag.dataset import index_records, load_episode
 from .config import PROCESSED
-from mtd_rl_xavier.lag.dataset import ACTIONS, DT, STATE_FEATURES
+from mtd_rl_xavier_workspace.lag.dataset import ACTIONS, DT, STATE_FEATURES
 from .config import EPISODES, MODELS, OBSERVATION_SCOPES, REQUEST_OPTIONS, TARGET_ACTION_FIELDS, TASKS
-from mtd_rl_xavier.lag import batch, execution
+from mtd_rl_xavier_workspace.lag import batch, execution
 
 from . import dynamics, evaluation, prompts
 

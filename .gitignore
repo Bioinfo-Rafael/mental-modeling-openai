@@ -17,13 +17,9 @@ __pycache__/
 .ipynb_checkpoints/
 .DS_Store
 
-# Downloaded datasets are reproducible inputs (see data/README.md and configs/sources.json).
-data/llmx_data/
-data/candidate_datasets/*/repository/
-data/candidate_datasets/*/*.zip
-data/candidate_datasets/*/extracted/
+# The workspace/ project keeps its own ignores (workspace/.gitignore).
 
-# Generated analyses and paid-pilot outputs from src/mtd_rl_xavier/tools.
+# Generated analyses and stray outputs.
 outputs/**/*.csv
 outputs/**/*.json
 outputs/**/*.jsonl
@@ -48,3 +44,9 @@ outputs/weightreading/
 /outputs/evaluation/
 # intent_compare runs (rollout episodes, ACMI, npz, clips, viewers, Slurm logs) derive from partner checkpoints.
 /outputs/intent_compare/
+# translate runs, new rollout recordings and episodes, parity reports (whole trees; they hold model-visible text).
+/outputs/translate/
+/outputs/rollouts/
+/outputs/episodes/
+/outputs/policy_parity/
+/outputs/.scratch/

@@ -1,0 +1,52 @@
+# Policy input, English (reproduces the former weights-and-activations run seed100601).
+# Inputs: the instruction text, the previous translation and the policy (weights W and the validated
+# replay activations A of the 60-step window); no trajectory. The judge still sees the trajectory window.
+# Prompt: configs/translate/prompts/intent-b-v1.yaml (a code session in the sandbox, then one ```json answer).
+# python -m translate --config configs/translate/seed100601-policy.yaml   (preview; add --execute --confirm-paid-api to send)
+schema_version: 2
+scenario: configs/translate/scenarios/seed100601-neutral.yaml
+triggers:
+  source: preset                    # the steps chosen in advance, each with its kind (start | change | request)
+  tick_interval_steps: null
+  points:                           # kinds are assumptions for the reproduction (the recorded runs had none); edit freely
+    - {step: 45, kind: start, targets: null}       # null: every instructed target
+    - {step: 145, kind: change, targets: null}
+    - {step: 245, kind: change, targets: null}
+    - {step: 315, kind: change, targets: null}
+visibility: {mode: online, future_steps: 0}
+limits: {max_detector_calls: 1, max_translation_calls: 8}
+scenario_limits: {max_instruction_chars: 300, max_alarm_chars: 200, max_question_chars: 200}
+detector: null                      # preset triggers: no change-point detector
+inputs: [instructions, previous_translation, policy]
+trajectory: {renderer: lag17-jsonl, past_steps: 60}   # recorded in every event (judge material)
+policy:
+  rollout_dir: outputs/weightreading/rollouts/mhi-v1.3-20261104T010525Z
+  seed: 100601
+  spec: configs/translate/policies/lag_mappo_2v2_33.spec.json
+  checkpoint: null                  # the actor named in the rollout manifest (sibling mtd-rl-lag checkout)
+  past_steps: 60
+prompt:
+  file: configs/translate/prompts/intent-b-v1.yaml
+  vars:
+    language_instruction: "Write both fields in English."
+    limits_line: ""
+translation: {backend: openai_responses, model: gpt-6.1-sol, reasoning_effort: high, max_output_tokens: 25000, timeout_s: 1800, retry: default}
+answer: {max_intent_chars: 1000, max_evidence_items: null, max_evidence_chars: null, on_invalid: skip}
+session:                            # per (step, aircraft) code session
+  max_runs: 12                      # code executions per session
+  max_total_tokens: 240000          # billed input + output per session; keeps every request below 272k input tokens
+  max_protocol_errors: 3            # consecutive malformed replies before the session stops
+  answer_at_fraction: 0.75          # from this share of max_total_tokens on, the final answer is requested
+  sandbox:
+    python: .venv/bin/python
+    timeout_s: 600
+    memory_bytes: 8589934592
+    file_size_bytes: 1073741824
+    stdout_cap_chars: 20000
+    stderr_tail_chars: 6000
+    tmp_size_mb: 512
+    threads: 4
+    work_max_bytes: 2147483648
+output: {root: outputs/translate}
+pricing:                            # USD per 1M tokens, preview cost estimate only (list price; re-check)
+  gpt-6.1-sol: {input: 2.00, cached_input: 0.10, output: 10.00}

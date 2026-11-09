@@ -10,7 +10,7 @@ import sys
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.dont_write_bytecode = True
-from mtd_rl_xavier.paths import MENTALMODELING  # noqa: E402
+from mtd_rl_xavier_workspace.paths import MENTALMODELING  # noqa: E402
 sys.path[:0] = [str(HERE), str(MENTALMODELING)]
 
 import matplotlib
@@ -20,10 +20,10 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 import pandas as pd
 
-from mtd_rl_xavier.lag.dataset import load_episode, index_records
+from mtd_rl_xavier_workspace.lag.dataset import load_episode, index_records
 from trajectory_experiment.config import PROCESSED
-from mtd_rl_xavier.lag.dataset import ACTIONS, ACTION_LABELS, STATE_FEATURES, STATE_UNITS
-from mtd_rl_xavier.lag import execution as ex
+from mtd_rl_xavier_workspace.lag.dataset import ACTIONS, ACTION_LABELS, STATE_FEATURES, STATE_UNITS
+from mtd_rl_xavier_workspace.lag import execution as ex
 from trajectory_experiment import evaluation
 
 COLORS = {'sol': '#d35417', 'terra': '#157f70', 'luna': '#8055bf'}

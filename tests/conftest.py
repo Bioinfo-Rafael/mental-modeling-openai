@@ -1,24 +1,39 @@
+"""Shared fixtures: the small synthetic policy network (helpers live in ``tests/policy/wr_helpers.py``)."""
+
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
-import numpy as np
 import pytest
+
+from tests.policy.wr_helpers import LAG_MODEL_DIR, MHI_ACTORS, MHI_MODEL_DIR, SMALL_SPEC, checkpoint_bytes, small_arrays
 
 
 @pytest.fixture
-def episode_path(tmp_path: Path) -> Path:
-    path = tmp_path / "episode.npz"
-    np.savez(
-        path,
-        states=np.asarray(
-            [[[-0.5, 0.0]], [[-0.49, 0.01]], [[-0.47, 0.02]], [[-0.46, 0.01]],
-             [[-0.44, 0.02]], [[-0.41, 0.03]], [[-0.37, 0.04]], [[-0.32, 0.05]]],
-            dtype=np.float32,
-        ),
-        actions=np.asarray([[0], [1], [2], [1], [2], [2], [1], [2]], dtype=np.int64),
-        rewards=np.asarray([[-1.0]] * 8, dtype=np.float64),
-        episodic_return=np.asarray([[-8.0]], dtype=np.float32),
-    )
-    return path
+def small_spec_dict() -> dict:
+    return json.loads(json.dumps(SMALL_SPEC))
 
+
+@pytest.fixture
+def small_files(tmp_path: Path) -> tuple[Path, Path]:
+    """(checkpoint path, spec path) for the small network."""
+    checkpoint = tmp_path / "small.pt"
+    checkpoint.write_bytes(checkpoint_bytes(small_arrays()))
+    spec = tmp_path / "small.spec.json"
+    spec.write_text(json.dumps(SMALL_SPEC), encoding="utf-8")
+    return checkpoint, spec
+
+
+@pytest.fixture
+def lag_model_dir() -> Path:
+    if not (LAG_MODEL_DIR / "baseline_model.pt").exists():
+        pytest.skip("mtd-rl-lag checkpoints not available (set WEIGHTREADING_LAG_MODEL_DIR)")
+    return LAG_MODEL_DIR
+
+
+@pytest.fixture
+def mhi_model_dir() -> Path:
+    if not all((MHI_MODEL_DIR / actor).exists() for actor in MHI_ACTORS):
+        pytest.skip("delivered 2v2 actors not available (set WEIGHTREADING_MHI_MODEL_DIR)")
+    return MHI_MODEL_DIR

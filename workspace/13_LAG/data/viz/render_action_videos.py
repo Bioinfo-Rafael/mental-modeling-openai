@@ -1,7 +1,7 @@
 """Append synchronized A-team action plots to the three supplied recordings.
 
 Run with the repository's .venv/bin/python. Requires matplotlib, numpy, Pillow,
-ffmpeg and ffprobe. Originals are read only; outputs go to viz/action_videos/.
+ffmpeg and ffprobe. Originals are read only; outputs go to <repo>/data/mhi/action_videos/.
 CSV action at t applies over [t, t+0.2); launch markers use ACMI appearance time.
 The original 10 fps flight frames are repeated at 20 fps for 4x playback.
 """
@@ -24,7 +24,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 HERE = Path(__file__).resolve().parent
 RAW = HERE.parent / "raw" / "20261005_LAG_2v2_ACMI"
-OUT = HERE / "action_videos"
+OUT = HERE.parents[2].parent / "data" / "mhi" / "action_videos"  # <repo>/data/mhi/action_videos
 UIDS = ("A0100", "A0200")
 COLORS = ("#ce354c", "#7351ba")
 INK = "#203044"

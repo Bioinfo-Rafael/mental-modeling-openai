@@ -94,7 +94,7 @@ API失敗時のtoken数は不明なので`null`とし、0 token・無料とは�
 
 ### 単独probeと、過去の途中停止batch（再開機能は実装しない）
 
-今回のsol/MountainCar/next-action/H5の2件目（index=6）の500エラーを単独確認するには、repository rootで`uv run python -m mtd_rl_xavier.tools.probe_exp06_query --execute --confirm-paid-api`を実行する。
+今回のsol/MountainCar/next-action/H5の2件目（index=6）の500エラーを単独確認するには、repository rootで`uv run python -m mtd_rl_xavier_workspace.tools.probe_exp06_query --execute --confirm-paid-api`を実行する。
 同じ入力をterra/lunaで検証するときは、それぞれ`--model terra` / `--model luna`を付ける（省略時はsol）。保存済みsol requestの`model`だけを変更し、system/user prompt・履歴・質問・reasoning_effortは一切変更しない。1コマンドにつき指定モデルへ1回送信する。
 新規出力directoryは`<日時>_<model alias>_<識別子>`。request/resultには実際の`model`と`source_query_id`を記録する。互換性のため残した`query_id`は元sol queryのIDであり、terra/lunaの正式な実験query IDではない。
 `612bf8080963456b9286c5481885a700`の保存済みrequestをそのまま1回だけ送信し、SDK自動retryも0にする。両フラグを外すと検証のみ。

@@ -33,9 +33,9 @@ from evaluation.schemas import (
     parse_judge_output,
     parse_key_points,
 )
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.translator.schema import sha256_text
-from tests.translator.tr_fakes import DELETE, SHORT_LAST_STEP, FakeIntentModel
+from tests.translate.tr_fakes import DELETE, SHORT_LAST_STEP, FakeIntentModel
+from translate import paths
+from translate.events import sha256_text
 
 from .eval_fakes import (
     A1_START,
@@ -161,7 +161,8 @@ def test_max_judged_events_of_one_is_accepted() -> None:
         ("timeout_s", 0),
         ("timeout_s", float("inf")),
         ("schema_version", True),
-        ("schema_version", 2),
+        ("schema_version", 1),
+        ("schema_version", 3),
         ("output__root", ""),
     ],
 )
@@ -309,7 +310,8 @@ def _without(record: dict[str, Any], dotted: str) -> dict[str, Any]:
     ("edit", "match"),
     [
         (lambda r: {**r, "schema_version": 1}, "schema_version"),  # a v1 record is no longer accepted
-        (lambda r: {**r, "schema_version": 3}, "schema_version"),
+        (lambda r: {**r, "schema_version": 4}, "schema_version"),  # an unknown version
+        (lambda r: {**r, "schema_version": 2}, "schema_version"),  # one event schema per run (the others are 3)
         (lambda r: {**r, "sequence": r["sequence"] + 1}, "without gaps"),
         (lambda r: {**r, "record_type": "translation"}, "record_type"),
         (lambda r: _without(r, "event_id"), "event_id"),
@@ -317,6 +319,8 @@ def _without(record: dict[str, Any], dotted: str) -> dict[str, Any]:
         (lambda r: {**r, "step": True}, "step"),
         (lambda r: {**r, "primary_trigger": "manual"}, "primary_trigger"),
         (lambda r: {**r, "primary_trigger": "external_change"}, "primary_trigger"),  # a v1 kind
+        (lambda r: {**r, "primary_trigger": "initial"}, "primary_trigger"),  # a v2 kind in a v3 record
+        (lambda r: with_value(r, "trigger_reasons", [{**r["trigger_reasons"][0], "kind": "initial"}]), "kind"),
         (lambda r: with_value(r, "trigger_reasons", [{**r["trigger_reasons"][0], "kind": "instruction"}]), "kind"),
         (lambda r: {**r, "trigger_reasons": []}, "trigger_reasons"),
         (lambda r: _without(r, "input.trajectory"), "trajectory"),
@@ -332,6 +336,19 @@ def _without(record: dict[str, Any], dotted: str) -> dict[str, Any]:
 def test_event_log_violations_are_rejected(tmp_path: Path, translator_run: Path, edit: Any, match: str) -> None:
     with pytest.raises(EventLogError, match=match):
         load_translator_run(_tampered(tmp_path, translator_run, edit))
+
+
+def test_an_event_with_no_instruction_in_effect_loads(tmp_path: Path, translator_run: Path) -> None:
+    """A start may have no instruction in effect: no primary instruction, and nothing listed."""
+
+    def without_instructions(record: dict[str, Any]) -> dict[str, Any]:
+        record = with_value(record, "input.instructions_in_effect", [])
+        return with_value(record, "input.primary_instruction_id", None)
+
+    run = load_translator_run(_tampered(tmp_path, translator_run, without_instructions))
+
+    first = run.translation_events[0]["input"]
+    assert (first["instructions_in_effect"], first["primary_instruction_id"]) == ([], None)
 
 
 def test_duplicate_translation_event_id_is_rejected(tmp_path: Path, translator_run: Path) -> None:
@@ -568,3 +585,30 @@ def test_ids_and_trajectory_that_could_carry_a_heading_are_rejected(
 def test_parser_rejects_repeated_keys_and_deep_nesting(text: str) -> None:
     with pytest.raises(JudgeSchemaError, match="repeated keys"):
         parse_judge_output(text, ())
+
+
+# --- skipped invalid answers (translate: answer.on_invalid skip) ----------------------------------
+
+SKIP_PROBLEM = "invalid final answer: intent has 1200 characters; the limit is 1000"
+
+
+def _skipped(record: dict[str, Any], problem: object = SKIP_PROBLEM) -> dict[str, Any]:
+    """The event as the pipeline writes a skipped invalid answer: blank output plus ``answer_problem``."""
+    return {**record, "output": {"intent": "", "evidence": []}, "answer_problem": problem}
+
+
+def test_skipped_invalid_answer_with_blank_output_loads(tmp_path: Path, translator_run: Path) -> None:
+    run = load_translator_run(_tampered(tmp_path, translator_run, _skipped))
+
+    first = run.translation_events[0]
+    assert first["output"] == {"intent": "", "evidence": []}
+    assert first["answer_problem"] == SKIP_PROBLEM
+    assert run.event_ids() == EVENT_IDS
+
+
+@pytest.mark.parametrize("problem", ["", "   ", None, 3, ["invalid"]])
+def test_blank_output_with_an_empty_or_malformed_answer_problem_is_rejected(
+    tmp_path: Path, translator_run: Path, problem: object
+) -> None:
+    with pytest.raises(EventLogError, match="answer_problem"):
+        load_translator_run(_tampered(tmp_path, translator_run, lambda r: _skipped(r, problem)))

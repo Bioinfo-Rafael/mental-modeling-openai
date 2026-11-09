@@ -1,1 +1,1 @@
-"""Package marker: keeps `tests/weightreading/` from being imported as top-level `weightreading`."""
+"""Package marker for imports from the repository's test helpers."""

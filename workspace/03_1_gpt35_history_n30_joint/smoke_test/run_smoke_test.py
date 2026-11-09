@@ -12,7 +12,7 @@ sys.path.insert(0, str(EXPERIMENT_DIR))
 sys.path.insert(0, str(ROOT))
 sys.dont_write_bytecode = True
 
-from mtd_rl_xavier.experiment import common  # noqa: E402
+from mtd_rl_xavier_workspace.experiment import common  # noqa: E402
 from run import EXPERIMENT, JOINT_QUESTIONS  # noqa: E402
 from llm_x.data import Episode  # noqa: E402
 from llm_x.evaluation import EvaluationConfig, evaluate_episode  # noqa: E402

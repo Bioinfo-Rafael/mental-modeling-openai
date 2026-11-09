@@ -2,4 +2,4 @@
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
-from mtd_rl_xavier.experiment.common_analysis.joint_data import *  # noqa: F401,F403
+from mtd_rl_xavier_workspace.experiment.common_analysis.joint_data import *  # noqa: F401,F403

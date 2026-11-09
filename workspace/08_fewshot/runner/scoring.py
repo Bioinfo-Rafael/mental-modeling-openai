@@ -1,5 +1,5 @@
 """Exp.08 Joint action scoring: final IDs for accuracy, numeric torque for error."""
-from mtd_rl_xavier.experiment.common_analysis.joint_data import parse_response
+from mtd_rl_xavier_workspace.experiment.common_analysis.joint_data import parse_response
 from llm_x.metrics import bin_actions
 
 VERSION = '08_joint_final_action_v1'

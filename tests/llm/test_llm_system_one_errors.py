@@ -7,8 +7,8 @@ from typing import Any
 import httpx
 import pytest
 
-from mtd_rl_xavier.llm import system_one
-from mtd_rl_xavier.llm.system_one import (
+from translate.llm import system_one
+from translate.llm.system_one import (
     FIXED_FRAMING_RESERVE_TOKENS,
     PER_QUESTION_FRAMING_RESERVE_TOKENS,
     SystemOneAuthError,

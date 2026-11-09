@@ -13,14 +13,14 @@ import pytest
 HERE = Path(__file__).resolve().parents[1]
 ROOT = HERE.parents[1]
 sys.dont_write_bytecode = True
-from mtd_rl_xavier.paths import MENTALMODELING  # noqa: E402
+from mtd_rl_xavier_workspace.paths import MENTALMODELING  # noqa: E402
 sys.path[:0] = [str(HERE), str(MENTALMODELING)]
 
-from mtd_rl_xavier.lag.dataset import index_records, load_episode
+from mtd_rl_xavier_workspace.lag.dataset import index_records, load_episode
 from trajectory_experiment.config import PROCESSED
-from mtd_rl_xavier.lag.dataset import ACTIONS, STATE_FEATURES
+from mtd_rl_xavier_workspace.lag.dataset import ACTIONS, STATE_FEATURES
 from trajectory_experiment.config import Experiment
-from mtd_rl_xavier.lag import batch, execution
+from mtd_rl_xavier_workspace.lag import batch, execution
 from trajectory_experiment import evaluation, prompts, runner
 
 

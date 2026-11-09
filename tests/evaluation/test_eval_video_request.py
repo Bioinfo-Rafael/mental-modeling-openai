@@ -29,7 +29,6 @@ from evaluation.frames import (
     plan_frames,
 )
 from evaluation.rendering import (
-    HEADING_VIDEO,
     IMAGE_OMITTED,
     JudgeRenderError,
     VideoContext,
@@ -39,11 +38,11 @@ from evaluation.rendering import (
     redact_images,
 )
 from evaluation.schemas import EventKeyPoints, EventLogError, KeyPoint, load_translator_run, run_episode
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.llm.openai_responses import build_responses_body
-from mtd_rl_xavier.translator.schema import canonical_json, sha256_text
 from tests.llm.llm_fakes import ScriptedResponsesClient
-from tests.translator.tr_fakes import WIN01
+from tests.translate.tr_fakes import WIN01
+from translate import paths
+from translate.events import canonical_json, sha256_text
+from translate.llm.openai_responses import build_responses_body
 
 from .eval_fakes import (
     A1_REQUEST,
@@ -62,12 +61,13 @@ from .eval_fakes import (
     with_video,
     write_yaml,
 )
+from .legacy_prompts import HEADING_VIDEO
 
 KEY_POINTS = (KeyPoint("kp-001", "[PLACEHOLDER] key point one"),)
 LAST_STEP = 340
 EPISODES = ("mhi_v1.3_ic100601_win", "ours_seed100100_ic100601_loss", "ours_seed100100_ic100606_win")
 RUN_NAME = "video1"
-COMMITTED_VIDEO = paths.ROOT / "workspace/13_LAG/data/viz/action_videos/mhi_v1.3_ic100601_win_with_actions.mp4"
+COMMITTED_VIDEO = paths.ROOT / "data/mhi/action_videos/mhi_v1.3_ic100601_win_with_actions.mp4"
 EPISODE = VideoEpisode(path=Path("v.mp4"), fps=20.0, frame_offset=0, frames_per_step=1, step_seconds=0.2)
 SAMPLING = VideoSampling(strategy="event_window", before_steps=20, after_steps=20, stride_steps=5, max_frames=12)
 RESIZE = VideoResize(max_width=960, max_height=540, jpeg_quality=85)

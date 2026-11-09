@@ -1,0 +1,67 @@
+{
+  "_note": "Files frozen by tests/fixtures/assess-request-path.sha256 before the move into src/translate and src/evaluation (pins = d8b2d12 blobs). Each moved file in \"files\" must equal its pin after the rename map is reversed. Never edit a pin. A file that later changes on purpose leaves \"files\" in that commit and is listed in \"pinned_without_move\" with the reason: the manifest pins its current bytes, and the request goldens and scripts/check_assess_resume.py prove the request bytes did not change. assess_checks.py left the freeze in the commit that made the leak check method-independent (it builds no request bytes). When the judge prompts moved into config files, the request text left the code: it now lives in the legacy prompt and config files, which are pinned here.",
+  "rename_map": [
+    [
+      "mtd_rl_xavier.translator.schema",
+      "translate.events"
+    ],
+    [
+      "mtd_rl_xavier.tools.output_safety",
+      "translate.output_safety"
+    ],
+    [
+      "mtd_rl_xavier.local_endpoint",
+      "translate.local_endpoint"
+    ],
+    [
+      "mtd_rl_xavier.paths",
+      "translate.paths"
+    ],
+    [
+      "mtd_rl_xavier.llm",
+      "translate.llm"
+    ],
+    [
+      "mtd_rl_xavier.lag",
+      "translate.lag"
+    ],
+    [
+      "from mtd_rl_xavier import paths",
+      "from translate import paths"
+    ],
+    [
+      "mtd_rl_xavier.intent_compare",
+      "translate.answers"
+    ],
+    [
+      "\"--\", \"evaluation\")",
+      "\"--\", \"src/evaluation\")"
+    ]
+  ],
+  "files": {
+    "src/translate/llm/openai_responses.py": {
+      "pinned_path": "src/mtd_rl_xavier/llm/openai_responses.py",
+      "pinned_sha256": "f8856661ba5b68ee90bdfed75a4d853c8604ecbea74ba891357fc7ef5af5d716"
+    },
+    "src/translate/lag/dataset.py": {
+      "pinned_path": "src/mtd_rl_xavier/lag/dataset.py",
+      "pinned_sha256": "daab437c9e01feb7f0c1a2f4e927789b9babe1b3f7197c40f526216fdef9199d"
+    },
+    "src/translate/lag/rendering.py": {
+      "pinned_path": "src/mtd_rl_xavier/lag/rendering.py",
+      "pinned_sha256": "effc44bcb53efc801ccd8641889fb7fee8563064ba8129eea424f397b8181a17"
+    }
+  },
+  "pinned_without_move": {
+    "configs/evaluation/assess-legacy.yaml": "the legacy judge config (rubric pilot-2) of the paid assess run; byte-identical criteria, scale and judge settings to the moved assess.yaml",
+    "configs/evaluation/prompts/assess-judge-v2.yaml": "every word of the paid assess request (system prompt, rating rule, packet template and blocks), byte-identical to the former in-code prompt",
+    "src/evaluation/assess_judge.py": "prompt texts moved into configs/evaluation/prompts/assess-judge-v2.yaml; renders material into the prompt file",
+    "src/evaluation/assess_data.py": "loads the prompt file named by the config",
+    "src/evaluation/assess_cli.py": "records the prompt file and refuses to re-judge an event with other request bytes",
+    "src/evaluation/prompt_files.py": "loads and checks the prompt file and fills its templates",
+    "src/evaluation/strict_yaml.py": "parses the prompt file and the judge config (duplicate keys rejected)",
+    "src/evaluation/assess_store.py": "event_subject takes the event's point kinds from the caller (the judge config maps trigger kinds)",
+    "src/translate/events.py": "event schema 3: three trigger kinds (start, change, request); the paid run stays schema 2 and is read through the legacy config",
+    "src/evaluation/trigger_kinds.py": "the trigger kinds of event schemas 2 and 3 that the run loader checks"
+  }
+}

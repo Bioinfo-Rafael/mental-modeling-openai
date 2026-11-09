@@ -9,8 +9,8 @@ from typing import Any
 
 import pytest
 
-from mtd_rl_xavier.llm import openai_responses as oai
-from mtd_rl_xavier.llm.openai_responses import (
+from translate.llm import openai_responses as oai
+from translate.llm.openai_responses import (
     LLMUsage,
     OpenAIClientError,
     OpenAIIncompleteError,

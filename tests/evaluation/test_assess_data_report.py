@@ -12,6 +12,7 @@ import pytest
 
 from evaluation import assess_cli
 from evaluation.assess_data import (
+    DEFAULT_CONFIG,
     REASON_INPUT_INVALID,
     STATUS_EVALUATED,
     STATUS_NOT_EVALUATED,
@@ -29,6 +30,8 @@ from .assess_fakes import (
     E_REQUEST,
     E_START,
     EPISODE_ID,
+    LEGACY_CONFIG,
+    V3_PLAN,
     find,
     make_frame,
     make_run,
@@ -38,7 +41,7 @@ from .assess_fakes import (
     write_jsonl,
 )
 
-EXAMPLES = Path(__file__).resolve().parents[2] / "evaluation" / "examples"
+EXAMPLES = Path(__file__).resolve().parents[2] / "src" / "evaluation" / "examples"
 SCALE = (1, 2, 3, 4, 5)
 
 
@@ -63,6 +66,7 @@ class AutoClient:
 
 def _cli(tmp_path: Path, command: str, run_dir: Path, *extra: str, client: object = None) -> int:
     argv = [command, "--translator-run", str(run_dir), "--output-root", str(tmp_path / "out"), *extra]
+    argv += [] if "--config" in extra else ["--config", str(LEGACY_CONFIG)]
     factory = (lambda **kwargs: client) if client is not None else None
     options: dict[str, Any] = {"episode_loader": lambda path: make_frame()}
     if factory is not None:
@@ -163,9 +167,10 @@ def test_missing_ratings_are_no_human_rating_and_forced_timing_is_marked(
 
 
 def test_example_ratings_import_cleanly(tmp_path: Path) -> None:
-    run_dir = make_run(tmp_path)
+    run_dir = make_run(tmp_path, plan=V3_PLAN, schema_version=3)  # the examples follow the default rubric
 
-    assert _cli(tmp_path, "import-ratings", run_dir, "--ratings", str(EXAMPLES / "human-ratings.example.jsonl")) == 0
+    ratings = str(EXAMPLES / "human-ratings.example.jsonl")
+    assert _cli(tmp_path, "import-ratings", run_dir, "--ratings", ratings, "--config", str(DEFAULT_CONFIG)) == 0
 
     human = read_jsonl(tmp_path / "out" / "run" / "human_results.jsonl")
     reasons = {r["evaluator"].get("rating_id"): r["reason"] for r in human}
@@ -177,7 +182,7 @@ def test_example_ratings_import_cleanly(tmp_path: Path) -> None:
 def test_example_annotation_loads(tmp_path: Path) -> None:
     annotation = load_annotation(EXAMPLES / "assess-points.example.yaml", load_run(make_run(tmp_path)))
 
-    assert [p.kind for p in annotation.points] == ["start", "start", "change"]
+    assert [(p.kind, p.step) for p in annotation.points] == [("start", 0), ("change", 14)]  # no planned tactic
 
 
 @pytest.mark.parametrize(

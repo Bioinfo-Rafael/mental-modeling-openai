@@ -16,14 +16,8 @@ import yaml
 
 from evaluation.configuration import JudgeConfig, VideoResize, parse_config
 from evaluation.frames import EncodedFrame, FrameSourceError, VideoInfo
-from mtd_rl_xavier import paths
-from mtd_rl_xavier.lag.dataset import last_complete_step
-from mtd_rl_xavier.lag.rendering import render_detector_compact, render_lag17_jsonl
-from mtd_rl_xavier.translator.cli import JsonlRunSink
-from mtd_rl_xavier.translator.config import load_scenario
-from mtd_rl_xavier.translator.pipeline import TranslatorSummary
 from tests.llm.llm_fakes import DumpableResponse, ScriptedResponsesClient, message_item, responses_body
-from tests.translator.tr_fakes import (
+from tests.translate.tr_fakes import (
     CHANGE,
     EXAMPLE_SCENARIO,
     WIN01,
@@ -34,13 +28,22 @@ from tests.translator.tr_fakes import (
     make_translator,
     with_value,
 )
+from translate import paths
+from translate.cli import JsonlRunSink
+from translate.lag.dataset import last_complete_step
+from translate.lag.rendering import render_detector_compact, render_lag17_jsonl
+from translate.pipeline import TranslatorSummary
+from translate.scenario import load_scenario
 
-JUDGE_CONFIG = paths.ROOT / "evaluation" / "config" / "judge-text.yaml"
-VIDEO_CONFIG = paths.ROOT / "evaluation" / "config" / "judge-text-video.yaml"
-EXAMPLE_KEY_POINTS = paths.ROOT / "evaluation" / "examples" / "key-points.example.yaml"
+# The tests pin the legacy prompt judge-text-v3 (byte-identical to the former in-code prompt); the
+# default judge-text-v4 is checked in test_judge_prompt_files.py.
+JUDGE_CONFIG = paths.ROOT / "configs" / "evaluation" / "judge-text-legacy.yaml"
+VIDEO_CONFIG = paths.ROOT / "configs" / "evaluation" / "judge-text-video.yaml"
+LEGACY_PROMPT = "configs/evaluation/prompts/judge-text-v3.yaml"
+EXAMPLE_KEY_POINTS = paths.ROOT / "src" / "evaluation" / "examples" / "key-points.example.yaml"
 SCENARIO_ID = "placeholder-episode-01"
-A1_START = f"{SCENARIO_ID}:aircraft:A0100:000000"  # trigger "initial" (the start-point bootstrap)
-TEAM_START = f"{SCENARIO_ID}:team:A:000000"  # trigger "initial"
+A1_START = f"{SCENARIO_ID}:aircraft:A0100:000000"  # trigger "start" (the episode start)
+TEAM_START = f"{SCENARIO_ID}:team:A:000000"  # trigger "start"
 A1_REQUEST = f"{SCENARIO_ID}:aircraft:A0100:000010"  # trigger "request" (with the example question)
 A1_CHANGE = f"{SCENARIO_ID}:aircraft:A0100:000015"  # detector "change" (after the alarm at 12)
 TEAM_CHANGE = f"{SCENARIO_ID}:team:A:000020"  # detector "change" at the team's new instruction
@@ -63,7 +66,8 @@ def make_judge_config(**overrides: Any) -> JudgeConfig:
 
 
 def video_config_raw() -> dict[str, Any]:
-    return yaml.safe_load(VIDEO_CONFIG.read_text(encoding="utf-8"))
+    """judge-text-video.yaml with the legacy prompt, like every other judge test."""
+    return {**yaml.safe_load(VIDEO_CONFIG.read_text(encoding="utf-8")), "prompt": LEGACY_PROMPT}
 
 
 def with_video(raw: dict[str, Any], **changes: Any) -> dict[str, Any]:

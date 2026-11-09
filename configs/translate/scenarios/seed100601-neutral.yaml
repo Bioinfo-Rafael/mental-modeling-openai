@@ -1,0 +1,22 @@
+# Scenario of the recorded MHI rollout seed 100601 (the episode both reproduction configs translate):
+# one neutral instruction per team A aircraft at step 0, no alarms, no requests. The episode CSV,
+# its manifest and the video are derived outputs (slurm/episode_prepare.sbatch); paths resolve
+# relative to this file.
+schema_version: 2
+scenario_id: seed100601-neutral
+episode:
+  episode_id: mhi-v1.3_seed100601
+  alias: episode_01                 # neutral alias; the only episode name a model sees
+  csv_path: ../../../outputs/intent_compare/episode/seed100601/seed100601.csv
+  video_path: ../../../outputs/intent_compare/episode/seed100601/full.mp4
+instructions:
+  - instruction_id: compare-neutral-A0100
+    issue_step: 0
+    target: {kind: aircraft, id: A0100}
+    text: "No operator instruction was given. Team A is flying its default 2v2 air-combat mission against the rule-based enemy team B."
+  - instruction_id: compare-neutral-A0200
+    issue_step: 0
+    target: {kind: aircraft, id: A0200}
+    text: "No operator instruction was given. Team A is flying its default 2v2 air-combat mission against the rule-based enemy team B."
+alarms: []
+requests: []

@@ -23,23 +23,11 @@ from evaluation.judge import (
     run_judge,
 )
 from evaluation.rendering import (
-    HEADING_INSTRUCTIONS,
-    HEADING_KEY_POINTS,
-    HEADING_TIMESTAMPS,
-    HEADING_TRAJECTORY,
-    HEADING_TRANSLATED_INTENT,
-    JUDGE_PROMPT_VERSION,
-    JUDGE_SYSTEM_PROMPT,
-    KEY_POINT_RUBRIC,
-    WINDOW_BEGIN,
-    WINDOW_END,
     JudgeRenderError,
     build_judge_request,
     quoted,
 )
 from evaluation.schemas import EventKeyPoints, KeyPoint, load_translator_run
-from mtd_rl_xavier.llm.openai_responses import OpenAIResponsesClient, build_responses_body
-from mtd_rl_xavier.translator.schema import canonical_json, sha256_text
 from tests.llm.llm_fakes import (
     APITimeoutError,
     DumpableResponse,
@@ -47,6 +35,8 @@ from tests.llm.llm_fakes import (
     refusal_item,
     responses_body,
 )
+from translate.events import canonical_json, sha256_text
+from translate.llm.openai_responses import OpenAIResponsesClient, build_responses_body
 
 from .eval_fakes import (
     A1_CHANGE,
@@ -62,6 +52,18 @@ from .eval_fakes import (
     verdict,
     verdict_response,
     with_value,
+)
+from .legacy_prompts import (
+    HEADING_INSTRUCTIONS,
+    HEADING_KEY_POINTS,
+    HEADING_TIMESTAMPS,
+    HEADING_TRAJECTORY,
+    HEADING_TRANSLATED_INTENT,
+    JUDGE_PROMPT_VERSION,
+    JUDGE_SYSTEM_PROMPT,
+    KEY_POINT_RUBRIC,
+    WINDOW_BEGIN,
+    WINDOW_END,
 )
 
 TOGGLED_BLOCKS = ("instructions", "timestamps", "trajectory", "translated_intent", "key_points")
@@ -200,7 +202,7 @@ def test_timestamps_cover_only_this_targets_earlier_translations(events: tuple[d
     text = _user_text(_request_body(events, A1_CHANGE, make_judge_config()))
 
     block = text[text.index(HEADING_TIMESTAMPS) : text.index(HEADING_TRAJECTORY)]
-    assert "- step 0 (0.0 s): initial\n- step 10 (2.0 s): request\n" in block
+    assert "- step 0 (0.0 s): start\n- step 10 (2.0 s): request\n" in block
     assert "This translation: step 15 (3.0 s)." in block
     assert "- change (source detector, probability 0.9)" in block
     assert "step 20" not in block  # the team's later event and anything after this one are never shown

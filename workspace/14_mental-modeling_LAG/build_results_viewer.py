@@ -14,9 +14,9 @@ import sys
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.dont_write_bytecode = True
-from mtd_rl_xavier.paths import MENTALMODELING  # noqa: E402
+from mtd_rl_xavier_workspace.paths import MENTALMODELING  # noqa: E402
 sys.path[:0] = [str(HERE), str(MENTALMODELING)]
-from mtd_rl_xavier.lag import execution as ex
+from mtd_rl_xavier_workspace.lag import execution as ex
 from lag_experiment import evaluation
 
 

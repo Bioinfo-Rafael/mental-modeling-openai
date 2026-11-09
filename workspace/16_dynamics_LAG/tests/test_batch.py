@@ -8,11 +8,11 @@ from types import SimpleNamespace
 import pytest
 
 HERE = Path(__file__).resolve().parents[1]
-from mtd_rl_xavier.paths import MENTALMODELING  # noqa: E402
+from mtd_rl_xavier_workspace.paths import MENTALMODELING  # noqa: E402
 sys.path[:0] = [str(HERE), str(MENTALMODELING)]
-from mtd_rl_xavier.lag import batch, execution as ex
+from mtd_rl_xavier_workspace.lag import batch, execution as ex
 from dynamics_experiment import evaluation, prompts
-from mtd_rl_xavier.lag.dataset import STATE_FEATURES, ACTIONS
+from mtd_rl_xavier_workspace.lag.dataset import STATE_FEATURES, ACTIONS
 
 
 def obj(data):

@@ -7,9 +7,9 @@ from pathlib import Path
 
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from mtd_rl_xavier.experiment import common
-from mtd_rl_xavier.experiment.common_analysis.joint_aggregate import accuracy_rows, continuous_rows
-from mtd_rl_xavier.experiment.common_analysis.joint_data import parse_response
+from mtd_rl_xavier_workspace.experiment import common
+from mtd_rl_xavier_workspace.experiment.common_analysis.joint_aggregate import accuracy_rows, continuous_rows
+from mtd_rl_xavier_workspace.experiment.common_analysis.joint_data import parse_response
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt

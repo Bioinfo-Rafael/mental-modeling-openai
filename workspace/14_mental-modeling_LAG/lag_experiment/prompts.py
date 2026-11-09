@@ -8,7 +8,7 @@ from dataclasses import dataclass
 import json
 from types import SimpleNamespace
 
-from mtd_rl_xavier.lag.dataset import ACTION_LABELS, DT
+from mtd_rl_xavier_workspace.lag.dataset import ACTION_LABELS, DT
 from llm_x import prompting as llmx
 
 PROMPT_VERSION = "lag-context-v3"

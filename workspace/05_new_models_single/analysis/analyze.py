@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
-from mtd_rl_xavier.experiment.common_analysis.runner import main
+from mtd_rl_xavier_workspace.experiment.common_analysis.runner import main
 
 if __name__ == "__main__":
     main(import_module("workspace.05_new_models_single.run").EXPERIMENT, sizes=(10,), tables_only=True)

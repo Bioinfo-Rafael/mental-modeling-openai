@@ -6,7 +6,7 @@ import getpass
 import warnings
 import time
 
-from mtd_rl_xavier.experiment import common
+from mtd_rl_xavier_workspace.experiment import common
 from llm_x.data import Episode
 scoring = import_module('workspace.08_fewshot.runner.scoring')
 score, VERSION = scoring.score, scoring.VERSION

@@ -8,7 +8,7 @@ Claude Code
 
 <!-- Managed by /init. Re-run /init to refresh. -->
 
-mtd-rl-xavier is research code that evaluates how language models build mental models of RL agents, with prior-work LLM-Xavier vendored in src/mentalmodeling/ (separate distribution llm-x-evaluator), a shared library in src/mtd_rl_xavier/, and exploratory experiments in workspace/.
+mtd-rl-xavier translates the behaviour of RL agents into intent statements with LLMs and evaluates those translations with LLM-as-a-judge. The core is two packages: src/translate (one config-driven pipeline: choose inputs -> process them -> complete the prompt -> translate; configs in configs/translate/, triggers online via clef-flash or preset) and src/evaluation (the judges and the viewer), plus MHI data (data/mhi/) and Slurm jobs (slurm/). workspace/ is an independent uv project and free-experiment area for the legacy LLM-Xavier experiments 00-17, the vendored src/mentalmodeling and the mtd_rl_xavier_workspace library; the core never imports or reads it, and it reads only ../data/mhi.
 
 Macro requirements and design live in [docs/DESIGN.md](docs/DESIGN.md).
 
@@ -26,9 +26,9 @@ Rolling progress summary (latest 5 checkpoints): [PROGRESS.md](../PROGRESS.md)
 ### Context
 
 - Goal: evaluate LLM Translator output at start / change / request points on elements, correctness, timing and contribution, with machine, human and judge results kept separate.
-- Key files: evaluation/assess_*.py, evaluation/config/assess.yaml, src/mtd_rl_xavier/translator/ (event contract v2), tests/evaluation/test_assess_*.py
+- Key files: src/evaluation/assess_*.py, configs/evaluation/assess.yaml, src/translate/ (event contract v2), tests/evaluation/test_assess_*.py
 - Complexity: COMPLEX (/team-execute)
-- Status 2026-11-04: implemented and verified in worktree ../mtd-rl-xavier-assess; committed 10e34fe on feature/llm-translator-judge; PR #3 to main.
+- Status 2026-11-08: implemented and verified 2026-11-04 (commit 10e34fe, PR #3), merged into main. The repository was then restructured into core and workspace/, and the core into src/translate + src/evaluation, on branch restructure/core-workspace (see DESIGN.md Key Decisions, 2026-11-08).
 
 ### Decisions
 

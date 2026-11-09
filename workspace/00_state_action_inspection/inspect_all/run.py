@@ -12,7 +12,7 @@ import numpy as np
 
 
 OUT = Path(__file__).resolve().parent
-ROOT = OUT.parents[2]
+ROOT = OUT.parents[1]  # workspace/: data/llmx_data lives here
 SOURCE = ROOT / "data/llmx_data/offline_data/physics_data/raw_transitions/Pendulum-v1"
 LABELS = ["State: cos(theta)", "State: sin(theta)", "State: angular velocity", "Action: torque", "Reward"]
 

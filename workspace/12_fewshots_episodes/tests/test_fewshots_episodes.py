@@ -9,7 +9,7 @@ import re
 
 import pytest
 
-from mtd_rl_xavier.paths import resolve_recorded
+from mtd_rl_xavier_workspace.paths import resolve_recorded
 
 entry = import_module('workspace.12_fewshots_episodes.run')
 runner = entry.runner

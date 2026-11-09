@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 import socket
 from pathlib import Path
 from typing import Any
@@ -18,9 +19,6 @@ import pandas as pd
 import pytest
 
 from evaluation import cli
-from evaluation.rendering import HEADING_TRAJECTORY, WINDOW_BEGIN, WINDOW_END
-from mtd_rl_xavier.llm.openai_responses import PROVENANCE_ENV
-from mtd_rl_xavier.translator import cli as translator_cli
 from tests.llm.llm_fakes import (
     APITimeoutError,
     ScriptedResponsesClient,
@@ -28,7 +26,9 @@ from tests.llm.llm_fakes import (
     json_response,
     models_body,
 )
-from tests.translator.tr_fakes import EXAMPLE_SCENARIO, FakeIntentModel, over_tcp, systemone_responder
+from tests.translate.tr_fakes import EXAMPLE_SCENARIO, RUN_CONFIG, FakeIntentModel, over_tcp, systemone_responder
+from translate import cli as translator_cli
+from translate.llm.openai_responses import PROVENANCE_ENV
 
 from .eval_fakes import (
     A1_REQUEST,
@@ -37,7 +37,6 @@ from .eval_fakes import (
     EXAMPLE_DETECTOR_ANSWERS,
     EXAMPLE_JUDGED,
     EXAMPLE_KEY_POINTS,
-    JUDGE_CONFIG,
     RecordingFactory,
     judge_config_raw,
     judge_response,
@@ -49,6 +48,7 @@ from .eval_fakes import (
     write_translator_run,
     write_yaml,
 )
+from .legacy_prompts import HEADING_TRAJECTORY, WINDOW_BEGIN, WINDOW_END
 
 RUN_NAME = "judge1"
 DETECTOR_TICKS = 136  # 68 ticks (5..340) x {aircraft A0100, team A} on the full example episode
@@ -138,7 +138,7 @@ def test_preview_builds_no_client_and_writes_only_its_run_directory(
     assert inputs["translator_run"]["run_json_sha256"] == _sha256(translator_run / "run.json")
     assert inputs["translator_run"]["events_jsonl_sha256"] == _sha256(translator_run / "events.jsonl")
     assert inputs["key_points"]["sha256"] == _sha256(EXAMPLE_KEY_POINTS)
-    assert inputs["config"]["sha256"] == _sha256(JUDGE_CONFIG)
+    assert inputs["config"]["sha256"] == _sha256(cli.DEFAULT_CONFIG)  # no --config: the default
     assert set(record["provenance"]["git"]) == {"commit", "dirty"}
     assert "evaluation/judge.py" in record["provenance"]["code_sha256"]
     example = json.loads((run_dir / "example_judge_request.json").read_text())
@@ -377,12 +377,23 @@ def test_e2e_real_episode_production_adapters_event_log_judge_preview(
     translator_dir = tmp_path / "translator"
 
     translator_code = translator_cli.main(
-        ["--scenario", str(EXAMPLE_SCENARIO), "--output-root", str(tmp_path), "--run-name", "translator"]
+        [
+            "--config",
+            str(RUN_CONFIG),
+            "--scenario",
+            str(EXAMPLE_SCENARIO),
+            "--output-root",
+            str(tmp_path),
+            "--run-name",
+            "translator",
+        ]
         + ["--execute", "--confirm-paid-api"],
-        detector_client_factory=lambda config: translator_cli.build_system_one_client(
-            over_tcp(config), transport=server.transport
+        factories=translator_cli.Factories(
+            detector_client=lambda config: translator_cli.build_system_one_client(
+                over_tcp(config), transport=server.transport
+            ),
+            openai_client=lambda *, timeout_s: translation_client,
         ),
-        openai_client_factory=lambda *, timeout_s: translation_client,
     )
     judge_factory = RecordingFactory()
     code = cli.main(_args(tmp_path, translator_dir, EXAMPLE_KEY_POINTS), openai_client_factory=judge_factory)
@@ -583,3 +594,37 @@ def test_ctrl_c_before_the_run_directory_exists_prints_no_traceback(
     err = capsys.readouterr().err
     assert code == cli.EXIT_FAILED and "KeyboardInterrupt" in err and "Traceback" not in err
     assert not (tmp_path / "out").exists()
+
+
+def _strings(value: object) -> list[str]:
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, dict):
+        return [text for item in value.values() for text in _strings(item)]
+    if isinstance(value, list):
+        return [text for item in value for text in _strings(item)]
+    return []
+
+
+def test_preview_judges_a_skipped_invalid_answer_like_any_other_event(
+    tmp_path: Path, translator_run: Path, offline: None
+) -> None:
+    """A blank event with ``answer_problem`` is judged as given, as the assess judge does (rubric level 1)."""
+    copy = tmp_path / "translator-run"
+    shutil.copytree(translator_run, copy)
+    lines = (copy / "events.jsonl").read_text(encoding="utf-8").splitlines()
+    records = [json.loads(line) for line in lines]
+    records = [
+        {**r, "output": {"intent": "", "evidence": []}, "answer_problem": "invalid final answer: too long"}
+        if r.get("event_id") == EXAMPLE_JUDGED[0]
+        else r
+        for r in records
+    ]
+    (copy / "events.jsonl").write_text("".join(json.dumps(r) + "\n" for r in records), encoding="utf-8")
+
+    code = cli.main(_args(tmp_path, copy), openai_client_factory=RecordingFactory())
+
+    preview = json.loads((tmp_path / "out" / RUN_NAME / "preview.json").read_text())
+    assert code == cli.EXIT_OK and preview["plan"]["judged"] == len(EXAMPLE_JUDGED)
+    example = json.loads((tmp_path / "out" / RUN_NAME / "example_judge_request.json").read_text())
+    assert any('Intent: ""' in text for text in _strings(example))

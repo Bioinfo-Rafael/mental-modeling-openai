@@ -13,7 +13,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 sys.path.insert(0, str(ROOT))
 sys.dont_write_bytecode = True
-from mtd_rl_xavier.experiment.common_analysis.joint_data import load_and_parse, required_components, DIMENSIONS
+from mtd_rl_xavier_workspace.experiment.common_analysis.joint_data import load_and_parse, required_components, DIMENSIONS
 
 VIEWER = ROOT / 'workspace/07_view_rawdata'
 SCORE = VIEWER / 'reasoning_for_scoring_scored_astra_high.csv'

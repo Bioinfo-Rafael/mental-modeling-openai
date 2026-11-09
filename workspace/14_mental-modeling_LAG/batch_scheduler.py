@@ -9,7 +9,7 @@ import json
 import time
 
 import batch_run as batch
-from mtd_rl_xavier.lag import execution as ex
+from mtd_rl_xavier_workspace.lag import execution as ex
 from lag_experiment import evaluation
 
 
