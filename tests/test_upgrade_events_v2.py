@@ -8,9 +8,9 @@ from pathlib import Path
 
 import pytest
 
-from translate import paths
+from translate.journal import REPO_ROOT
 
-SPEC = importlib.util.spec_from_file_location("upgrade_events_v2", paths.ROOT / "scripts" / "upgrade_events_v2.py")
+SPEC = importlib.util.spec_from_file_location("upgrade_events_v2", REPO_ROOT / "scripts" / "upgrade_events_v2.py")
 upgrade_events_v2 = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(upgrade_events_v2)
 

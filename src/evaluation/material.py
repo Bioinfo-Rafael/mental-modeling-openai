@@ -15,16 +15,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
-
 from evaluation.config import KINDS, JudgeConfig, criteria_for
-from translate.lag.dataset import AIRCRAFT, load_episode
-from translate.lag.rendering import render_detector_compact, render_lag17_jsonl
+from translate.episode import AIRCRAFT, Episode, View, load_episode, render_compact
+from translate.inputs import TrajectoryOptions, trajectory
+from translate.journal import quoted
 
 EVENT_SCHEMA_VERSION = 3
 FUTURE_KINDS = frozenset({"start", "change"})
 FUTURE_PRECISION = 5  # decimals of FUTURE floats (1e-5 deg is about 1 m)
-LINE_BREAK_ESCAPES = {"\x85": "\\u0085", " ": "\\u2028", " ": "\\u2029"}
 EVENT_KEYS = ("event_id", "target", "step", "time_s", "trigger_reasons", "input", "output", "request_sha256")
 INPUT_KEYS = ("target_aircraft", "instructions_in_effect", "alarms", "question", "previous_translation")
 
@@ -84,15 +82,15 @@ def load_run(path: Path) -> TranslationRun:
     return TranslationRun(path, run_json, tuple(records), events, tuple(read_jsonl(path / "requests.jsonl")), sha)
 
 
-def load_frame(run: TranslationRun) -> pd.DataFrame:
+def load_frame(run: TranslationRun) -> Episode:
     """The episode the run translated; its CSV must still have the SHA-256 the run recorded."""
-    episode = run.run_json.get("inputs", {}).get("episode", {})
-    if not episode.get("csv_path") or not episode.get("csv_sha256"):
+    recorded = run.run_json.get("inputs", {}).get("episode", {})
+    if not recorded.get("csv_path") or not recorded.get("csv_sha256"):
         raise RunError("run.json inputs.episode needs csv_path and csv_sha256")
-    frame = load_episode(Path(episode["csv_path"]))
-    if frame.attrs["csv_sha256"] != episode["csv_sha256"]:
+    episode = load_episode(Path(recorded["csv_path"]))
+    if episode.csv_sha256 != recorded["csv_sha256"]:
         raise RunError("the episode CSV differs from the one the translation run used")
-    return frame
+    return episode
 
 
 def target_key(target: dict[str, str]) -> str:
@@ -103,14 +101,6 @@ def event_kinds(event: dict[str, Any]) -> tuple[str, ...]:
     """The event's point kinds, in start > change > request order."""
     kinds = {reason["kind"] for reason in event["trigger_reasons"]}
     return tuple(kind for kind in KINDS if kind in kinds)
-
-
-def quoted(text: str) -> str:
-    """Untrusted free text as one JSON string literal on one line (the prompt-injection envelope)."""
-    literal = json.dumps(text, ensure_ascii=False)
-    for char, escape in LINE_BREAK_ESCAPES.items():
-        literal = literal.replace(char, escape)
-    return literal
 
 
 def _lines(items: list[str]) -> str:
@@ -165,7 +155,7 @@ def _future_end(event: dict[str, Any], run: TranslationRun, config: JudgeConfig)
     return end, cut
 
 
-def _future(event: dict[str, Any], run: TranslationRun, frame: pd.DataFrame, config: JudgeConfig) -> str:
+def _future(event: dict[str, Any], run: TranslationRun, frame: Episode, config: JudgeConfig) -> str:
     if not FUTURE_KINDS & set(event_kinds(event)):
         return ""
     end, cut = _future_end(event, run, config)
@@ -173,16 +163,11 @@ def _future(event: dict[str, Any], run: TranslationRun, frame: pd.DataFrame, con
     rows = []
     if shown:
         own = tuple(event["input"]["target_aircraft"])
-        rendered = render_detector_compact(
-            frame,
-            start_step=event["step"],
-            end_step=end - 1,
-            anchor_step=event["step"],
-            object_ids=(*own, *(aircraft for aircraft in AIRCRAFT if aircraft not in own)),
-            fields=config.material.fields,
-            float_precision=FUTURE_PRECISION,
+        objects = (*own, *(aircraft for aircraft in AIRCRAFT if aircraft not in own))
+        text = render_compact(
+            frame.frame, event["step"], end - 1, event["step"], objects, config.material.fields, FUTURE_PRECISION
         )
-        rows = [line for line in rendered.text.split("\n") if json.loads(line)["step"] in shown]
+        rows = [line for line in text.split("\n") if json.loads(line)["step"] in shown]
     later = [item for item in run.events if item["target"] == event["target"] and event["step"] < item["step"] < end]
     values = {
         "last_step": end - 1,
@@ -196,10 +181,11 @@ def _future(event: dict[str, Any], run: TranslationRun, frame: pd.DataFrame, con
     return config.prompt.future.format_map(values)
 
 
-def trajectory(frame: pd.DataFrame, step: int, past_steps: int) -> str:
-    """The human-visible window ``[max(0, t - past + 1), t]``, one lag17 JSON line per step."""
-    start = max(0, step - past_steps + 1)
-    return render_lag17_jsonl(frame, start_step=start, end_step=step, anchor_step=step, episode_alias="-").text
+def window(episode: Episode, event: dict[str, Any], past_steps: int) -> str:
+    """The human-visible window ``[max(0, t - past + 1), t]``: the translator's own trajectory input."""
+    view = View(event["step"], episode.rows_until(event["step"]), (), episode.teams)
+    target = episode.target(f"{event['target']['kind']}:{event['target']['id']}")
+    return trajectory(view, target, TrajectoryOptions(past_steps=past_steps))
 
 
 def rating_rule(config: JudgeConfig) -> str:
@@ -212,7 +198,7 @@ def system_text(config: JudgeConfig) -> str:
     )
 
 
-def user_text(event: dict[str, Any], run: TranslationRun, frame: pd.DataFrame, config: JudgeConfig) -> str:
+def user_text(event: dict[str, Any], run: TranslationRun, frame: Episode, config: JudgeConfig) -> str:
     """The event's user message: the human-visible material, TIMELINE, FUTURE and its criteria."""
     payload, kinds, target = event["input"], event_kinds(event), event["target"]
     instructions = sorted(payload["instructions_in_effect"], key=lambda i: (i["issue_step"], i["instruction_id"]))
@@ -234,7 +220,7 @@ def user_text(event: dict[str, Any], run: TranslationRun, frame: pd.DataFrame, c
         "alarms": _lines([f"- step {a['step']}: {quoted(a['text'])}" for a in payload["alarms"]]),
         "question": f"- step {question['step']}: {quoted(question['text'])}" if question else "- none",
         "previous_translation": _previous(payload["previous_translation"]),
-        "trajectory": trajectory(frame, event["step"], config.material.past_steps),
+        "trajectory": window(frame, event, config.material.past_steps),
         "intent": quoted(event["output"]["intent"]),
         "evidence": _lines([f"- {quoted(item)}" for item in event["output"]["evidence"]]),
         "timeline": _timeline(own, event),

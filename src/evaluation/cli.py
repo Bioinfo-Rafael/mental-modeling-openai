@@ -26,10 +26,11 @@ from evaluation.audit import audit_run, leaking_targets
 from evaluation.config import JudgeConfig, load_config
 from evaluation.judge import Call, journaled, known_requests, make_plan, paid_marker, plan_call, run_calls
 from evaluation.material import load_frame, load_run, read_jsonl, target_key
-from evaluation.results import RatingsError, append_jsonl, build_report, import_ratings
-from translate.llm.openai_responses import OpenAIResponsesClient, make_openai_client
+from evaluation.results import RatingsError, build_report, import_ratings
+from translate.backends import BackendError
+from translate.backends.openai import OpenAIBackend, make_client
+from translate.journal import append_jsonl, repo_path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = Path("configs/evaluation/judge.yaml")
 EXIT_CODES = {"completed": 0, "preview": 0, "failed": 1, "uncertain": 3, "cap_reached": 4}
 SAFE_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}")
@@ -60,10 +61,6 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _resolved(path: Path) -> Path:
-    return path if path.is_absolute() else REPO_ROOT / path
-
-
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -74,7 +71,7 @@ def _print(payload: object) -> None:
 
 def _directory(args: argparse.Namespace, config: JudgeConfig, run: Any) -> Path:
     """``<output>/<run>/<name>/``, bound to the run's file hashes on first use."""
-    directory = _resolved(config.output) / run.path.name / (args.name or args.config.stem)
+    directory = repo_path(config.output) / run.path.name / (args.name or args.config.stem)
     directory.parent.mkdir(parents=True, exist_ok=True)
     directory.mkdir(mode=DIR_MODE, exist_ok=True)
     previous = directory / "run.json"
@@ -85,7 +82,7 @@ def _directory(args: argparse.Namespace, config: JudgeConfig, run: Any) -> Path:
 
 def _write_run_json(directory: Path, args: argparse.Namespace, config: JudgeConfig, run: Any, **fields: Any) -> None:
     record = {"translation_run": str(run.path), "run_sha256": run.file_sha256, "config": str(args.config)}
-    record = {**record, "config_sha256": _sha256(_resolved(args.config)), "resolved": config.model_dump(mode="json")}
+    record = {**record, "config_sha256": _sha256(repo_path(args.config)), "resolved": config.model_dump(mode="json")}
     (directory / "run.json").write_text(
         json.dumps({**record, **fields}, indent=2, ensure_ascii=False), encoding="utf-8"
     )
@@ -103,17 +100,15 @@ def _calls(run: Any, config: JudgeConfig, directory: Path) -> tuple[list[Call], 
 
 def _send_planned(plan: Any, client_factory: ClientFactory, directory: Path, config: JudgeConfig) -> Any:
     """Build the paid client (after the gate, the marker and the scan) and send the planned calls."""
-    responses = OpenAIResponsesClient(client_factory(timeout_s=config.model.timeout_s))
+    backend = OpenAIBackend(config.model, client=client_factory(timeout_s=config.model.timeout_s))
     batch = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-    return run_calls(
-        plan, send=lambda call: responses.create(call.request), directory=directory, config=config, batch=batch
-    )
+    return run_calls(plan, send=lambda call: backend.send(call.body), directory=directory, config=config, batch=batch)
 
 
 def run_judge(args: argparse.Namespace, config: JudgeConfig, run: Any, client_factory: ClientFactory) -> int:
     directory = _directory(args, config, run)
     calls, leaks = _calls(run, config, directory)
-    root = _resolved(config.output)
+    root = repo_path(config.output)
     if not args.execute:
         plan = make_plan(calls, known_requests(root), journaled(directory))
         preview = {"plan": plan.to_json(), "requests": [{"event_id": c.event_id, "body": c.body} for c in calls]}
@@ -162,20 +157,20 @@ def run_report(args: argparse.Namespace, config: JudgeConfig, run: Any) -> int:
     return 0
 
 
-def main(argv: list[str] | None = None, *, client_factory: ClientFactory = make_openai_client) -> int:
+def main(argv: list[str] | None = None, *, client_factory: ClientFactory = make_client) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     if args.command == "judge" and args.execute != args.confirm_paid_api:
         parser.error("the judge calls a paid API: give BOTH --execute and --confirm-paid-api, or neither")
     try:
-        config = load_config(_resolved(args.config))
+        config = load_config(repo_path(args.config))
         run = load_run(args.run)
         if args.command == "judge":
             return run_judge(args, config, run, client_factory)
         if args.command == "import-ratings":
             return run_import(args, config, run)
         return run_report(args, config, run)
-    except (ValueError, OSError, RatingsError) as exc:
+    except (ValueError, OSError, RatingsError, BackendError) as exc:
         print(f"error: {type(exc).__name__}: {exc}", file=sys.stderr)
         return 1
     except KeyboardInterrupt:

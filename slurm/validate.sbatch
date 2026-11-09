@@ -33,7 +33,7 @@ case "$MODE" in
     "$PY" -m ruff check src tests scripts
     "$PY" -m ruff format --check src tests scripts
     bash -n slurm/common.sh
-    for job in slurm/*.sbatch; do bash -n "$job"; done
+    for job in slurm/*.sbatch slurm/lag/*.sbatch; do bash -n "$job"; done
     (
       cd "$(mktemp -d)"
       "$PY" -B -c 'import evaluation, translate, translate.cli'
@@ -54,7 +54,8 @@ from pathlib import Path
 import yaml
 
 from evaluation.cli import main as judge_main
-from translate.cli import Factories
+from translate.backends import Reply
+from translate.backends.openai import OpenAIBackend
 from translate.cli import main as translate_main
 
 scratch, source = Path(sys.argv[1]), Path(sys.argv[2])
@@ -64,31 +65,29 @@ def refuse(*_args, **_kwargs):
     raise SystemExit("a preview tried to build an API client")
 
 
-class CannedClient:  # the synthetic run only: one fixed answer per call, no network
-    def __init__(self):
-        self.responses = self
+class CannedBackend:  # the synthetic run only: one fixed answer per call, no network
+    request_body = staticmethod(OpenAIBackend.request_body)
 
-    def create(self, **body):
-        answer = json.dumps({"intent": "[SYNTHETIC] intent", "evidence": ["[SYNTHETIC] evidence"]})
-        output = [{"type": "message", "content": [{"type": "output_text", "text": answer}]}]
-        return {"id": "resp_synthetic", "model": body["model"], "status": "completed", "output": output}
+    def send(self, body):
+        text = json.dumps({"intent": "[SYNTHETIC] intent", "evidence": ["[SYNTHETIC] evidence"]})
+        return Reply(text, body["model"], "resp_synthetic", {}, {"id": "resp_synthetic"})
 
 
-def relocated(config):
-    """Copies of a config and its scenario whose generated outputs/ inputs are read from SOURCE_ROOT."""
+def from_source(path):
+    """A generated outputs/ input is read from SOURCE_ROOT; anything else from this checkout."""
+    relative = path.resolve().relative_to(Path.cwd())
+    return str(source / relative if relative.parts[0] == "outputs" else relative.resolve())
+
+
+def relocated(config, output):
     raw = yaml.safe_load(config.read_text(encoding="utf-8"))
     scenario_path = Path(raw["scenario"])
     scenario = yaml.safe_load(scenario_path.read_text(encoding="utf-8"))
-    episode = dict(scenario["episode"])
-    for key in ("csv_path", "video_path"):
-        if episode[key] is not None:
-            relative = (scenario_path.parent / episode[key]).resolve().relative_to(Path.cwd())
-            episode[key] = str(source / relative if relative.parts[0] == "outputs" else relative.resolve())
     scenario_file = scratch / f"{config.stem}.scenario.yaml"
-    scenario_file.write_text(yaml.safe_dump({**scenario, "episode": episode}), encoding="utf-8")
+    scenario_file.write_text(yaml.safe_dump({**scenario, "episode": from_source(scenario_path.parent / scenario["episode"])}))
     config_file = scratch / config.name
-    config_file.write_text(yaml.safe_dump({**raw, "output": {"root": str(scratch / "translate")}}), encoding="utf-8")
-    return config_file, scenario_file
+    config_file.write_text(yaml.safe_dump({**raw, "scenario": str(scenario_file), "output": str(output)}), encoding="utf-8")
+    return config_file
 
 
 def check(code, what):
@@ -96,22 +95,14 @@ def check(code, what):
         sys.exit(f"{what}: exited {code}")
 
 
-refusing = Factories(detector_client=refuse, openai_client=refuse)
 configs = sorted(Path("configs/translate").glob("*.yaml"))
 for config in configs:
-    config_file, scenario_file = relocated(config)
-    argv = ["--config", str(config_file), "--scenario", str(scenario_file), "--run-name", config.stem]
-    check(translate_main(argv, factories=refusing), str(config))
+    argv = ["--config", str(relocated(config, scratch / "translate")), "--run-name", config.stem]
+    check(translate_main(argv, backend_factory=refuse, detector_factory=refuse), str(config))
 
-# A synthetic schema-3 run of the example scenario (canned answers), then every judge config's preview.
-raw = yaml.safe_load(Path("configs/translate/seed100601-trajectory.yaml").read_text(encoding="utf-8"))
-points = [{"step": 0, "kind": "start", "targets": None}, {"step": 145, "kind": "change", "targets": None}]
-points.append({"step": 10, "kind": "request", "targets": [{"kind": "aircraft", "id": "A0100"}]})
-raw = {**raw, "scenario": "configs/translate/scenarios/example.yaml", "triggers": {**raw["triggers"], "points": points}}
-synthetic = scratch / "synthetic.yaml"
-synthetic.write_text(yaml.safe_dump({**raw, "output": {"root": str(scratch / "runs")}}), encoding="utf-8")
-argv = ["--config", str(synthetic), "--run-name", "synthetic", "--execute", "--confirm-paid-api"]
-check(translate_main(argv, factories=Factories(openai_client=lambda **_: CannedClient())), "synthetic run")
+# A synthetic run of the preset config (canned answers, no network), then every judge config's preview.
+argv = ["--config", str(relocated(Path("configs/translate/preset.yaml"), scratch / "runs")), "--run-name", "synthetic"]
+check(translate_main([*argv, "--execute", "--confirm-paid-api"], backend_factory=lambda model: CannedBackend()), "synthetic run")
 run, judged = scratch / "runs" / "synthetic", scratch / "evaluation"
 judge_configs = sorted(Path("configs/evaluation").glob("*.yaml"))
 for config in judge_configs:  # each with its output in scratch, so the scan reads no real journal

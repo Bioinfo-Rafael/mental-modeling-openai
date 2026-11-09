@@ -1,240 +1,171 @@
-"""Detector layer (D9, D27, D50, D51): at each tick, which point kind does the target's behaviour show?
+"""clef-flash, the change source of online runs: one System One choice question per tick (D9, D26, D27).
 
-- ``DetectionModel`` is the consumer-side Protocol; any model can sit behind it.
-- ``DetectorLayer`` builds the exact state string (target, the target's own previous intent, its
-  instructions in effect, the recent alarms and questions, the compact trajectory window) and
-  applies the decision rule: ``label`` is the model's choice; the tick triggers when
-  ``label != none`` and ``p(label) >= threshold``.
-- ``SystemOneDetectionModel`` adapts a ``SystemOneClient`` (one ``choice`` question over
-  ``none`` / ``change``). The client itself is constructed only in the composition root
-  (``translator/cli.py``).
-- ``detector_state_bound`` is the conservative token bound used by the preflight budget check:
-  the exact state (instruction, alarm and question texts included) plus the worst-case UTF-8 size
-  of a previous intent.
+The state text is the config's ``change.state`` filled with the detector's own inputs (the same
+INPUTS functions, on ``View(t)``). The question asks ``none`` or ``change``; a tick adds a change
+reason when the choice is ``change`` and ``p(change) >= threshold``. vLLM truncates an over-long
+state silently, so every state is bounded before it is sent (UTF-8 bytes plus fixed reserves) and
+the server's reported input tokens are checked after. The server is local: a Unix socket in a 0700
+directory owned by the user (default, D39) or a loopback TCP root with a Bearer key from an
+environment variable NAME. Messages never echo a URL, a key or a body; nothing is retried.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Protocol
+import json
+import os
+import stat
+from pathlib import Path
+from typing import Any
+from urllib.parse import urlsplit
 
-from translate.config import DetectorQuestionConfig
-from translate.events import (
-    DETECTOR_LABEL_NONE,
-    DETECTOR_LABELS,
-    Instruction,
-    ModelCallError,
-    PreviousTranslation,
-    TargetRef,
-)
-from translate.lag.rendering import STEP_SECONDS, RenderedTrajectory
-from translate.llm.system_one import (
-    ChoiceAnswer,
-    ChoiceQuestion,
-    SystemOneClient,
-    SystemOneError,
-    SystemOneQuestion,
-    SystemOneTransportError,
-    conservative_input_token_bound,
-    question_payload,
-    questions_payload,
-)
+import httpx
 
-DETECTOR_STATE_VERSION = "2"
-MAX_UTF8_BYTES_PER_CHAR = 4  # worst case for any character of a previous intent
-MESSAGE_ALARM = "alarm"
-MESSAGE_QUESTION = "question"
+from translate.episode import Target, View
+from translate.inputs import INPUTS
+from translate.prompts import fill
+
+QUESTION_ID = "point_kind"
+LABELS = ("none", "change")
+FRAMING_RESERVE_TOKENS = 1024 + 64  # the server's fixed framing plus one question's labels
+MAX_BYTES_PER_CHAR = 4  # worst case for a previous intent in the budget preflight
+LOOPBACK = ("127.0.0.1", "::1")
 
 
-@dataclass(frozen=True)
-class DetectorMessage:
-    """An alarm or a human question shown in the detector state (issued at or before the tick)."""
+class DetectorError(Exception):
+    """The detector could not be asked, or answered badly. ``uncertain``: it may have run (a timeout)."""
 
-    kind: str  # MESSAGE_ALARM | MESSAGE_QUESTION
-    message_id: str  # alarm_id or request_id
-    step: int
-    text: str
-
-    def to_json(self) -> dict[str, Any]:
-        return {"kind": self.kind, "id": self.message_id, "step": self.step, "text": self.text}
+    def __init__(self, message: str, *, uncertain: bool = False, raw: Any = None) -> None:
+        super().__init__(message)
+        self.uncertain, self.raw = uncertain, raw
 
 
-@dataclass(frozen=True)
-class DetectionModelReply:
-    model: str  # the model name the server reported
-    label: str  # the model's choice: one of DETECTOR_LABELS
-    probabilities: tuple[tuple[str, float], ...]  # (label, p) in DETECTOR_LABELS order
-    usage: dict[str, int]
-    raw: dict[str, Any]  # the full response body
+def request_body(change: Any, state: str) -> dict[str, Any]:
+    question = {"type": "choice", "instructions": change.question.instructions}
+    criteria = {"none": change.question.none, "change": change.question.change}
+    return {"model": change.model, "state": state, "questions": {QUESTION_ID: {**question, "criteria": criteria}}}
 
 
-class DetectionModel(Protocol):
-    @property
-    def question(self) -> dict[str, Any]:
-        """The full question object (id, type, instructions, criteria) sent with every call."""
-        ...
-
-    def request_payload(self, state: str) -> dict[str, Any]:
-        """The exact request body for ``state``; persisted before the call is sent."""
-        ...
-
-    def decide(self, state: str) -> DetectionModelReply:
-        """One call. Raises ``ModelCallError`` on failure."""
-        ...
+def token_bound(body: dict[str, Any]) -> int:
+    """Upper bound on prompt tokens: byte-level BPE never yields more tokens than UTF-8 bytes."""
+    questions = json.dumps(body["questions"], ensure_ascii=False, separators=(",", ":"))
+    return len(body["state"].encode("utf-8")) + len(questions.encode("utf-8")) + FRAMING_RESERVE_TOKENS
 
 
-@dataclass(frozen=True)
-class DetectionContext:
-    target: TargetRef
-    step: int
-    target_aircraft: tuple[str, ...]
-    opponent_aircraft: tuple[str, ...]
-    previous: PreviousTranslation  # the target's own previous translation
-    instructions: tuple[Instruction, ...]  # the target's own and, for an aircraft, its team's
-    messages: tuple[DetectorMessage, ...]  # alarms and questions in the lookback, most recent last
-    trajectory: RenderedTrajectory  # compact window; objects = target aircraft, then opponents
+def state_text(change: Any, options: dict[str, Any], view: View, target: Target, base: dict[str, Any]) -> str:
+    """``change.state`` filled with the base values and the detector's own inputs at t."""
+    values = {name: INPUTS[name].render(view, target, opts) for name, opts in options.items()}
+    return fill(change.state, {**base, **values})
 
 
-@dataclass(frozen=True)
-class DetectionResult:
-    label: str
-    probabilities: tuple[tuple[str, float], ...]
-    threshold: float
-    triggered: bool
-    reply: DetectionModelReply
-
-    @property
-    def probability(self) -> float:
-        """p(label)."""
-        return dict(self.probabilities)[self.label]
-
-    def output_json(self) -> dict[str, Any]:
-        """``detector_call.output``."""
-        return {
-            "label": self.label,
-            "probabilities": dict(self.probabilities),
-            "threshold": self.threshold,
-            "triggered": self.triggered,
-        }
+def check_budget(change: Any, body: dict[str, Any], intent_reserve_chars: int = 0) -> int:
+    """The bound of a state (plus a worst-case intent for the preflight); over the budget is an error."""
+    bound = token_bound(body) + MAX_BYTES_PER_CHAR * intent_reserve_chars
+    if bound >= change.input_token_budget:
+        raise DetectorError(f"detector state bound {bound} >= input_token_budget {change.input_token_budget}")
+    return bound
 
 
-def _instruction_lines(instructions: tuple[Instruction, ...]) -> list[str]:
-    lines = [f"- {item.target.label}, issued at step {item.issue_step}: {item.text}" for item in instructions]
-    return lines or ["- none"]  # no instruction need be in effect
+def parse_decision(raw: Any, change: Any) -> tuple[str, dict[str, float], dict[str, int]]:
+    """(label, probabilities, usage) of a ``/v1/systemone`` answer; a malformed one is an error."""
+    try:
+        answer = raw["answers"][QUESTION_ID]
+        probabilities = {label: float(answer["probabilities"][label]) for label in LABELS}
+        usage = {key: int(raw["usage"][key]) for key in ("input_tokens", "output_tokens")}
+        ok = answer["type"] == "choice" and answer["choice"] in LABELS and set(answer["probabilities"]) == set(LABELS)
+    except (KeyError, TypeError, ValueError):
+        ok = False
+    if not ok or not all(0 <= p <= 1 for p in probabilities.values()):
+        raise DetectorError("the detector answer does not match the question", raw=raw)
+    if usage["input_tokens"] >= change.input_token_budget:
+        raise DetectorError(
+            "the server reports input_tokens >= input_token_budget: the state may be truncated", raw=raw
+        )
+    return answer["choice"], probabilities, usage
 
 
-def _message_lines(messages: tuple[DetectorMessage, ...]) -> list[str]:
-    return [f"- {item.kind} at step {item.step}: {item.text}" for item in messages] or ["- none"]
+# --- the local endpoint ---------------------------------------------------------------------------
 
 
-def render_detector_state(context: DetectionContext, *, intent: str | None = None) -> str:
-    """The exact state string sent to the detector. ``intent`` overrides the previous intent (budget checks)."""
-    trajectory = context.trajectory
-    previous_intent = context.previous.translation.intent if intent is None else intent
-    lines = (
-        f"Target: {context.target.label} (aircraft {', '.join(context.target_aircraft)}). "
-        f"Opponents: {', '.join(context.opponent_aircraft)}.",
-        f"Previous intent translation for this target (from step {context.previous.step}):",
-        previous_intent,
-        "",
-        "Instructions in effect for this target:",
-        *_instruction_lines(context.instructions),
-        "",
-        "Recent messages (alarms and human questions up to this step, most recent last):",
-        *_message_lines(context.messages),
-        "",
-        f"Trajectory window: steps {trajectory.start_step}-{trajectory.end_step}, {STEP_SECONDS} s per step, "
-        f"one JSON line per step, newest last; relative_step = step - {trajectory.anchor_step}. "
-        f"Fields: {', '.join(trajectory.fields)}. null = unavailable.",
-        trajectory.text,
-    )
-    return "\n".join(lines)
+def check_socket(path: Path) -> None:
+    """The parent is a real directory owned by the user with mode 0700, and no ancestor can be swapped."""
+    parent = path.parent
+    info = os.lstat(parent) if parent.exists() else None
+    if not path.is_absolute() or info is None or os.path.realpath(parent) != str(parent):
+        raise DetectorError("the socket directory must exist as an absolute, canonical path")
+    if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or stat.S_IMODE(info.st_mode) != 0o700:
+        raise DetectorError("the socket directory must be a real directory owned by you with mode 0700")
+    for ancestor in parent.parents:
+        mode = os.lstat(ancestor)
+        if mode.st_uid not in (0, os.getuid()) or (
+            mode.st_mode & (stat.S_IWGRP | stat.S_IWOTH) and not mode.st_mode & stat.S_ISVTX
+        ):
+            raise DetectorError("a directory above the socket is writable by other users")
 
 
-def detector_state_bound(
-    context: DetectionContext, *, questions: tuple[SystemOneQuestion, ...], max_intent_chars: int
-) -> int:
-    """Conservative token bound for any state of this context whose intent has at most ``max_intent_chars``."""
-    framing = render_detector_state(context, intent="")
-    intent_reserve = MAX_UTF8_BYTES_PER_CHAR * max_intent_chars
-    return conservative_input_token_bound(state=framing, questions=questions) + intent_reserve
+def check_tcp(base_url: str) -> str:
+    """A loopback server root: host literally 127.0.0.1 or ::1, no credentials, path, query or fragment."""
+    try:
+        parts = urlsplit(base_url)
+        host = parts.hostname
+    except ValueError:
+        parts, host = urlsplit(""), None  # the parser's message could echo the URL
+    if host not in LOOPBACK or parts.scheme not in ("http", "https") or "@" in parts.netloc:
+        raise DetectorError("base_url must be http(s)://127.0.0.1:<port> or [::1] without credentials")
+    if parts.path not in ("", "/") or parts.query or parts.fragment:
+        raise DetectorError("base_url must be the server root")
+    return f"{parts.scheme}://{parts.netloc}"
 
 
-class DetectorLayer:
-    def __init__(self, model: DetectionModel, *, threshold: float) -> None:
-        self._model = model
-        self._threshold = threshold
+def read_key(name: str | None) -> str | None:
+    value = os.environ.get(name) if name else None
+    if name and (not value or not value.isascii() or not value.isprintable() or " " in value):
+        raise DetectorError("the variable named by api_key_env must hold a printable key without spaces")
+    return value
 
-    @property
-    def question(self) -> dict[str, Any]:
-        return self._model.question
 
-    @property
-    def threshold(self) -> float:
-        return self._threshold
+class SystemOneClient:
+    """``POST /v1/systemone`` over the configured local endpoint; the checks run before any transport."""
 
-    def state_text(self, context: DetectionContext) -> str:
-        return render_detector_state(context)
-
-    def request_payload(self, state: str) -> dict[str, Any]:
-        return self._model.request_payload(state)
-
-    def detect(self, state: str) -> DetectionResult:
-        reply = self._model.decide(state)
-        probability = dict(reply.probabilities)[reply.label]
-        return DetectionResult(
-            label=reply.label,
-            probabilities=reply.probabilities,
-            threshold=self._threshold,
-            triggered=reply.label != DETECTOR_LABEL_NONE and probability >= self._threshold,
-            reply=reply,
+    def __init__(self, change: Any, transport: httpx.BaseTransport | None = None) -> None:
+        socket = change.socket_path
+        if socket is not None:
+            check_socket(socket)
+        base_url = "http://localhost" if socket is not None else check_tcp(change.base_url)
+        key = read_key(change.api_key_env)
+        headers = {"Accept": "application/json"} | ({"Authorization": f"Bearer {key}"} if key else {})
+        transport = transport or httpx.HTTPTransport(uds=str(socket) if socket else None, retries=0)
+        self.change = change
+        self.http = httpx.Client(
+            base_url=base_url,
+            transport=transport,
+            timeout=change.timeout_s,
+            headers=headers,
+            trust_env=False,
+            follow_redirects=False,
         )
 
-
-# --- System One adapter ---------------------------------------------------------------------------
-
-
-def choice_question(config: DetectorQuestionConfig) -> ChoiceQuestion:
-    return ChoiceQuestion(question_id=config.question_id, instructions=config.instructions, criteria=config.criteria)
-
-
-class SystemOneDetectionModel:
-    """``DetectionModel`` over a ``SystemOneClient`` whose fixed question set is one choice question."""
-
-    def __init__(self, client: SystemOneClient, *, question_id: str) -> None:
-        questions = client.questions
-        if len(questions) != 1 or not isinstance(questions[0], ChoiceQuestion):
-            raise ValueError("the detector client must carry exactly one choice question")
-        if {name for name, _ in questions[0].criteria} != set(DETECTOR_LABELS):
-            raise ValueError(f"the detector choice question must have exactly the options {list(DETECTOR_LABELS)}")
-        if questions[0].question_id != question_id:
-            raise ValueError("question_id does not match the client's question")
-        self._client = client
-        self._question = questions[0]
-
-    @property
-    def question(self) -> dict[str, Any]:
-        return {"id": self._question.question_id, **question_payload(self._question)}
-
-    def request_payload(self, state: str) -> dict[str, Any]:
-        """Identical to the body ``SystemOneClient.decide`` sends."""
-        return {"model": self._client.model, "state": state, "questions": questions_payload(self._client.questions)}
-
-    def decide(self, state: str) -> DetectionModelReply:
+    def _send(self, method: str, path: str, body: dict[str, Any] | None = None) -> Any:
+        content = None if body is None else json.dumps(body, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
         try:
-            result = self._client.decide(state)
-        except SystemOneError as exc:
-            timed_out = isinstance(exc, SystemOneTransportError) and exc.timed_out
-            raise ModelCallError(str(exc), error_type=type(exc).__name__, uncertain=timed_out, raw=exc.raw) from exc
-        answer = result.answer(self._question.question_id)
-        if not isinstance(answer, ChoiceAnswer):  # the client parses a choice question into a ChoiceAnswer
-            raise ModelCallError("detector answer is not a choice answer", error_type="ProtocolError", uncertain=False)
-        probabilities = dict(answer.probabilities)
-        usage = {"input_tokens": result.usage.input_tokens, "output_tokens": result.usage.output_tokens}
-        return DetectionModelReply(
-            model=result.model,
-            label=answer.choice,
-            probabilities=tuple((label, probabilities[label]) for label in DETECTOR_LABELS),
-            usage=usage,
-            raw=result.raw,
-        )
+            response = self.http.request(method, path, content=content, headers={"Content-Type": "application/json"})
+        except httpx.TimeoutException:
+            raise DetectorError(f"System One {path} timed out; not retried", uncertain=True) from None
+        except httpx.HTTPError as exc:
+            raise DetectorError(f"System One {path} failed ({type(exc).__name__})") from None
+        try:
+            raw = response.json()
+        except ValueError:
+            raw = None
+        if response.status_code != httpx.codes.OK or not isinstance(raw, dict):
+            raise DetectorError(f"System One {path} returned HTTP {response.status_code}", raw=raw)
+        return raw
+
+    def health(self) -> None:
+        """``GET /v1/models`` must list the configured model."""
+        served = {item.get("id") for item in self._send("GET", "/v1/models").get("data", []) if isinstance(item, dict)}
+        if self.change.model not in served:
+            raise DetectorError("the configured detector model is not served by this endpoint")
+
+    def decide(self, body: dict[str, Any]) -> dict[str, Any]:
+        check_budget(self.change, body)
+        return self._send("POST", "/v1/systemone", body)

@@ -1,174 +1,152 @@
-"""Input processors: the selected inputs of one slot become the prompt's named values.
+"""INPUTS: the named functions ``View(t) x target x options -> text`` that fill prompt placeholders.
 
-Each processor reads only what is visible at the slot's step t (instructions issued at or before
-t, the alarms that reach the target by t, the request at t, the target's own latest valid
-translation, the trajectory window ending at t) and returns named
-values; list and optional inputs are turned into text by the prompt file's ``blocks``. The values
-every slot has (``BASE_VALUES`` in ``config.py``) come first. ``event_input`` records what a human
-rater sees for the slot (scenario texts and the trajectory window), whatever the translator read.
+A config selects inputs under ``inputs:`` (each with typed options, defaults below); each selected
+input fills the placeholder of its name. An input sees only ``View(t)``, so it cannot leak data
+issued after t (the poison test runs every input). A new input is one function here plus its key in
+a config and its placeholder in the prompt. Lists render in a fixed documented format; free text is
+quoted as a JSON string.
 """
 
 from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Literal
 
-import pandas as pd
+from pydantic import BaseModel, ConfigDict, Field
 
-from translate.config import INPUT_TRAJECTORY, RunConfig
-from translate.events import (
-    Instruction,
-    PreviousTranslation,
-    Scenario,
-    TargetRef,
-    step_time_s,
-    trajectory_json,
-)
-from translate.lag.rendering import STEP_SECONDS, RenderedTrajectory
-from translate.prompts import list_block, optional_block
-from translate.scenario import EpisodeFacts, instructions_in_effect, target_alarms, target_request
+from translate.episode import Target, View, render_compact, render_lag17
+from translate.journal import quoted
 
-T_S_DECIMALS = 6  # the policy prompt's "time t_s s" (formatted with :g)
-
-Renderer = Callable[..., RenderedTrajectory]
+NO_INSTRUCTION = "(no instruction in effect)"
+NONE = "(none)"
 
 
-@dataclass(frozen=True)
-class RunInputs:
-    """Everything the processors read, loaded once per run."""
+class Options(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
 
-    frame: pd.DataFrame
-    scenario: Scenario
-    facts: EpisodeFacts
-    config: RunConfig
-    renderer: Renderer
+
+class PreviousOptions(Options):
+    evidence: bool = True  # false: the intent only (the detector state)
+
+
+class RecentOptions(Options):
+    past_steps: int = Field(25, gt=0)  # alarms and questions issued in [t - past_steps + 1, t]
+
+
+class TrajectoryOptions(Options):
+    past_steps: int = Field(60, gt=0)  # the window [max(0, t - past_steps + 1), t]
+    objects: Literal["all", "target_and_opponents"] = "all"
+    fields: tuple[str, ...] | None = None  # None: every entity in the 17 format; else these columns
+    precision: int = Field(5, ge=0)  # decimals of float fields (fields only)
 
 
 @dataclass(frozen=True)
-class SlotState:
-    step: int
-    target: TargetRef
-    instruction: Instruction | None  # the target's current instruction; None before its first one
-    previous: PreviousTranslation | None  # the target's latest valid translation
+class InputSpec:
+    render: Callable[[View, Target, Any], str]
+    options: type[Options]
 
 
-def trajectory_window(inputs: RunInputs, step: int) -> RenderedTrajectory:
-    """The window ``[max(0, t - past + 1), t]``: judge material always, prompt input when selected."""
-    past = inputs.config.trajectory.past_steps
-    return inputs.renderer(
-        inputs.frame,
-        start_step=max(0, step - past + 1),
-        end_step=step,
-        anchor_step=step,
-        episode_alias=inputs.scenario.episode.alias,
-    )
+INPUTS: dict[str, InputSpec] = {}
 
 
-def _base(inputs: RunInputs, slot: SlotState) -> dict[str, object]:
-    return {
-        "episode_alias": inputs.scenario.episode.alias,
-        "step": slot.step,
-        "time_s": step_time_s(slot.step),
-        "t_s": round(slot.step * STEP_SECONDS, T_S_DECIMALS),
-        "step_seconds": STEP_SECONDS,
-        "target_label": slot.target.label,
-        "target_aircraft": ", ".join(inputs.facts.target_aircraft(slot.target)),
-        "max_intent_chars": inputs.config.answer.limits.max_intent_chars,
-    }
+def register(name: str, options: type[Options] = Options) -> Callable:
+    def add(function: Callable[[View, Target, Any], str]) -> Callable[[View, Target, Any], str]:
+        INPUTS[name] = InputSpec(function, options)
+        return function
+
+    return add
 
 
-def _instructions(inputs: RunInputs, slot: SlotState) -> dict[str, object]:
-    """All instructions in effect as a block and this target's own one through its optional block (each
-    when the prompt defines it); either may be empty: no instruction need be in effect."""
-    blocks, own = inputs.config.prompt.blocks, slot.instruction
-    values: dict[str, object] = {}
-    if "primary_instruction" in blocks:
-        values = {
-            "primary_instruction": optional_block(blocks["primary_instruction"], {"text": own.text} if own else None)
-        }
-    block = blocks.get("instructions")
-    if block is None:
-        return values
-    own_id = own.instruction_id if own else None
-    items = [
-        {
-            "issue_step": item.issue_step,
-            "target": item.target.label,
-            "primary": block["primary_marker"] if item.instruction_id == own_id else "",
-            "text": item.text,
-        }
-        for item in instructions_in_effect(inputs.scenario, slot.step)
+# --- the messages a target sees at t (shared with the event record) -------------------------------
+
+
+def instructions_in_effect(view: View) -> list[tuple[str, Any]]:
+    """(target id, its latest instruction) for every instructed target, oldest issue first."""
+    latest: dict[str, Any] = {}
+    for message in sorted((m for m in view.messages if m.kind == "instruction"), key=lambda m: (m.step, m.id)):
+        latest = {**latest, **dict.fromkeys(message.to, message)}
+    return sorted(latest.items(), key=lambda item: (item[1].step, item[1].id, item[0]))
+
+
+def addressed_aircraft(to: str, view: View) -> tuple[str, ...]:
+    kind, name = to.split(":")
+    return (name,) if kind == "aircraft" else tuple(view.teams.get(name, ()))
+
+
+def alarms_for(view: View, target: Target) -> list[Any]:
+    """Every alarm issued by t that reaches the target: it shares an aircraft with an addressee."""
+    reach = set(target.aircraft)
+    return [
+        m
+        for m in view.messages
+        if m.kind == "alarm" and reach & {name for to in m.to for name in addressed_aircraft(to, view)}
     ]
-    return {**values, "instructions": list_block(block, items)}
 
 
-def _alarms(inputs: RunInputs, slot: SlotState) -> dict[str, object]:
-    alarms = target_alarms(inputs.scenario, inputs.facts, slot.target, slot.step)
-    items = [{"step": a.step, "targets": ", ".join(t.label for t in a.targets), "text": a.text} for a in alarms]
-    return {"alarms": list_block(inputs.config.prompt.blocks["alarms"], items)}
+def question_at(view: View, target: Target) -> Any | None:
+    return next((m for m in view.messages if m.kind == "question" and m.step == view.step and target.id in m.to), None)
 
 
-def _question(inputs: RunInputs, slot: SlotState) -> dict[str, object]:
-    request = target_request(inputs.scenario, slot.target, slot.step)
-    item = None if request is None else {"step": request.step, "text": request.question}
-    return {"question": optional_block(inputs.config.prompt.blocks["question"], item)}
+# --- inputs ---------------------------------------------------------------------------------------
 
 
-def _previous(inputs: RunInputs, slot: SlotState) -> dict[str, object]:
-    block = inputs.config.prompt.blocks["previous_translation"]
-    previous = slot.previous
+@register("instructions")
+def instructions(view: View, target: Target, options: Options) -> str:
+    """Every instructed target's current instruction, oldest first; this target's own is marked."""
+    lines = [
+        f"- {to.replace(':', ' ')}, issued at step {m.step}: {quoted(m.text)}"
+        + (" (this target)" if to == target.id else "")
+        for to, m in instructions_in_effect(view)
+    ]
+    return "\n".join(lines) or NO_INSTRUCTION
+
+
+@register("alarms")
+def alarms(view: View, target: Target, options: Options) -> str:
+    """Every alarm that reached the target by t, oldest first."""
+    found = alarms_for(view, target)
+    return "\n".join(f"- step {m.step}: {quoted(m.text)}" for m in found) or NONE
+
+
+@register("question")
+def question(view: View, target: Target, options: Options) -> str:
+    """The human question to the target arriving at t."""
+    found = question_at(view, target)
+    return NONE if found is None else quoted(found.text)
+
+
+@register("recent_messages", RecentOptions)
+def recent_messages(view: View, target: Target, options: RecentOptions) -> str:
+    """Alarms that reached the target and questions to it, issued in the last ``past_steps``, oldest first."""
+    first = view.step - options.past_steps + 1
+    found = [m for m in alarms_for(view, target) if m.step >= first]
+    found += [m for m in view.messages if m.kind == "question" and target.id in m.to and m.step >= first]
+    ordered = sorted(found, key=lambda m: (m.step, m.kind, m.id))
+    return "\n".join(f"- {m.kind} at step {m.step}: {quoted(m.text)}" for m in ordered) or NONE
+
+
+@register("previous_translation", PreviousOptions)
+def previous_translation(view: View, target: Target, options: PreviousOptions) -> str:
+    """The target's latest valid translation before t, or that there is none yet."""
+    previous = view.translations.get(target.id)
     if previous is None:
-        return {"previous_translation": optional_block(block, None)}
-    evidence = block["evidence_joiner"].join(
-        block["evidence_item"].format(item=item) for item in previous.translation.evidence
-    )
-    item = {"step": previous.step, "intent": previous.translation.intent, "evidence": evidence}
-    return {"previous_translation": optional_block(block, item)}
+        return "(none: this is the first translation for this target)"
+    text = f"from step {previous.step}: {quoted(previous.intent)}"
+    if not options.evidence:
+        return text
+    return text + "".join(f"\n  - {quoted(item)}" for item in previous.evidence)
 
 
-def _trajectory(trajectory: RenderedTrajectory) -> dict[str, object]:
-    return {
-        "trajectory": trajectory.text,
-        "trajectory_start": trajectory.start_step,
-        "trajectory_end": trajectory.end_step,
-        "trajectory_points": trajectory.end_step - trajectory.start_step + 1,
-        "trajectory_anchor": trajectory.anchor_step,
-    }
+@register("trajectory", TrajectoryOptions)
+def trajectory(view: View, target: Target, options: TrajectoryOptions) -> str:
+    """The window ending at t: every entity (17 format), or the chosen fields of the chosen objects."""
+    start = max(0, view.step - options.past_steps + 1)
+    if options.fields is None:
+        return render_lag17(view.rows, start, view.step, view.step)
+    objects = (*target.aircraft, *target.opponents) if options.objects == "target_and_opponents" else _all(view)
+    return render_compact(view.rows, start, view.step, view.step, objects, options.fields, options.precision)
 
 
-PROCESSORS: dict[str, Callable[[RunInputs, SlotState], dict[str, object]]] = {
-    "instructions": _instructions,
-    "alarms": _alarms,
-    "question": _question,
-    "previous_translation": _previous,
-}
-
-
-def slot_values(inputs: RunInputs, slot: SlotState, trajectory: RenderedTrajectory) -> dict[str, object]:
-    """Base values, then each selected input's values."""
-    values = _base(inputs, slot)
-    for name in inputs.config.inputs:
-        found = _trajectory(trajectory) if name == INPUT_TRAJECTORY else PROCESSORS[name](inputs, slot)
-        values = {**values, **found}
-    return values
-
-
-def event_input(inputs: RunInputs, slot: SlotState, trajectory: RenderedTrajectory) -> dict[str, Any]:
-    """The event's ``input``: what a human rater sees for this slot, plus what the translator read."""
-    request = target_request(inputs.scenario, slot.target, slot.step)
-    config = inputs.config
-    return {
-        "prompt_version": config.prompt.version,
-        "target_aircraft": list(inputs.facts.target_aircraft(slot.target)),
-        "instructions_in_effect": [item.to_json() for item in instructions_in_effect(inputs.scenario, slot.step)],
-        "primary_instruction_id": slot.instruction.instruction_id if slot.instruction else None,
-        "alarms": [item.to_json() for item in target_alarms(inputs.scenario, inputs.facts, slot.target, slot.step)],
-        "question": None
-        if request is None
-        else {"request_id": request.request_id, "step": request.step, "text": request.question},
-        "trajectory": trajectory_json(trajectory),
-        "previous_translation": slot.previous.to_json() if slot.previous else None,
-        "output_language": config.prompt.vars.get("output_language"),
-        "translator_inputs": list(config.inputs),
-    }
+def _all(view: View) -> tuple[str, ...]:
+    return tuple(sorted(view.rows.loc[view.rows["entity_type"].eq("aircraft"), "object_id"].unique()))

@@ -8,9 +8,10 @@ from pathlib import Path
 import pytest
 import yaml
 
-from evaluation.config import ConfigError, criteria_for, load_config
+from evaluation.config import criteria_for, load_config
 from evaluation.judge import parse_verdict, plan_call
 from evaluation.material import load_frame, load_run
+from translate.config import ConfigError
 
 from .fakes import A0100, JUDGE_CONFIG, TEAM_A, event, judge_config, write_run
 
@@ -25,7 +26,7 @@ def config():
 def _user(run_dir: Path, config, event_id: str) -> str:
     run = load_run(run_dir)
     call = plan_call(next(e for e in run.events if e["event_id"] == event_id), run, load_frame(run), config)
-    return call.request.input_items[0]["text"]
+    return call.body["input"][0]["content"][0]["text"]
 
 
 def test_shipped_config_keeps_the_23_pilot_4_criteria_with_their_kinds(config) -> None:

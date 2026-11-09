@@ -8,13 +8,13 @@ is rated on every criterion of any of its kinds, each once.
 
 from __future__ import annotations
 
-import string
 from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from translate.strict_yaml import parse_yaml
+from translate.config import load_yaml, validated
+from translate.prompts import check_fields
 
 KINDS = ("start", "change", "request")
 JUDGE_MODEL = "gpt-6.1-sol"  # D8: the judge is always gpt-6.1-sol
@@ -41,34 +41,6 @@ USER_REQUIRED = frozenset(
 USER_FIELDS = USER_REQUIRED | {"target", "target_aircraft", "step", "time_s", "kinds"}
 USER_FIELDS |= {"cannot_judge", "not_applicable", "rating_rule"}
 FUTURE_FIELDS = frozenset({"last_step", "end_step", "cut", "stride_steps", "fields", "rows", "later"})
-
-
-class ConfigError(ValueError):
-    """The judge config is malformed; the message names the key."""
-
-
-def placeholders(template: str, where: str) -> set[str]:
-    """The ``{name}`` fields of a ``str.format`` template; each must be a bare name (no format spec)."""
-    try:
-        parsed = list(string.Formatter().parse(template))
-    except ValueError as exc:
-        raise ValueError(f"{where}: malformed template ({exc})") from None
-    names = set()
-    for _, field, spec, conversion in parsed:
-        if field is None:
-            continue
-        if not field.isidentifier() or spec or conversion:
-            raise ValueError(f"{where}: {{{field}}} must be a bare name")
-        names.add(field)
-    return names
-
-
-def check_fields(template: str, where: str, allowed: frozenset[str], required: frozenset[str] = frozenset()) -> None:
-    found = placeholders(template, where)
-    if found - allowed:
-        raise ValueError(f"{where} uses unknown placeholders {sorted(found - allowed)}")
-    if required - found:
-        raise ValueError(f"{where} must use {sorted(required - found)}")
 
 
 class Strict(BaseModel):
@@ -168,18 +140,8 @@ class JudgeConfig(Strict):
         return self
 
 
-def validated(model: type[BaseModel], raw: object, where: str) -> BaseModel:
-    """``model.model_validate(raw)``; a failure becomes a ``ConfigError`` naming every bad key path."""
-    try:
-        return model.model_validate(raw)
-    except ValidationError as exc:
-        problems = "; ".join(f"{'.'.join(map(str, e['loc'])) or '(top)'}: {e['msg']}" for e in exc.errors())
-        raise ConfigError(f"{where}: {problems}") from None
-
-
 def load_config(path: Path) -> JudgeConfig:
-    text = Path(path).read_text(encoding="utf-8")
-    return validated(JudgeConfig, parse_yaml(text, path, ConfigError), str(path))
+    return validated(JudgeConfig, load_yaml(path), str(path))
 
 
 def criteria_for(config: JudgeConfig, kinds: tuple[str, ...]) -> tuple[Criterion, ...]:

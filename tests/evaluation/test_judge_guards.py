@@ -12,7 +12,7 @@ from evaluation import cli
 from evaluation.config import load_config
 from evaluation.judge import MARKER, JudgeError, known_requests, plan_call
 from evaluation.material import load_frame, load_run
-from translate.llm.openai_responses import OpenAIClientError
+from translate.backends import BackendError
 
 from .fakes import ROOT, Factory, FakeSDK, asked_criteria, event, judge_config, write_run
 
@@ -141,8 +141,8 @@ def test_a_journal_line_without_a_request_hash_fails_closed(tmp_path: Path) -> N
 @pytest.mark.parametrize(
     ("outcome", "code", "status"),
     [
-        (OpenAIClientError("timed out", uncertain=True), 3, "uncertain"),
-        (OpenAIClientError("HTTP 400", uncertain=False), 1, "error"),
+        (BackendError("timed out", uncertain=True), 3, "uncertain"),
+        (BackendError("HTTP 400", uncertain=False), 1, "error"),
         (KeyboardInterrupt(), 3, "uncertain"),
         ('{"criteria": []}', 1, "ok"),
     ],

@@ -27,8 +27,7 @@ dev = ["pytest>=7,<9", "ruff>=0.8"]
 # Subpackages are listed explicitly because `find` would map "" -> src and bring the .pth back.
 packages = [
   "translate",
-  "translate.lag",
-  "translate.llm",
+  "translate.backends",
   "translate.policy",
   "evaluation",
 ]

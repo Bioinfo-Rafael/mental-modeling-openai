@@ -12,7 +12,7 @@ from typing import Any
 
 import yaml
 
-from translate.lag.dataset import last_complete_step, load_episode
+from translate.episode import load_episode
 
 ROOT = Path(__file__).resolve().parents[2]
 EPISODE_CSV = ROOT / "data" / "mhi" / "processed" / "mhi_v1.3_ic100601_win.csv"
@@ -66,9 +66,9 @@ def request_line(record: dict[str, Any], text: str | None = None) -> dict[str, A
 def write_run(directory: Path, records: list[dict], requests: list[dict] | None = None) -> Path:
     """A translation run directory: run.json (episode facts), events.jsonl, requests.jsonl."""
     directory.mkdir(parents=True)
-    frame = load_episode(EPISODE_CSV)
-    episode = {"csv_path": str(EPISODE_CSV), "csv_sha256": frame.attrs["csv_sha256"]}
-    run_json = {"inputs": {"episode": {**episode, "last_complete_step": last_complete_step(frame)}}}
+    loaded = load_episode(EPISODE_CSV)
+    episode = {"csv_path": str(EPISODE_CSV), "csv_sha256": loaded.csv_sha256}
+    run_json = {"inputs": {"episode": {**episode, "last_complete_step": loaded.last_step}}}
     (directory / "run.json").write_text(json.dumps(run_json), encoding="utf-8")
     lines = [{**record, "sequence": index} for index, record in enumerate(records, start=1)]
     (directory / "events.jsonl").write_text("".join(json.dumps(r) + "\n" for r in lines), encoding="utf-8")

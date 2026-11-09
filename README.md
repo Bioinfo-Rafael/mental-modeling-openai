@@ -13,7 +13,7 @@
 
 1. 入力を選ぶ：`instructions`（指示）、`alarms`（警報）、`question`（人の質問）、`previous_translation`（前回の翻訳）、`trajectory`（トラジェクトリ）から選びます。方策を読む入力は2026-11-09に作り直し中です。
 2. 入力を加工する：時刻tまでの情報だけから、プロンプトに入れる値を作ります。
-3. プロンプトを完成させる：プロンプトの文面は設定側のプロンプトファイル（`configs/translate/prompts/`）にあります。文面を書き換えるだけでプロンプトのアブレーションができます。
+3. プロンプトを完成させる：プロンプトの文面は実行設定（`configs/translate/*.yaml` の `prompt:`）に直接書きます。文面を書き換えるだけでプロンプトのアブレーションができます。
 4. 翻訳する：1回のOpenAI呼び出しです。サンドボックスのcode sessionは2026-11-09に削除しました（U-c）。
 
 翻訳する時点は次の3種類です（イベントのschema 3、2026-11-09の定義）。
@@ -44,8 +44,8 @@ Judgeのプロンプトの文面と基準は、judge設定 `configs/evaluation/j
 |---|---|
 | `src/translate/` | 翻訳パイプライン（[README](src/translate/README.md)） |
 | `src/evaluation/` | Judge（[README](src/evaluation/README.md)） |
-| `configs/translate/` | 実行設定、プロンプトファイル（`prompts/`）、シナリオ（`scenarios/`）、方策のspec（`policies/`） |
-| `configs/evaluation/` | Judgeの設定と、Judgeのプロンプトファイル（`prompts/`） |
+| `configs/translate/` | 実行設定（プロンプトの文面を含む）とシナリオ（`scenarios/`） |
+| `configs/evaluation/` | Judgeの設定（プロンプトの文面と基準を含む） |
 | `data/mhi/` | MHI v1.3の3試合（CSV・manifest・行動付き動画）。読み取り専用 |
 | `slurm/` | すべてのSlurm job と `common.sh`（[slurm/README.md](slurm/README.md)） |
 | `scripts/` | mtd-rl-lag側のinterpreterで動くhelper（rollout記録、エピソード準備、parity）と、互換性の確認script |
@@ -86,9 +86,9 @@ unset OPENAI_API_KEY
 
 | やること | コマンド例 |
 |---|---|
-| 翻訳（preset） | `sbatch slurm/translate.sbatch preview --config configs/translate/seed100601-trajectory.yaml` |
-| 翻訳（online、GPU、D49承認後） | `VLLM_ENV=... HF_CACHE_DIR=... SCENARIO=private/translator/<s>.yaml sbatch --export=ALL slurm/translate_vllm.sbatch probe`（有料は `paid`） |
-| rolloutの記録とエピソードの準備 | `sbatch slurm/episode_record_rollouts.sbatch` の後に `sbatch slurm/episode_prepare.sbatch`（引数は [slurm/README.md](slurm/README.md)） |
+| 翻訳（preset） | `sbatch slurm/translate.sbatch preview --config configs/translate/preset.yaml` |
+| 翻訳（online、GPU、D49承認後） | `VLLM_ENV=... HF_CACHE_DIR=... SCENARIO=private/<s>.yaml sbatch --export=ALL slurm/translate_online.sbatch probe`（有料は `paid`） |
+| rolloutの記録とエピソードの準備 | `sbatch slurm/lag/record_rollouts.sbatch` の後に `sbatch slurm/lag/prepare_episode.sbatch`（引数は [slurm/README.md](slurm/README.md)） |
 | Judge | `sbatch slurm/evaluate.sbatch preview --run outputs/translate/<run>` |
 
 有料で実行するときは、上の `preview` を `paid` に替え、「OpenAI APIキー」の手順で投げます。
@@ -98,7 +98,7 @@ unset OPENAI_API_KEY
 
 | 出力先 | 書くもの | 再実行したとき |
 |---|---|---|
-| `outputs/translate/<run>/` | 翻訳（`events.jsonl`、`cues.jsonl`、要求と応答） | 毎回新しいrun。resumeなし |
+| `outputs/translate/<run>/` | 翻訳（`events.jsonl`、要求と応答） | 毎回新しいrun。resumeなし |
 | `outputs/evaluation/<run>/<name>/` | judge | output root以下のjournalにある要求は再送しない |
 
 以前の出力（`outputs/translator/`、`outputs/intent_compare/`、`outputs/weightreading/`）はそのまま残ります。

@@ -1,0 +1,20 @@
+{
+ "_note": "SHA-256 of lag17 windows [center-30, center+30] (anchor = center) as workspace/17_commentary_LAG rendered them; tests/translate/test_episode_inputs.py checks translate.episode.render_lag17 against them.",
+ "lag17_window_sha256": {
+  "mhi_v1.3_ic100601_win@30": "5e229dbc3ee5134bd1b2532a0c7a5918701d0efc12e96a57ebb6d13343d8c669",
+  "mhi_v1.3_ic100601_win@45": "27aab4343d8626ebf6f4a5f05dfc1682d589208bddfacbc069be1f267430c86d",
+  "mhi_v1.3_ic100601_win@85": "0e69d92476016bcf412f7ae92b8b60520f8279043cb62f5ec073114f514d31a8",
+  "mhi_v1.3_ic100601_win@141": "dd6a844d245ac04f6e2d755a3c65d2b434fbe8e804359218222754783e3112c0",
+  "mhi_v1.3_ic100601_win@145": "1b941dfa241af0af19c1a90a0fb836b5f9f70432bf50cfe9daee7ad1d07fa4d4",
+  "mhi_v1.3_ic100601_win@245": "c0046818c22afd5368c6263394986127683e00ce84d1a8c5c0eb685269f31c65",
+  "mhi_v1.3_ic100601_win@310": "52e732f1772e8500537869d9304e6b579d45c2dcbba3017fddafc0c277a0dd14",
+  "ours_seed100100_ic100601_loss@30": "605e6498991279f0635a9af1ecb391bd21058cb1762612cb3072497de15a6222",
+  "ours_seed100100_ic100601_loss@142": "33c0cd44b05f8ef352ccbb1912f3a49a7430279b0dd2c2fddce6d1569d0dd18f",
+  "ours_seed100100_ic100601_loss@146": "2b27acd88b1e1e0224372c8407b55508dde468e7c67ccf01706796070a0a36f5",
+  "ours_seed100100_ic100601_loss@263": "6fe4693c0f8b0350382f868dc8d9adb95dbb58ab8a9c7fe39e81b79aaf249acf",
+  "ours_seed100100_ic100606_win@30": "8cdf656fb71a17896bbe2368c31dd94fc81e31b113dc2119dc3f8b4234c1074e",
+  "ours_seed100100_ic100606_win@138": "672446a3e1455de2b8d5bfcc35d5de2bfe7b622f3b6c99e060e179428bb002dd",
+  "ours_seed100100_ic100606_win@247": "21edb902ba375de3ddce71593196076adbe5b7a8bf981b3c721f293d3084af92",
+  "ours_seed100100_ic100606_win@465": "64b94ef4970d4181dde81e9d48916e7fa7a16baa89bcba658ba40d02020b3d10"
+ }
+}

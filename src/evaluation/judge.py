@@ -9,7 +9,6 @@ fsynced before its call. Nothing is retried: a failed or uncertain call ends the
 
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 import time
@@ -20,12 +19,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
-
 from evaluation.config import Criterion, JudgeConfig, criteria_for
 from evaluation.material import TranslationRun, event_kinds, read_jsonl, system_text, user_text
-from evaluation.results import append_jsonl, judge_rows
-from translate.llm.openai_responses import OpenAIClientError, OpenAIRequest, build_responses_body, input_text
+from evaluation.results import judge_rows
+from translate.backends import BackendError, Prompt, input_text
+from translate.backends.openai import OpenAIBackend
+from translate.episode import Episode
+from translate.journal import append_jsonl, request_sha256
 
 MARKER = ".paid-judge.running"
 JOURNALS = ("requests.jsonl", "judge_requests.jsonl")  # this judge's name and the 2026-11-05 assess journal's
@@ -43,19 +43,12 @@ class JudgeError(ValueError):
 class Call:
     event: dict[str, Any]
     criteria: tuple[Criterion, ...]
-    request: OpenAIRequest
     body: dict[str, Any]  # the exact Responses body, journaled before the send
     sha256: str
 
     @property
     def event_id(self) -> str:
         return self.event["event_id"]
-
-
-def request_sha256(body: dict[str, Any]) -> str:
-    """SHA-256 of the canonical JSON of a request body (the same recipe as every journal of this repo)."""
-    text = json.dumps(body, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
-    return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 def verdict_schema(criteria: tuple[Criterion, ...], config: JudgeConfig) -> dict[str, Any]:
@@ -80,20 +73,13 @@ def verdict_schema(criteria: tuple[Criterion, ...], config: JudgeConfig) -> dict
     }
 
 
-def plan_call(event: dict[str, Any], run: TranslationRun, frame: pd.DataFrame, config: JudgeConfig) -> Call:
+def plan_call(event: dict[str, Any], run: TranslationRun, frame: Episode, config: JudgeConfig) -> Call:
     """The event's request. ``rubric_version`` names the verdict schema, so a new rubric is a new request."""
     criteria = criteria_for(config, event_kinds(event))
-    request = OpenAIRequest(
-        model=config.model.name,
-        instructions=system_text(config),
-        input_items=(input_text(user_text(event, run, frame, config)),),
-        schema_name=f"verdict_{config.rubric_version}",
-        schema=verdict_schema(criteria, config),
-        reasoning_effort=config.model.reasoning_effort,
-        max_output_tokens=config.model.max_output_tokens,
-    )
-    body = build_responses_body(request)
-    return Call(event, criteria, request, body, request_sha256(body))
+    items = (input_text(user_text(event, run, frame, config)),)
+    prompt = Prompt(system_text(config), items, f"verdict_{config.rubric_version}", verdict_schema(criteria, config))
+    body = OpenAIBackend.request_body(config.model, prompt)
+    return Call(event, criteria, body, request_sha256(body))
 
 
 def parse_verdict(text: str, criteria: tuple[Criterion, ...], config: JudgeConfig) -> dict[str, tuple[str, str]]:
@@ -207,15 +193,14 @@ def utc_now() -> str:
 
 
 def _failure(exc: BaseException) -> tuple[bool, dict[str, str], Any]:
-    """(uncertain, error, raw): an SDK error keeps its sanitised message; anything else is uncertain."""
-    if isinstance(exc, OpenAIClientError):
-        raw = exc.result.raw if exc.result is not None else exc.raw
-        return exc.uncertain, {"type": type(exc).__name__, "message": str(exc)}, raw
+    """(uncertain, error, raw): a backend error keeps its sanitised message; anything else is uncertain."""
+    if isinstance(exc, BackendError):
+        return exc.uncertain, {"type": type(exc).__name__, "message": str(exc)}, exc.raw
     return True, {"type": type(exc).__name__, "message": WITHHELD}, None
 
 
 def run_calls(plan: Plan, *, send: Callable[[Call], Any], directory: Path, config: JudgeConfig, batch: str) -> Outcome:
-    """Send the planned calls in order, each once. ``send`` returns an ``OpenAIResult``."""
+    """Send the planned calls in order, each once. ``send`` takes a call and returns a ``Reply``."""
     attempted, judged, in_flight = 0, 0, None
     try:
         for call in plan.to_send:
@@ -241,7 +226,7 @@ def run_calls(plan: Plan, *, send: Callable[[Call], Any], directory: Path, confi
             append_jsonl(directory / RESPONSES, {**response, "error": None, "written_at": utc_now()})
             in_flight = None
             try:
-                verdict = parse_verdict(reply.output_text, call.criteria, config)
+                verdict = parse_verdict(reply.text, call.criteria, config)
             except JudgeError as exc:
                 return Outcome("failed", attempted, judged, {"event_id": call.event_id, "message": str(exc)})
             append_jsonl(directory / "results.jsonl", *judge_rows(call, verdict, reply, config, batch))

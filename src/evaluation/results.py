@@ -7,12 +7,9 @@ criterion). A re-rating names the rating it replaces in ``supersedes``; every li
 
 from __future__ import annotations
 
-import json
-import os
 from collections import Counter
 from datetime import datetime
 from itertools import combinations
-from pathlib import Path
 from typing import Any
 
 from evaluation.config import JudgeConfig, criteria_for
@@ -26,14 +23,6 @@ RATING_KEYS |= {"rated_at", "supersedes"}
 
 class RatingsError(ValueError):
     """A ratings file does not match the run or the rubric; nothing was imported."""
-
-
-def append_jsonl(path: Path, *records: dict[str, Any]) -> None:
-    """Append records with one fsync; earlier bytes are never rewritten."""
-    with Path(path).open("a", encoding="utf-8", errors="backslashreplace") as handle:
-        handle.writelines(json.dumps(record, ensure_ascii=False, allow_nan=False) + "\n" for record in records)
-        handle.flush()
-        os.fsync(handle.fileno())
 
 
 def _score(judgement: str) -> int | None:

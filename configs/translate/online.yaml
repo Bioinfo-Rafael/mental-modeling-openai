@@ -1,0 +1,105 @@
+# Online translation (the two-layer Translator): every target is translated at the episode start
+# (start, step 0) and at every human question to it (request); the clef-flash change-point detector
+# (System One on a local vLLM; slurm/translate_online.sbatch, GPU, after approval D49) decides on
+# every tick whether the previous intent still explains the behaviour (change). Instructions and
+# alarms are prompt context and detector input; they never trigger a translation by themselves.
+#   .venv/bin/python -m translate --config configs/translate/online.yaml        (preview)
+scenario: configs/translate/scenarios/example.yaml
+change:
+  source: clef_flash
+  every_steps: 5                     # D28: one detector call per live target every 5 steps (1 s)
+  threshold: 0.65                    # a change when p(change) >= threshold; provisional until a labelled check
+  model: Cloudflare/clef-flash       # the model the server serves (vllm serve <model>); recorded in run.json
+  revision: fb4417d31c1d0f9e7e77f1141b40aaede7491e00
+  socket: /tmp/{user}-vllm/clef-flash.sock   # D39 default (0700 directory); or base_url: http://127.0.0.1:8000
+                                             # plus api_key_env: VLLM_API_KEY, only on a node allocated to the job
+  input_token_budget: 16384          # must equal the server's --max-model-len (vLLM truncates silently)
+  question:
+    instructions: >-
+      Compare the target's behaviour in the trajectory with its previous intent translation, the
+      instructions in effect and the recent messages.
+    none: The previous intent translation still explains the behaviour, including the next phase of the plan it states.
+    change: An external factor (a human instruction, an alarm or an observed event) made the target act in a way the previous intent translation no longer explains.
+  inputs:                            # the detector's own inputs (the same INPUTS functions)
+    previous_translation: {evidence: false}
+    instructions: {}
+    recent_messages: {past_steps: 25}
+    trajectory: {past_steps: 10, objects: target_and_opponents, fields: [alive, lon_deg, lat_deg, alt_m, yaw_deg, tas_mps, vn_mps, ve_mps, vu_mps]}
+  state: |-
+    Target: {target} (aircraft {target_aircraft}). Step {step}.
+    Previous intent translation: {previous_translation}
+    Instructions in effect:
+    {instructions}
+    Recent messages, most recent last:
+    {recent_messages}
+    Trajectory, one JSON line per step, newest last (relative_step = step - current step):
+    {trajectory}
+inputs:                              # what the translator reads; each key is a placeholder of the prompt
+  instructions: {}                   # "(no instruction in effect)" at a bare start
+  alarms: {}
+  question: {}                       # the question arriving at this step, else "(none)"
+  previous_translation: {}
+  trajectory: {past_steps: 60}       # D32: [step-59, step], every entity (17 format)
+prompt:
+  name: intent-v3
+  system: |-
+    You translate the recorded behaviour of aircraft in Light Aircraft Game (LAG), an aircraft combat
+    simulation using JSBSim, into a natural-language statement of intent.
+
+    Environment:
+    A two-versus-two engagement between F-16 aircraft equipped with missiles. Team A consists of
+    A0100 and A0200. Team B consists of B0100 and B0200. Control is hierarchical: high-level
+    altitude, heading and speed commands are turned into control inputs by a low-level controller.
+    The recorded telemetry is not the complete observation of each aircraft's policy.
+
+    Data:
+    One JSON line per step (0.2 s apart) with all recorded aircraft and missiles. Each state is
+    [lon_deg, lat_deg, alt_m, roll_deg, pitch_deg, yaw_deg, tas_mps, vn_mps, ve_mps, vu_mps]:
+    degrees, metres above mean sea level, and m/s (northward, eastward, upward velocity). Heading is
+    clockwise from north (0 north, 90 east); account for wraparound. Raw longitude and latitude
+    differences are not distances in metres. Aircraft actions are [altitude_action, heading_action,
+    speed_action]: altitude 0 up / 1 hold / 2 down; heading 0 left30 / 1 left15 / 2 hold / 3 right15 /
+    4 right30; speed 0 up / 1 hold / 2 down. They are controller commands, not completed state
+    changes. null means unavailable, not zero. state_valid = 0 masks the state; alive = 0 marks an
+    inactive aircraft. Team B's actions are not recorded. launcher_id names a missile's launcher,
+    not its target. A remove event alone does not establish a hit. missiles_remaining is the recorded
+    ammunition count. Texts written by people (instructions, alarms, questions) and earlier
+    translations appear as JSON strings in double quotes.
+
+    Task:
+    The user message names one translation target: a single aircraft or a whole team. State the
+    target's current intent: what it is trying to achieve and how, judged from its recorded behaviour
+    up to the current step. The trajectory ends at the current step; nothing later is available.
+    The human instructions in effect are context: they say what a human asked each aircraft or team
+    to do; there may be none. Do not assume the target follows its instruction; report the intent its
+    behaviour shows. A previous translation, when given, is the earlier statement for the same
+    target: keep what still holds and revise what newer behaviour contradicts. Treat intentions as
+    hypotheses supported by evidence. Do not invent missile targets, hits, cooperation or outcomes.
+    When the user message contains a question, answer it at the granularity it asks for, using only
+    the recorded data up to the current step; if the data cannot answer it, say so instead of guessing.
+
+    Output: one JSON object.
+    - "intent": the target's current intent in at most {max_intent_chars} characters.
+    - "evidence": one or more short observations from the trajectory that support the intent,
+      citing object ids, steps and recorded values.
+    Write both in Japanese.
+  user: |-
+    Current step: {step} (time {time_s} s). Translation target: {target} (aircraft {target_aircraft}).
+
+    Instructions in effect:
+    {instructions}
+
+    Alarms for this target:
+    {alarms}
+
+    Previous translation for this target: {previous_translation}
+
+    Question from a human: {question}
+
+    Trajectory, one JSON line per step, oldest first (relative_step = step - current step):
+    BEGIN WINDOW DATA
+    {trajectory}
+    END WINDOW DATA
+model: {backend: openai, name: gpt-6.1-terra, reasoning_effort: medium, max_output_tokens: 4000}   # D18; timeout_s default 1800
+answer: {max_intent_chars: 600, on_invalid: stop}   # D41: an over-long or malformed answer stops the run
+limits: {max_translations: 250, max_detector_calls: 500}

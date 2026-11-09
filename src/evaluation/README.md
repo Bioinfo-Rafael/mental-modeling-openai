@@ -99,9 +99,10 @@ quoted JSON strings, so they cannot leave their envelope.
   known one. A journal line it cannot read stops every paid run until repaired. An event already
   judged in the same directory with other bytes is refused (judge it under another `--name`). A
   deliberate replicate needs new bytes: bump `rubric_version` or change the prompt.
-- Every request line is fsynced before its call; nothing is retried. A refusal, an incomplete
-  response or an HTTP 4xx ends the run `failed`; a timeout, a connection or server error or an
-  unknown error ends it `uncertain`.
+- Every request line is fsynced before its call; nothing is retried. An HTTP or connection error, a
+  refusal or an incomplete response ends the run `failed`; a timeout, an unknown status, an
+  unreadable response or any other error ends it `uncertain`. A journaled request is never sent
+  again, whatever its outcome.
 - Causality: the audit re-reads every request body the translation run journaled: each trajectory
   line must have `step <= t`, no text of a message issued after t may appear, and neither the run's
   episode id nor its scenario id. A leaking target is excluded from judging and reported.
