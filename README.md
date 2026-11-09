@@ -35,15 +35,12 @@
 
 Judgeは翻訳がどの入力を使ったかに関係なく、同じ方法で評価します。
 Judgeには、人の評価者が見るのと同じ材料（シナリオの文面とトラジェクトリ。動画は未実装）が常に渡ります。
-Judgeは2種類です。
-
-- `evaluation.assess_cli`：3時点×4観点の評価です。実データで1回の有料実行実績があります。
-- `evaluation.cli`：D29のkey-point評価です。まだ実行していません。
+Judgeは `evaluation.assess_cli`（3時点×4観点の評価）だけです。D29のkey-point評価、動画、比較viewerは2026-11-09に削除しました。
 
 Judgeのプロンプトの文面も、翻訳と同じく設定側のプロンプトファイル（`configs/evaluation/prompts/`）にあります。どのファイルを使うかはjudge設定（`configs/evaluation/*.yaml`）が決めます。
 
-- 新しいrunの既定：`assess.yaml` と `judge-text*.yaml`。トラジェクトリを「Translatorが見たもの」ではなく「人が見られるテレメトリ」と書きます。
-- 互換用：`assess-legacy.yaml` と `judge-text-legacy.yaml`。以前コードにあったプロンプトと1バイトも違わない要求を送ります。2026-11-05の有料実行は `assess-legacy.yaml` でしか再開できません。
+- 新しいrunの既定：`assess.yaml`。トラジェクトリを「Translatorが見たもの」ではなく「人が見られるテレメトリ」と書きます。
+- 互換用：`assess-legacy.yaml`。2026-11-05の有料実行はこの設定で評価しました。
 
 assess judgeの設定は、イベントのschemaごとに、トリガーの種類をどの時点の基準で評価するかを `triggers` に書きます。既定の設定（rubric `pilot-4`）はschema 3だけを評価し、開始点のタイミングは定義で決まるので評価しません。
 
@@ -52,7 +49,7 @@ assess judgeの設定は、イベントのschemaごとに、トリガーの種�
 | パス | 内容 |
 |---|---|
 | `src/translate/` | 翻訳パイプライン（[README](src/translate/README.md)） |
-| `src/evaluation/` | Judge 2種、比較用viewer、クリップ作成（[README](src/evaluation/README.md)） |
+| `src/evaluation/` | Judge（[README](src/evaluation/README.md)） |
 | `configs/translate/` | 実行設定、プロンプトファイル（`prompts/`）、シナリオ（`scenarios/`）、方策のspec（`policies/`） |
 | `configs/evaluation/` | Judgeの設定と、Judgeのプロンプトファイル（`prompts/`） |
 | `data/mhi/` | MHI v1.3の3試合（CSV・manifest・行動付き動画）。読み取り専用 |
@@ -98,12 +95,10 @@ unset OPENAI_API_KEY
 | 翻訳（preset） | `sbatch slurm/translate.sbatch preview --config configs/translate/seed100601-policy.yaml` |
 | 翻訳（online、GPU、D49承認後） | `VLLM_ENV=... HF_CACHE_DIR=... SCENARIO=private/translator/<s>.yaml sbatch --export=ALL slurm/translate_vllm.sbatch probe`（有料は `paid`） |
 | rolloutの記録とエピソードの準備 | `sbatch slurm/episode_record_rollouts.sbatch` の後に `sbatch slurm/episode_prepare.sbatch`（引数は [slurm/README.md](slurm/README.md)） |
-| 比較viewer | `sbatch slurm/viewer.sbatch --column 軌跡=outputs/translate/<run> --column 方策=outputs/translate/<run> --out <html>` |
 | Judge（3時点×4観点） | `sbatch slurm/judge_assess.sbatch preview --translator-run outputs/translate/<run>` |
-| Judge（key point） | `sbatch slurm/judge_keypoints.sbatch preview --translator-run outputs/translate/<run> --key-points private/evaluation/<kp>.yaml` |
 
 有料で実行するときは、上の `preview` を `paid` に替え、「OpenAI APIキー」の手順で投げます。
-人手で作る入力（key point、reference point、rating）は `private/evaluation/` に置きます。形式は `src/evaluation/examples/` にあります。
+人手で作る入力（reference point、rating）は `private/evaluation/` に置きます。形式は `src/evaluation/examples/` にあります。
 
 ## 出力とresume
 
@@ -111,9 +106,8 @@ unset OPENAI_API_KEY
 |---|---|---|
 | `outputs/translate/<run>/` | 翻訳（`events.jsonl`、`cues.jsonl`、要求と応答、code sessionの記録） | 毎回新しいrun。resumeなし |
 | `outputs/evaluation/assess/<run>/` | assess judge | `judge_requests.jsonl` にある要求は再送しない |
-| `outputs/evaluation/<UTC>_judge_*/` | key-point judge | resumeなし。再実行すると全件を再送する |
 
-以前の出力（`outputs/translator/`、`outputs/intent_compare/`、`outputs/weightreading/`）はそのまま残り、Judgeとviewerで読めます。
+以前の出力（`outputs/translator/`、`outputs/intent_compare/`、`outputs/weightreading/`）はそのまま残ります。
 旧手法Bの `--resume` は廃止しました。記録済みの3 runはすべて完了しているので、続きから実行するものはありません。
 
 assess judgeは `request_sha256` で送信済みかを判定します。プロンプトファイル、packet、judge設定の値が1 byteでも変わると別のrequestになるため、同じassessment directoryで判定済みのeventを別のbytesで送ろうとすると実行を拒否します。
@@ -138,7 +132,7 @@ coreは `workspace/` をimportも読み取りもしません。workspaceからco
 ## 詳細な仕様（英語）
 
 - [src/translate/README.md](src/translate/README.md): パイプライン、設定、入力、プロンプトファイル、`events.jsonl` の契約
-- [src/evaluation/README.md](src/evaluation/README.md): 2種類のJudge、入力、出力、安全策、viewer
+- [src/evaluation/README.md](src/evaluation/README.md): Judge、入力、出力、安全策
 - [src/translate/llm/README.md](src/translate/llm/README.md): LLM client、vLLM、課金gate、D49
 - [src/translate/lag/README.md](src/translate/lag/README.md): LAGデータの読込と描画
 - [data/mhi/README.md](data/mhi/README.md): MHI試合データ

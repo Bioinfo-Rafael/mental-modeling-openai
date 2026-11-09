@@ -7,7 +7,7 @@
 
 A run of any other version, or a reason whose kind its version does not list, fails to load: a
 kind is never inferred. The assess judge config maps each version's kinds to its point kinds
-(``triggers`` in ``configs/evaluation/assess*.yaml``); the key-point judge shows them as recorded.
+(``triggers`` in ``configs/evaluation/assess*.yaml``).
 """
 
 from __future__ import annotations

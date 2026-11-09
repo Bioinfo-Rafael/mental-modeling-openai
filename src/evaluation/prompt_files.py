@@ -2,7 +2,7 @@
 
 A prompt file (``configs/evaluation/prompts/*.yaml``) holds:
 
-- ``schema_version`` (1) and ``judge``: which judge reads it (``assess`` or ``key_point``);
+- ``schema_version`` (1) and ``judge``: which judge reads it (``assess``);
 - ``version``: recorded as ``prompt_version`` with every judgement;
 - ``texts``: the judge's top-level templates (system prompt, user message or its blocks);
 - ``blocks``: how each list or optional piece of material becomes text (item template, joiner,
@@ -28,7 +28,7 @@ from .strict_yaml import parse_strict_yaml
 
 PROMPT_SCHEMA_VERSION = 1
 FILE_KEYS = {"schema_version", "judge", "version", "texts", "blocks"}
-JUDGE_ASSESS, JUDGE_KEY_POINT = "assess", "key_point"
+JUDGE_ASSESS = "assess"
 
 
 class JudgePromptError(ValueError):
@@ -176,55 +176,6 @@ ASSESS_PROMPT_SPEC = PromptSpec(
         "scale_value": {"item": _fields("value"), "joiner": NO_FIELDS},
     },
 )
-
-# --- key-point judge (D29) ------------------------------------------------------------------------
-
-KEY_POINT_PROMPT_SPEC = PromptSpec(
-    judge=JUDGE_KEY_POINT,
-    texts={
-        "system": TextSpec(NO_FIELDS),
-        "header": TextSpec(_fields("target", "target_aircraft")),
-        "instructions": TextSpec(_fields("instructions"), _fields("instructions")),
-        "video": TextSpec(NO_FIELDS),
-        "timestamps": TextSpec(
-            _fields("episode_start_step", "episode_start_time", "earlier", "step", "time", "triggers"),
-            _fields("earlier", "step", "triggers"),
-        ),
-        "trajectory": TextSpec(_fields("window", "legend", "trajectory"), _fields("legend", "trajectory")),
-        "translated_intent": TextSpec(_fields("intent", "evidence"), _fields("intent", "evidence")),
-        "key_points": TextSpec(_fields("key_points"), _fields("key_points")),
-    },
-    blocks={
-        "instruction": {
-            "item": _fields("primary", "details", "text"),
-            "primary_marker": NO_FIELDS,
-            "details": _fields("parts"),
-            "id": _fields("instruction_id"),
-            "target": _fields("target"),
-            "issue_step": _fields("issue_step"),
-            "part_joiner": NO_FIELDS,
-            **dict.fromkeys(LIST_BLOCK, NO_FIELDS),
-        },
-        "time": {"present": _fields("time_s"), "empty": NO_FIELDS},
-        "earlier": {"item": _fields("step", "time", "primary_trigger"), **dict.fromkeys(LIST_BLOCK, NO_FIELDS)},
-        "trigger": {"item": _fields("reason"), "joiner": NO_FIELDS},
-        "reason": {
-            "plain": _fields("kind"),
-            "detailed": _fields("kind", "details"),
-            "source": _fields("source"),
-            "probability": _fields("probability"),
-            "detail_joiner": NO_FIELDS,
-        },
-        "window": {
-            "present": _fields("start_step", "end_step", "anchor_step", "object_ids", "renderer", "renderer_version"),
-            "empty": NO_FIELDS,
-        },
-        "evidence": {"item": _fields("item"), **dict.fromkeys(LIST_BLOCK, NO_FIELDS)},
-        "key_point": {"item": _fields("index", "key_point_id", "text"), **dict.fromkeys(LIST_BLOCK, NO_FIELDS)},
-    },
-    open_blocks=_fields("legends"),  # trajectory renderer -> what its text means
-)
-
 
 # --- the file -------------------------------------------------------------------------------------
 

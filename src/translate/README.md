@@ -154,7 +154,7 @@ configurable (they stay in `src/evaluation`, because the paid assess resume depe
 | `events.jsonl` | The event log (contract below) |
 | `requests.jsonl` | One record per call, written and fsynced **before** the call is sent (`call_id`, `layer`, `step`, `target`, exact `payload`) |
 | `responses.jsonl` | One record per sent call (`status`, `latency_s`, `raw` body or the session summary, `error`) |
-| `cues.jsonl` | Derived after the run: one line per translation slot (answer or `skipped` with the reason) for `python -m evaluation.viewer` |
+| `cues.jsonl` | Derived after the run: one line per translation slot (answer or `skipped` with the reason) (a projection of `events.jsonl`) |
 | `sessions/<sSSSS_AIRCRAFT>/` | Code session only: `inputs/` (read-only `W` and `A`), `message.txt`, `transcript.jsonl`, `tool_calls.jsonl`, `state.json`, `final_answer.md`, `preflight.json`, `audit.json` |
 
 A request without a response line means the process died mid-call: treat that call as uncertain.

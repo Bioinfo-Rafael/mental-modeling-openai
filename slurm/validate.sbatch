@@ -37,7 +37,7 @@ case "$MODE" in
     (
       cd "$(mktemp -d)"
       "$PY" -B -c 'import evaluation, translate, translate.cli, translate.policy.material'
-      for module in evaluation.cli evaluation.assess_cli evaluation.viewer evaluation.clips translate; do
+      for module in evaluation.assess_cli translate; do
         "$PY" -B -m "$module" --help >/dev/null
       done
       echo "imports and --help from outside the repository: ok"
@@ -54,7 +54,6 @@ from pathlib import Path
 import yaml
 
 from evaluation.assess_cli import main as assess_main
-from evaluation.cli import main as keypoint_main
 from translate.cli import Factories
 from translate.cli import main as translate_main
 
@@ -118,11 +117,6 @@ check(translate_main(argv, factories=Factories(openai_client=lambda **_: CannedC
 run, judged = scratch / "runs" / "synthetic", scratch / "evaluation"
 argv = ["judge", "--translator-run", str(run), "--output-root", str(judged)]
 check(assess_main(argv, openai_client_factory=refuse), "configs/evaluation/assess.yaml")
-key_points = "src/evaluation/examples/key-points.example.yaml"
-for config in sorted(Path("configs/evaluation").glob("judge-text*.yaml")):
-    argv = ["--config", str(config), "--translator-run", str(run), "--key-points", key_points]
-    argv += ["--output-root", str(judged), "--run-name", config.stem]
-    check(keypoint_main(argv, openai_client_factory=refuse), str(config))
 legacy_run = source / "outputs/translator/intentcmp-seed100601-ja-A-s045-A0100"  # schema 2: legacy config only
 argv = ["judge", "--config", "configs/evaluation/assess-legacy.yaml", "--translator-run", str(legacy_run)]
 argv += ["--output-root", str(judged), "--name", "legacy"]

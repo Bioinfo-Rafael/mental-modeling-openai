@@ -17,10 +17,6 @@ dependencies = [
   "PyYAML>=6",
 ]
 
-[project.optional-dependencies]
-# Video-window rendering for the LLM judge (frame decoding, resize, JPEG).
-video = ["av>=17,<20", "Pillow>=12,<14"]
-
 [dependency-groups]
 dev = ["pytest>=7,<9", "ruff>=0.8"]
 

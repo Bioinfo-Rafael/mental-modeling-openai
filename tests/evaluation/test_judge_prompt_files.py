@@ -1,16 +1,14 @@
-"""Judge prompt files: strict loading, placeholder checks, and the shipped default and legacy configs."""
+"""Assess judge prompt files: strict loading, placeholder checks, and the shipped default and legacy configs."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
 import pytest
-import yaml
 
-from evaluation import configuration
 from evaluation.assess_data import ConfigError, load_config, load_run, parse_config
 from evaluation.assess_judge import build_packet, system_prompt
-from evaluation.prompt_files import ASSESS_PROMPT_SPEC, KEY_POINT_PROMPT_SPEC, JudgePromptError, load_judge_prompt
+from evaluation.prompt_files import ASSESS_PROMPT_SPEC, JudgePromptError, load_judge_prompt
 from translate import paths
 
 from .assess_fakes import E_CHANGE, V3_PLAN, config_raw, make_frame, make_run
@@ -38,18 +36,6 @@ def _legacy_assess_text() -> str:
 )
 def test_each_assess_config_loads_its_prompt(config: str, version: str) -> None:
     assert load_config(CONFIGS / config).prompt.version == version
-
-
-@pytest.mark.parametrize(
-    ("config", "version"),
-    [
-        ("judge-text.yaml", "judge-text-v4"),
-        ("judge-text-video.yaml", "judge-text-v4"),
-        ("judge-text-legacy.yaml", "judge-text-v3"),
-    ],
-)
-def test_each_key_point_config_loads_its_prompt(config: str, version: str) -> None:
-    assert configuration.load_config(CONFIGS / config).prompt.version == version
 
 
 def test_the_default_assess_prompt_calls_the_trajectory_human_visible(tmp_path: Path) -> None:
@@ -116,25 +102,8 @@ def test_a_prompt_that_is_not_utf8_fails_at_load(tmp_path: Path) -> None:
         load_judge_prompt(path, ASSESS_PROMPT_SPEC)
 
 
-def test_a_key_point_prompt_that_drops_material_fails_at_load(tmp_path: Path) -> None:
-    text = (PROMPTS / "judge-text-v3.yaml").read_text(encoding="utf-8")
-    old = "    Evidence the Translator cited:{evidence}"
-    assert old in text
-
-    with pytest.raises(JudgePromptError, match=r"texts.translated_intent must use \['evidence'\]"):
-        load_judge_prompt(_write(tmp_path / "p.yaml", text.replace(old, "    Evidence:")), KEY_POINT_PROMPT_SPEC)
-
-
 def test_a_config_names_a_missing_prompt_file_as_a_config_error(tmp_path: Path) -> None:
     raw = {**config_raw(), "prompt": "configs/evaluation/prompts/no-such-prompt.yaml"}
 
     with pytest.raises(ConfigError, match="cannot read prompt file"):
         parse_config(raw, path=tmp_path / "assess.yaml", sha256="x")
-
-
-def test_a_key_point_config_rejects_an_assess_prompt() -> None:
-    raw = yaml.safe_load((CONFIGS / "judge-text.yaml").read_text(encoding="utf-8"))
-    raw = {**raw, "prompt": "configs/evaluation/prompts/assess-judge-v2.yaml"}
-
-    with pytest.raises(configuration.JudgeConfigError, match="is a prompt for judge 'assess'"):
-        configuration.parse_config(raw)

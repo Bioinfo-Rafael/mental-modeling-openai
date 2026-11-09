@@ -25,8 +25,8 @@ from translate.events import sha256_text as sha256_text  # re-exported for the a
 from translate.events import strict_json_loads
 from translate.llm.openai_responses import REASONING_EFFORTS
 
-from .configuration import JUDGE_MODEL, read_strict_yaml
 from .prompt_files import ASSESS_PROMPT_SPEC, JudgePrompt, JudgePromptError, load_judge_prompt
+from .strict_yaml import read_strict_yaml
 from .trigger_kinds import ALL_TRIGGER_KINDS, EVENT_SCHEMA_VERSIONS, TRIGGER_KINDS
 
 # --- Translator event contract v2 and v3 (own copy; see the module docstring) ---------------------
@@ -62,6 +62,7 @@ RESULT_FILES = {
     EVALUATOR_JUDGE: "judge_results.jsonl",
 }
 DEFAULT_CONFIG = paths.ROOT / "configs" / "evaluation" / "assess.yaml"
+JUDGE_MODEL = "gpt-6.1-sol"  # D8: the only accepted judge model
 
 
 class AssessError(ValueError):

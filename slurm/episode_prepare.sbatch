@@ -1,7 +1,7 @@
 #!/bin/bash
-# Episode preparation from a recorded rollout: missile-complete replay, CSV and video clips (no API calls).
+# Episode preparation from a recorded rollout: missile-complete replay, CSV and the episode video (no API calls).
 #   ROLLOUT_DIR=outputs/weightreading/rollouts/mhi-v1.3-20261104T010525Z SEED=100601 \
-#   EPISODE_DIR=outputs/intent_compare/episode/seed100601 STEPS="45 145 245 315" \
+#   EPISODE_DIR=outputs/intent_compare/episode/seed100601 \
 #   sbatch --export=ALL slurm/episode_prepare.sbatch
 # 1. replay the seed with ACMI on (mtd-rl-lag interpreter, output under the gitignored
 #    $LAG_ROOT/LOCAL_ONLY/) and assert bitwise equality of every aircraft field vs the npz;
@@ -9,9 +9,9 @@
 # 3. copy the ACMI + reports to EPISODE_DIR and convert npz + ACMI to the 64-column LAG episode CSV
 #    (the trajectory input; same format as data/mhi/processed/), scripts/episode_to_csv.py;
 # 4. render the full episode with $LAG_ROOT/scripts/render/acmi_to_mp4.py (imageio-ffmpeg binary
-#    shimmed onto PATH) and trim one clip per step of STEPS for the viewer (python -m evaluation.clips).
+#    shimmed onto PATH); human raters watch it.
 # Paths must be on the shared filesystem: compute nodes do not see the login node's /tmp.
-# Required: ROLLOUT_DIR, SEED, EPISODE_DIR, STEPS. Optional: LAG_ROOT (default ../mtd-rl-lag), MODEL_DIR,
+# Required: ROLLOUT_DIR, SEED, EPISODE_DIR. Optional: LAG_ROOT (default ../mtd-rl-lag), MODEL_DIR,
 # UV (only for the throwaway ffmpeg env), DPI.
 #SBATCH --partition=151-partition
 #SBATCH --job-name=episode_prepare
@@ -25,7 +25,6 @@ require_python
 ROLLOUT_DIR="${ROLLOUT_DIR:?set ROLLOUT_DIR to the recorded rollout directory}"
 SEED="${SEED:?set SEED to the rollout seed}"
 EPISODE_DIR="${EPISODE_DIR:?set EPISODE_DIR to the episode output directory}"
-read -r -a STEP_LIST <<< "${STEPS:?set STEPS to the translation steps of the clips}"
 UV="${UV:-$HOME/.local/bin/uv}"
 LAG_PYTHON="$LAG_ROOT/.venv/bin/python"
 MODEL_DIR="${MODEL_DIR:-$LAG_ROOT/models/v1.3}"
@@ -62,5 +61,4 @@ SECONDS=0
   -o "$EPISODE_DIR/full.mp4" --dpi "$DPI"
 echo "render: ${SECONDS}s"
 
-"$PY" -m evaluation.clips --full "$EPISODE_DIR/full.mp4" --out "$EPISODE_DIR/clips" --steps "${STEP_LIST[@]}"
-ls -la "$EPISODE_DIR" "$EPISODE_DIR/clips"
+ls -la "$EPISODE_DIR"
