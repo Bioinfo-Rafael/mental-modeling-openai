@@ -29,6 +29,8 @@ print(c.model, c.revision, c.socket_path, c.input_token_budget)' "$CONFIG")"
 mkdir -m 700 "$(dirname "$SOCKET")" 2>/dev/null || test -d "$(dirname "$SOCKET")"
 if [ -e "$SOCKET" ]; then echo "$SOCKET exists: another server may be running (remove a stale one by hand)" >&2; exit 1; fi
 log_header "$VLLM_ENV/bin/vllm" serve "$MODEL" --revision "$REVISION" --uds "$SOCKET" --max-model-len "$BUDGET"
+# --disable-log-requests is deprecated in recent vLLM (request logging is off by default there): verify
+# it at the D49 probe with `vllm serve --help`, and drop it if the pinned version no longer accepts it.
 env -i PATH="$VLLM_ENV/bin:/usr/bin:/bin" HOME="$HOME" HF_HOME="$HF_CACHE_DIR" HF_HUB_OFFLINE=1 \
   CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-}" "$VLLM_ENV/bin/vllm" serve "$MODEL" --revision "$REVISION" \
   --uds "$SOCKET" --max-model-len "$BUDGET" --disable-log-requests &

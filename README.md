@@ -19,6 +19,7 @@
 
 - 開始点（`start`）：エピソードの開始（step 0）です。指示が出ていてもいなくても翻訳します。指示がなければ `(no instruction in effect)` と表示します。
 - 要求点（`request`）：人の質問がその対象に届いた時点です。指示と警報は翻訳を起こさず、プロンプトと変化点検出器への入力になるだけです。
+  - シナリオでは、人のメッセージに指示が含まれていれば `kind: instruction` と書きます。`question` は、人が状況を把握したいだけの質問に使います。指示を含むメッセージは要求点にならず、変化点検出器が判定する指示として扱います。
 - 変化点（`change`）：設定の `change:` が決めます。`preset` は前もって書いたstep、`clef_flash` は変化点検出器（ローカルのvLLMで動くclef-flash）が、外的要因や指示によってそれまでの意図では行動を説明できなくなったと判定した時点です。計画どおりの変化は変化点ではありません。
 
 | 設定 | 内容 |
@@ -32,7 +33,7 @@
 ## 評価
 
 Judgeは1つのエンジン（`python -m evaluation`）です。翻訳がどの入力を使ったかに関係なく、人の評価者が見るのと同じ材料（指示、警報、質問、前回の翻訳、時刻tまでのトラジェクトリ。動画は未実装）で評価します。
-イベントごとに、その時点の種類（start / change / request）の基準をすべて1回の呼び出しで評価します。プロンプトの文面と基準（rubric `pilot-4`）は `configs/evaluation/judge.yaml` に直接書きます。
+イベントごとに、その時点の種類（start / change / request）の基準をすべて1回の呼び出しで評価します。プロンプトの文面と基準（rubric `pilot-5`）は `configs/evaluation/judge.yaml` に直接書きます。
 人の評価（`import-ratings`）と集計（`report`：基準ごとの平均、重み付きκ、要求点の3.0秒以内の割合）も同じCLIです。
 
 ## ディレクトリ
@@ -84,7 +85,7 @@ unset OPENAI_API_KEY
 | rolloutの記録（act_in付き） | `OUT=outputs/rollouts/mhi-v1.3-act-in SEEDS=100601 sbatch --export=ALL slurm/lag/record_rollouts.sbatch` |
 | エピソードの準備 | `sbatch --export=ALL slurm/lag/prepare_episode.sbatch`（環境変数は [slurm/README.md](slurm/README.md)） |
 
-`policy.yaml` は `outputs/rollouts/mhi-v1.3-act-in` を読みます。そのcheckoutにまだなければ、上の「rolloutの記録」を一度実行してください（CPU、数十秒。記録は決定的で、2026-11-04の記録と同じ値になります）。
+`policy.yaml` は `outputs/rollouts/mhi-v1.3-act-in` を読みます。そのcheckoutにまだなければ、上の「rolloutの記録」を一度実行してください（CPUで約15秒、2026-11-09のjob 5026887）。記録は決定的です。job 5026901で、seed 100601のobs・gru_out・logits・actionsが2026-11-04の記録とビット単位で一致し、`act_in` と行動ヘッドの重みからlogitsを最大誤差9.54e-07で再現できることを確かめました。
 人手で作る入力（実シナリオ、rating）は `private/` に置きます。ratingの形式は `src/evaluation/examples/` にあります。
 
 ## 出力と再送防止
@@ -96,8 +97,9 @@ unset OPENAI_API_KEY
 
 - 有料の要求は送る前に `requests.jsonl` へfsyncで記録します。自動の再送はしません。
 - Judgeは `outputs/evaluation/` 以下のすべてのjournal（2026-11-05の `outputs/evaluation/assess/<run>/judge_requests.jsonl` を含む）の `request_sha256` を調べ、送信済みの要求を送りません。有料実行中は `outputs/evaluation/.paid-judge.running` を排他的に作り、同時に1つだけ動きます。異常終了でこのファイルが残ったら、judgeが動いていないことを確かめてから手で消します。
-- 同じjudgement directoryで評価済みのeventを別のbytesで送ろうとすると拒否します。わざと同じeventを評価し直すときは `rubric_version` かプロンプトを変えます。送信済みなのにこのdirectoryに結果がないevent（判定の形式が不正だった場合など）は再送せず、実行を `failed` にしてそのeventを示します。
-- 有料のjudgeは、journalのある `outputs/evaluation/` を持つcheckout（mainのcheckout）で実行します。設定の `output` を変えても、このリポジトリの `outputs/evaluation/` は必ず調べます。
+- 同じjudgement directoryで評価済みのeventを別のbytesで送ろうとすると拒否します。わざと同じeventを評価し直すときは `rubric_version` かプロンプトを変えます。送信済みなのにこのdirectoryに結果がないevent（判定の形式が不正だった場合など）は自動では再送せず、実行を `failed` にしてそのeventを示します。
+- そのeventを送り直す唯一の方法は `--only-event <event_id> --execute --confirm-paid-api` です（利用者が明示したときだけ使います）。このdirectoryから同じbytesで送信済みで、ここに結果がなく、ほかのjournalにもないeventだけを1回送り、journalに利用者の指示による再送として記録します。ほかのeventには触れません。再送分も課金されます。
+- 有料のjudgeは、journalのある `outputs/evaluation/` を持つcheckout（mainのcheckout）で実行します。git worktreeからの有料実行は、mainのcheckoutを示して拒否します。設定の `output` を変えても、このリポジトリの `outputs/evaluation/` は必ず調べます。
 - バイト列を固定するgolden、manifest、記録済みrunの再生確認は2026-11-09に削除しました（U-b）。2026-11-05の評価をそのまま再開することはできません。
 
 ## テスト

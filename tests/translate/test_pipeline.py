@@ -4,7 +4,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from translate.backends import BackendError
+from translate.config import load_config
+from translate.episode import load_episode
+from translate.triggers import schedule
 
 from .fakes import INSTRUCTION, QUESTION, FakeBackend, FakeDetector, clef, config, events, lines, run, scenario
 
@@ -99,6 +104,40 @@ def test_clef_flash_asks_on_every_tick_and_translates_only_on_change(tmp_path: P
     assert found == [(0, ["start"]), (10, ["change", "request"])]
     assert events(tmp_path)[1]["trigger_reasons"][0]["probability"] == 0.9
     assert 'Previous intent translation: from step 0: "intent 1"' in detector.bodies[0]["state"]
+
+
+def test_a_team_target_closes_only_when_its_last_aircraft_is_down(tmp_path: Path) -> None:
+    run(config(tmp_path, scenario(tmp_path, targets=["team:B"]), {"source": "preset", "steps": [200, 336]}))
+
+    (closed,) = events(tmp_path, "target_closed")
+    (suppressed,) = events(tmp_path, "trigger_suppressed")
+    assert [(e["step"], e["kinds"]) for e in events(tmp_path)] == [(0, ["start"]), (200, ["change"])]  # B0200 at 136
+    assert (closed["step"], closed["down_step"], closed["target"]) == (335, 335, {"kind": "team", "id": "B"})
+    assert (suppressed["step"], suppressed["kinds"]) == (336, ["change"])
+
+
+def test_clef_flash_never_asks_about_a_down_target_and_the_schedule_agrees(tmp_path: Path) -> None:
+    path = config(tmp_path, scenario(tmp_path, targets=["aircraft:B0200"]), clef())
+
+    code = run(path, backend=FakeBackend(), detector=FakeDetector())
+
+    loaded = load_config(path)
+    plan = schedule(loaded.scenario, load_episode(loaded.scenario.episode), loaded.config.change)
+    asked = [c["step"] for c in events(tmp_path, "detector_call")]
+    assert code == 0 and asked == list(range(5, 136, 5)) == [step for step, _ in plan.ticks]  # down from 136
+    assert not events(tmp_path, "trigger_suppressed") and not plan.suppressed  # a tick is no trigger
+
+
+def test_an_unexpected_error_holding_a_secret_is_recorded_without_it(
+    tmp_path: Path, capsys: pytest.CaptureFixture
+) -> None:
+    secret = "sk-live-0123456789abcdef"
+
+    code = run(config(tmp_path, scenario(tmp_path)), backend=FakeBackend([RuntimeError(f"Bearer {secret}")]))
+
+    written = "".join(p.read_text(encoding="utf-8") for p in (tmp_path / "out").rglob("*") if p.is_file())
+    assert code == 3 and "details withheld" in written
+    assert secret not in written and secret not in "".join(capsys.readouterr())
 
 
 def test_an_invalid_answer_stops_the_run_or_is_skipped(tmp_path: Path) -> None:
