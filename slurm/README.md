@@ -10,7 +10,7 @@ the repository root; logs go to `logs/slurm/<job name>-<job id>.out` (the direct
 | `validate.sbatch` | offline checks, never an API call | `full`, `static`, `preview` | 4 CPU, 2 h |
 | `translate.sbatch` | `python -m translate` for a preset-trigger config | `preview` (default), `paid` | 4 CPU, 16 GB, 12 h |
 | `translate_vllm.sbatch` | vLLM (the clef-flash change-point detector) + `python -m translate` for an online config in one GPU job (awaits approval D49) | `probe` (default), `paid` | 1 GPU, 8 CPU, 30 min |
-| `judge_assess.sbatch` | `evaluation.assess_cli` check + judge (+ report when paid) | `preview` (default), `paid` | 2 CPU, 4 h |
+| `evaluate.sbatch` | `python -m evaluation judge` (+ `report` when paid) | `preview` (default), `paid` | 2 CPU, 4 h |
 | `episode_record_rollouts.sbatch` | record MHI rollouts in mtd-rl-lag (`outputs/rollouts/`) | - | 4 CPU, 1 h |
 | `episode_prepare.sbatch` | replay, CSV conversion (`scripts/episode_to_csv.py`) and the video of one rollout seed (mtd-rl-lag) | - | 4 CPU, 1 h |
 
@@ -55,8 +55,8 @@ jid=$(sbatch --parsable --export=ALL slurm/translate.sbatch paid --config config
 unset OPENAI_API_KEY
 ```
 
-Resume: `judge_assess.sbatch` never re-sends a request already in `judge_requests.jsonl`, and refuses
-to judge an event of that directory again with other request bytes (another prompt file or judge
-config). Pass the judge config the run was judged with. Translation runs have no resume: a re-run sends
+Resume: `evaluate.sbatch` never re-sends a request journaled anywhere under the judge's output root
+(`requests.jsonl` or the 2026-11-05 `judge_requests.jsonl`), and refuses to judge an event of the same
+judgement directory again with other request bytes. Translation runs have no resume: a re-run sends
 every call again (the former method B `--resume` was retired on 2026-11-08; its three recorded runs
 are complete).

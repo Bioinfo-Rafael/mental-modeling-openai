@@ -37,7 +37,7 @@ case "$MODE" in
     (
       cd "$(mktemp -d)"
       "$PY" -B -c 'import evaluation, translate, translate.cli'
-      for module in evaluation.assess_cli translate; do
+      for module in evaluation translate; do
         "$PY" -B -m "$module" --help >/dev/null
       done
       echo "imports and --help from outside the repository: ok"
@@ -53,7 +53,7 @@ from pathlib import Path
 
 import yaml
 
-from evaluation.assess_cli import main as assess_main
+from evaluation.cli import main as judge_main
 from translate.cli import Factories
 from translate.cli import main as translate_main
 
@@ -113,17 +113,16 @@ synthetic.write_text(yaml.safe_dump({**raw, "output": {"root": str(scratch / "ru
 argv = ["--config", str(synthetic), "--run-name", "synthetic", "--execute", "--confirm-paid-api"]
 check(translate_main(argv, factories=Factories(openai_client=lambda **_: CannedClient())), "synthetic run")
 run, judged = scratch / "runs" / "synthetic", scratch / "evaluation"
-argv = ["judge", "--translator-run", str(run), "--output-root", str(judged)]
-check(assess_main(argv, openai_client_factory=refuse), "configs/evaluation/assess.yaml")
-legacy_run = source / "outputs/translator/intentcmp-seed100601-ja-A-s045-A0100"  # schema 2: legacy config only
-argv = ["judge", "--config", "configs/evaluation/assess-legacy.yaml", "--translator-run", str(legacy_run)]
-argv += ["--output-root", str(judged), "--name", "legacy"]
-check(assess_main(argv, openai_client_factory=refuse), "configs/evaluation/assess-legacy.yaml")
+judge_configs = sorted(Path("configs/evaluation").glob("*.yaml"))
+for config in judge_configs:  # each with its output in scratch, so the scan reads no real journal
+    raw = yaml.safe_load(config.read_text(encoding="utf-8"))
+    (scratch / config.name).write_text(yaml.safe_dump({**raw, "output": str(judged)}), encoding="utf-8")
+    check(judge_main(["judge", "--run", str(run), "--config", str(scratch / config.name)], client_factory=refuse), str(config))
 journals = ("requests.jsonl", "responses.jsonl")
 written = sorted(str(p) for root in (scratch / "translate", judged) for p in root.rglob("*") if p.name.endswith(journals))
 if written:
     sys.exit(f"a preview wrote {written}")
-print(f"previews of {len(configs)} translate configs and every judge config: ok (no request or response journal)")
+print(f"previews of {len(configs)} translate and {len(judge_configs)} judge configs: ok (no request or response journal)")
 PY
     ;;
   *)

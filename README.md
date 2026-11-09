@@ -35,14 +35,8 @@
 
 Judgeは翻訳がどの入力を使ったかに関係なく、同じ方法で評価します。
 Judgeには、人の評価者が見るのと同じ材料（シナリオの文面とトラジェクトリ。動画は未実装）が常に渡ります。
-Judgeは `evaluation.assess_cli`（3時点×4観点の評価）だけです。D29のkey-point評価、動画、比較viewerは2026-11-09に削除しました。
-
-Judgeのプロンプトの文面も、翻訳と同じく設定側のプロンプトファイル（`configs/evaluation/prompts/`）にあります。どのファイルを使うかはjudge設定（`configs/evaluation/*.yaml`）が決めます。
-
-- 新しいrunの既定：`assess.yaml`。トラジェクトリを「Translatorが見たもの」ではなく「人が見られるテレメトリ」と書きます。
-- 互換用：`assess-legacy.yaml`。2026-11-05の有料実行はこの設定で評価しました。
-
-assess judgeの設定は、イベントのschemaごとに、トリガーの種類をどの時点の基準で評価するかを `triggers` に書きます。既定の設定（rubric `pilot-4`）はschema 3だけを評価し、開始点のタイミングは定義で決まるので評価しません。
+Judgeは1つのエンジン（`python -m evaluation`）です。イベントごとに、その時点の種類（start / change / request）の基準をすべて1回の呼び出しで評価します。
+Judgeのプロンプトの文面と基準は、judge設定 `configs/evaluation/judge.yaml` に直接書きます。
 
 ## ディレクトリ
 
@@ -95,7 +89,7 @@ unset OPENAI_API_KEY
 | 翻訳（preset） | `sbatch slurm/translate.sbatch preview --config configs/translate/seed100601-trajectory.yaml` |
 | 翻訳（online、GPU、D49承認後） | `VLLM_ENV=... HF_CACHE_DIR=... SCENARIO=private/translator/<s>.yaml sbatch --export=ALL slurm/translate_vllm.sbatch probe`（有料は `paid`） |
 | rolloutの記録とエピソードの準備 | `sbatch slurm/episode_record_rollouts.sbatch` の後に `sbatch slurm/episode_prepare.sbatch`（引数は [slurm/README.md](slurm/README.md)） |
-| Judge（3時点×4観点） | `sbatch slurm/judge_assess.sbatch preview --translator-run outputs/translate/<run>` |
+| Judge | `sbatch slurm/evaluate.sbatch preview --run outputs/translate/<run>` |
 
 有料で実行するときは、上の `preview` を `paid` に替え、「OpenAI APIキー」の手順で投げます。
 人手で作る入力（reference point、rating）は `private/evaluation/` に置きます。形式は `src/evaluation/examples/` にあります。
@@ -105,12 +99,12 @@ unset OPENAI_API_KEY
 | 出力先 | 書くもの | 再実行したとき |
 |---|---|---|
 | `outputs/translate/<run>/` | 翻訳（`events.jsonl`、`cues.jsonl`、要求と応答） | 毎回新しいrun。resumeなし |
-| `outputs/evaluation/assess/<run>/` | assess judge | `judge_requests.jsonl` にある要求は再送しない |
+| `outputs/evaluation/<run>/<name>/` | judge | output root以下のjournalにある要求は再送しない |
 
 以前の出力（`outputs/translator/`、`outputs/intent_compare/`、`outputs/weightreading/`）はそのまま残ります。
 旧手法Bの `--resume` は廃止しました。記録済みの3 runはすべて完了しているので、続きから実行するものはありません。
 
-assess judgeは `request_sha256` で送信済みかを判定します。プロンプトファイル、packet、judge設定の値が1 byteでも変わると別のrequestになるため、同じassessment directoryで判定済みのeventを別のbytesで送ろうとすると実行を拒否します。
+Judgeは `outputs/evaluation/` 以下のすべてのjournal（2026-11-05の `outputs/evaluation/assess/<run>/judge_requests.jsonl` を含む）の `request_sha256` を調べ、送信済みの要求を二度と送りません。同じjudgement directoryで評価済みのeventを別のbytesで送ろうとすると実行を拒否します。
 バイト列を固定するgolden、manifest、記録済みrunの再生確認は2026-11-09に削除しました（U-b）。
 
 ## テスト
