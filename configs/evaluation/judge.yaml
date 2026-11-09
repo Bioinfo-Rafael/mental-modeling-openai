@@ -10,7 +10,7 @@ material:
   future_stride: 5                 # one FUTURE line every 5 steps (1 s)
   fields: [alive, state_valid, lon_deg, lat_deg, alt_m, yaw_deg, tas_mps, vn_mps, ve_mps, vu_mps,
            altitude_action_id, heading_action_id, speed_action_id]   # FUTURE columns
-rubric_version: pilot-4            # bump whenever criteria, anchors or scale change; part of every
+rubric_version: pilot-5            # bump whenever criteria, anchors or scale change; part of every
                                    # request (the verdict schema's name), so a bump is a new request
 rationale_language: Japanese       # D57
 scale:                             # D53 pilot scale; humans and the judge alike
@@ -130,7 +130,7 @@ prompt:
     END FUTURE DATA
     Later explanations of this target inside the window:
     {later}
-# Criteria (D65 anchors, ids and anchors of rubric pilot-4): kinds = the point kinds whose events are
+# Criteria (D65 anchors, ids and anchors of rubric pilot-5): kinds = the point kinds whose events are
 # rated on it; the aspect is the id prefix. conditional: true allows not_applicable (its text is
 # required); cannot_judge narrows the general boundary; may_use_future: true marks the criteria that
 # may read the FUTURE block. The score is the LOWEST level whose condition holds.
@@ -286,7 +286,7 @@ criteria:
       "3": "C が 1（一度見送ってからの報告、または同じ変化の 2 回目の報告）。行動は FUTURE の中で続いている"
       "2": "C が 2 以上。行動は FUTURE の中で続いている"
       "1": "t が原因の step s より前、原因か新しい行動を特定できない、または報告した変化が FUTURE の中で PREVIOUS の行動に戻る（持続しない短い揺れ）"
-    cannot_judge: "FUTURE に行が無く、新しい行動が続くかを確かめられない。秒・ステップ・件数の閾値（timing.change_max_delay_steps、timing.max_events_per_segment）は機械判定が扱い、ここでは使わない"
+    cannot_judge: "FUTURE に行が無く、新しい行動が続くかを確かめられない"
   - id: contribution.change_reason
     kinds: [change]
     text: "変化の理由を理解しやすくなるか"
@@ -308,7 +308,6 @@ criteria:
     cannot_judge: "INSTRUCTIONS IN EFFECT が none（確認する指示がパケットに無い）"
   - id: correctness.question_granularity
     kinds: [request]
-    conditional: true
     text: "質問に対応する粒度で答えているか"
     levels:
       "5": "質問の型（なぜ・何を・誰を・いつまで）に直接答える文が intent の最初の文にあり、問われたすべての点に答え、問われていない話題を加えていない（例：質問「なぜ左旋回？」→「B0200 の後方に回り込むため」）"
@@ -316,7 +315,6 @@ criteria:
       "3": "複数の問われた点のうちちょうど一点に答えていない"
       "2": "質問の対象には触れるが、型が合わない（「なぜ」に「何をしているか」で答える）、または問われた点に答えない現状の説明だけ"
       "1": "OUTPUT が空か拒否だけ、または質問を取り違えている（別の機体について答える）"
-    not_applicable: "QUESTION が none（質問ではなく、開始後に初めて届いた指示による要求点）"
   - id: correctness.records_to_t
     kinds: [request]
     text: "回答が時刻 t 以前の記録と一致するか"
@@ -332,9 +330,9 @@ criteria:
     levels:
       "5": "記録で確かめられない内容を述べていない、または述べる場合は「不明」「推定」「記録からは分からない」と明示している"
       "4": "記録で確かめられない内容を「〜とみられる」など推測と読める形で述べているが、「不明」「推定」の明示語は無い"
-      "3": "主な主張（質問への直接の答え。質問が無ければ主な意図）以外の部分で、記録で確かめられない内容を事実として断定している箇所がちょうど 1 件ある（例：「B0100 は燃料切れで離脱」— 燃料は記録に無い）"
+      "3": "主な主張（質問への直接の答え）以外の部分で、記録で確かめられない内容を事実として断定している箇所がちょうど 1 件ある（例：「B0100 は燃料切れで離脱」— 燃料は記録に無い）"
       "2": "主な主張以外の部分で、そのような断定が 2 件以上ある"
-      "1": "主な主張（質問への直接の答え。質問が無ければ主な意図）そのものが記録で確かめられない断定である（例：敵の意図や RL の内的理由を事実として断定）"
+      "1": "主な主張（質問への直接の答え）そのものが記録で確かめられない断定である（例：敵の意図や RL の内的理由を事実として断定）"
   - id: correctness.consistent_with_latest
     kinds: [request]
     conditional: true
@@ -351,15 +349,14 @@ criteria:
     may_use_future: true
     text: "問いを受けてから十分速く応答できたか（processing_s を参照）"
     levels:
-      "5": "TIMELINE のこの説明の processing_s が 3.0 秒（timing.request_deadline_s）以下で、t が q（QUESTION の step、質問が無ければ要求点にした指示の step）と同じ"
-      "4": "processing_s が 3.0 秒以下で t が q より後、かつ D =（t − q）× 0.2 秒 + processing_s が 10.0 秒（timing.min_question_interval_s）未満"
+      "5": "TIMELINE のこの説明の processing_s が 3.0 秒以下で、t が QUESTION の step q と同じ"
+      "4": "processing_s が 3.0 秒以下で t が q より後、かつ D =（t − q）× 0.2 秒 + processing_s が 10.0 秒未満"
       "3": "processing_s が 3.0 秒を超えるが、D が 10.0 秒未満"
       "2": "t が q と同じで、D（= processing_s）が 10.0 秒以上"
       "1": "t が q より後で、D が 10.0 秒以上（応答の開始も遅れ、次の質問が来うる時刻までに返せていない）"
     cannot_judge: "TIMELINE のこの説明に processing_s が無い"
   - id: contribution.question_resolved
     kinds: [request]
-    conditional: true
     text: "疑問が解消されるか"
     levels:
       "5": "必要な二点（質問への直接の答え、その根拠となる記録上の事実）がどちらも OUTPUT にあり、step・機体 id・記録値などで一つに特定でき、記録と食い違わない（例：質問「なぜ左旋回？」→「B0200 の後方に回り込むため。B0100 は A0200 が担当している」）"
@@ -367,4 +364,3 @@ criteria:
       "3": "直接の答えはあるが根拠が無い、または根拠らしき事実だけで直接の答えが無い。記録と食い違わない"
       "2": "二点とも無い、または場面に固有の内容が無い"
       "1": "記録と食い違う答えなど、疑問を誤った方向に解消させる記述がある"
-    not_applicable: "QUESTION が none（質問ではなく、開始後に初めて届いた指示による要求点）"

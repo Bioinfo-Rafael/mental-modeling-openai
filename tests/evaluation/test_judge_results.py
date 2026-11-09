@@ -21,7 +21,7 @@ LATE = {"instruction_id": "i2", "issue_step": 90, "target": A0100, "text": "[TES
 
 def _rating(rating_id: str, event_id: str, criterion: str, judgement: str = "4", **fields: object) -> dict:
     line = {"rating_id": rating_id, "rater_id": "rater-01", "event_id": event_id, "criterion_id": criterion}
-    line = {**line, "judgement": judgement, "rationale": "r", "rubric_version": "pilot-4"}
+    line = {**line, "judgement": judgement, "rationale": "r", "rubric_version": "pilot-5"}
     return {**line, "rated_at": "2026-11-09T10:00:00+09:00", "supersedes": None, **fields}
 
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -29,10 +30,10 @@ def _user(run_dir: Path, config, event_id: str) -> str:
     return call.body["input"][0]["content"][0]["text"]
 
 
-def test_shipped_config_keeps_the_23_pilot_4_criteria_with_their_kinds(config) -> None:
+def test_shipped_config_keeps_the_23_pilot_5_criteria_with_their_kinds(config) -> None:
     ids = {criterion.id: criterion.kinds for criterion in config.criteria}
 
-    assert (config.rubric_version, config.model.name, len(ids)) == ("pilot-4", "gpt-6.1-sol", 23)
+    assert (config.rubric_version, config.model.name, len(ids)) == ("pilot-5", "gpt-6.1-sol", 23)
     assert ids["elements.what_now"] == ("start", "change", "request")
     assert ids["contribution.next_plan"] == ("start", "change")
     assert [c.id for c in config.criteria if c.may_use_future] == [
@@ -41,6 +42,23 @@ def test_shipped_config_keeps_the_23_pilot_4_criteria_with_their_kinds(config) -
         "timing.change_in_time",
         "timing.request_in_time",
     ]
+    asked = {c.id for c in config.criteria if c.kinds == ("request",)}  # a request always has a question (pilot-5)
+    assert {c.id for c in config.criteria if c.conditional} & asked == {"correctness.consistent_with_latest"}
+
+
+def test_criterion_texts_name_only_existing_config_keys(config) -> None:
+    def keys(model: type, prefix: str = "") -> set[str]:
+        fields = getattr(model, "model_fields", {})
+        return {k for name, f in fields.items() for k in {prefix + name} | keys(f.annotation, f"{prefix}{name}.")}
+
+    known = keys(type(config)) | {c.id for c in config.criteria}
+    texts = [config.scale.cannot_judge, config.scale.not_applicable]
+    texts += [t for c in config.criteria for t in (c.text, c.cannot_judge, c.not_applicable, *c.levels.values()) if t]
+    dotted = r"[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)+"  # ASCII: Japanese text is never a key
+    named = {name for text in texts for name in re.findall(dotted, text)}
+
+    assert named <= known, f"criterion text names unknown config keys: {sorted(named - known)}"
+    assert not set(re.findall(dotted, "10.0 秒（timing.min_question_interval_s）未満")) <= known  # pilot-4's dead key
 
 
 @pytest.mark.parametrize(
