@@ -48,7 +48,7 @@ evaluate every configuration the same way.
 | `pipeline.py` | The chronological loop: triggers -> inputs -> prompt -> call -> answer -> journal -> event |
 | `detector.py` | clef-flash detection layer (System One state, budget bound, adapter) |
 | `run_files.py` | JSONL journals (written before each send) and the `cues.jsonl` projection |
-| `events.py` | Event and scenario types, event ids, canonical JSON (frozen: it defines `request_sha256`) |
+| `events.py` | Event and scenario types, event ids, canonical JSON (it defines `request_sha256`) |
 | `cli.py` | The only composition root: gate, preview, clients, run directory, provenance |
 | `llm/`, `lag/` | LLM clients (OpenAI Responses, System One, vLLM launcher, retry); LAG episode loader and renderers |
 | `policy/`, `sandbox/` | Checkpoint reader, spec, float64 replay and its renderings; the unshare sandbox, preflight, reply protocol, audit |
@@ -61,13 +61,11 @@ evaluate every configuration the same way.
 | `seed100601-trajectory{,-ja,-ja-short}.yaml` | instructions, alarms, question, previous translation, trajectory | `translator-intent-v2` | preset 45 / 145 / 245 / 315 |
 | `seed100601-policy{,-ja,-ja-short}.yaml` | instructions, previous translation, policy | `intent-b-v1` (code session) | preset 45 / 145 / 245 / 315 |
 
-The trajectory and policy configs reproduce the two former comparison methods byte for byte (the
-prompts and request bodies are pinned by `tests/translate/test_request_goldens.py`, and
-`scripts/check_request_replay.py` re-runs the recorded runs through this pipeline). The preset
+The trajectory and policy configs follow the two former comparison methods (their byte goldens and
+replay checks were deleted on 2026-11-09, U-b). The preset
 kinds of the reproduction configs (45 `start`, the others `change`) are assumptions: the
 recorded runs had none. Step 45 is not the episode start (step 0 is translatable too); the four
-steps were chosen for large movement changes, and a preset run translates exactly its points. `prompts/translator-intent-v1.yaml` is the 2026-11-04 trajectory prompt,
-kept only to reproduce those recorded runs.
+steps were chosen for large movement changes, and a preset run translates exactly its points.
 
 ## Command
 

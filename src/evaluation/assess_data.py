@@ -20,10 +20,10 @@ from pathlib import Path
 from typing import Any
 
 from translate import paths
-from translate.llm.openai_responses import REASONING_EFFORTS
 from translate.events import canonical_json as canonical_json  # re-exported for the assess modules
 from translate.events import sha256_text as sha256_text  # re-exported for the assess modules
 from translate.events import strict_json_loads
+from translate.llm.openai_responses import REASONING_EFFORTS
 
 from .configuration import JUDGE_MODEL, read_strict_yaml
 from .prompt_files import ASSESS_PROMPT_SPEC, JudgePrompt, JudgePromptError, load_judge_prompt

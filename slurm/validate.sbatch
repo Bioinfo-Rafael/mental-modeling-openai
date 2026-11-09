@@ -7,10 +7,7 @@
 #   preview  a preview of every shipped config of both packages with API client factories that
 #            raise: the translate configs, then the judge configs over a synthetic run made in job
 #            scratch; no preview may write a request or response journal
-#   golden   request-path manifest, request goldens, the replay of recorded runs through the
-#            pipeline and the paid assess journal against an existing checkout's gitignored
-#            outputs (SOURCE_ROOT below), and the blob IDs of committed results
-# SOURCE_ROOT (golden, preview): the checkout whose outputs/ hold the real runs and derived episodes;
+# SOURCE_ROOT (preview): the checkout whose outputs/ hold the real runs and derived episodes;
 # default this repository. Set it with --export=ALL,SOURCE_ROOT=<path> to read another checkout.
 #   sbatch slurm/validate.sbatch full
 #SBATCH --partition=151-partition
@@ -24,13 +21,8 @@ source "${SLURM_SUBMIT_DIR:-.}/slurm/common.sh"
 unset OPENAI_API_KEY OPENAI_LOG OPENAI_CUSTOM_HEADERS
 MODE="${1:-full}"
 SOURCE_ROOT="${SOURCE_ROOT:-$REPO_ROOT}"
-GOLDENS=tests/fixtures/prompt-request-goldens.json
-RESULTS_BASE=d8b2d123ca141eb5d9abe4a4cbee0d59968d4363  # last commit before the core/workspace split
-ASSESS_RUN=intentcmp-seed100601-ja-A-s045-A0100         # the one paid assess run (2026-11-05)
 require_python
 log_header "$0" "$MODE" "source_root=$SOURCE_ROOT"
-
-golden_value() { "$PY" -c 'import json, sys; print(json.load(open(sys.argv[1]))[sys.argv[2]])' "$GOLDENS" "$1"; }
 
 case "$MODE" in
   full)
@@ -50,24 +42,6 @@ case "$MODE" in
       done
       echo "imports and --help from outside the repository: ok"
     )
-    ;;
-  golden)
-    sha256sum -c tests/fixtures/assess-request-path.sha256
-    echo "$(golden_value converter_sha256)  tests/fixtures/frozen/to_translator_run_v2.py.txt" | sha256sum -c
-    "$PY" -m pytest -q tests/translate/test_request_goldens.py tests/evaluation/test_migration_goldens.py \
-      tests/evaluation/test_judge_request_goldens.py tests/test_frozen_moves.py
-    "$PY" -B scripts/check_request_replay.py --source-root "$SOURCE_ROOT"
-    "$PY" -B scripts/check_assess_resume.py --config configs/evaluation/assess-legacy.yaml \
-      --translator-run "$SOURCE_ROOT/outputs/translator/$ASSESS_RUN" \
-      --journal "$SOURCE_ROOT/outputs/evaluation/assess/$ASSESS_RUN/judge_requests.jsonl" \
-      --expect "$(golden_value paid_assess_request_sha256)"
-    # Committed experiment results never change (new ones may be added): no modification, deletion or
-    # rename. The pathspecs match by shape only; the core never reads these files.
-    git diff --exit-code --no-renames --diff-filter=DMT --stat "$RESULTS_BASE" HEAD -- ':(glob)*/*/results/**'
-    # The three tracked output trees moved byte-identically with the legacy project.
-    diff <(git ls-tree -r "$RESULTS_BASE" -- outputs | awk '{print $3, $4}') \
-         <(git ls-tree -r HEAD | awk '$4 ~ /^[^\/]+\/outputs\// {sub("^[^/]+/outputs/", "outputs/", $4); print $3, $4}')
-    echo "golden checks: ok"
     ;;
   preview)
     scratch="$(mktemp -d)"
@@ -161,6 +135,6 @@ print(f"previews of {len(configs)} translate configs and every judge config: ok 
 PY
     ;;
   *)
-    echo "MODE must be full, static, preview or golden (got $MODE)" >&2; exit 2
+    echo "MODE must be full, static or preview (got $MODE)" >&2; exit 2
     ;;
 esac

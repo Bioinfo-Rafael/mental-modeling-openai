@@ -139,10 +139,8 @@ unknown field, or a template that drops judge material (the trajectory, the inte
 | `judge-text.yaml`, `judge-text-video.yaml` | `judge-text-v4` | Default for new runs; same neutral trajectory wording; no instruction in effect reads `- none (no instruction is in effect)` |
 | `judge-text-legacy.yaml` | `judge-text-v3` | Byte-identical to the former in-code prompt |
 
-Never edit a legacy prompt file: `tests/fixtures/judge-request-goldens.json` and
-`tests/fixtures/prompt-request-goldens.json` pin the requests it builds, and
-`tests/fixtures/assess-request-path.sha256` pins the legacy assess config and prompt. Write a new
-version instead.
+Never edit a prompt file that judged a paid run: write a new version instead, or the journal's
+`request_sha256` no longer matches and the event is refused.
 
 ## Video block (L3, D30, D31)
 
@@ -374,8 +372,7 @@ record the bundle the sandbox read (`input.policy`: session directory, manifest 
 to end at or before t (before t when `leakage.allow_action_at_t` is false); a missing or unverifiable
 record is an error. A skipped invalid answer (blank output plus `answer_problem`) is loaded and
 judged as given by both judges. The judges' prompts live in prompt files (see "Prompt files"). The one paid assessment judged
-`outputs/translator/intentcmp-seed100601-ja-A-s045-A0100`, built by the former converter whose
-exact bytes are kept in `tests/fixtures/frozen/to_translator_run_v2.py.txt`.
+`outputs/translator/intentcmp-seed100601-ja-A-s045-A0100`.
 
 - Common flags: `--config` (default `configs/evaluation/assess.yaml`), `--output-root`, and `--name`
   (the assessment directory; default: the Translator run directory's name).

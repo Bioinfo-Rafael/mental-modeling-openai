@@ -28,8 +28,7 @@ dev = ["pytest>=7,<9", "ruff>=0.8"]
 # stack is the separate uv project in the workspace directory.
 # The explicit package-dir keeps the editable install from putting all of src/ on sys.path (a .pth entry).
 [tool.setuptools]
-# Subpackages are listed explicitly because `find` would map "" -> src and bring the .pth back;
-# tests/test_core_boundary.py fails when this list misses a package directory.
+# Subpackages are listed explicitly because `find` would map "" -> src and bring the .pth back.
 packages = [
   "translate",
   "translate.lag",
@@ -68,7 +67,3 @@ extend-exclude = [
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "UP"]
 ignore = ["E501"]
-
-[tool.ruff.lint.per-file-ignores]
-# Frozen request-path file (tests/test_frozen_moves.py): its import order is pinned with its bytes.
-"src/evaluation/assess_data.py" = ["I001"]

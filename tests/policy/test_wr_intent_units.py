@@ -8,9 +8,11 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from tests.translate.test_request_goldens import policy_values
 from translate import paths
 from translate.answers import MAX_INTENT_CHARS
+from translate.events import IntentTranslation, PreviousTranslation
+from translate.inputs import SlotState, slot_values
+from translate.policy.material import load_policy_material
 from translate.policy.reference import build_policy
 from translate.policy.spec import load_spec
 from translate.policy.torch_reader import read_checkpoint
@@ -33,9 +35,30 @@ from translate.sandbox.protocol import (
     parse_reply,
 )
 
+from .policy_fakes import SEED, STEPS, policy_config, policy_inputs, write_rollout
+
 MAPPO_SPEC = paths.CONFIGS / "translate" / "policies" / "lag_mappo_2v2_33.spec.json"
 ROLLOUT = paths.OUTPUTS / "weightreading" / "rollouts" / "mhi-v1.3-20261104T010525Z" / "episode_seed100601.npz"
 REAL_LOGITS_TOLERANCE = 1e-5
+PREVIOUS = PreviousTranslation(
+    "previous", 3, IntentTranslation("[PLACEHOLDER] climb and turn left", ("e1: step 3", "e2: logits"))
+)
+
+
+def policy_values(tmp_path: Path, small_files: tuple[Path, Path]) -> dict[str, tuple[object, dict[str, object]]]:
+    """Prompt values of the first and the chained session in English, Japanese and Japanese-short."""
+    checkpoint, spec = small_files
+    write_rollout(tmp_path / "rollout", checkpoint, spec)
+    found = {}
+    for name, config_name in (("en", "seed100601-policy.yaml"), ("ja", "seed100601-policy-ja.yaml"),
+                              ("ja-short", "seed100601-policy-ja-short.yaml")):  # fmt: skip
+        config = policy_config(tmp_path / "rollout", spec, paths.CONFIGS / "translate" / config_name)
+        inputs = policy_inputs(config, load_policy_material(config.policy.rollout_dir, SEED, spec, None))
+        instruction = inputs.scenario.instructions[0]
+        for label, step, previous in (("first", STEPS[0], None), ("chained", STEPS[1], PREVIOUS)):
+            slot = SlotState(step, instruction.target, instruction, previous)
+            found[f"{name}/{label}"] = (config, slot_values(inputs, slot, None))
+    return found
 
 
 def _small_policy(small_files: tuple[Path, Path]):

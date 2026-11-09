@@ -29,7 +29,7 @@
 - `online`：エピソードを先頭から進めながら、clef-flashが変化点を判定します。開始点と要求点はその時点で必ず翻訳します。
 - `preset`：翻訳する時点と種類を、設定ファイルに前もって書きます。
 
-旧「手法A」（トラジェクトリを読む翻訳）と旧「手法B」（重みと中間状態を読む翻訳）は、入力の選び方が違う設定ファイルにすぎません。`seed100601-trajectory*.yaml` と `seed100601-policy*.yaml` が、以前と1バイトも違わない要求を送ります。
+旧「手法A」（トラジェクトリを読む翻訳）と旧「手法B」（重みと中間状態を読む翻訳）は、入力の選び方が違う設定ファイルにすぎません。`seed100601-trajectory*.yaml` と `seed100601-policy*.yaml` がその例です。
 
 ## 評価
 
@@ -116,11 +116,8 @@ unset OPENAI_API_KEY
 以前の出力（`outputs/translator/`、`outputs/intent_compare/`、`outputs/weightreading/`）はそのまま残り、Judgeとviewerで読めます。
 旧手法Bの `--resume` は廃止しました。記録済みの3 runはすべて完了しているので、続きから実行するものはありません。
 
-resumeとバイト列の保証は次のとおりです。
-
-- assess judgeは `request_sha256` で送信済みかを判定します。プロンプトファイル、packet、judge設定の値が1 byteでも変わると別のrequestになるため、同じassessment directoryで判定済みのeventを別のbytesで送ろうとすると実行を拒否します。2026-11-05の支払い済みrunは `configs/evaluation/assess-legacy.yaml` で再開します。
-- 出荷している設定のプロンプトと要求のバイト列はgoldenで固定してあります。記録済みの旧手法A・Bのrunは、このパイプラインで再実行するとすべての要求が一致します（`scripts/check_request_replay.py`）。
-- 確認は `sbatch --export=ALL,SOURCE_ROOT=<出力のあるcheckout> slurm/validate.sbatch golden` で行います。APIは呼びません。
+assess judgeは `request_sha256` で送信済みかを判定します。プロンプトファイル、packet、judge設定の値が1 byteでも変わると別のrequestになるため、同じassessment directoryで判定済みのeventを別のbytesで送ろうとすると実行を拒否します。
+バイト列を固定するgolden、manifest、記録済みrunの再生確認は2026-11-09に削除しました（U-b）。
 
 ## テスト
 
