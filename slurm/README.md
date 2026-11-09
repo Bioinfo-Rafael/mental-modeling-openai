@@ -7,7 +7,7 @@ the repository root; logs go to `logs/slurm/<job name>-<job id>.out` (the direct
 | File | What it runs | MODE (first argument) | Resources |
 |---|---|---|---|
 | `uv_sync.sbatch` | `uv sync --locked --all-extras --reinstall-package mtd-rl-xavier` (the only job that changes `.venv`) | - | 4 CPU, 30 min |
-| `validate.sbatch` | offline checks, never an API call | `subset`, `full`, `static`, `golden`, `translate-preview` | 4 CPU, 2 h |
+| `validate.sbatch` | offline checks, never an API call | `full`, `static`, `preview`, `golden` | 4 CPU, 2 h |
 | `translate.sbatch` | `python -m translate` for a preset-trigger config (a code-session config passes the sandbox preflight first) | `preview` (default), `paid` | 4 CPU, 16 GB, 12 h |
 | `translate_vllm.sbatch` | vLLM (the clef-flash change-point detector) + `python -m translate` for an online config in one GPU job (awaits approval D49) | `probe` (default), `paid` | 1 GPU, 8 CPU, 30 min |
 | `viewer.sbatch` | `python -m evaluation.viewer` (side-by-side HTML of runs or cue files) | - | 1 CPU, 30 min |

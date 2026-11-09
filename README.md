@@ -125,10 +125,9 @@ resumeとバイト列の保証は次のとおりです。
 ## テスト
 
 ```bash
-sbatch slurm/validate.sbatch subset             # translate・policy・sandbox・LLM・LAG・Judge
-sbatch slurm/validate.sbatch full               # coreの全テスト
-sbatch slurm/validate.sbatch static             # ruff、bash -n、repo外からのimport、古いパスの検出
-sbatch slurm/validate.sbatch translate-preview  # 出荷しているすべての設定のpreview（要求は送らない）
+sbatch slurm/validate.sbatch full     # coreの全テスト
+sbatch slurm/validate.sbatch static   # ruff、bash -n、repo外からのimport
+sbatch --export=ALL,SOURCE_ROOT=<出力のあるcheckout> slurm/validate.sbatch preview  # 両パッケージの全設定のpreview（要求は送らない）
 ```
 
 どのテストもAPIを呼ばず、jobは `OPENAI_API_KEY` を必ず消してから動きます。

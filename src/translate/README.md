@@ -495,4 +495,4 @@ connection:
 ## Tests
 
 `.venv/bin/python -m pytest tests/translate tests/policy tests/sandbox -q` (via
-`slurm/validate.sbatch subset`) runs offline: no network, GPU, paid call or real key.
+`slurm/validate.sbatch full`) runs offline: no network, GPU, paid call or real key.

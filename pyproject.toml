@@ -13,8 +13,8 @@ dependencies = [
   "numpy>=1.24,<3",
   "openai>=1,<3",
   "pandas>=2,<4",
+  "pydantic>=2,<3",
   "PyYAML>=6",
-  "tiktoken>=0.7",
 ]
 
 [project.optional-dependencies]
@@ -22,7 +22,7 @@ dependencies = [
 video = ["av>=17,<20", "Pillow>=12,<14"]
 
 [dependency-groups]
-dev = ["pytest>=7,<9", "ruff>=0.8", "poethepoet>=0.29"]
+dev = ["pytest>=7,<9", "ruff>=0.8"]
 
 # Core only: the translation pipeline (translate) and the judges (evaluation). The legacy LLM-Xavier
 # stack is the separate uv project in the workspace directory.
@@ -72,7 +72,3 @@ ignore = ["E501"]
 [tool.ruff.lint.per-file-ignores]
 # Frozen request-path file (tests/test_frozen_moves.py): its import order is pinned with its bytes.
 "src/evaluation/assess_data.py" = ["I001"]
-
-[tool.poe.tasks]
-test = { cmd = "pytest", help = "Core tests (translate, evaluation)" }
-lint = { cmd = "ruff check src tests scripts", help = "Lint both packages, their tests and scripts" }
