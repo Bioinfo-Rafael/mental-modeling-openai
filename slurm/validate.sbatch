@@ -85,8 +85,12 @@ def relocated(config, output):
     scenario = yaml.safe_load(scenario_path.read_text(encoding="utf-8"))
     scenario_file = scratch / f"{config.stem}.scenario.yaml"
     scenario_file.write_text(yaml.safe_dump({**scenario, "episode": from_source(scenario_path.parent / scenario["episode"])}))
+    inputs = raw["inputs"]
+    if "policy_trace" in inputs:  # the recorded rollout is a generated outputs/ input too
+        inputs = {**inputs, "policy_trace": {**inputs["policy_trace"], "rollout": from_source(Path(inputs["policy_trace"]["rollout"]))}}
     config_file = scratch / config.name
-    config_file.write_text(yaml.safe_dump({**raw, "scenario": str(scenario_file), "output": str(output)}), encoding="utf-8")
+    raw = {**raw, "scenario": str(scenario_file), "inputs": inputs, "output": str(output)}
+    config_file.write_text(yaml.safe_dump(raw), encoding="utf-8")
     return config_file
 
 

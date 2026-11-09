@@ -1,6 +1,7 @@
 """Shared layout of recorded policy rollouts (numpy-only; imported by the recorder and the replay).
 
-One ``episode_seed<seed>.npz`` per episode, T = decisions in the episode (one per env step, 0.2 s).
+One ``episode_seed<seed>.npz`` per episode (and one ``head_weights.npz``: ``weight`` (13, 128), ``bias``
+(13,), ``head_sizes``), T = decisions in the episode (one per env step, 0.2 s).
 Rows ``R`` of the recurrent state depend on the protocol: 2 for ``per_agent_v1`` (one per learner),
 1 for ``mhi_render_v1_3`` (one row shared by both learners, stepped in packed order).
 """
@@ -19,6 +20,7 @@ DECISION_FIELDS = {
     "rnn_in": "(T, R, 1, 128) float32: recurrent state passed to the actor (pre-LayerNorm h)",
     "masks": "(T, 2, 1) float32: GRU masks passed to the actor (all ones)",
     "gru_out": "(T, 2, 128) float32: nn.GRU output per learner row = pre-LayerNorm h' after that row",
+    "act_in": "(T, 2, 128) float32: input of every action head (the act MLP output), learner packed order",
     "logits": "(T, 2, 13) float32: raw head logits concatenated in head order (action_head_sizes)",
     "actions": "(T, 2, 4) int64: chosen bins per head (deterministic = argmax)",
     "log_probs": "(T, 2, 1) float32: summed log-probability of the chosen bins",

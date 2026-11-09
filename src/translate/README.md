@@ -11,7 +11,7 @@ select inputs (inputs:) -> each input renders View(t) -> fill the prompt (prompt
 |---|---|
 | `config.py` | `load_yaml` (a duplicate key fails); pydantic `RunConfig` and `Scenario` (defaults; unknown keys fail) |
 | `episode.py` | The CSV checked against its manifest, targets, down steps, `View(t)`, the two renderers |
-| `inputs.py` | `INPUTS`: `instructions`, `alarms`, `question`, `recent_messages`, `previous_translation`, `trajectory` |
+| `inputs.py` | `INPUTS`: `instructions`, `alarms`, `question`, `recent_messages`, `previous_translation`, `trajectory`, `policy_trace` |
 | `prompts.py` | Placeholder checks and the one-pass fill |
 | `triggers.py` | The forced `start` and `request`, `CHANGE_SOURCES` (`preset`), the tick grid, the schedule |
 | `detector.py` | clef-flash: the state text, the System One client (Unix socket or loopback + key), the budget |
@@ -84,6 +84,15 @@ and `change.inputs`. A prompt ablation is an edited copy of a config, no code.
 | `recent_messages` | `past_steps` [25] | Alarms reaching the target and questions to it in `[t - past_steps + 1, t]` |
 | `previous_translation` | `evidence` [true] | The target's latest valid translation before t, else `(none: this is the first translation for this target)` |
 | `trajectory` | `past_steps` [60], `objects` [`all`, or `target_and_opponents`], `fields` [none], `precision` [5] | `[max(0, t - past_steps + 1), t]`: every entity in the 17 format (D22, D32), or the chosen fields of the chosen objects |
+| `policy_trace` | `rollout`, `seed` (required); `arrays` [`obs, gru_out, act_in, logits, actions`], `head_weights` [true], `past_steps` [60], `precision` [4] | Per aircraft of the target that the recorded policy flies, one JSON line per step of the window ending at t with the chosen arrays; then one line per logit with `W_head` (13 x 128) and `b_head`, so that `logits = W_head @ act_in + b_head` |
+
+`policy_trace` is the policy input of U-c option (b) (2026-11-09): the recorded activations, the
+action-head weights and the per-step head input `act_in`. It replaces the former "weights +
+activations" code session, which read the whole network in a sandbox: the translator now sees an
+honest slice of the weights with per-logit contributions, not arbitrary computation on all of them.
+A rollout needs `act_in` and `head_weights.npz`; record one with
+`OUT=outputs/rollouts/mhi-v1.3-act-in SEEDS=100601 sbatch --export=ALL slurm/lag/record_rollouts.sbatch`
+(CPU; the recording is deterministic and reproduces the 2026-11-04 one).
 
 `View(t)` holds only rows with `step <= t`, messages issued by t and earlier translations; an input
 receives nothing else, so it cannot leak (the poison test in `tests/translate/test_inputs.py` runs

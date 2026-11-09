@@ -58,6 +58,11 @@ class ActorTap:
             for index, head in enumerate(actor.act.action_outs)
         ]
         self.head_count = len(actor.act.action_outs)
+        # act_in: the input every action head reads (the act MLP output); one pre-hook on the first head.
+        self._handles.append(actor.act.action_outs[0].logits_net.register_forward_pre_hook(self._before_heads))
+
+    def _before_heads(self, _module: torch.nn.Module, args: tuple) -> None:
+        self._current["act_in"] = args[0].detach().cpu().numpy().astype(np.float32).copy()
 
     def _before_actor(self, _module: torch.nn.Module, args: tuple, kwargs: dict) -> None:
         obs, rnn_states, masks = args[:3]
@@ -90,7 +95,7 @@ class ActorTap:
     def take(self) -> dict[str, np.ndarray]:
         """The decision captured since the last call, as ``DECISION_FIELDS`` arrays."""
         current, self._current = self._current, {}
-        if "actions" not in current or len(current["logits"]) != self.head_count:
+        if "actions" not in current or "act_in" not in current or len(current["logits"]) != self.head_count:
             raise RuntimeError("actor forward was not fully captured for this decision")
         if current["action_mask_used"] or not current["deterministic"]:
             raise RuntimeError("recording supports deterministic decisions without an action mask")
@@ -100,6 +105,7 @@ class ActorTap:
             "rnn_in": current["rnn_in"],
             "masks": current["masks"],
             "gru_out": np.concatenate(current["gru_out"], axis=0),
+            "act_in": current["act_in"],
             "logits": logits.astype(np.float32),
             "actions": current["actions"],
             "log_probs": current["log_probs"],
@@ -142,6 +148,14 @@ def seed_everything(seed: int) -> None:
     torch.manual_seed(seed)
 
 
+def head_weights(actor: torch.nn.Module) -> dict[str, np.ndarray]:
+    """The action heads' weights and biases stacked in logit order: logits = act_in @ weight.T + bias."""
+    heads = [head.logits_net for head in actor.act.action_outs]
+    weight = np.concatenate([h.weight.detach().cpu().numpy() for h in heads]).astype(np.float32)
+    bias = np.concatenate([h.bias.detach().cpu().numpy() for h in heads]).astype(np.float32)
+    return {"weight": weight, "bias": bias, "head_sizes": np.asarray([h.out_features for h in heads], dtype=np.int64)}
+
+
 def record_episode(args: argparse.Namespace, seed: int) -> tuple[dict[str, np.ndarray], dict[str, Any]]:
     from algorithms.utils.team_manifest import load_team_bundle
     from envs.JSBSim.envs import MultipleCombatEnv
@@ -177,6 +191,7 @@ def record_episode(args: argparse.Namespace, seed: int) -> tuple[dict[str, np.nd
         tap.remove()
         arrays = {name: np.stack([row[name] for row in rows]) for name in (*DECISION_FIELDS, *CONTEXT_FIELDS)}
         arrays["final_rnn_state"] = np.asarray(side.rnn_state, dtype=np.float32)
+        np.savez(args.out / "head_weights.npz", **head_weights(bundle.policy.actor))  # same actor every seed
         summary = {
             "seed": seed,
             "file": episode_file(seed),

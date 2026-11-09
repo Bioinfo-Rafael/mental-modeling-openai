@@ -5,7 +5,7 @@
 # unmodified evaluate_mhi_team.py (byte-identical ACMI) and converts it to an episode CSV.
 #   sbatch slurm/lag/record_rollouts.sbatch
 # Optional: LAG_ROOT (default ../mtd-rl-lag), MODEL_DIR (default $LAG_ROOT/models/v1.3), MODEL_ALIAS (mhi-v1.3), PROTOCOL
-# (per_agent_v1 | mhi_render_v1_3), SEEDS ("100600 100601 100602 100603"), SCENARIO, MAX_STEPS.
+# (per_agent_v1 | mhi_render_v1_3), SEEDS ("100600 100601 100602 100603"), SCENARIO, MAX_STEPS, OUT.
 #SBATCH --partition=151-partition
 #SBATCH --job-name=record_rollouts
 #SBATCH --cpus-per-task=4
@@ -21,7 +21,7 @@ PROTOCOL="${PROTOCOL:-per_agent_v1}"
 SCENARIO="${SCENARIO:-2v2/ShootMissile/HierarchyVsbaseline_mhi_v1_3}"
 read -r -a SEED_LIST <<< "${SEEDS:-100600 100601 100602 100603}"
 CHECKPOINT="$MODEL_DIR/files/actor_latest.pt"
-OUT="outputs/rollouts/${MODEL_ALIAS}-$(date -u +%Y%m%dT%H%M%SZ)"  # earlier recordings: outputs/weightreading/rollouts/
+OUT="${OUT:-outputs/rollouts/${MODEL_ALIAS}-$(date -u +%Y%m%dT%H%M%SZ)}"  # a new, empty directory
 export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1
 STEP_ARGS=()
 if [ -n "${MAX_STEPS:-}" ]; then STEP_ARGS=(--max-steps "$MAX_STEPS"); fi
