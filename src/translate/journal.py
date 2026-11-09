@@ -50,6 +50,17 @@ def quoted(text: str) -> str:
     return literal
 
 
+def _unique_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    if len({key for key, _ in pairs}) != len(pairs):
+        raise ValueError("a JSON object repeats a key")
+    return dict(pairs)
+
+
+def loads_unique(text: str) -> Any:
+    """``json.loads`` that rejects a repeated key (a reader could otherwise show one value and keep another)."""
+    return json.loads(text, object_pairs_hook=_unique_keys)
+
+
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
@@ -85,6 +96,8 @@ def new_run_dir(root: Path, name: str, *, reuse: bool) -> Path:
     root.mkdir(parents=True, exist_ok=True)
     run_dir = root / name
     run_dir.mkdir(mode=DIR_MODE, exist_ok=reuse)
+    if reuse and (run_dir / "requests.jsonl").exists():
+        raise ValueError(f"{run_dir} holds a journal: a preview never writes into a run")
     return run_dir
 
 

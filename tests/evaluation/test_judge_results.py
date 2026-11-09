@@ -64,6 +64,7 @@ def test_ratings_import_checks_the_event_criterion_and_re_ratings(tmp_path: Path
         _rating("r2", "nope", "elements.what_now"),
         _rating("r2", record["event_id"], "elements.why", "not_applicable"),  # elements.why is not conditional
         _rating("r2", record["event_id"], "elements.why", rated_at="2026-11-09T10:00:00"),
+        _rating("r2", record["event_id"], "elements.why", rationale=" "),
     ):
         with pytest.raises(RatingsError):
             import_ratings([bad], run, config, first)

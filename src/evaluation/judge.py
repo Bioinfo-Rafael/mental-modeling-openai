@@ -25,9 +25,10 @@ from evaluation.results import judge_rows
 from translate.backends import BackendError, Prompt, input_text
 from translate.backends.openai import OpenAIBackend
 from translate.episode import Episode
-from translate.journal import append_jsonl, request_sha256
+from translate.journal import REPO_ROOT, append_jsonl, loads_unique, request_sha256
 
 MARKER = ".paid-judge.running"
+GUARD_ROOT = REPO_ROOT / "outputs" / "evaluation"  # always scanned and holds the marker, whatever `output` says
 JOURNALS = ("requests.jsonl", "judge_requests.jsonl")  # this judge's name and the 2026-11-05 assess journal's
 REQUESTS, RESPONSES = "requests.jsonl", "responses.jsonl"
 CANNOT_JUDGE, NOT_APPLICABLE = "cannot_judge", "not_applicable"
@@ -85,9 +86,9 @@ def plan_call(event: dict[str, Any], run: TranslationRun, frame: Episode, config
 def parse_verdict(text: str, criteria: tuple[Criterion, ...], config: JudgeConfig) -> dict[str, tuple[str, str]]:
     """criterion id -> (judgement, rationale): exactly the asked criteria, each once; nothing is repaired."""
     try:
-        parsed = json.loads(text)
+        parsed = loads_unique(text)
     except ValueError:
-        raise JudgeError("the verdict is not one JSON object") from None
+        raise JudgeError("the verdict is not one JSON object without repeated keys") from None
     if not isinstance(parsed, dict) or set(parsed) != {"criteria"} or not isinstance(parsed["criteria"], list):
         raise JudgeError('the verdict must be {"criteria": [...]}')
     by_id, found = {criterion.id: criterion for criterion in criteria}, {}
@@ -119,10 +120,11 @@ def _line_hashes(line: dict[str, Any]) -> frozenset[str]:
     return frozenset(embedded | ({request_sha256(body)} if isinstance(body, dict) else set()))
 
 
-def known_requests(root: Path) -> frozenset[str]:
-    """Every request hash journaled under ``root``. An unreadable line fails closed, naming the file."""
+def known_requests(*roots: Path) -> frozenset[str]:
+    """Every request hash journaled under the roots. An unreadable line fails closed, naming the file."""
     found: frozenset[str] = frozenset()
-    for path in sorted(p for name in JOURNALS for p in Path(root).rglob(name)):
+    paths = {p for root in roots for name in JOURNALS for p in Path(root).rglob(name)}
+    for path in sorted(paths):
         try:
             hashes = [_line_hashes(line) for line in read_jsonl(path)]
         except ValueError:
@@ -154,10 +156,19 @@ class Plan:
 
 
 def make_plan(calls: list[Call], known: frozenset[str], journal: dict[str, frozenset[str]]) -> Plan:
+    if len({call.sha256 for call in calls}) != len(calls):
+        raise JudgeError("two planned events build the same request bytes: the run repeats an event")
     refused = tuple(c.event_id for c in calls if c.event_id in journal and c.sha256 not in journal[c.event_id])
     sent = [call for call in calls if call.sha256 in known]
     to_send = tuple(call for call in calls if call.sha256 not in known and call.event_id not in refused)
     return Plan(tuple(calls), to_send, len(sent), refused)
+
+
+def missing_results(plan: Plan, directory: Path) -> list[str]:
+    """Planned events (not refused) without a result line here; they are never sent again."""
+    path = directory / "results.jsonl"
+    done = {line["event_id"] for line in read_jsonl(path)} if path.is_file() else set()
+    return [c.event_id for c in plan.calls if c.event_id not in plan.refused and c.event_id not in done]
 
 
 @contextmanager

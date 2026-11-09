@@ -151,6 +151,8 @@ def test_a_verdict_must_answer_exactly_the_asked_criteria(config) -> None:
     unconditional = next(c.id for c in criteria if not c.conditional)
 
     assert parse_verdict(json.dumps({"criteria": items}), criteria, config)[unconditional] == ("3", "r")
+    with pytest.raises(ValueError, match="repeated keys"):
+        parse_verdict('{"criteria": [], "criteria": []}', criteria, config)
     for broken in (
         items[1:],
         [*items, items[0]],
@@ -170,3 +172,15 @@ def test_rubric_version_is_part_of_the_request_bytes(tmp_path: Path) -> None:
 
     assert calls[0].body["text"]["format"]["name"] == "verdict_pilot-4"
     assert calls[0].sha256 != calls[1].sha256
+
+
+def test_the_future_block_is_cut_at_the_next_scenario_message_that_reaches_the_target(tmp_path: Path, config) -> None:
+    record = event(40, ("start",))
+    messages = [
+        {"id": "i9", "step": 45, "kind": "instruction", "to": ["aircraft:B0100"], "text": "x"},  # another team
+        {"id": "w9", "step": 52, "kind": "alarm", "to": ["team:A"], "text": "y"},  # reaches A0100, in no later record
+    ]
+
+    text = _user(write_run(tmp_path / "run", [record], messages=messages), config, record["event_id"])
+
+    assert "it ends before step 52 (next_alarm)" in text

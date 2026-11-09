@@ -264,3 +264,16 @@ def test_detector_calls_are_journaled_like_translations(tmp_path: Path) -> None:
     requests = lines(tmp_path / "out" / "run" / "requests.jsonl")
     assert {r["layer"] for r in requests} == {"translation", "detector"}
     assert all(r["request_sha256"] == request_sha256(r["body"]) for r in requests)
+
+
+def test_a_preview_never_writes_into_a_run_and_a_paid_name_never_ends_in_preview(tmp_path: Path) -> None:
+    path = config(tmp_path, scenario(tmp_path))
+    paid = cli.main(
+        ["--config", str(path), "--run-name", "x-preview", "--execute", "--confirm-paid-api"], backend_factory=_refuse
+    )
+    (tmp_path / "out" / "y-preview").mkdir(parents=True)
+    (tmp_path / "out" / "y-preview" / "requests.jsonl").write_text("{}\n")
+
+    preview = cli.main(["--config", str(path), "--run-name", "y"], backend_factory=_refuse, detector_factory=_refuse)
+
+    assert (paid, preview) == (1, 1) and not (tmp_path / "out" / "x-preview").exists()

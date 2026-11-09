@@ -194,10 +194,19 @@ def load_rollout(directory: Path, seed: int, names: tuple[str, ...], with_weight
         if missing:
             raise ValueError(f"the rollout lacks {missing}: re-record it (slurm/lag/record_rollouts.sbatch)")
         arrays = {name: np.array(data[name]) for name in names}
+    learners = tuple(manifest["learner_uids"])
+    if {a.ndim for a in arrays.values()} != {3} or len({a.shape[:2] for a in arrays.values()}) != 1:
+        raise ValueError(f"{directory}: every array must be (decisions, rows, width) with the same decisions and rows")
+    if next(iter(arrays.values())).shape[1] != len(learners):
+        raise ValueError(f"{directory}: the arrays have one row per learner {learners}")
     if not with_weights:
-        return Rollout(tuple(manifest["learner_uids"]), arrays, None, None)
+        return Rollout(learners, arrays, None, None)
     with np.load(directory / "head_weights.npz", allow_pickle=False) as weights:
-        return Rollout(tuple(manifest["learner_uids"]), arrays, np.array(weights["weight"]), np.array(weights["bias"]))
+        weight, bias = np.array(weights["weight"]), np.array(weights["bias"])
+    widths = [arrays[name].shape[2] for name in ("logits", "act_in") if name in arrays]
+    if bias.shape != weight.shape[:1] or (len(widths) == 2 and weight.shape != tuple(widths)):
+        raise ValueError(f"{directory}: head_weights must be (logits, act_in) {tuple(widths)} with one bias per logit")
+    return Rollout(learners, arrays, weight, bias)
 
 
 def _rounded(values: np.ndarray, precision: int) -> list[Any]:

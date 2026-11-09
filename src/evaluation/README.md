@@ -91,14 +91,18 @@ quoted JSON strings, so they cannot leave their envelope.
 
 - Paid gate: `--execute` and `--confirm-paid-api` together or neither (exit 2). A preview builds no
   client, reads no key and writes no request or response journal.
-- No resend: a paid run creates `<output>/.paid-judge.running` with `O_EXCL` for its whole duration
-  (if it exists, the run stops and names the file; a crashed run leaves it: remove it by hand once no
-  judge runs). Under that marker it collects every `request_sha256` (and the hash of every journaled
-  body) from all `requests.jsonl` and `judge_requests.jsonl` below the output root, the 2026-11-05
-  assess journal `outputs/evaluation/assess/<run>/judge_requests.jsonl` included, and never sends a
-  known one. A journal line it cannot read stops every paid run until repaired. An event already
+- No resend: a paid run creates `outputs/evaluation/.paid-judge.running` (in this repository,
+  whatever `output` says) with `O_EXCL` for its whole duration (if it exists, the run stops and names
+  the file; a crashed run leaves it: remove it by hand once no judge runs). Under that marker it
+  collects every `request_sha256` (and the hash of every journaled body) from all `requests.jsonl` and
+  `judge_requests.jsonl` below `outputs/evaluation/` and below the configured output root, the
+  2026-11-05 assess journal `outputs/evaluation/assess/<run>/judge_requests.jsonl` included, and never
+  sends a known one, nor the same bytes twice in one run (a run that repeats an event is refused).
+  Run paid judgements in the checkout whose `outputs/evaluation/` holds the journals. A journal line it cannot read stops every paid run until repaired. An event already
   judged in the same directory with other bytes is refused (judge it under another `--name`). A
-  deliberate replicate needs new bytes: bump `rubric_version` or change the prompt.
+  deliberate replicate needs new bytes: bump `rubric_version` or change the prompt. An event sent
+  before whose verdict is not in this directory (an invalid verdict, or results kept elsewhere) is
+  never resent and keeps the run `failed`, naming it.
 - Every request line is fsynced before its call; nothing is retried. An HTTP or connection error, a
   refusal or an incomplete response ends the run `failed`; a timeout, an unknown status, an
   unreadable response or any other error ends it `uncertain`. A journaled request is never sent

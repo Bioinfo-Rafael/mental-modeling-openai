@@ -10,7 +10,6 @@ Every request line is fsynced before its call; a failed call stops the run (``fa
 
 from __future__ import annotations
 
-import json
 from collections.abc import Callable
 from dataclasses import dataclass, replace
 from time import perf_counter
@@ -21,7 +20,7 @@ from translate.config import Loaded
 from translate.detector import QUESTION_ID, DetectorError, check_budget, parse_decision, request_body, state_text
 from translate.episode import Episode, Target, Translation, View, time_s
 from translate.inputs import INPUTS, TrajectoryOptions, alarms_for, instructions_in_effect, question_at
-from translate.journal import Journal, request_sha256, sha256_text
+from translate.journal import Journal, loads_unique, request_sha256, sha256_text
 from translate.prompts import fill, intent_schema
 from translate.triggers import CHANGE_SOURCES, Reason, forced, is_tick, kinds_of, sorted_reasons
 
@@ -54,16 +53,10 @@ class Stop(Exception):
         self.status, self.error, self.unsent = status, error, unsent
 
 
-def _unique_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
-    if len({key for key, _ in pairs}) != len(pairs):
-        raise ValueError("a key repeats")
-    return dict(pairs)
-
-
 def parse_answer(text: str, max_intent_chars: int) -> tuple[dict[str, Any] | None, str | None]:
     """(answer, None), or (None, why it is not one object with a non-blank intent and evidence)."""
     try:
-        answer = json.loads(text, object_pairs_hook=_unique_keys)
+        answer = loads_unique(text)
     except ValueError:
         return None, "the answer is not one JSON object without repeated keys"
     if not isinstance(answer, dict) or set(answer) != {"intent", "evidence"}:
@@ -131,6 +124,7 @@ class Pipeline:
         self.counts = {**self.counts, layer: replace(counts, **{field: getattr(counts, field) + 1})}
 
     def _step(self, step: int) -> None:
+        started = perf_counter()  # processing_s: from the start of step t (a question arrives) to the event
         rows, messages = self.episode.rows_until(step), tuple(m for m in self.scenario.messages if m.step <= step)
         for target in self.targets:
             down = self.episode.down_step(target)
@@ -140,7 +134,6 @@ class Pipeline:
                 body = {"reason": "target_down", "down_step": down, "last_event_id": last.event_id if last else None}
                 self._event("target_closed", step, target, body)
         for target in self.targets:
-            started = perf_counter()  # processing_s: from here, before any detector call, to the event
             view = View(step, rows, messages, self.episode.teams, dict(self.translations))
             self._process(view, target, started)
 
@@ -262,7 +255,12 @@ class Pipeline:
         change = self.config.change
         body = request_body(change, state_text(change, self.detector_options, view, target, self._base(view, target)))
         call_id = f"{self.scenario.id}:detector:{target.id}:{view.step:06d}"
-        check_budget(change, body)  # before the request line: an over-long state is never sent
+        try:
+            check_budget(change, body)  # before the request line: an over-long state is never sent
+        except DetectorError as exc:
+            raise Stop(
+                "failed", error={"layer": "detector", "call_id": call_id, "type": "DetectorError", "message": str(exc)}
+            ) from None
         raw, sha256 = self._call("detector", call_id, view, target, body, self.detector.decide)
         try:
             label, probabilities, usage = parse_decision(raw, change)

@@ -193,6 +193,8 @@ def main(
         root = repo_path(loaded.config.output)
         if not args.execute:
             return preview(loaded, episode, plan, new_run_dir(root, f"{name}-preview", reuse=True), worst)
+        if name.endswith("-preview"):
+            raise ConfigError("a paid run name must not end in -preview (that suffix is the preview's)")
         run_dir = new_run_dir(root, name, reuse=False)
         backends = backend_factory or (lambda model: BACKENDS[model.backend](model))
         return execute(loaded, episode, run_dir, backends, detector_factory or SystemOneClient)

@@ -43,8 +43,8 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(f"every --map target must be one of {KINDS}")
     records = {}
     for name in RUN_FILES:
-        lines = (args.run / name).read_text(encoding="utf-8").splitlines()
-        records = {**records, name: [json.loads(line) for line in lines if line]}
+        lines = (args.run / name).read_text(encoding="utf-8").split("\n")
+        records = {**records, name: [json.loads(line) for line in lines if line.strip()]}
     if any(record.get("schema_version") != 2 for record in records["events.jsonl"]):
         parser.error("--run must be a run of event schema 2")
     used = {reason["kind"] for record in records["events.jsonl"] for reason in record.get("trigger_reasons", [])}

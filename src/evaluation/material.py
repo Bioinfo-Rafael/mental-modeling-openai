@@ -77,6 +77,10 @@ def load_run(path: Path) -> TranslationRun:
     if any(record.get("schema_version") != EVENT_SCHEMA_VERSION for record in records):
         raise RunError(f"{path}: every event must be schema {EVENT_SCHEMA_VERSION} (scripts/upgrade_events_v2.py)")
     events = tuple(_checked_event(r) for r in records if r.get("record_type") == "translation_event")
+    if [r.get("sequence") for r in records] != list(range(1, len(records) + 1)):
+        raise RunError(f"{path}: events.jsonl sequence must be 1, 2, 3, ... without gaps")
+    if len({e["event_id"] for e in events}) != len(events):
+        raise RunError(f"{path}: an event_id repeats")
     sha = {name: hashlib.sha256((path / name).read_bytes()).hexdigest() for name in ("run.json", "events.jsonl")}
     run_json = json.loads((path / "run.json").read_text(encoding="utf-8"))
     return TranslationRun(path, run_json, tuple(records), events, tuple(read_jsonl(path / "requests.jsonl")), sha)
@@ -134,14 +138,32 @@ def _criterion(criterion: Any, has_future: bool) -> str:
     return f"- [{criterion.id}] ({'; '.join(notes)}) {criterion.text}{anchors}{boundaries}"
 
 
-def _future_end(event: dict[str, Any], run: TranslationRun, config: JudgeConfig) -> tuple[int, str]:
+def _later_messages(event: dict[str, Any], run: TranslationRun, episode: Episode) -> tuple[list[int], list[int]]:
+    """Issue steps of the instructions and alarms that reach the target: from the run's scenario (every
+    message that shares an aircraft with the target), or, for runs that do not record it, from its later records."""
+    scenario = run.run_json.get("config", {}).get("scenario")
+    if scenario:
+        own = set(event["input"]["target_aircraft"])
+
+        def aircraft(to: str) -> set[str]:
+            kind, name = to.split(":")
+            return {name} if kind == "aircraft" else set(episode.teams.get(name, ()))
+
+        reach = [m for m in scenario["messages"] if any(own & aircraft(to) for to in m["to"])]
+        return [m["step"] for m in reach if m["kind"] == "instruction"], [
+            m["step"] for m in reach if m["kind"] == "alarm"
+        ]
+    listed = [record.get("input", {}) for record in run.records if record.get("target") == event["target"]]
+    instructions = [item["issue_step"] for x in listed for item in x.get("instructions_in_effect", [])]
+    messages = [item for x in listed for item in (*x.get("alarms", []), *x.get("messages", []))]
+    return instructions, [item["step"] for item in messages if item.get("kind", "alarm") == "alarm"]
+
+
+def _future_end(event: dict[str, Any], run: TranslationRun, episode: Episode, config: JudgeConfig) -> tuple[int, str]:
     """(exclusive end, what cut it): the next instruction or alarm the target's later calls listed,
     its down step, the episode end or ``future_steps``; ties name the external factor."""
     step, target = event["step"], event["target"]
-    listed = [record.get("input", {}) for record in run.records if record.get("target") == target]
-    instructions = [item["issue_step"] for x in listed for item in x.get("instructions_in_effect", [])]
-    messages = [item for x in listed for item in (*x.get("alarms", []), *x.get("messages", []))]
-    alarms = [item["step"] for item in messages if item.get("kind", "alarm") == "alarm"]
+    instructions, alarms = _later_messages(event, run, episode)
     closed = [r["down_step"] for r in run.records if r["record_type"] == "target_closed" and r["target"] == target]
     last_step = run.run_json["inputs"]["episode"]["last_complete_step"]
     candidates = [
@@ -158,7 +180,7 @@ def _future_end(event: dict[str, Any], run: TranslationRun, config: JudgeConfig)
 def _future(event: dict[str, Any], run: TranslationRun, frame: Episode, config: JudgeConfig) -> str:
     if not FUTURE_KINDS & set(event_kinds(event)):
         return ""
-    end, cut = _future_end(event, run, config)
+    end, cut = _future_end(event, run, frame, config)
     shown = set(range(event["step"] + 1, end, config.material.future_stride))
     rows = []
     if shown:

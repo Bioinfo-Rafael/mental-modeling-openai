@@ -24,7 +24,17 @@ from typing import Any
 
 from evaluation.audit import audit_run, leaking_targets
 from evaluation.config import JudgeConfig, load_config
-from evaluation.judge import Call, journaled, known_requests, make_plan, paid_marker, plan_call, run_calls
+from evaluation.judge import (
+    GUARD_ROOT,
+    Call,
+    journaled,
+    known_requests,
+    make_plan,
+    missing_results,
+    paid_marker,
+    plan_call,
+    run_calls,
+)
 from evaluation.material import load_frame, load_run, read_jsonl, target_key
 from evaluation.results import RatingsError, build_report, import_ratings
 from translate.backends import BackendError
@@ -108,26 +118,38 @@ def _send_planned(plan: Any, client_factory: ClientFactory, directory: Path, con
 def run_judge(args: argparse.Namespace, config: JudgeConfig, run: Any, client_factory: ClientFactory) -> int:
     directory = _directory(args, config, run)
     calls, leaks = _calls(run, config, directory)
-    root = repo_path(config.output)
+    roots = (GUARD_ROOT, repo_path(config.output))
     if not args.execute:
-        plan = make_plan(calls, known_requests(root), journaled(directory))
+        plan = make_plan(calls, known_requests(*roots), journaled(directory))
         preview = {"plan": plan.to_json(), "requests": [{"event_id": c.event_id, "body": c.body} for c in calls]}
         (directory / "preview.json").write_text(json.dumps(preview, indent=1, ensure_ascii=False), encoding="utf-8")
         _write_run_json(directory, args, config, run, status="preview", plan=plan.to_json(), leaks=sorted(leaks))
         _print({"judgement_dir": str(directory), "status": "preview", "plan": plan.to_json(), "leaks": sorted(leaks)})
         print("Preview only. API requests made: 0", file=sys.stderr)
         return 0
-    with paid_marker(root):
-        plan = make_plan(calls, known_requests(root), journaled(directory))  # scanned while the marker is held
+    with paid_marker(GUARD_ROOT):  # one paid judge run at a time, whatever `output` says
+        plan = make_plan(calls, known_requests(*roots), journaled(directory))  # scanned while the marker is held
         if plan.refused:
             raise ValueError(f"{len(plan.refused)} event(s) were judged here with other bytes: use another --name")
         _write_run_json(directory, args, config, run, status="running", plan=plan.to_json(), leaks=sorted(leaks))
-        outcome = _send_planned(plan, client_factory, directory, config) if plan.to_send else None
+        try:
+            outcome = _send_planned(plan, client_factory, directory, config) if plan.to_send else None
+        except (Exception, KeyboardInterrupt) as exc:  # the client could not be built: nothing was sent
+            _write_run_json(
+                directory, args, config, run, status="failed", plan=plan.to_json(), error=type(exc).__name__
+            )
+            raise
         status = outcome.status if outcome else "completed"
         counts = (
             {"attempted": outcome.attempted, "judged": outcome.judged} if outcome else {"attempted": 0, "judged": 0}
         )
         error = outcome.error if outcome else None
+        missing = missing_results(plan, directory)
+        if status == "completed" and missing:  # sent before, but no verdict here: never resent, so say so
+            status, error = (
+                "failed",
+                {"message": f"{len(missing)} sent event(s) have no results here", "first": missing[0]},
+            )
         _write_run_json(directory, args, config, run, status=status, plan=plan.to_json(), counts=counts, error=error)
     _print(
         {"judgement_dir": str(directory), "status": status, "plan": plan.to_json(), "counts": counts, "error": error}

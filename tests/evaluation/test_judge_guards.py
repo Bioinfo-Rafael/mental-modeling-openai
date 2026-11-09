@@ -82,8 +82,9 @@ def test_a_request_in_a_legacy_journal_is_never_resent(tmp_path: Path) -> None:
     code = _judge(run_dir, config_path, factory, *PAID)
 
     judged = tmp_path / "evaluation" / "trial" / "judge"
-    assert (code, factory.calls, factory.sdk.bodies) == (0, 0, [])
-    assert json.loads((judged / "run.json").read_text())["plan"]["already_sent"] == 1
+    status = json.loads((judged / "run.json").read_text())
+    assert (code, factory.calls, factory.sdk.bodies) == (1, 0, [])  # never resent; results stay with the old journal
+    assert status["plan"]["already_sent"] == 1 and status["status"] == "failed"
 
 
 def test_a_paid_run_sends_each_request_once_and_a_rerun_sends_nothing(tmp_path: Path) -> None:
@@ -169,3 +170,32 @@ def test_the_call_cap_stops_before_call_cap_plus_one(tmp_path: Path) -> None:
     code = _judge(run_dir, config, factory, *PAID)
 
     assert (code, len(factory.sdk.bodies)) == (4, 2)
+
+
+def test_a_request_journaled_under_the_guard_root_is_not_resent_when_output_points_elsewhere(tmp_path: Path) -> None:
+    run_dir, _ = _setup(tmp_path, (45,))
+    first, second = Factory(), Factory()
+    _judge(run_dir, judge_config(tmp_path), first, *PAID)
+
+    code = _judge(run_dir, judge_config(tmp_path / "elsewhere", output=str(tmp_path / "other-root")), second, *PAID)
+
+    assert (code, len(first.sdk.bodies), second.calls) == (1, 1, 0)  # never resent; its results live elsewhere
+
+
+def test_a_run_that_repeats_an_event_is_refused(tmp_path: Path) -> None:
+    record = event(45)
+    run_dir = write_run(tmp_path / "runs" / "trial", [record, record])
+    factory = Factory()
+
+    assert _judge(run_dir, judge_config(tmp_path), factory, *PAID) == 1 and factory.calls == 0
+
+
+def test_a_sent_event_without_results_is_never_resent_and_keeps_the_run_failed(tmp_path: Path) -> None:
+    run_dir, config = _setup(tmp_path)
+    first, second = Factory(FakeSDK(outcomes=['{"criteria": []}'])), Factory()
+
+    codes = (_judge(run_dir, config, first, *PAID), _judge(run_dir, config, second, *PAID))
+
+    assert codes == (1, 1) and len(first.sdk.bodies) == 1 and len(second.sdk.bodies) == 1
+    status = json.loads((tmp_path / "evaluation" / "trial" / "judge" / "run.json").read_text())
+    assert status["status"] == "failed" and status["error"]["first"] == event(45)["event_id"]

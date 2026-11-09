@@ -66,6 +66,8 @@ def _checked_rating(line: dict[str, Any], events: dict[str, dict], config: Judge
     allowed = (*config.scale.values, "cannot_judge", *(("not_applicable",) if criterion.conditional else ()))
     if line["judgement"] not in allowed:
         raise RatingsError(f"judgement {line['judgement']!r} is not allowed for {criterion.id}")
+    if not isinstance(line["rationale"], str) or not line["rationale"].strip():
+        raise RatingsError("rationale must be a non-blank string")
     if line["rubric_version"] != config.rubric_version or not _rated_at(line["rated_at"]):
         raise RatingsError("rubric_version must be the config's, and rated_at ISO 8601 with a UTC offset")
     for key in ("rating_id", "rater_id"):

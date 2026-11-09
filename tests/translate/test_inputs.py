@@ -12,7 +12,16 @@ import pandas as pd
 import pytest
 
 from translate.config import Message
-from translate.episode import Episode, EpisodeError, Translation, View, load_episode, load_frame, render_lag17
+from translate.episode import (
+    Episode,
+    EpisodeError,
+    Translation,
+    View,
+    load_episode,
+    load_frame,
+    render_compact,
+    render_lag17,
+)
 from translate.inputs import INPUTS, TrajectoryOptions
 
 from .fakes import EPISODE_CSV, ROOT
@@ -31,7 +40,10 @@ def write_rollout(
     """A small synthetic rollout (manifest + npz + head weights); rows after ``poison_after`` differ."""
     directory.mkdir(parents=True)
     rng = np.random.default_rng(7)
-    arrays = {name: rng.normal(size=(341, 2, 3)).astype(np.float32) for name in names if name != "actions"}
+    widths = {"logits": 13}
+    arrays = {
+        name: rng.normal(size=(341, 2, widths.get(name, 3))).astype(np.float32) for name in names if name != "actions"
+    }
     arrays = {**arrays, **({"actions": rng.integers(0, 3, size=(341, 2, 4))} if "actions" in names else {})}
     if poison_after is not None:
         arrays = {
@@ -193,4 +205,30 @@ def test_a_rollout_without_act_in_must_be_re_recorded(episode: Episode, tmp_path
     options = INPUTS["policy_trace"].options(rollout=rollout, seed=1)
 
     with pytest.raises(ValueError, match="re-record"):
+        INPUTS["policy_trace"].render(view(episode, 10, ()), episode.target(A1), options)
+
+
+def test_the_compact_renderer_keeps_object_order_rounds_floats_and_masks_a_downed_state(episode: Episode) -> None:
+    text = render_compact(episode.frame, 140, 141, 141, ("B0200", "A0100"), ("alive", "lon_deg"), 2)
+
+    first = json.loads(text.split("\n")[0])
+    assert (first["step"], first["relative_step"]) == (140, -1)
+    assert [o["object_id"] for o in first["objects"]] == ["B0200", "A0100"]
+    assert first["objects"][0] == {"object_id": "B0200", "alive": 0, "lon_deg": None}  # down from step 136
+    assert first["objects"][1]["lon_deg"] == round(first["objects"][1]["lon_deg"], 2)
+
+
+def test_a_window_past_the_last_complete_step_is_refused(episode: Episode) -> None:
+    with pytest.raises(EpisodeError, match="incomplete CSV time point"):
+        render_lag17(episode.frame, episode.last_step, episode.last_step + 1, episode.last_step + 1)
+
+
+def test_a_rollout_whose_head_weights_do_not_fit_its_arrays_is_refused(episode: Episode, tmp_path: Path) -> None:
+    rollout = write_rollout(tmp_path / "r")
+    np.savez(
+        rollout / "head_weights.npz", weight=np.ones((13, 5), dtype=np.float32), bias=np.zeros(13, dtype=np.float32)
+    )
+    options = INPUTS["policy_trace"].options(rollout=rollout, seed=1)
+
+    with pytest.raises(ValueError, match="head_weights"):
         INPUTS["policy_trace"].render(view(episode, 10, ()), episode.target(A1), options)

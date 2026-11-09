@@ -112,7 +112,7 @@ messages:                           # default []; each revealed at its step
 Rules: ids unique; `to` names only listed targets; at most one question per target per step; steps
 within `[0, last complete step]` and targets that exist in the episode (checked against the episode).
 
-## Run directory `<output>/<run name>/` (owner-only, created once; a preview writes `<name>-preview/`)
+## Run directory `<output>/<run name>/` (owner-only, created once; a preview writes `<name>-preview/`, never into a directory that holds a journal, and a paid run name may not end in `-preview`)
 
 | File | Content |
 |---|---|
@@ -120,15 +120,15 @@ within `[0, last complete step]` and targets that exist in the episode (checked 
 | `events.jsonl` | Event schema 3, one line each: `translation_event`, `detector_call`, `target_closed`, `trigger_suppressed` |
 | `requests.jsonl` | One line per call of either layer, fsynced before the send: `call_id`, `layer`, `step`, `target`, `request_sha256`, `body` |
 | `responses.jsonl` | `call_id`, `status` (`ok`, `error`, `uncertain`), `latency_s`, `raw`, `error` |
-| `preview.json` | The forced translations, the detector-call count, the translation bound, caps, warnings, approximate input tokens and the exact first request, the detector question and state template and the worst state bound |
+| `preview.json` | The forced translations, the detector-call count (an upper bound when a skipped invalid answer leaves a target without a translation), the translation bound, caps, warnings, approximate input tokens and the exact first request, the detector question and state template and the worst state bound |
 
 A `translation_event` holds `event_id` (`<scenario>:<kind>:<id>:<step:06d>`, also the `call_id`),
 `kinds`, `trigger_reasons` (`kind`, `source`, `reference_id`, `probability`), the human-visible
 `input` (`target_aircraft`, `instructions_in_effect`, `alarms`, `question`, `previous_translation`,
 the 60-step `trajectory` window with its SHA-256, whatever the translator read, and
 `translator_inputs`), `output` (`intent`, `evidence`), `answer_problem` (a skipped invalid answer),
-`prompt`, `model`, `usage`, `request_sha256` and `processing_s` (from the start of processing the
-target at t, before any detector call, to the record). A `detector_call` holds the state text, the
+`prompt`, `model`, `usage`, `request_sha256` and `processing_s` (from the start of step t, when a
+question arrives, to the record: it includes the calls of targets processed before it at t). A `detector_call` holds the state text, the
 question, `output` (`label`, every probability, `threshold`, `triggered`), the raw response and usage.
 
 ## Safety

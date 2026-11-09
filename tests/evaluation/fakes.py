@@ -63,12 +63,16 @@ def request_line(record: dict[str, Any], text: str | None = None) -> dict[str, A
     }
 
 
-def write_run(directory: Path, records: list[dict], requests: list[dict] | None = None) -> Path:
-    """A translation run directory: run.json (episode facts), events.jsonl, requests.jsonl."""
+def write_run(
+    directory: Path, records: list[dict], requests: list[dict] | None = None, messages: list | None = None
+) -> Path:
+    """A translation run directory: run.json (episode facts; the scenario's messages when given), events.jsonl,
+    requests.jsonl."""
     directory.mkdir(parents=True)
     loaded = load_episode(EPISODE_CSV)
     episode = {"csv_path": str(EPISODE_CSV), "csv_sha256": loaded.csv_sha256}
     run_json = {"inputs": {"episode": {**episode, "last_complete_step": loaded.last_step}}}
+    run_json = {**run_json, "config": {"scenario": {"messages": messages}}} if messages is not None else run_json
     (directory / "run.json").write_text(json.dumps(run_json), encoding="utf-8")
     lines = [{**record, "sequence": index} for index, record in enumerate(records, start=1)]
     (directory / "events.jsonl").write_text("".join(json.dumps(r) + "\n" for r in lines), encoding="utf-8")

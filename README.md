@@ -96,7 +96,8 @@ unset OPENAI_API_KEY
 
 - 有料の要求は送る前に `requests.jsonl` へfsyncで記録します。自動の再送はしません。
 - Judgeは `outputs/evaluation/` 以下のすべてのjournal（2026-11-05の `outputs/evaluation/assess/<run>/judge_requests.jsonl` を含む）の `request_sha256` を調べ、送信済みの要求を送りません。有料実行中は `outputs/evaluation/.paid-judge.running` を排他的に作り、同時に1つだけ動きます。異常終了でこのファイルが残ったら、judgeが動いていないことを確かめてから手で消します。
-- 同じjudgement directoryで評価済みのeventを別のbytesで送ろうとすると拒否します。わざと同じeventを評価し直すときは `rubric_version` かプロンプトを変えます。
+- 同じjudgement directoryで評価済みのeventを別のbytesで送ろうとすると拒否します。わざと同じeventを評価し直すときは `rubric_version` かプロンプトを変えます。送信済みなのにこのdirectoryに結果がないevent（判定の形式が不正だった場合など）は再送せず、実行を `failed` にしてそのeventを示します。
+- 有料のjudgeは、journalのある `outputs/evaluation/` を持つcheckout（mainのcheckout）で実行します。設定の `output` を変えても、このリポジトリの `outputs/evaluation/` は必ず調べます。
 - バイト列を固定するgolden、manifest、記録済みrunの再生確認は2026-11-09に削除しました（U-b）。2026-11-05の評価をそのまま再開することはできません。
 
 ## テスト
