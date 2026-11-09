@@ -123,8 +123,9 @@ class LimitsConfig(Strict):
     max_detector_calls: int = Field(500, gt=0)
 
 
-# The options of every registered change source, picked by ``change.source``: registering a source
-# (``triggers.register_change``) adds it here; no model in this file names a source.
+# The options of every registered change source, picked by ``change.source``. The union is built once,
+# here: a source registers (``triggers.register_change``) in a module imported above (``triggers``
+# itself, ``translate.detector``); no model in this file names a source.
 ChangeConfig = Annotated[Union[tuple(s.options for s in CHANGE_SOURCES.values())], Field(discriminator="source")]  # noqa: UP007
 
 

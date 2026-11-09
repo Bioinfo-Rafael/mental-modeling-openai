@@ -79,7 +79,7 @@ class ClefFlashChange(ChangeOptions):
         return validate_options(inputs, "change.inputs")
 
     @model_validator(mode="after")
-    def _endpoint(self) -> ClefFlashChange:
+    def _rules(self) -> ClefFlashChange:
         if (self.socket is None) == (self.base_url is None):
             raise ValueError("set exactly one of socket (default) or base_url")
         if self.base_url is not None and self.api_key_env is None:

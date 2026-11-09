@@ -59,6 +59,12 @@ def _name(value: str) -> str:
     return value
 
 
+def _event_id(value: str) -> str:
+    if not value.strip():
+        raise argparse.ArgumentTypeError("must be an event id")
+    return value
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="python -m evaluation", description=__doc__.split("\n\n")[0])
     common = argparse.ArgumentParser(add_help=False)
@@ -71,6 +77,7 @@ def build_parser() -> argparse.ArgumentParser:
     judge.add_argument("--confirm-paid-api", action="store_true", help="confirm paid calls (needs --execute)")
     judge.add_argument(
         "--only-event",
+        type=_event_id,
         metavar="EVENT_ID",
         help="re-send one stuck event (sent from this directory, no verdict here); needs both paid flags",
     )
@@ -142,7 +149,7 @@ def run_judge(args: argparse.Namespace, config: JudgeConfig, run: Any, client_fa
         return 0
     main_checkout_only(CHECKOUT)
     with paid_marker(GUARD_ROOT):  # one paid judge run at a time, whatever `output` says
-        if args.only_event:  # the explicit, user-requested re-send of one stuck event; nothing else is sent
+        if args.only_event is not None:  # the explicit, user-requested re-send of one stuck event; nothing else
             plan, note = resend_plan(calls, args.only_event, directory, roots)
         else:
             plan, note = (
@@ -209,7 +216,7 @@ def main(argv: list[str] | None = None, *, client_factory: ClientFactory = make_
     args = parser.parse_args(argv)
     if args.command == "judge" and args.execute != args.confirm_paid_api:
         parser.error("the judge calls a paid API: give BOTH --execute and --confirm-paid-api, or neither")
-    if args.command == "judge" and args.only_event and not args.execute:
+    if args.command == "judge" and args.only_event is not None and not args.execute:
         parser.error("--only-event re-sends a paid request: give --execute --confirm-paid-api with it")
     try:
         config = load_config(repo_path(args.config))

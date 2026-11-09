@@ -59,6 +59,8 @@ def test_criterion_texts_name_only_existing_config_keys(config) -> None:
 
     assert named <= known, f"criterion text names unknown config keys: {sorted(named - known)}"
     assert not set(re.findall(dotted, "10.0 秒（timing.min_question_interval_s）未満")) <= known  # pilot-4's dead key
+    gone = ("min_question_interval_s", "change_max_delay_steps", "max_events_per_segment", "質問が無ければ", "要求点")
+    assert [g for g in gone if any(g in text for text in texts)] == []  # pilot-4's bare key names and request cases
 
 
 @pytest.mark.parametrize(

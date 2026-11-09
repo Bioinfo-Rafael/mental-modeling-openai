@@ -69,6 +69,17 @@ def test_the_scan_recognises_the_paid_assess_journal_in_its_current_layout(tmp_p
     assert PAID_SHA256 in known_requests(tmp_path / "evaluation")
 
 
+def test_the_scan_follows_a_symlinked_directory_once(tmp_path: Path) -> None:
+    archive = tmp_path / "archive" / "assess"
+    (archive / "old-run").mkdir(parents=True)
+    shutil.copy(LEGACY_JOURNAL, archive / "old-run" / "judge_requests.jsonl")
+    (tmp_path / "evaluation").mkdir()
+    (tmp_path / "evaluation" / "assess").symlink_to(archive)
+    (archive / "loop").symlink_to(tmp_path / "archive")  # a cycle is walked once
+
+    assert PAID_SHA256 in known_requests(tmp_path / "evaluation")
+
+
 def test_a_request_in_a_legacy_journal_is_never_resent(tmp_path: Path) -> None:
     run_dir, config_path = _setup(tmp_path, (45,))
     run = load_run(run_dir)
@@ -239,14 +250,20 @@ def _stuck(tmp_path: Path) -> tuple[Path, Path, str, dict]:
     return run_dir, config, event(45)["event_id"], first.sdk.bodies[0]
 
 
-@pytest.mark.parametrize("flags", [(), ("--execute",), ("--confirm-paid-api",)])
-def test_only_event_without_both_paid_flags_is_a_usage_error(tmp_path: Path, flags: tuple[str, ...]) -> None:
+@pytest.mark.parametrize(
+    ("flags", "event_id"),
+    [((), "e"), (("--execute",), "e"), (("--confirm-paid-api",), "e"), (PAID, ""), (PAID, " ")],
+)
+def test_only_event_without_both_paid_flags_or_an_id_is_a_usage_error(
+    tmp_path: Path, flags: tuple[str, ...], event_id: str
+) -> None:
     run_dir, config = _setup(tmp_path)
+    factory = Factory()
 
     with pytest.raises(SystemExit) as exc:
-        _judge(run_dir, config, Factory(), *flags, "--only-event", event(45)["event_id"])
+        _judge(run_dir, config, factory, *flags, "--only-event", event_id)
 
-    assert exc.value.code == 2
+    assert (exc.value.code, factory.calls) == (2, 0)
 
 
 def test_only_event_refuses_an_event_that_is_not_stuck(tmp_path: Path) -> None:
@@ -254,13 +271,18 @@ def test_only_event_refuses_an_event_that_is_not_stuck(tmp_path: Path) -> None:
     factory = Factory()
     never_sent = event(145, ("change",))["event_id"]
     codes = [_judge(run_dir, config, factory, *PAID, "--only-event", e) for e in (never_sent, "no-such-event")]
+    journal = tmp_path / "evaluation" / "trial" / "judge" / "requests.jsonl"
+    original = journal.read_text(encoding="utf-8")
+    journal.write_text(original + json.dumps({**_lines(journal)[0], "call_id": "another-event"}) + "\n")
+    codes.append(_judge(run_dir, config, factory, *PAID, "--only-event", stuck))  # same bytes, another id here
+    journal.write_text(original, encoding="utf-8")
     elsewhere = tmp_path / "evaluation" / "assess" / "old-run" / "judge_requests.jsonl"
     elsewhere.parent.mkdir(parents=True)
     elsewhere.write_text(json.dumps({"call_id": "old", "payload": body}) + "\n")  # the same bytes, sent elsewhere
 
     codes.append(_judge(run_dir, config, factory, *PAID, "--only-event", stuck))
 
-    assert (codes, factory.calls) == ([1, 1, 1], 0)
+    assert (codes, factory.calls) == ([1, 1, 1, 1], 0)
 
 
 def test_only_event_resends_exactly_one_body_journaled_as_user_requested(tmp_path: Path) -> None:

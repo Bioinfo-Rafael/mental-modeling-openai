@@ -125,11 +125,32 @@ def _line_hashes(line: dict[str, Any]) -> frozenset[str]:
     return frozenset(embedded | ({request_sha256(body)} if isinstance(body, dict) else set()))
 
 
+def _raise(exc: OSError) -> None:
+    raise exc
+
+
+def journal_paths(root: Path) -> set[Path]:
+    """Every journal below ``root``, resolved, following directory symlinks (each directory once; a
+    plain ``rglob`` skips them). An unreadable directory fails closed."""
+    if not Path(root).is_dir():
+        return set()
+    found: set[Path] = set()
+    seen: set[tuple[int, int]] = set()
+    for directory, subdirs, files in os.walk(root, followlinks=True, onerror=_raise):
+        info = os.stat(directory)
+        if (info.st_dev, info.st_ino) in seen:
+            subdirs.clear()  # os.walk prunes in place: a symlink loop or a second link to a seen directory
+            continue
+        seen.add((info.st_dev, info.st_ino))
+        found |= {(Path(directory) / name).resolve() for name in files if name in JOURNALS}
+    return found
+
+
 def known_requests(*roots: Path, skip: Path | None = None) -> frozenset[str]:
     """Every request hash journaled under the roots, except in the journal ``skip``. An unreadable line
     fails closed, naming the file."""
     found: frozenset[str] = frozenset()
-    paths = {p.resolve() for root in roots for name in JOURNALS for p in Path(root).rglob(name)}
+    paths = set().union(*(journal_paths(root) for root in roots))
     for path in sorted(paths - ({Path(skip).resolve()} if skip is not None else set())):
         try:
             hashes = [_line_hashes(line) for line in read_jsonl(path)]
@@ -189,14 +210,19 @@ def resend_plan(calls: list[Call], event_id: str, directory: Path, roots: tuple[
     if call is None:
         raise JudgeError(f"{event_id} is not a planned event of this run (unknown id, or its target leaked)")
     path = directory / REQUESTS
-    sent = [x for x in (read_jsonl(path) if path.is_file() else []) if x["call_id"] == event_id]
+    if path.is_symlink():
+        raise JudgeError(f"{path} is a symlink: a re-send needs this directory's own journal")
+    lines = read_jsonl(path) if path.is_file() else []
+    sent = [x for x in lines if x["call_id"] == event_id]
     if not any(call.sha256 in _line_hashes(x) for x in sent):
         raise JudgeError(f"{event_id} was never sent from {directory} with these bytes: judge without --only-event")
+    if any(call.sha256 in _line_hashes(x) for x in lines if x["call_id"] != event_id):
+        raise JudgeError(f"the request of {event_id} is journaled here under another event id")
     if event_id in _judged(directory):
         raise JudgeError(f"{event_id} already has results in {directory}: it is not stuck")
     if call.sha256 in known_requests(*roots, skip=path):
         raise JudgeError(f"the request of {event_id} is journaled outside {directory}: its verdict may live there")
-    note = {"requested_by": "user", "option": "--only-event", "previous_sends": len(sent)}
+    note = {"requested_by": "user", "option": "--only-event", "previous_sends": len(sent)}  # each re-send is asked
     return Plan((call,), (call,), 1, ()), note
 
 
@@ -207,7 +233,8 @@ def main_checkout_only(root: Path) -> None:
     if not dot_git.is_file():
         return
     gitdir = (Path(root) / dot_git.read_text(encoding="utf-8").partition("gitdir:")[2].strip()).resolve()
-    main = gitdir.parents[2] if gitdir.parent.name == "worktrees" else "the main checkout"
+    in_worktrees = gitdir.parent.name == "worktrees" and len(gitdir.parents) > 2  # <main>/.git/worktrees/<name>
+    main = gitdir.parents[2] if in_worktrees else "the main checkout"
     raise JudgeError(
         f"{root} is a git worktree: a paid judge run scans only its outputs/evaluation, not the main "
         f"checkout's paid journals. Run it from {main}"

@@ -85,6 +85,8 @@ CHANGE_SOURCES: dict[str, ChangeSource] = {}
 
 def register_change(name: str, options: type[ChangeOptions]) -> Callable:
     def add(function: Callable[[View, Target, Any, Any], Reason | None]) -> Callable:
+        if name in CHANGE_SOURCES:
+            raise ValueError(f"change source {name!r} is registered twice")
         CHANGE_SOURCES[name] = ChangeSource(function, options)
         return function
 

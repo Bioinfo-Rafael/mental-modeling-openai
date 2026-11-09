@@ -112,7 +112,10 @@ quoted JSON strings, so they cannot leave their envelope.
   no verdict here, and appear in no other journal (where its verdict may live). The request line
   carries `"resend": {"requested_by": "user", "option": "--only-event", "previous_sends": N}`, and
   `run.json` names the event. No other event is planned or sent; a later plain run still sends no
-  journaled request. The re-send is billed again, also after an `uncertain` outcome.
+  journaled request. The re-send is billed again, also after an `uncertain` outcome; if it fails
+  too, the event is still stuck and each further re-send needs its own `--only-event` call.
+  The scan follows directory symlinks below the roots (each directory once) and stops on an
+  unreadable directory.
 - Every request line is fsynced before its call; nothing is retried. An HTTP or connection error, a
   refusal or an incomplete response ends the run `failed`; a timeout, an unknown status, an
   unreadable response or any other error ends it `uncertain`. A journaled request is never sent
