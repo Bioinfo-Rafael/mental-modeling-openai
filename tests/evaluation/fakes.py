@@ -12,6 +12,7 @@ from typing import Any
 
 import yaml
 
+from evaluation.config import load_config
 from translate.episode import load_episode
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -85,6 +86,7 @@ def judge_config(tmp_path: Path, **changes: Any) -> Path:
     """The shipped judge.yaml with its output under tmp_path (and top-level keys replaced)."""
     tmp_path.mkdir(parents=True, exist_ok=True)
     raw = yaml.safe_load(JUDGE_CONFIG.read_text(encoding="utf-8"))
+    raw["prompt"] = load_config(JUDGE_CONFIG).prompt.model_dump()
     path = tmp_path / "judge.yaml"
     path.write_text(yaml.safe_dump({**raw, "output": str(tmp_path / "evaluation"), **changes}), encoding="utf-8")
     return path

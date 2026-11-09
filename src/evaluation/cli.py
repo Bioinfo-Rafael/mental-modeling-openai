@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Any
 
 from evaluation.audit import audit_run, leaking_targets
-from evaluation.config import JudgeConfig, load_config
+from evaluation.config import JudgeConfig, criteria_for, load_config
 from evaluation.judge import (
     GUARD_ROOT,
     Call,
@@ -34,15 +34,15 @@ from evaluation.judge import (
     make_plan,
     missing_results,
     paid_marker,
-    plan_call,
     resend_plan,
     run_calls,
 )
-from evaluation.material import load_frame, load_run, read_jsonl, target_key
+from evaluation.material import event_kinds, load_frame, load_run, read_jsonl, target_key
+from evaluation.prompts import build_prompt
 from evaluation.results import RatingsError, build_report, import_ratings
 from translate.backends import BackendError
 from translate.backends.openai import OpenAIBackend, make_client
-from translate.journal import REPO_ROOT, append_jsonl, repo_path
+from translate.journal import REPO_ROOT, append_jsonl, repo_path, request_sha256
 
 DEFAULT_CONFIG = Path("configs/evaluation/judge.yaml")
 EXIT_CODES = {"completed": 0, "preview": 0, "failed": 1, "uncertain": 3, "cap_reached": 4}
@@ -109,6 +109,7 @@ def _directory(args: argparse.Namespace, config: JudgeConfig, run: Any) -> Path:
 def _write_run_json(directory: Path, args: argparse.Namespace, config: JudgeConfig, run: Any, **fields: Any) -> None:
     record = {"translation_run": str(run.path), "run_sha256": run.file_sha256, "config": str(args.config)}
     record = {**record, "config_sha256": _sha256(repo_path(args.config)), "resolved": config.model_dump(mode="json")}
+    record = {**record, "prompt_sources": config.prompt_sources}
     (directory / "run.json").write_text(
         json.dumps({**record, **fields}, indent=2, ensure_ascii=False), encoding="utf-8"
     )
@@ -120,7 +121,14 @@ def _calls(run: Any, config: JudgeConfig, directory: Path) -> tuple[list[Call], 
     (directory / "audit.jsonl").write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in audit), "utf-8")
     leaks = leaking_targets(audit)
     frame = load_frame(run)
-    calls = [plan_call(event, run, frame, config) for event in run.events if target_key(event["target"]) not in leaks]
+    calls = []
+    for event in run.events:
+        if target_key(event["target"]) in leaks:
+            continue
+        criteria = criteria_for(config, event_kinds(event))
+        prompt = build_prompt(event, run, frame, config, criteria)
+        body = OpenAIBackend.request_body(config.model, prompt)
+        calls.append(Call(event, criteria, body, request_sha256(body)))
     return calls, leaks
 
 

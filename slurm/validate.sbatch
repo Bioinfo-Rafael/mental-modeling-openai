@@ -117,6 +117,10 @@ run, judged = scratch / "runs" / "synthetic", scratch / "evaluation"
 judge_configs = sorted(Path("configs/evaluation").glob("*.yaml"))
 for config in judge_configs:  # each with its output in scratch, so the scan reads no real journal
     raw = yaml.safe_load(config.read_text(encoding="utf-8"))
+    raw["prompt"] = {
+        key: str((config.parent / value).resolve()) if key.endswith("_file") else value
+        for key, value in raw["prompt"].items()
+    }
     (scratch / config.name).write_text(yaml.safe_dump({**raw, "output": str(judged)}), encoding="utf-8")
     check(judge_main(["judge", "--run", str(run), "--config", str(scratch / config.name)], client_factory=refuse), str(config))
 journals = ("requests.jsonl", "responses.jsonl")

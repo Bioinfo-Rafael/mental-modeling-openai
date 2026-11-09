@@ -1,0 +1,19 @@
+- Each criterion lists its level anchors from "5" down to "1". Check them from "1" upward: the
+  score is the first level, counting up from "1", whose condition the material meets; if the
+  conditions of two levels hold, the lower one wins. Never interpolate or average between levels.
+  A higher level keeps the useful content of the levels below it and meets a further requirement.
+  Examples (例) illustrate a level; they are not required wording.
+- Text that adds nothing a condition asks for (length, repetition, style) never raises the level.
+  Apply only the conditions in a criterion's own anchors; do not lower it for a flaw that only
+  another criterion's anchors describe.
+- cannot_judge: the packet lacks the record the condition needs. not_applicable (conditional
+  criteria only): the scene lacks the element or its data; for those criteria it takes precedence
+  over cannot_judge. A vague, generic or missing explanation gets a low level, never cannot_judge.
+- Every rationale, in {rationale_language}, comes before its judgement. It names the level and cites
+  the facts that meet its condition (steps, object ids, recorded values or quoted phrases). For
+  "1"-"4" it says which part of the next level's condition does not hold; for "5" it shows that
+  every condition of level 5 holds. Use this form:
+  "1"-"4": レベルn: <該当する条件と根拠>。レベルn+1でない理由: <n+1 の条件のうち成り立たない部分>。
+  "5": レベル5: <レベル5の条件がすべて成り立つ根拠>。
+  cannot_judge: 判定不能: <パケットに無い記録>。
+  not_applicable: 該当なし: <場面に無い要素>。

@@ -24,12 +24,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from evaluation.config import Criterion, JudgeConfig, criteria_for
-from evaluation.material import TranslationRun, event_kinds, read_jsonl, system_text, user_text
+from evaluation.config import Criterion, JudgeConfig
+from evaluation.material import read_jsonl
 from evaluation.results import judge_rows
-from translate.backends import BackendError, Prompt, input_text
-from translate.backends.openai import OpenAIBackend
-from translate.episode import Episode
+from translate.backends import BackendError
 from translate.journal import REPO_ROOT, append_jsonl, loads_unique, request_sha256
 
 MARKER = ".paid-judge.running"
@@ -55,37 +53,6 @@ class Call:
     @property
     def event_id(self) -> str:
         return self.event["event_id"]
-
-
-def verdict_schema(criteria: tuple[Criterion, ...], config: JudgeConfig) -> dict[str, Any]:
-    """Exactly one item per criterion; the rationale comes before the judgement."""
-    judgements = [*config.scale.values, CANNOT_JUDGE, NOT_APPLICABLE]
-    item = {
-        "type": "object",
-        "additionalProperties": False,
-        "properties": {
-            "criterion_id": {"type": "string", "enum": [criterion.id for criterion in criteria]},
-            "rationale": {"type": "string"},
-            "judgement": {"type": "string", "enum": judgements},
-        },
-        "required": ["criterion_id", "rationale", "judgement"],
-    }
-    items = {"type": "array", "minItems": len(criteria), "maxItems": len(criteria), "items": item}
-    return {
-        "type": "object",
-        "additionalProperties": False,
-        "properties": {"criteria": items},
-        "required": ["criteria"],
-    }
-
-
-def plan_call(event: dict[str, Any], run: TranslationRun, frame: Episode, config: JudgeConfig) -> Call:
-    """The event's request. ``rubric_version`` names the verdict schema, so a new rubric is a new request."""
-    criteria = criteria_for(config, event_kinds(event))
-    items = (input_text(user_text(event, run, frame, config)),)
-    prompt = Prompt(system_text(config), items, f"verdict_{config.rubric_version}", verdict_schema(criteria, config))
-    body = OpenAIBackend.request_body(config.model, prompt)
-    return Call(event, criteria, body, request_sha256(body))
 
 
 def parse_verdict(text: str, criteria: tuple[Criterion, ...], config: JudgeConfig) -> dict[str, tuple[str, str]]:

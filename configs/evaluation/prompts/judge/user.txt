@@ -1,0 +1,45 @@
+# TRANSLATION EVENT UNDER EVALUATION
+Target: {target} (aircraft {target_aircraft}).
+Step t = {step} (time {time_s} s). Point kinds: {kinds}.
+
+## INSTRUCTIONS IN EFFECT (issued at or before t)
+{instructions}
+
+## ALARMS (issued at or before t)
+{alarms}
+
+## QUESTION FROM A HUMAN
+{question}
+
+## PREVIOUS TRANSLATION OF THIS TARGET
+{previous_translation}
+
+## TRAJECTORY (human-visible telemetry up to t)
+Format: one JSON line per step (0.2 s apart), oldest first; relative_step = step - t. A state is
+[lon_deg, lat_deg, alt_m, roll_deg, pitch_deg, yaw_deg, tas_mps, vn_mps, ve_mps, vu_mps]. Aircraft
+actions are [altitude, heading, speed] commands: altitude 0 up / 1 hold / 2 down; heading 0 left30 /
+1 left15 / 2 hold / 3 right15 / 4 right30; speed 0 up / 1 hold / 2 down. Team B's actions are not
+recorded. null means unavailable; alive = 0 marks an inactive aircraft. The Translator's own input
+may differ.
+BEGIN WINDOW DATA
+{trajectory}
+END WINDOW DATA
+
+## TRANSLATOR OUTPUT (under evaluation)
+Intent: {intent}
+Evidence:
+{evidence}
+
+## TIMELINE (this target's explanations up to t)
+{timeline}{future}
+
+## CRITERIA (each with its level anchors, highest first)
+{criteria}
+
+## SCALE
+Answer each criterion with one of {scale}, "cannot_judge", or "not_applicable" (conditional criteria only).
+cannot_judge (any criterion): {cannot_judge}
+not_applicable (conditional criteria only): {not_applicable}
+A criterion's own cannot_judge / not_applicable line, when listed, sets its boundary.
+Rating rule:
+{rating_rule}

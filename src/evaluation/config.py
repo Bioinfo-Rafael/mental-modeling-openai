@@ -1,19 +1,19 @@
 """The judge config (``configs/evaluation/judge.yaml``): pydantic models with defaults; unknown keys fail.
 
-The prompt texts live here (``prompt.system``, ``prompt.user``, ``prompt.rating_rule``,
-``prompt.future``); their placeholders are a fixed set, checked at load, so a typo or a template that
-drops judge material fails before anything is rendered. Criteria carry their point kinds; an event
-is rated on every criterion of any of its kinds, each once.
+Prompt text comes from four config-relative UTF-8 files, or the complete legacy inline form.
+Files are read once and resolved before placeholder validation; missing material fails at load.
+Criteria carry their point kinds; an event is rated on every criterion of any of its kinds, each once.
 """
 
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, model_validator
 
-from translate.config import load_yaml, validated
+from translate.config import ConfigError, load_yaml, validated
 from translate.prompts import check_fields
 
 KINDS = ("start", "change", "request")
@@ -118,6 +118,8 @@ class Limits(Strict):
 
 
 class JudgeConfig(Strict):
+    _prompt_sources: dict[str, dict[str, str]] = PrivateAttr(default_factory=dict)
+
     model: ModelSettings = ModelSettings()
     material: Material = Material()
     rubric_version: str = Field(pattern=r"^[A-Za-z0-9_-]{1,48}$")
@@ -128,6 +130,11 @@ class JudgeConfig(Strict):
     output: Path = Path("outputs/evaluation")
     prompt: Prompt
     criteria: tuple[Criterion, ...] = Field(min_length=1)
+
+    @property
+    def prompt_sources(self) -> dict[str, dict[str, str]]:
+        """Hashes and optional file paths captured with the resolved text, outside API/config fields."""
+        return {name: dict(source) for name, source in self._prompt_sources.items()}
 
     @model_validator(mode="after")
     def _criteria(self) -> JudgeConfig:
@@ -141,7 +148,36 @@ class JudgeConfig(Strict):
 
 
 def load_config(path: Path) -> JudgeConfig:
-    return validated(JudgeConfig, load_yaml(path), str(path))
+    """Resolve one complete inline/file prompt, preserving file bytes and config-relative paths."""
+    path = Path(path)
+    raw = load_yaml(path)
+    prompt = raw.get("prompt") if isinstance(raw, dict) else None
+    sources: dict[str, dict[str, str]] = {}
+    names = tuple(Prompt.model_fields)
+    file_keys = {f"{name}_file" for name in names}
+    if isinstance(prompt, dict) and file_keys & prompt.keys():
+        if set(prompt) != file_keys:
+            raise ConfigError(f"{path}: prompt must contain all four *_file keys or all four inline texts, exclusively")
+        texts = {}
+        for name in names:
+            key, reference = f"{name}_file", prompt[f"{name}_file"]
+            if not isinstance(reference, str) or not reference.strip():
+                raise ConfigError(f"{path}: prompt.{key} must be a non-empty file path")
+            source = (path.parent / reference).resolve()
+            try:
+                content = source.read_bytes()
+                texts[name] = content.decode("utf-8")
+            except (OSError, UnicodeError) as exc:
+                raise ConfigError(f"{path}: prompt.{key} ({source}): {exc}") from None
+            sources[name] = {"path": str(source), "sha256": hashlib.sha256(content).hexdigest()}
+        locations = ", ".join(f"{name}={sources[name]['path']}" for name in names)
+        resolved = validated(Prompt, texts, f"{path}: prompt files ({locations})")
+        raw = {**raw, "prompt": resolved}
+    config = validated(JudgeConfig, raw, str(path))
+    config._prompt_sources = sources or {
+        name: {"sha256": hashlib.sha256(getattr(config.prompt, name).encode("utf-8")).hexdigest()} for name in names
+    }
+    return config
 
 
 def criteria_for(config: JudgeConfig, kinds: tuple[str, ...]) -> tuple[Criterion, ...]:

@@ -33,7 +33,8 @@
 ## 評価
 
 Judgeは1つのエンジン（`python -m evaluation`）です。翻訳がどの入力を使ったかに関係なく、人の評価者が見るのと同じ材料（指示、警報、質問、前回の翻訳、時刻tまでのトラジェクトリ。動画は未実装）で評価します。
-イベントごとに、その時点の種類（start / change / request）の基準をすべて1回の呼び出しで評価します。プロンプトの文面と基準（rubric `pilot-5`）は `configs/evaluation/judge.yaml` に直接書きます。
+イベントごとに、その時点の種類（start / change / request）の基準をすべて1回の呼び出しで評価します。プロンプトの文面は `configs/evaluation/prompts/judge/` の4つの `.txt` に、基準（rubric `pilot-5`）とテンプレートへの参照は `configs/evaluation/judge.yaml` に書きます。
+組み立て処理は `src/evaluation/prompts.py` にあり、CLIが `build_prompt()` → `request_body()` の順で呼びます。文面を変更したら、previewの `preview.json` で送信内容を確認できます。
 人の評価（`import-ratings`）と集計（`report`：基準ごとの平均、重み付きκ、要求点の3.0秒以内の割合）も同じCLIです。
 
 ## ディレクトリ
@@ -43,7 +44,7 @@ Judgeは1つのエンジン（`python -m evaluation`）です。翻訳がどの�
 | `src/translate/` | 翻訳のループ（[README](src/translate/README.md)） |
 | `src/evaluation/` | Judge（[README](src/evaluation/README.md)） |
 | `configs/translate/` | 実行設定（プロンプトの文面を含む）とシナリオ（`scenarios/`） |
-| `configs/evaluation/` | Judgeの設定（プロンプトの文面と基準を含む） |
+| `configs/evaluation/` | Judgeの設定・基準と、`prompts/judge/` のテキストテンプレート |
 | `data/mhi/` | MHI v1.3の3試合（CSV・manifest・行動付き動画）。読み取り専用 |
 | `slurm/` | すべてのSlurm job と `common.sh`（[slurm/README.md](slurm/README.md)） |
 | `scripts/lag/` | 隣の `../mtd-rl-lag` のinterpreterで動くhelper（rollout記録、ACMI再生、CSV変換） |

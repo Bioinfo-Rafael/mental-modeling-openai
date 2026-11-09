@@ -1,4 +1,4 @@
-"""Judge material: the translation run as the judge reads it, and one event's prompt text.
+"""Judge material: the translation run as the judge reads it, and one event's template values.
 
 Every event gets the same human-visible material whatever the translator read: the instructions in
 effect, the alarms, the question, the previous translation, the trajectory window up to t (rendered
@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from evaluation.config import KINDS, JudgeConfig, criteria_for
+from evaluation.config import KINDS, Criterion, JudgeConfig
 from translate.episode import AIRCRAFT, Episode, View, load_episode, render_compact
 from translate.inputs import TrajectoryOptions, trajectory
 from translate.journal import quoted
@@ -177,9 +177,11 @@ def _future_end(event: dict[str, Any], run: TranslationRun, episode: Episode, co
     return end, cut
 
 
-def _future(event: dict[str, Any], run: TranslationRun, frame: Episode, config: JudgeConfig) -> str:
+def future_values(
+    event: dict[str, Any], run: TranslationRun, frame: Episode, config: JudgeConfig
+) -> dict[str, Any] | None:
     if not FUTURE_KINDS & set(event_kinds(event)):
-        return ""
+        return None
     end, cut = _future_end(event, run, frame, config)
     shown = set(range(event["step"] + 1, end, config.material.future_stride))
     rows = []
@@ -200,7 +202,7 @@ def _future(event: dict[str, Any], run: TranslationRun, frame: Episode, config: 
         "rows": "\n".join(rows) if rows else "(no step inside the window)",
         "later": _timeline(later, event) if later else "- none",
     }
-    return config.prompt.future.format_map(values)
+    return values
 
 
 def window(episode: Episode, event: dict[str, Any], past_steps: int) -> str:
@@ -210,22 +212,19 @@ def window(episode: Episode, event: dict[str, Any], past_steps: int) -> str:
     return trajectory(view, target, TrajectoryOptions(past_steps=past_steps))
 
 
-def rating_rule(config: JudgeConfig) -> str:
-    return config.prompt.rating_rule.format_map({"rationale_language": config.rationale_language})
-
-
-def system_text(config: JudgeConfig) -> str:
-    return config.prompt.system.format_map(
-        {"rating_rule": rating_rule(config), "rationale_language": config.rationale_language}
-    )
-
-
-def user_text(event: dict[str, Any], run: TranslationRun, frame: Episode, config: JudgeConfig) -> str:
-    """The event's user message: the human-visible material, TIMELINE, FUTURE and its criteria."""
+def material_values(
+    event: dict[str, Any],
+    run: TranslationRun,
+    frame: Episode,
+    config: JudgeConfig,
+    criteria: tuple[Criterion, ...],
+    *,
+    has_future: bool,
+) -> dict[str, Any]:
+    """Data and criterion text for the user template; template expansion belongs to prompts.py."""
     payload, kinds, target = event["input"], event_kinds(event), event["target"]
     instructions = sorted(payload["instructions_in_effect"], key=lambda i: (i["issue_step"], i["instruction_id"]))
     question = payload["question"]
-    future = _future(event, run, frame, config)
     own = [item for item in run.events if item["target"] == target and item["step"] <= event["step"]]
     values = {
         "target": f"{target['kind']} {target['id']}",
@@ -246,11 +245,9 @@ def user_text(event: dict[str, Any], run: TranslationRun, frame: Episode, config
         "intent": quoted(event["output"]["intent"]),
         "evidence": _lines([f"- {quoted(item)}" for item in event["output"]["evidence"]]),
         "timeline": _timeline(own, event),
-        "future": future,
-        "criteria": "\n".join(_criterion(c, bool(future)) for c in criteria_for(config, kinds)),
+        "criteria": "\n".join(_criterion(c, has_future) for c in criteria),
         "scale": ", ".join(f'"{value}"' for value in config.scale.values),
         "cannot_judge": config.scale.cannot_judge,
         "not_applicable": config.scale.not_applicable,
-        "rating_rule": rating_rule(config),
     }
-    return config.prompt.user.format_map(values)
+    return values

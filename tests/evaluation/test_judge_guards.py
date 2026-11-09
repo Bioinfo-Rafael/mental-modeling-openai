@@ -10,8 +10,8 @@ import pytest
 
 from evaluation import cli
 from evaluation.config import load_config
-from evaluation.judge import MARKER, JudgeError, known_requests, plan_call
-from evaluation.material import load_frame, load_run
+from evaluation.judge import MARKER, JudgeError, known_requests
+from evaluation.material import load_run
 from translate.backends import BackendError
 
 from .fakes import ROOT, Factory, FakeSDK, asked_criteria, event, judge_config, write_run
@@ -83,7 +83,7 @@ def test_the_scan_follows_a_symlinked_directory_once(tmp_path: Path) -> None:
 def test_a_request_in_a_legacy_journal_is_never_resent(tmp_path: Path) -> None:
     run_dir, config_path = _setup(tmp_path, (45,))
     run = load_run(run_dir)
-    planned = plan_call(run.events[0], run, load_frame(run), load_config(config_path))
+    planned = cli._calls(run, load_config(config_path), run.path)[0][0]
     legacy = json.loads(LEGACY_JOURNAL.read_text(encoding="utf-8"))
     journal = tmp_path / "evaluation" / "assess" / "old-run" / "judge_requests.jsonl"
     journal.parent.mkdir(parents=True)

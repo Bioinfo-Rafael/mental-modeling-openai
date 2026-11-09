@@ -9,9 +9,11 @@ from pathlib import Path
 import pytest
 import yaml
 
+from evaluation.cli import _calls
 from evaluation.config import criteria_for, load_config
-from evaluation.judge import parse_verdict, plan_call
-from evaluation.material import load_frame, load_run
+from evaluation.judge import parse_verdict
+from evaluation.material import event_kinds, load_frame, load_run
+from evaluation.prompts import build_prompt
 from translate.config import ConfigError
 
 from .fakes import A0100, JUDGE_CONFIG, TEAM_A, event, judge_config, write_run
@@ -26,8 +28,9 @@ def config():
 
 def _user(run_dir: Path, config, event_id: str) -> str:
     run = load_run(run_dir)
-    call = plan_call(next(e for e in run.events if e["event_id"] == event_id), run, load_frame(run), config)
-    return call.body["input"][0]["content"][0]["text"]
+    event = next(event for event in run.events if event["event_id"] == event_id)
+    prompt = build_prompt(event, run, load_frame(run), config, criteria_for(config, event_kinds(event)))
+    return prompt.items[0]["text"]
 
 
 def test_shipped_config_keeps_the_23_pilot_5_criteria_with_their_kinds(config) -> None:
@@ -84,6 +87,7 @@ def test_criterion_texts_name_only_existing_config_keys(config) -> None:
 )
 def test_a_bad_config_fails_at_load_naming_the_key(tmp_path: Path, change, message: str) -> None:
     raw = yaml.safe_load(JUDGE_CONFIG.read_text(encoding="utf-8"))
+    raw["prompt"] = load_config(JUDGE_CONFIG).prompt.model_dump()
     path = tmp_path / "judge.yaml"
     path.write_text(yaml.safe_dump(change(raw)), encoding="utf-8")
 
@@ -186,7 +190,7 @@ def test_rubric_version_is_part_of_the_request_bytes(tmp_path: Path) -> None:
     record = event(45, ("start",))
     run = load_run(write_run(tmp_path / "run", [record]))
     calls = [
-        plan_call(record, run, load_frame(run), load_config(judge_config(tmp_path / v, rubric_version=v)))
+        _calls(run, load_config(judge_config(tmp_path / v, rubric_version=v)), run.path)[0][0]
         for v in ("pilot-4", "pilot-5")
     ]
 

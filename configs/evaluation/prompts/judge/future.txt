@@ -1,0 +1,11 @@
+
+
+## FUTURE (evaluation only; the Translator never saw it)
+Steps after t up to step {last_step}; it ends before step {end_step} ({cut}).
+Use it only for criteria marked "may use FUTURE"; nothing after its end counts.
+Telemetry every {stride_steps} steps, relative_step = step - t; fields: {fields}.
+BEGIN FUTURE DATA
+{rows}
+END FUTURE DATA
+Later explanations of this target inside the window:
+{later}

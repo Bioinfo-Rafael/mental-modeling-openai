@@ -12,11 +12,12 @@ human ratings (import-ratings) + results -> report.json (cells, agreement, D55 d
 | Module | Responsibility |
 |---|---|
 | `config.py` | `judge.yaml` as pydantic models (defaults, unknown keys fail); placeholder checks |
-| `material.py` | Run loader (event schema 3), the event's user text: material, TIMELINE, FUTURE, criteria |
-| `judge.py` | Request and verdict schema, strict parse, the no-resend guards, the call loop |
+| `material.py` | Run loader (event schema 3), temporal selection and formatted values for material, TIMELINE, FUTURE, criteria |
+| `prompts.py` | Four template expansions, complete system/user messages and verdict schema |
+| `judge.py` | Planned calls, strict verdict parsing, the no-resend guards, the call loop |
 | `audit.py` | Causality audit of every journaled request body of the translation run |
 | `results.py` | Result lines, the human-ratings import, the report |
-| `cli.py` | `judge`, `import-ratings`, `report`; the paid gate; the only place a client is built |
+| `cli.py` | `judge`, `import-ratings`, `report`; explicit prompt/body composition; paid gate and client construction |
 
 ## Commands
 
@@ -45,13 +46,33 @@ the report). Every subcommand takes `--config` (default `configs/evaluation/judg
 | `timing.request_deadline_s` | `3.0` | D55: a request event passes when `processing_s` is at most this |
 | `limits.max_calls` | `100` | Per invocation; the run stops before call `max_calls + 1` (exit 4) |
 | `output` | `outputs/evaluation` | Repo-relative root of the judgement directories |
-| `prompt` | `system`, `user`, `rating_rule`, `future` required | Every word of the request (see below) |
+| `prompt` | `system_file`, `user_file`, `rating_rule_file`, `future_file` required | UTF-8 template paths relative to this config file (see below) |
 | `criteria` | required | `{id, kinds, text, levels, conditional, not_applicable, cannot_judge, may_use_future}` |
 
 A criterion's aspect is its id prefix (`elements`, `correctness`, `timing`, `contribution`; any prefix
 works). `levels` must be exactly the scale values. `conditional: true` allows `not_applicable` and
 needs its text. An event is rated on every criterion of any of its kinds, each once; the verdict
 schema is generated from exactly those criteria. A new criterion is a new list entry, no code.
+
+Edit the four templates in `configs/evaluation/prompts/judge/`. The complete user-message order is
+visible in `user.txt`; `system.txt`, `rating_rule.txt`, and `future.txt` hold the other text templates.
+The YAML retains the criteria, anchors, scale and run settings. Paths are resolved relative to the
+YAML file, so copy the `prompts/` directory with a config or use absolute paths. For existing private
+configs, the complete inline form (`system`, `user`, `rating_rule`, `future`) remains accepted;
+partial or mixed file/inline forms fail.
+
+Files are read once at config load, with no trimming or newline normalization. Empty/non-UTF-8 files
+and invalid placeholders fail before any API client is built. `run.json` records resolved text plus
+`prompt_sources` (source paths and SHA-256 of the loaded UTF-8 bytes; inline text has only a hash).
+Paths and provenance are outside the API body. Preserving text preserves the request hash; changing
+text is an experiment and needs another `--name` if this directory contains that event with other bytes.
+Preview the exact request in `preview.json` before explicit paid execution.
+
+The composition path is visible in `cli._calls`: `criteria_for` -> `prompts.build_prompt` ->
+`OpenAIBackend.request_body` -> `Call`. `prompts.py` expands FUTURE, rating rule, system and user in
+order and builds the verdict schema. `material.py` selects and formats data; the backend maps the
+completed prompt into Responses fields and sends the same body. Fixed data labels and criterion
+annotations remain in `material.py`. Preview returns before client construction.
 
 Placeholders are `str.format` bare names, checked at load (literal braces are doubled):
 
@@ -81,7 +102,7 @@ quoted JSON strings, so they cannot leave their envelope.
 
 | File | Content |
 |---|---|
-| `run.json` | Resolved config and its SHA-256, the run's `run.json`/`events.jsonl` SHA-256 (a changed run is refused), status, plan (`packets`, `already_sent`, `to_send`, `refused`), counts, error |
+| `run.json` | Resolved config and its YAML SHA-256, template source paths/content SHA-256 (`prompt_sources`), the run's `run.json`/`events.jsonl` SHA-256 (a changed run is refused), status, plan (`packets`, `already_sent`, `to_send`, `refused`), counts, error |
 | `preview.json` | Preview: the plan and every planned request body (the exact material human raters can read) |
 | `audit.jsonl` | Per journaled translation or detector request: `ok` or `leak` with its problems |
 | `requests.jsonl` / `responses.jsonl` | `call_id`, `request_sha256`, `body` (fsynced before the send) / status, latency, raw, error |
