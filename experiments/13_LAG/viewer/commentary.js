@@ -1,4 +1,4 @@
-import {foresightState} from './foresight-model.js';
+import {foresightState} from './foresight-model.js?v=foresight-2';
 const el=(tag,text='',cls='')=>Object.assign(document.createElement(tag),{textContent:text,className:cls});
 const choices=(label,items,value)=>{
   const select=el('select');select.setAttribute('aria-label',label);

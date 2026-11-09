@@ -1,7 +1,7 @@
 import {stateFields,actionFields,derivedFields,defaults,derived} from './model.js';
 import {Playback} from './playback.js';
 import {renderProbabilities,renderSeries} from './charts.js';
-import {Commentary} from './commentary.js';
+import {Commentary} from './commentary.js?v=foresight-2';
 const $=id=>document.getElementById(id);
 let data, step=0, uid='A0100', activeTab='commentary', rows=new Map(), selected=new Set(defaults), request=0;
 const commentary=new Commentary($('commentaryPanel'),()=>{if(data)render();});
