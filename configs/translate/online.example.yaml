@@ -55,7 +55,6 @@ detector:
     float_precision: 5              # 1e-5 deg ~ 1 m; 3 decimals (~100 m) cannot resolve ~50 m of motion per step
 inputs: [instructions, alarms, question, previous_translation, trajectory]
 trajectory: {renderer: lag17-jsonl, past_steps: 60}   # D32: [step-59, step], renderer D22
-policy: null
 prompt:
   file: configs/translate/prompts/translator-intent-v2.yaml
   vars:
@@ -73,7 +72,6 @@ answer:
   max_evidence_items: null
   max_evidence_chars: null
   on_invalid: stop
-session: null
 output:
   root: outputs/translate           # relative to the repository root; gitignored as a whole tree
 pricing:                            # USD per 1M tokens, preview cost estimate only (provisional; re-check)

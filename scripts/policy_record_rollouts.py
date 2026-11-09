@@ -11,8 +11,7 @@ actor loaded through ``load_team_bundle`` (policy manifest hash + world checks),
 ``TeamSide`` / ``play_team_match`` loop. Capture is read-only: torch forward hooks on the actor
 (inputs, actions, log-probs, output state), on its ``nn.GRU`` (per-row pre-LayerNorm ``h'``) and
 on each head's ``logits_net`` (raw logits), plus a ``before_step`` / ``after_step`` callback that
-reads the simulator state. No extra RNG draws happen. ``policy_replay_rollouts.py``
-replays the recordings through the numpy reference forward.
+reads the simulator state. No extra RNG draws happen.
 """
 
 from __future__ import annotations

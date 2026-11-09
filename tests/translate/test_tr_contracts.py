@@ -66,7 +66,7 @@ def test_default_run_yaml_loads_with_explicit_values() -> None:
     assert config.detector.window.past_steps == 10
     assert config.trajectory.past_steps == 60
     assert config.triggers.tick_interval_steps == 5
-    assert config.detector is not None and config.code_session is False
+    assert config.detector is not None
     assert config.output_root == paths.ROOT / "outputs" / "translate"
     assert config.answer.limits.max_intent_chars == 600  # D61
     assert config.detector.messages_lookback_steps == 25
@@ -98,11 +98,9 @@ def test_the_detector_criteria_word_the_2026_11_09_change_definition() -> None:
         "detector",
         "inputs",
         "trajectory",
-        "policy",
         "prompt",
         "translation",
         "answer",
-        "session",
         "output",
         "pricing",
     ],

@@ -2,7 +2,7 @@
 
 Each processor reads only what is visible at the slot's step t (instructions issued at or before
 t, the alarms that reach the target by t, the request at t, the target's own latest valid
-translation, the trajectory window ending at t, the policy window ending at t) and returns named
+translation, the trajectory window ending at t) and returns named
 values; list and optional inputs are turned into text by the prompt file's ``blocks``. The values
 every slot has (``BASE_VALUES`` in ``config.py``) come first. ``event_input`` records what a human
 rater sees for the slot (scenario texts and the trajectory window), whatever the translator read.
@@ -16,7 +16,7 @@ from typing import Any
 
 import pandas as pd
 
-from translate.config import INPUT_POLICY, INPUT_TRAJECTORY, RunConfig
+from translate.config import INPUT_TRAJECTORY, RunConfig
 from translate.events import (
     Instruction,
     PreviousTranslation,
@@ -26,7 +26,6 @@ from translate.events import (
     trajectory_json,
 )
 from translate.lag.rendering import STEP_SECONDS, RenderedTrajectory
-from translate.policy.material import PolicyMaterial, policy_values
 from translate.prompts import list_block, optional_block
 from translate.scenario import EpisodeFacts, instructions_in_effect, target_alarms, target_request
 
@@ -44,7 +43,6 @@ class RunInputs:
     facts: EpisodeFacts
     config: RunConfig
     renderer: Renderer
-    policy: PolicyMaterial | None = None
 
 
 @dataclass(frozen=True)
@@ -139,37 +137,17 @@ def _trajectory(trajectory: RenderedTrajectory) -> dict[str, object]:
     }
 
 
-def _policy(inputs: RunInputs, slot: SlotState) -> dict[str, object]:
-    if inputs.policy is None or inputs.config.policy is None:
-        raise ValueError("the policy input is selected but no policy material was loaded")
-    return policy_values(inputs.policy, slot.step, inputs.config.policy.past_steps)
-
-
-def _session_values(config: RunConfig) -> dict[str, object]:
-    session = config.session
-    if session is None:
-        return {}
-    sandbox = session.sandbox
-    return {
-        "max_runs": session.max_runs,
-        "timeout_s": sandbox.timeout_s,
-        "stdout_cap_chars": sandbox.stdout_cap_chars,
-        "stderr_tail_chars": sandbox.stderr_tail_chars,
-    }
-
-
 PROCESSORS: dict[str, Callable[[RunInputs, SlotState], dict[str, object]]] = {
     "instructions": _instructions,
     "alarms": _alarms,
     "question": _question,
     "previous_translation": _previous,
-    INPUT_POLICY: _policy,
 }
 
 
 def slot_values(inputs: RunInputs, slot: SlotState, trajectory: RenderedTrajectory) -> dict[str, object]:
-    """Base values, then each selected input's values, then the session limits (code session)."""
-    values = {**_base(inputs, slot), **_session_values(inputs.config)}
+    """Base values, then each selected input's values."""
+    values = _base(inputs, slot)
     for name in inputs.config.inputs:
         found = _trajectory(trajectory) if name == INPUT_TRAJECTORY else PROCESSORS[name](inputs, slot)
         values = {**values, **found}
@@ -180,7 +158,7 @@ def event_input(inputs: RunInputs, slot: SlotState, trajectory: RenderedTrajecto
     """The event's ``input``: what a human rater sees for this slot, plus what the translator read."""
     request = target_request(inputs.scenario, slot.target, slot.step)
     config = inputs.config
-    record = {
+    return {
         "prompt_version": config.prompt.version,
         "target_aircraft": list(inputs.facts.target_aircraft(slot.target)),
         "instructions_in_effect": [item.to_json() for item in instructions_in_effect(inputs.scenario, slot.step)],
@@ -194,12 +172,3 @@ def event_input(inputs: RunInputs, slot: SlotState, trajectory: RenderedTrajecto
         "output_language": config.prompt.vars.get("output_language"),
         "translator_inputs": list(config.inputs),
     }
-    if inputs.policy is None:
-        return record
-    # The window and the bundle the sandbox read are added by the call (pipeline: observed_inputs).
-    policy = {
-        "network_alias": inputs.policy.spec.alias,
-        "checkpoint_sha256": inputs.policy.checkpoint.sha256,
-        "rollout_sha256": inputs.policy.rollout.sha256,
-    }
-    return {**record, "policy": policy}

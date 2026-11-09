@@ -7,7 +7,7 @@ covers insufficient quota), bad requests, authentication errors or any non-``ope
 The SDK's own retries stay off (``make_openai_client`` sets ``max_retries=0``) so that every attempt
 is visible here. The SDK is imported lazily, only after an exception has been raised.
 
-A run config with ``translation.retry: default`` uses it: a code session through
+A run config with ``translation.retry: default`` uses it: formerly a code session through
 ``translate.session_backend`` (each failed attempt in the turn's ``transcript.jsonl`` line), a
 one-shot call by wrapping its SDK client in ``RetryingClient`` (each failed attempt in the call's
 ``responses.jsonl`` line). ``retry: none`` and the judge CLIs keep reporting a 5xx as

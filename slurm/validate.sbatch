@@ -36,7 +36,7 @@ case "$MODE" in
     for job in slurm/*.sbatch; do bash -n "$job"; done
     (
       cd "$(mktemp -d)"
-      "$PY" -B -c 'import evaluation, translate, translate.cli, translate.policy.material'
+      "$PY" -B -c 'import evaluation, translate, translate.cli'
       for module in evaluation.assess_cli translate; do
         "$PY" -B -m "$module" --help >/dev/null
       done
@@ -86,8 +86,6 @@ def relocated(config):
             episode[key] = str(source / relative if relative.parts[0] == "outputs" else relative.resolve())
     scenario_file = scratch / f"{config.stem}.scenario.yaml"
     scenario_file.write_text(yaml.safe_dump({**scenario, "episode": episode}), encoding="utf-8")
-    if raw["policy"] is not None:
-        raw = {**raw, "policy": {**raw["policy"], "rollout_dir": str(source / raw["policy"]["rollout_dir"])}}
     config_file = scratch / config.name
     config_file.write_text(yaml.safe_dump({**raw, "output": {"root": str(scratch / "translate")}}), encoding="utf-8")
     return config_file, scenario_file
@@ -98,7 +96,7 @@ def check(code, what):
         sys.exit(f"{what}: exited {code}")
 
 
-refusing = Factories(detector_client=refuse, openai_client=refuse, preflight=refuse)
+refusing = Factories(detector_client=refuse, openai_client=refuse)
 configs = sorted(Path("configs/translate").glob("*.yaml"))
 for config in configs:
     config_file, scenario_file = relocated(config)

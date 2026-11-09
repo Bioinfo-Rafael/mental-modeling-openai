@@ -3,9 +3,8 @@
 Preview by default: no client is built and no credential is read; the run directory gets
 ``run.json``, ``preview.json`` and ``example_translation_request.json`` (the exact first request).
 ``--execute --confirm-paid-api`` runs the pipeline (every configuration has a paid translation
-call). This module is the only composition root: it alone builds the detector client, the OpenAI
-SDK client and the sandbox executors, and a code-session run passes the sandbox preflight before
-any key is read.
+call). This module is the only composition root: it alone builds the detector client and the OpenAI
+SDK client.
 Exit codes: 0 preview written or run completed; 1 deterministic failure; 2 usage or gate misuse;
 3 an external call has an uncertain outcome (may have been billed; never resent), also after
 Ctrl-C during a call and even when the final ``run.json`` cannot be written;
@@ -18,10 +17,8 @@ import argparse
 import hashlib
 import json
 import math
-import shutil
 import subprocess
 import sys
-import tempfile
 from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -33,7 +30,6 @@ import pandas as pd
 
 from translate import paths
 from translate.call_one_shot import OneShotCall, OpenAIIntentModel, RetryJournal, build_openai_request, build_prompt
-from translate.call_session import SessionCall, SessionSettings, sandbox_executor
 from translate.config import ConfigError, DetectorConfig, RunConfig, load_config
 from translate.detector import DETECTOR_STATE_VERSION, DetectorLayer, SystemOneDetectionModel, choice_question
 from translate.events import SAFE_ID_PATTERN, Scenario, canonical_json, redacted_error, sha256_text
@@ -59,7 +55,6 @@ from translate.llm.system_one import SystemOneClient, SystemOneError, question_s
 from translate.output_safety import derived_path
 from translate.pipeline import (
     INTERRUPTIONS,
-    SESSIONS_DIR,
     STATUS_CAP_REACHED,
     STATUS_COMPLETED,
     STATUS_FAILED,
@@ -67,11 +62,7 @@ from translate.pipeline import (
     Translator,
     TranslatorSummary,
 )
-from translate.policy.material import PolicyMaterial, load_policy_material, write_session_inputs
 from translate.run_files import JsonlRunSink, utc_now, write_cues, write_json
-from translate.sandbox.executor import SandboxLimits, discover_interpreter
-from translate.sandbox.preflight import run_preflight
-from translate.sandbox.session import SessionLimits
 from translate.scenario import (
     EpisodeFacts,
     PipelineError,
@@ -80,7 +71,6 @@ from translate.scenario import (
     load_scenario,
     validate_scenario,
 )
-from translate.session_backend import OpenAIResponsesBackend, user_item
 from translate.triggers import (
     BudgetFit,
     SchedulePlan,
@@ -116,7 +106,6 @@ EXAMPLE_REQUEST_FILE = "example_translation_request.json"
 
 DetectorClientFactory = Callable[[DetectorConfig], SystemOneClient]
 OpenAIClientFactory = Callable[..., Any]
-Preflight = Callable[..., Any]
 
 
 @dataclass(frozen=True)
@@ -128,7 +117,6 @@ class Inputs:
     facts: EpisodeFacts
     plan: SchedulePlan
     budget: BudgetFit | None  # online runs only
-    policy: PolicyMaterial | None  # the policy input only
 
 
 def run_name(value: str) -> str:
@@ -170,7 +158,7 @@ def build_system_one_client(config: DetectorConfig, *, transport: httpx.BaseTran
 
 
 def load_inputs(config: RunConfig, scenario_path: Path | None) -> Inputs:
-    """Scenario + hash-verified episode + schedule + detector budget + policy. No client, no credential."""
+    """Scenario + hash-verified episode + schedule + detector budget. No client, no credential."""
     path = scenario_path or config.scenario_path
     if path is None:
         raise ConfigError("no scenario: set scenario in the config or pass --scenario")
@@ -181,11 +169,7 @@ def load_inputs(config: RunConfig, scenario_path: Path | None) -> Inputs:
     check_preset_points(config, facts)  # preview and execute fail alike, before any directory or client
     plan = plan_schedule(scenario, facts, run_triggers(scenario, config), tick_interval(config))
     budget = _budget(config, scenario, frame, facts, plan) if config.online else None
-    policy = None
-    if config.policy is not None:
-        settings = config.policy
-        policy = load_policy_material(settings.rollout_dir, settings.seed, settings.spec, settings.checkpoint)
-    return Inputs(config, Path(path), scenario, frame, facts, plan, budget, policy)
+    return Inputs(config, Path(path), scenario, frame, facts, plan, budget)
 
 
 def _budget(
@@ -214,7 +198,7 @@ def _budget(
 
 
 def _run_inputs(inputs: Inputs) -> RunInputs:
-    return RunInputs(inputs.frame, inputs.scenario, inputs.facts, inputs.config, render_lag17_jsonl, inputs.policy)
+    return RunInputs(inputs.frame, inputs.scenario, inputs.facts, inputs.config, render_lag17_jsonl)
 
 
 def mandatory_bodies(inputs: Inputs) -> list[dict[str, Any]]:
@@ -233,10 +217,6 @@ def mandatory_bodies(inputs: Inputs) -> list[dict[str, Any]]:
 
 def _request_body(config: RunConfig, values: dict[str, object]) -> dict[str, Any]:
     translation = config.translation
-    if config.code_session:
-        _, message = config.prompt.render(values)
-        options = _session_options(config)
-        return {"input": [user_item(message)], **options}
     prompt = build_prompt(config.prompt, values)
     request = build_openai_request(
         prompt,
@@ -245,13 +225,6 @@ def _request_body(config: RunConfig, values: dict[str, object]) -> dict[str, Any
         max_output_tokens=translation.max_output_tokens,
     )
     return build_responses_body(request)
-
-
-def _session_options(config: RunConfig) -> dict[str, Any]:
-    translation = config.translation
-    return OpenAIResponsesBackend(
-        None, translation.model, translation.reasoning_effort, translation.max_output_tokens
-    ).options
 
 
 def _approx_tokens(chars: int) -> int:
@@ -263,18 +236,6 @@ def _estimate(inputs: Inputs, bodies: list[dict[str, Any]]) -> dict[str, Any]:
     price = config.price(config.translation.model)
     calls = len(bodies)
     first_tokens = sum(_approx_tokens(len(canonical_json(body))) for body in bodies)
-    if config.code_session and config.session is not None:
-        per_call = config.session.max_total_tokens
-        bound = (
-            None if price is None else round(calls * per_call * max(price.input, price.output) / TOKENS_PER_MILLION, 4)
-        )
-        return {
-            "approximate": "a code session is capped at session.max_total_tokens (input + output); "
-            "the bound prices every capped token at the higher of the input and output rates",
-            "known_calls": calls,
-            "first_message_tokens": first_tokens,
-            "cost_usd_upper_bound_known_calls": bound,
-        }
     max_out = config.translation.max_output_tokens
     cost = (
         None
@@ -408,7 +369,6 @@ def _run_record(inputs: Inputs, *, mode: str, status: str) -> dict[str, Any]:
                 "video_path": str(scenario.episode.video_path) if scenario.episode.video_path else None,
                 "last_complete_step": inputs.facts.last_step,
             },
-            "policy": inputs.policy.provenance() if inputs.policy is not None else None,
         },
         "provenance": {
             "git": _git_state(),
@@ -503,68 +463,11 @@ def _one_shot_call(config: RunConfig, openai_client: Any, journal: RetryJournal)
     return OneShotCall(model, config.prompt, config.answer.limits)
 
 
-def session_settings(config: RunConfig, policy: PolicyMaterial) -> SessionSettings:
-    session = config.session
-    sandbox = session.sandbox
-    limits = SessionLimits(
-        session.max_runs,
-        session.max_total_tokens,
-        session.max_protocol_errors,
-        int(session.max_total_tokens * session.answer_at_fraction),
-    )
-    sandbox_limits = SandboxLimits(
-        sandbox.timeout_s,
-        sandbox.memory_bytes,
-        sandbox.file_size_bytes,
-        sandbox.stdout_cap_chars,
-        sandbox.stderr_tail_chars,
-        sandbox.tmp_size_mb,
-        sandbox.threads,
-        sandbox.work_max_bytes,
-    )
-    hidden = (paths.ROOT, Path.home(), policy.checkpoint.path.parent, policy.rollout.path.parent)
-    return SessionSettings(limits, sandbox_limits, config.policy.past_steps, hidden)
-
-
-def _session_call(inputs: Inputs, openai_client: Any, preflight: Preflight) -> SessionCall:
-    config, policy = inputs.config, inputs.policy
-    translation = config.translation
-    backend = OpenAIResponsesBackend(
-        openai_client, translation.model, translation.reasoning_effort, translation.max_output_tokens, translation.retry
-    )
-    settings = session_settings(config, policy)
-    executors = sandbox_executor(discover_interpreter(config.session.sandbox.python), settings.sandbox)
-    return SessionCall(
-        backend, backend.options, config.prompt, settings, policy, executors, config.answer.limits, preflight
-    )
-
-
-def sandbox_selftest(inputs: Inputs, preflight: Preflight = run_preflight) -> bool:
-    """Fail-closed preflight in a throwaway directory, with the first slot's real session inputs."""
-    plan = next((item for item in inputs.plan.targets if item.mandatory_translation_steps), None)
-    if plan is None or inputs.policy is None:
-        return True
-    settings = session_settings(inputs.config, inputs.policy)
-    scratch = Path(tempfile.mkdtemp(prefix="translate-preflight-"))
-    try:
-        step = plan.mandatory_translation_steps[0]
-        session_inputs = write_session_inputs(
-            inputs.policy, plan.target.target_id, step, settings.past_steps, scratch / "inputs"
-        )
-        executors = sandbox_executor(discover_interpreter(inputs.config.session.sandbox.python), settings.sandbox)
-        executor = executors(scratch / "work", session_inputs.bundle.weights)
-        result = preflight(executor, [*settings.hidden, session_inputs.bundle.path])
-        print(json.dumps({"sandbox_preflight": result.to_dict()}), file=sys.stderr)
-        return bool(result.ok)
-    finally:
-        shutil.rmtree(scratch, ignore_errors=True)
-
-
 class CountingClient:
     """The OpenAI SDK client with every ``responses.create`` counted.
 
-    It sits below the retry and session layers, so the count is every request sent to the paid API:
-    each one-shot call, each code-session turn and each retried attempt.
+    It sits below the retry layer, so the count is every request sent to the paid API: each one-shot
+    call and each retried attempt.
     """
 
     def __init__(self, client: Any) -> None:
@@ -618,14 +521,10 @@ def _close_detector(client: SystemOneClient | None) -> None:
 class Factories:
     detector_client: DetectorClientFactory = build_system_one_client
     openai_client: OpenAIClientFactory = make_openai_client
-    preflight: Preflight = run_preflight
 
 
 def _execute(args: argparse.Namespace, inputs: Inputs, factories: Factories) -> int:
-    """Order: sandbox preflight -> local client -> /v1/models health -> run dir -> paid client -> pipeline."""
-    if inputs.config.code_session and not sandbox_selftest(inputs, factories.preflight):
-        print("Refused: sandbox preflight failed. API requests made: 0", file=sys.stderr)
-        return EXIT_FAILED
+    """Order: local client -> /v1/models health -> run dir -> paid client -> pipeline."""
     detector_client = factories.detector_client(inputs.config.detector) if inputs.config.online else None
     try:
         return _execute_with(args, inputs, detector_client, factories)
@@ -638,16 +537,12 @@ def _build_translator(
 ) -> Translator:
     config = inputs.config
     journal = RetryJournal()
-    if config.code_session:
-        call = _session_call(inputs, openai_client, factories.preflight)
-    else:
-        call = _one_shot_call(config, openai_client, journal)
+    call = _one_shot_call(config, openai_client, journal)
     detector = None
     if detector_client is not None:
         detection = SystemOneDetectionModel(detector_client, question_id=config.detector.question.question_id)
         detector = DetectorLayer(detection, threshold=config.detector.threshold)
-    sessions = run_dir / SESSIONS_DIR if config.code_session else None
-    return Translator(call=call, detector=detector, policy=inputs.policy, sessions_dir=sessions, retries=journal)
+    return Translator(call=call, detector=detector, retries=journal)
 
 
 def _execute_with(

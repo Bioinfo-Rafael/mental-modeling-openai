@@ -11,9 +11,9 @@ run config (`configs/translate/*.yaml`):
 3. **complete the prompt** (`prompts.py`): the prompt file named by `prompt.file` is filled with
    those values and `prompt.vars`; the prompt text lives in config, so prompt ablations need no
    code change;
-4. **translate**: the prompt file's `protocol` decides the call: `one_shot` (one strict-schema
-   OpenAI Responses request) or `code_session` (the model reads the policy's weights and replay
-   activations with Python in a sandbox, then answers in JSON).
+4. **translate**: one strict-schema OpenAI Responses request. The former code session (the model
+   read the policy's weights in a sandbox) was deleted on 2026-11-09 (U-c); the policy input returns
+   as recorded activations plus the action-head weights.
 
 When to translate is the trigger source (`triggers:`): **online** (every target is translated at
 the episode start; a human question, or a target's first instruction arriving after the start,
@@ -43,7 +43,6 @@ evaluate every configuration the same way.
 | `inputs.py` | Input processors: slot -> prompt values; the event's human-visible `input` record |
 | `prompts.py` | Prompt files: load, placeholder check, list/optional blocks, follow-up turns |
 | `call_one_shot.py` | One strict-schema Responses call, its parser and the OpenAI adapter |
-| `call_session.py`, `session_backend.py` | One code session per slot: inputs bundle, preflight, loop, audit, answer; the Responses backend |
 | `answers.py` | Answer limits and validation, the same for both calls |
 | `pipeline.py` | The chronological loop: triggers -> inputs -> prompt -> call -> answer -> journal -> event |
 | `detector.py` | clef-flash detection layer (System One state, budget bound, adapter) |
@@ -51,7 +50,6 @@ evaluate every configuration the same way.
 | `events.py` | Event and scenario types, event ids, canonical JSON (it defines `request_sha256`) |
 | `cli.py` | The only composition root: gate, preview, clients, run directory, provenance |
 | `llm/`, `lag/` | LLM clients (OpenAI Responses, System One, vLLM launcher, retry); LAG episode loader and renderers |
-| `policy/`, `sandbox/` | Checkpoint reader, spec, float64 replay and its renderings; the unshare sandbox, preflight, reply protocol, audit |
 
 ## Shipped configurations
 
@@ -59,7 +57,6 @@ evaluate every configuration the same way.
 |---|---|---|---|
 | `online.example.yaml` | instructions, alarms, question, previous translation, trajectory | `translator-intent-v2` | online (clef-flash), example scenario |
 | `seed100601-trajectory{,-ja,-ja-short}.yaml` | instructions, alarms, question, previous translation, trajectory | `translator-intent-v2` | preset 45 / 145 / 245 / 315 |
-| `seed100601-policy{,-ja,-ja-short}.yaml` | instructions, previous translation, policy | `intent-b-v1` (code session) | preset 45 / 145 / 245 / 315 |
 
 The trajectory and policy configs follow the two former comparison methods (their byte goldens and
 replay checks were deleted on 2026-11-09, U-b). The preset
@@ -74,7 +71,7 @@ steps were chosen for large movement changes, and a preset run translates exactl
 # example_translation_request.json (the exact first request).
 .venv/bin/python -m translate --config configs/translate/seed100601-trajectory.yaml
 # Paid run (keys from the environment only; OPENAI_API_KEY lives in the group-shared repo-root .env).
-.venv/bin/python -m translate --config configs/translate/seed100601-policy.yaml --run-name <name> --execute --confirm-paid-api
+.venv/bin/python -m translate --config configs/translate/seed100601-trajectory.yaml --run-name <name> --execute --confirm-paid-api
 ```
 
 On Slurm: `slurm/translate.sbatch preview|paid` (preset triggers) and `slurm/translate_vllm.sbatch
@@ -88,14 +85,12 @@ probe|paid` (online triggers: the job serves clef-flash on a local vLLM; awaits 
 | `--run-name NAME` | Run directory name (default `<UTC stamp>_<scenario_id>_<preview|execute>`); a name, never a path |
 | `--execute`, `--confirm-paid-api` | Both, or neither: every configuration makes paid translation calls |
 
-A code-session config passes the fail-closed sandbox preflight before any client or key exists.
-
 ### Exit codes
 
 | Code | Meaning |
 |---|---|
 | 0 | Preview written, or run `completed` |
-| 1 | Deterministic failure: config, scenario, episode data, rendering, budget, sandbox preflight, existing run directory, local server, protocol, refusal, incomplete response, invalid answer under `on_invalid: stop` |
+| 1 | Deterministic failure: config, scenario, episode data, rendering, budget, existing run directory, local server, protocol, refusal, incomplete response, invalid answer under `on_invalid: stop` |
 | 2 | Usage or gate misuse (argparse), including an invalid `--run-name` |
 | 3 | `uncertain`: a call may have reached the server and been billed. Never resend it blindly |
 | 4 | `cap_reached`: a call cap stopped the run; `events.jsonl` is partial |
@@ -118,7 +113,6 @@ are commented examples).
 | `prompt` | `{file, vars}`: the prompt file and its free variables |
 | `translation` | `{backend: openai_responses, model, reasoning_effort, max_output_tokens, timeout_s, retry: default | none}`; `none` sends every request once (a 5xx is reported, not resent) |
 | `answer` | `{max_intent_chars, max_evidence_items, max_evidence_chars, on_invalid: stop | skip}` |
-| `session` | Code session only: `{max_runs, max_total_tokens, max_protocol_errors, answer_at_fraction, sandbox}` |
 | `output`, `pricing` | Output root; USD per 1M tokens for the preview estimate |
 
 ### Inputs and the values they provide
@@ -132,7 +126,6 @@ are commented examples).
 | `previous_translation` | `previous_translation` (the target's latest valid answer, through `blocks.previous_translation`) |
 | `trajectory` | `trajectory`, `trajectory_start`, `trajectory_end`, `trajectory_points`, `trajectory_anchor` |
 | `policy` | `policy_alias`, `policy_task`, `policy_architecture`, `policy_inputs`, `policy_outputs`, `policy_parameters`, `policy_activations`, `window_start`, `window_end`, `window_length` |
-| code session | `max_runs`, `timeout_s`, `stdout_cap_chars`, `stderr_tail_chars` |
 
 ### Prompt files
 
@@ -267,22 +260,6 @@ Trajectory window: steps <a>-<b>, 0.2 s per step, one JSON line per step, newest
   `vllm serve Cloudflare/clef-flash` (4096 for OpenJev `wev serve`); the config rejects > 16384.
 - `threshold: 0.65` is provisional until a labelled LAG check.
 - `detector_call.output` = `{label, probabilities: {none, change}, threshold, triggered}`.
-
-## Code-session safety (the policy input)
-
-- **Checkpoint reader** (`policy/torch_reader.py`): stdlib-only allow-list unpickler, no torch. It accepts
-  only `OrderedDict`, `_rebuild_tensor_v2`, `_rebuild_parameter` and `torch.*Storage`, and rejects
-  every other global, compressed or unknown zip members, bad offsets, strides or sizes, and any
-  dtype other than float32.
-- **Sandbox** (`sandbox/executor.py`): `unshare` user, mount, pid and net namespaces; a tmpfs root holding
-  only `/usr`, the interpreter, numpy, `/work` and the read-only inputs, entered via `pivot_root`;
-  `env -i`, `python -I`, RLIMIT_AS/FSIZE/NPROC/CPU, a timeout, a `/work` size cap and an output cap.
-  There is no aggregate memory cgroup limit on these nodes, so run paid sessions inside a Slurm
-  job. The preflight (`sandbox/preflight.py`) must pass every check, or no request is sent.
-- **Audit** (`sandbox/audit.py`): flags nonlinearities, LayerNorm-like expressions, recurrence loops and
-  torch imports; `audit.json` records `mode: code-session` and the prompt version.
-- **Reference forward** (`policy/reference.py`): numpy float64, mirrors mtd-rl-lag (Linear -> ReLU ->
-  LayerNorm, GRU gates `[r; z; n]`). Torch parity: `slurm/policy_parity.sbatch`.
 
 ## `events.jsonl` contract (schema_version 3)
 
@@ -492,5 +469,5 @@ connection:
 
 ## Tests
 
-`.venv/bin/python -m pytest tests/translate tests/policy tests/sandbox -q` (via
+`.venv/bin/python -m pytest tests/translate -q` (via
 `slurm/validate.sbatch full`) runs offline: no network, GPU, paid call or real key.

@@ -24,7 +24,6 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass, replace
-from pathlib import Path
 from time import perf_counter
 from typing import Any, Protocol
 
@@ -32,7 +31,6 @@ import pandas as pd
 
 from translate.answers import INVALID_ANSWER_PREFIX
 from translate.call_one_shot import CallResult, RetryJournal, SlotRef
-from translate.call_session import SandboxRefused
 from translate.config import ON_INVALID_STOP, RunConfig
 from translate.detector import DetectorLayer
 from translate.events import (
@@ -64,7 +62,6 @@ from translate.events import (
 )
 from translate.inputs import RunInputs, SlotState, event_input, slot_values, trajectory_window
 from translate.lag.rendering import RenderedTrajectory, render_detector_compact, render_lag17_jsonl
-from translate.policy.material import PolicyMaterial
 from translate.scenario import episode_facts, translation_targets, validate_scenario
 from translate.triggers import check_preset_points, detector_context, is_tick, run_triggers, tick_interval
 
@@ -80,7 +77,6 @@ RESPONSE_UNCERTAIN = "uncertain"
 UNEXPECTED_ERROR_TYPE_PREFIX = "unexpected:"
 INVALID_ANSWER_ERROR = "TranslationOutputError"
 TIMING_DECIMALS = 3  # latency_s and processing_s: monotonic seconds, rounded to milliseconds
-SESSIONS_DIR = "sessions"
 # What ends a run with accurate counts. Ctrl-C during a call makes that call uncertain (exit 3).
 INTERRUPTIONS = (Exception, KeyboardInterrupt)
 
@@ -94,7 +90,7 @@ class EventSink(Protocol):
 
 
 class TranslationCall(Protocol):
-    """``OneShotCall`` or ``SessionCall``: prepare (payload to journal), run, validate the answer."""
+    """``OneShotCall``: prepare (payload to journal), run, validate the answer."""
 
     def prepare(self, values: dict[str, object], slot: SlotRef) -> tuple[dict[str, Any], Any]: ...
     def run(self, prepared: Any) -> CallResult: ...
@@ -136,8 +132,8 @@ class _Stop(Exception):
 class _Run:
     """Progress of one run. Local to ``Translator.run`` and never shared."""
 
-    def __init__(self, inputs: RunInputs, sink: EventSink, sessions_dir: Path | None) -> None:
-        self.inputs, self.sink, self.sessions_dir = inputs, sink, sessions_dir
+    def __init__(self, inputs: RunInputs, sink: EventSink) -> None:
+        self.inputs, self.sink = inputs, sink
         self.frame, self.scenario, self.config, self.facts = inputs.frame, inputs.scenario, inputs.config, inputs.facts
         validate_scenario(self.scenario, self.facts, self.config.scenario_limits)
         check_preset_points(self.config, self.facts)
@@ -207,23 +203,19 @@ class Translator:
         detector: DetectorLayer | None = None,
         detector_renderer: Renderer = render_detector_compact,
         translation_renderer: Renderer = render_lag17_jsonl,
-        policy: PolicyMaterial | None = None,
-        sessions_dir: Path | None = None,
         retries: RetryJournal | None = None,
     ) -> None:
         self._call = call
         self._detector = detector
         self._detector_renderer = detector_renderer
         self._translation_renderer = translation_renderer
-        self._policy = policy
-        self._sessions_dir = sessions_dir
         self._retries = retries  # failed attempts of a retried translation call (one-shot)
 
     def run(self, *, frame: pd.DataFrame, scenario: Scenario, config: RunConfig, sink: EventSink) -> TranslatorSummary:
-        inputs = RunInputs(frame, scenario, episode_facts(frame), config, self._translation_renderer, self._policy)
+        inputs = RunInputs(frame, scenario, episode_facts(frame), config, self._translation_renderer)
         if config.online and self._detector is None:
             raise ValueError("an online run needs a detector layer")
-        run = _Run(inputs, sink, self._sessions_dir)
+        run = _Run(inputs, sink)
         try:
             for step in range(run.facts.last_step + 1):
                 self._step(run, step)
@@ -394,18 +386,6 @@ class Translator:
             return None
         return TriggerReason(result.label, DETECTOR_SOURCE, call_id, result.probability)
 
-    def _slot_ref(self, run: _Run, call_id: str, step: int, target: TargetRef) -> SlotRef:
-        directory = None if run.sessions_dir is None else run.sessions_dir / f"s{step:04d}_{target.target_id}"
-        return SlotRef(call_id, step, target, directory)
-
-    def _prepare(self, run: _Run, values: dict[str, object], slot: SlotRef) -> tuple[dict[str, Any], Any]:
-        """The call's request body and prepared state; a refused sandbox stops the run before any send."""
-        try:
-            return self._call.prepare(values, slot)
-        except SandboxRefused as exc:
-            error = {"layer": LAYER_TRANSLATION, "call_id": slot.call_id, "type": type(exc).__name__}
-            raise _Stop(STATUS_FAILED, error={**error, "message": str(exc), "uncertain": False}) from exc
-
     def _translate(
         self, run: _Run, step: int, state: TargetState, reasons: tuple[TriggerReason, ...], started: float
     ) -> None:
@@ -414,8 +394,8 @@ class Translator:
         current_id = event_id(run.scenario.scenario_id, target, step)
         slot_state = SlotState(step, target, state.instruction, state.previous)
         trajectory = trajectory_window(run.inputs, step)
-        slot = self._slot_ref(run, current_id, step, target)
-        payload, prepared = self._prepare(run, slot_values(run.inputs, slot_state, trajectory), slot)
+        slot = SlotRef(current_id, step, target)
+        payload, prepared = self._call.prepare(slot_values(run.inputs, slot_state, trajectory), slot)
         request_sha256 = self._write_request(run, current_id, LAYER_TRANSLATION, step, target, payload)
         result, latency_s = self._send(run, LAYER_TRANSLATION, current_id, lambda: self._call.run(prepared))
         self._answered(run, LAYER_TRANSLATION, current_id, latency_s, result.raw)
@@ -425,8 +405,6 @@ class Translator:
             error = {"layer": LAYER_TRANSLATION, "call_id": current_id, "type": INVALID_ANSWER_ERROR}
             raise _Stop(STATUS_FAILED, error={**error, "message": message, "uncertain": False})
         record_input = event_input(run.inputs, slot_state, trajectory)
-        if result.observed_inputs is not None:  # code session: the bundle the sandbox read
-            record_input = {**record_input, "policy": {**record_input.get("policy", {}), **result.observed_inputs}}
         body = _translation_body(run, current_id, reasons, result, translation, record_input)
         body = {**body, "request_sha256": request_sha256, **({"answer_problem": problem} if problem else {})}
         run.emit(RECORD_TRANSLATION_EVENT, step, target, body, started=started)

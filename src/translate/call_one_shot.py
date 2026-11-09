@@ -12,7 +12,6 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import asdict, dataclass
-from pathlib import Path
 from typing import Any, Protocol
 
 from translate.answers import INVALID_ANSWER_PREFIX, AnswerLimits, payload_problem
@@ -137,7 +136,6 @@ class SlotRef:
     call_id: str
     step: int
     target: TargetRef
-    session_dir: Path | None  # code session only: where the session's inputs and logs go
 
 
 @dataclass(frozen=True)
@@ -145,14 +143,11 @@ class CallResult:
     """What a call produced: the journaled response body, the answer text and the model facts."""
 
     raw: Any
-    answer_text: str | None  # None: the call ended without an answer (code session caps)
+    answer_text: str | None  # None: the call ended without an answer
     response_model: str | None
     response_id: str | None
     usage: dict[str, int]
     ended_without_answer: str | None = None  # why there is no answer text
-    # Code session only: the bundle the sandbox read ({session_dir, inputs_manifest_sha256, window}),
-    # recorded in the event's input.policy so the judge's leak check can verify it.
-    observed_inputs: dict[str, Any] | None = None
 
 
 class OneShotCall:

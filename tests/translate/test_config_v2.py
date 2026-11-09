@@ -14,7 +14,6 @@ from translate.llm.retry import RetryPolicy
 from .tr_fakes import RUN_CONFIG, run_config_raw, with_value, write_yaml
 
 TRANSLATE_CONFIGS = paths.CONFIGS / "translate"
-POLICY_CONFIG = TRANSLATE_CONFIGS / "seed100601-policy.yaml"
 
 
 def _parse(raw: object, path: Path = RUN_CONFIG):
@@ -72,34 +71,6 @@ def test_config_trigger_source_and_detector_mismatch_raises_config_error(
 
     with pytest.raises(ConfigError, match=match):
         _parse(raw)
-
-
-@pytest.mark.parametrize(
-    ("mutation", "match"),
-    [
-        ("missing_policy", "policy is required"),
-        ("missing_session", "code-session prompt needs"),
-        ("one_shot_with_policy_session", "code-session prompt needs"),
-        ("one_shot_with_session", "code-session prompt needs"),
-    ],
-)
-def test_config_policy_session_and_prompt_protocol_mismatch_raises_config_error(mutation: str, match: str) -> None:
-    policy_raw = yaml.safe_load(POLICY_CONFIG.read_text(encoding="utf-8"))
-    if mutation == "missing_policy":
-        raw = {**policy_raw, "policy": None}
-    elif mutation == "missing_session":
-        raw = {**policy_raw, "session": None}
-    elif mutation == "one_shot_with_policy_session":
-        raw = {
-            **policy_raw,
-            "prompt": run_config_raw()["prompt"],
-        }
-    else:
-        online = run_config_raw()
-        raw = {**online, "session": policy_raw["session"]}
-
-    with pytest.raises(ConfigError, match=match):
-        _parse(raw, POLICY_CONFIG)
 
 
 def test_config_retry_none_is_a_zero_retry_policy() -> None:

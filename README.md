@@ -11,10 +11,10 @@
 入力を選ぶ（inputs）→ 入力を加工する → プロンプトを完成させる（prompt）→ 翻訳する
 ```
 
-1. 入力を選ぶ：`instructions`（指示）、`alarms`（警報）、`question`（人の質問）、`previous_translation`（前回の翻訳）、`trajectory`（トラジェクトリ）、`policy`（方策の重みと中間状態）から選びます。
+1. 入力を選ぶ：`instructions`（指示）、`alarms`（警報）、`question`（人の質問）、`previous_translation`（前回の翻訳）、`trajectory`（トラジェクトリ）から選びます。方策を読む入力は2026-11-09に作り直し中です。
 2. 入力を加工する：時刻tまでの情報だけから、プロンプトに入れる値を作ります。
 3. プロンプトを完成させる：プロンプトの文面は設定側のプロンプトファイル（`configs/translate/prompts/`）にあります。文面を書き換えるだけでプロンプトのアブレーションができます。
-4. 翻訳する：プロンプトファイルの `protocol` で呼び出し方が決まります。`one_shot` は1回のOpenAI呼び出し、`code_session` はモデルがサンドボックスでPythonを実行しながら方策を読む複数回の対話です。
+4. 翻訳する：1回のOpenAI呼び出しです。サンドボックスのcode sessionは2026-11-09に削除しました（U-c）。
 
 翻訳する時点は次の3種類です（イベントのschema 3、2026-11-09の定義）。
 
@@ -92,7 +92,7 @@ unset OPENAI_API_KEY
 
 | やること | コマンド例 |
 |---|---|
-| 翻訳（preset） | `sbatch slurm/translate.sbatch preview --config configs/translate/seed100601-policy.yaml` |
+| 翻訳（preset） | `sbatch slurm/translate.sbatch preview --config configs/translate/seed100601-trajectory.yaml` |
 | 翻訳（online、GPU、D49承認後） | `VLLM_ENV=... HF_CACHE_DIR=... SCENARIO=private/translator/<s>.yaml sbatch --export=ALL slurm/translate_vllm.sbatch probe`（有料は `paid`） |
 | rolloutの記録とエピソードの準備 | `sbatch slurm/episode_record_rollouts.sbatch` の後に `sbatch slurm/episode_prepare.sbatch`（引数は [slurm/README.md](slurm/README.md)） |
 | Judge（3時点×4観点） | `sbatch slurm/judge_assess.sbatch preview --translator-run outputs/translate/<run>` |
@@ -104,7 +104,7 @@ unset OPENAI_API_KEY
 
 | 出力先 | 書くもの | 再実行したとき |
 |---|---|---|
-| `outputs/translate/<run>/` | 翻訳（`events.jsonl`、`cues.jsonl`、要求と応答、code sessionの記録） | 毎回新しいrun。resumeなし |
+| `outputs/translate/<run>/` | 翻訳（`events.jsonl`、`cues.jsonl`、要求と応答） | 毎回新しいrun。resumeなし |
 | `outputs/evaluation/assess/<run>/` | assess judge | `judge_requests.jsonl` にある要求は再送しない |
 
 以前の出力（`outputs/translator/`、`outputs/intent_compare/`、`outputs/weightreading/`）はそのまま残ります。

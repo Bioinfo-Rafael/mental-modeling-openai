@@ -18,7 +18,6 @@ scenario_limits: {max_instruction_chars: 300, max_alarm_chars: 200, max_question
 detector: null                      # preset triggers: no change-point detector
 inputs: [instructions, alarms, question, previous_translation, trajectory]
 trajectory: {renderer: lag17-jsonl, past_steps: 60}   # recorded in every event (judge material)
-policy: null
 prompt:
   file: configs/translate/prompts/translator-intent-v2.yaml
   vars:
@@ -26,7 +25,6 @@ prompt:
     limits_paragraph: ""
 translation: {backend: openai_responses, model: gpt-6.1-sol, reasoning_effort: high, max_output_tokens: 25000, timeout_s: 1800, retry: default}
 answer: {max_intent_chars: 1000, max_evidence_items: null, max_evidence_chars: null, on_invalid: skip}
-session: null
 output: {root: outputs/translate}
 pricing:                            # USD per 1M tokens, preview cost estimate only (list price; re-check)
   gpt-6.1-sol: {input: 2.00, cached_input: 0.10, output: 10.00}

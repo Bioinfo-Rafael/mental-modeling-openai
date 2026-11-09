@@ -3,12 +3,11 @@
 # Choose inputs, prompt and trigger points in the config (configs/translate/*.yaml); this job runs
 # preset-trigger configs. Online configs need the clef-flash detector: use slurm/translate_vllm.sbatch.
 # MODE (first argument): preview (default; requests + cost estimate, 0 API calls, no key read)
-# | paid (`--execute --confirm-paid-api`; a code-session config first passes the sandbox preflight).
+# | paid (`--execute --confirm-paid-api`).
 # Everything after MODE goes to `python -m translate` (--config is required; --run-name, --scenario).
 #   sbatch slurm/translate.sbatch preview --config configs/translate/seed100601-trajectory.yaml
 #   set -a; . ./.env; set +a; sbatch --export=ALL slurm/translate.sbatch paid \
-#     --config configs/translate/seed100601-policy.yaml --run-name seed100601-policy
-# Code sessions run sequentially; the sandbox has no memory cgroup here, so keep paid runs inside a job.
+#     --config configs/translate/seed100601-trajectory.yaml --run-name seed100601-trajectory
 #SBATCH --partition=151-partition
 #SBATCH --job-name=translate
 #SBATCH --cpus-per-task=4

@@ -8,12 +8,11 @@ the repository root; logs go to `logs/slurm/<job name>-<job id>.out` (the direct
 |---|---|---|---|
 | `uv_sync.sbatch` | `uv sync --locked --all-extras --reinstall-package mtd-rl-xavier` (the only job that changes `.venv`) | - | 4 CPU, 30 min |
 | `validate.sbatch` | offline checks, never an API call | `full`, `static`, `preview` | 4 CPU, 2 h |
-| `translate.sbatch` | `python -m translate` for a preset-trigger config (a code-session config passes the sandbox preflight first) | `preview` (default), `paid` | 4 CPU, 16 GB, 12 h |
+| `translate.sbatch` | `python -m translate` for a preset-trigger config | `preview` (default), `paid` | 4 CPU, 16 GB, 12 h |
 | `translate_vllm.sbatch` | vLLM (the clef-flash change-point detector) + `python -m translate` for an online config in one GPU job (awaits approval D49) | `probe` (default), `paid` | 1 GPU, 8 CPU, 30 min |
 | `judge_assess.sbatch` | `evaluation.assess_cli` check + judge (+ report when paid) | `preview` (default), `paid` | 2 CPU, 4 h |
-| `episode_record_rollouts.sbatch` | record MHI rollouts in mtd-rl-lag and replay them in numpy (`outputs/rollouts/`) | - | 4 CPU, 1 h |
+| `episode_record_rollouts.sbatch` | record MHI rollouts in mtd-rl-lag (`outputs/rollouts/`) | - | 4 CPU, 1 h |
 | `episode_prepare.sbatch` | replay, CSV conversion (`scripts/episode_to_csv.py`) and the video of one rollout seed (mtd-rl-lag) | - | 4 CPU, 1 h |
-| `policy_parity.sbatch` | torch vs numpy forward parity of the MHI actors | - | 4 CPU, 1 h |
 
 `episode_prepare.sbatch` takes its inputs from the environment (all required):
 

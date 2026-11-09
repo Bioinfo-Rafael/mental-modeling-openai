@@ -7,9 +7,8 @@ unknown keys fail, and there is no default model in code. Sections:
 - ``triggers``: ``online`` (forced ``start`` at the episode start / ``request`` + the clef-flash detector every
   ``tick_interval_steps``) or ``preset`` (``points``: steps chosen in advance, each with its kind);
 - ``inputs``: the selected inputs; ``trajectory`` (the window every event records for the judge,
-  inserted into the prompt when selected) and ``policy`` (rollout, spec, window) configure them;
-- ``prompt``: the prompt file and its ``vars``; its protocol decides the call (one Responses
-  request, or a code session configured by ``session``);
+  inserted into the prompt when selected) configures them;
+- ``prompt``: the prompt file and its ``vars`` (one Responses request per translation);
 - ``translation`` (model and request options), ``answer`` (limits, ``on_invalid``: ``stop`` | ``skip``),
   ``limits`` (call caps), ``scenario_limits``, ``detector``, ``output``, ``pricing``.
 
@@ -34,7 +33,7 @@ from translate.lag.rendering import LAG17_RENDERER, RESERVED_COMPACT_KEYS
 from translate.llm.openai_responses import REASONING_EFFORTS
 from translate.llm.retry import DEFAULT_RETRY_POLICY, RetryPolicy
 from translate.llm.system_one import SystemOneConfigError, checked_env_name, checked_tcp_url
-from translate.prompts import PROTOCOL_CODE_SESSION, PromptTemplate, load_prompt
+from translate.prompts import PromptTemplate, load_prompt
 from translate.scenario import ScenarioLimitsConfig
 from translate.strict_yaml import (
     is_int,
@@ -70,7 +69,6 @@ USER_NAME_PATTERN = re.compile(r"[A-Za-z0-9_][A-Za-z0-9._-]{0,63}")  # used with
 UNEXPANDED_MARKERS = ("{", "}", "$")
 
 INPUT_TRAJECTORY = "trajectory"
-INPUT_POLICY = "policy"
 # What each selectable input provides to the prompt (src/translate/inputs.py fills these).
 INPUT_VALUES = {
     "instructions": {"instructions", "primary_instruction"},
@@ -78,18 +76,6 @@ INPUT_VALUES = {
     "question": {"question"},
     "previous_translation": {"previous_translation"},
     INPUT_TRAJECTORY: {"trajectory", "trajectory_start", "trajectory_end", "trajectory_points", "trajectory_anchor"},
-    INPUT_POLICY: {
-        "policy_alias",
-        "policy_task",
-        "policy_architecture",
-        "policy_inputs",
-        "policy_outputs",
-        "policy_parameters",
-        "policy_activations",
-        "window_start",
-        "window_end",
-        "window_length",
-    },
 }
 BLOCK_INPUTS = ("instructions", "alarms", "question", "previous_translation")  # formatted by the prompt's blocks
 BASE_VALUES = {
@@ -102,7 +88,6 @@ BASE_VALUES = {
     "target_aircraft",
     "max_intent_chars",
 }
-SESSION_VALUES = {"max_runs", "timeout_s", "stdout_cap_chars", "stderr_tail_chars"}
 
 TOP_KEYS = {
     "schema_version",
@@ -114,11 +99,9 @@ TOP_KEYS = {
     "detector",
     "inputs",
     "trajectory",
-    "policy",
     "prompt",
     "translation",
     "answer",
-    "session",
     "output",
     "pricing",
 }
@@ -145,22 +128,9 @@ QUESTION_KEYS = {"id", "type", "instructions", "criteria"}
 CRITERIA_KEYS = set(DETECTOR_LABELS)
 DETECTOR_WINDOW_KEYS = {"past_steps", "entity_scope", "fields", "float_precision"}
 TRAJECTORY_KEYS = {"renderer", "past_steps"}
-POLICY_KEYS = {"rollout_dir", "seed", "spec", "checkpoint", "past_steps"}
 PROMPT_KEYS = {"file", "vars"}
 TRANSLATION_KEYS = {"backend", "model", "reasoning_effort", "max_output_tokens", "timeout_s", "retry"}
 ANSWER_KEYS = {"max_intent_chars", "max_evidence_items", "max_evidence_chars", "on_invalid"}
-SESSION_KEYS = {"max_runs", "max_total_tokens", "max_protocol_errors", "answer_at_fraction", "sandbox"}
-SANDBOX_KEYS = {
-    "python",
-    "timeout_s",
-    "memory_bytes",
-    "file_size_bytes",
-    "stdout_cap_chars",
-    "stderr_tail_chars",
-    "tmp_size_mb",
-    "threads",
-    "work_max_bytes",
-}
 OUTPUT_KEYS = {"root"}
 PRICE_KEYS = {"input", "cached_input", "output"}
 
@@ -249,15 +219,6 @@ class TrajectoryConfig:
 
 
 @dataclass(frozen=True)
-class PolicyConfig:
-    rollout_dir: Path
-    seed: int
-    spec: Path
-    checkpoint: Path | None  # None: the actor named in the rollout manifest
-    past_steps: int
-
-
-@dataclass(frozen=True)
 class TranslationConfig:
     backend: str
     model: str
@@ -271,28 +232,6 @@ class TranslationConfig:
 class AnswerConfig:
     limits: AnswerLimits
     on_invalid: str  # stop | skip
-
-
-@dataclass(frozen=True)
-class SandboxConfig:
-    python: Path
-    timeout_s: int
-    memory_bytes: int
-    file_size_bytes: int
-    stdout_cap_chars: int
-    stderr_tail_chars: int
-    tmp_size_mb: int
-    threads: int
-    work_max_bytes: int
-
-
-@dataclass(frozen=True)
-class SessionConfig:
-    max_runs: int
-    max_total_tokens: int
-    max_protocol_errors: int
-    answer_at_fraction: float  # once this share of max_total_tokens is used, the answer is requested
-    sandbox: SandboxConfig
 
 
 @dataclass(frozen=True)
@@ -314,11 +253,9 @@ class RunConfig:
     detector: DetectorConfig | None
     inputs: tuple[str, ...]
     trajectory: TrajectoryConfig
-    policy: PolicyConfig | None
     prompt: PromptTemplate
     translation: TranslationConfig
     answer: AnswerConfig
-    session: SessionConfig | None
     output_root: Path
     pricing: tuple[tuple[str, Price], ...]
 
@@ -328,10 +265,6 @@ class RunConfig:
     @property
     def online(self) -> bool:
         return self.triggers.source == TRIGGER_SOURCE_ONLINE
-
-    @property
-    def code_session(self) -> bool:
-        return self.prompt.protocol == PROTOCOL_CODE_SESSION
 
 
 # --- sections -------------------------------------------------------------------------------------
@@ -557,20 +490,6 @@ def _trajectory(raw: object) -> TrajectoryConfig:
     )
 
 
-def _policy(raw: object, root: Path) -> PolicyConfig | None:
-    if raw is None:
-        return None
-    section = mapping(raw, POLICY_KEYS, "policy", ConfigError)
-    checkpoint = section["checkpoint"]
-    return PolicyConfig(
-        rollout_dir=_path(section["rollout_dir"], "policy.rollout_dir", root),
-        seed=nonnegative_int(section["seed"], "policy.seed", ConfigError),
-        spec=_path(section["spec"], "policy.spec", root),
-        checkpoint=None if checkpoint is None else _path(checkpoint, "policy.checkpoint", root),
-        past_steps=positive_int(section["past_steps"], "policy.past_steps", ConfigError),
-    )
-
-
 def _prompt(raw: object, root: Path) -> PromptTemplate:
     section = mapping(raw, PROMPT_KEYS, "prompt", ConfigError)
     prompt_vars = section["vars"]
@@ -613,24 +532,6 @@ def _answer(raw: object) -> AnswerConfig:
     return AnswerConfig(limits, _choice(section["on_invalid"], "answer.on_invalid", (ON_INVALID_STOP, ON_INVALID_SKIP)))
 
 
-def _session(raw: object, root: Path) -> SessionConfig | None:
-    if raw is None:
-        return None
-    section = mapping(raw, SESSION_KEYS, "session", ConfigError)
-    sandbox = mapping(section["sandbox"], SANDBOX_KEYS, "session.sandbox", ConfigError)
-    fraction = number(section["answer_at_fraction"], "session.answer_at_fraction", ConfigError)
-    if not 0 < fraction <= 1:
-        raise ConfigError("session.answer_at_fraction must lie in (0, 1]")
-    ints = {key: positive_int(sandbox[key], f"session.sandbox.{key}", ConfigError) for key in SANDBOX_KEYS - {"python"}}
-    return SessionConfig(
-        max_runs=positive_int(section["max_runs"], "session.max_runs", ConfigError),
-        max_total_tokens=positive_int(section["max_total_tokens"], "session.max_total_tokens", ConfigError),
-        max_protocol_errors=positive_int(section["max_protocol_errors"], "session.max_protocol_errors", ConfigError),
-        answer_at_fraction=fraction,
-        sandbox=SandboxConfig(python=_path(sandbox["python"], "session.sandbox.python", root), **ints),
-    )
-
-
 def _output_root(raw: object, root: Path) -> Path:
     section = mapping(raw, OUTPUT_KEYS, "output", ConfigError)
     return _path(section["root"], "output.root", root)
@@ -640,8 +541,6 @@ def _check_prompt(config: RunConfig) -> None:
     """The prompt uses exactly the selected inputs, and needs no value nobody provides."""
     prompt = config.prompt
     available = BASE_VALUES | set(prompt.vars) | {value for name in config.inputs for value in INPUT_VALUES[name]}
-    if config.code_session:
-        available |= SESSION_VALUES
     missing = sorted(prompt.placeholders() - available)
     if missing:
         raise ConfigError(f"prompt {prompt.path.name} needs {missing}, which no selected input or prompt.vars provides")
@@ -666,10 +565,6 @@ def _check_consistency(config: RunConfig) -> None:
             "detector.messages_lookback_steps must be >= triggers.tick_interval_steps, "
             "so every alarm and question reaches a detector call"
         )
-    if (INPUT_POLICY in config.inputs) != (config.policy is not None):
-        raise ConfigError("policy is required when the policy input is selected, and must be null otherwise")
-    if config.code_session != (config.session is not None) or config.code_session != (INPUT_POLICY in config.inputs):
-        raise ConfigError("a code-session prompt needs the policy input and a session section; other prompts neither")
     if config.price(config.translation.model) is None:
         raise ConfigError(f"pricing has no entry for translation.model {config.translation.model!r}")
     _check_prompt(config)
@@ -692,11 +587,9 @@ def parse_config(raw: object, *, path: Path, sha256: str, root: Path = paths.ROO
         detector=None if section["detector"] is None else _detector(section["detector"]),
         inputs=_inputs(section["inputs"]),
         trajectory=_trajectory(section["trajectory"]),
-        policy=_policy(section["policy"], root),
         prompt=_prompt(section["prompt"], root),
         translation=_translation(section["translation"]),
         answer=_answer(section["answer"]),
-        session=_session(section["session"], root),
         output_root=_output_root(section["output"], root),
         pricing=_pricing(section["pricing"]),
     )
