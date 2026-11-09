@@ -6,7 +6,11 @@
   trigger a translation; they are prompt context and detector input (D4, D61, D50).
 - ``change``: decided by the change source: ``preset`` (steps listed in the config) or
   ``clef_flash`` (the detector on its tick grid; ``translate.detector``). A change that follows the
-  plan is no change point.
+  plan is no change point. A message that carries an instruction is an instruction: a change the
+  detector judges, never a request.
+
+A change source is one function registered with its options model (like ``INPUTS``):
+``@register_change("name", Options)``; a config selects it with ``change: {source: name, ...}``.
 
 Coinciding reasons give one translation that lists all of them. A target that is down gets no
 translation: its reasons are logged as ``trigger_suppressed`` (D37).
@@ -16,7 +20,9 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any
+from typing import Annotated, Any, Literal
+
+from pydantic import BaseModel, ConfigDict, Field
 
 from translate.episode import Episode, Target, View
 
@@ -50,12 +56,53 @@ def forced(view: View, target: Target) -> tuple[Reason, ...]:
     return start + asked
 
 
-def preset_change(view: View, target: Target, change: Any) -> Reason | None:
+class ChangeOptions(BaseModel):
+    """The options of a change source; ``source`` selects it. Unknown keys fail."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    source: str
+
+    def fixed_steps(self) -> frozenset[int]:
+        """Steps with a change whatever any model answers; ``decide`` at them must not call a model
+        (the preview counts them, and a down target's are logged as suppressed)."""
+        return frozenset()
+
+    def asks_at(self, step: int) -> bool:
+        """Whether the source asks a model at this step (the preview counts these calls)."""
+        return False
+
+
+@dataclass(frozen=True)
+class ChangeSource:
+    # decide(view, target, options, context) -> a change reason or None; ``context`` is the pipeline
+    # (``call``, ``event``, ``base``, ``shown``, ``detector``, ``scenario_id``) for model-backed sources
+    decide: Callable[[View, Target, Any, Any], Reason | None]
+    options: type[ChangeOptions]
+
+
+CHANGE_SOURCES: dict[str, ChangeSource] = {}
+
+
+def register_change(name: str, options: type[ChangeOptions]) -> Callable:
+    def add(function: Callable[[View, Target, Any, Any], Reason | None]) -> Callable:
+        CHANGE_SOURCES[name] = ChangeSource(function, options)
+        return function
+
+    return add
+
+
+class PresetChange(ChangeOptions):
+    source: Literal["preset"]
+    steps: tuple[Annotated[int, Field(ge=0)], ...] = ()  # change steps for every live target
+
+    def fixed_steps(self) -> frozenset[int]:
+        return frozenset(self.steps)
+
+
+@register_change("preset", PresetChange)
+def preset_change(view: View, target: Target, change: PresetChange, context: Any) -> Reason | None:
     """A change at every listed step, for every live target."""
     return Reason("change", "preset", f"preset-step-{view.step}") if view.step in change.steps else None
-
-
-CHANGE_SOURCES: dict[str, Callable[[View, Target, Any], Reason | None]] = {"preset": preset_change}
 
 
 def sorted_reasons(reasons: tuple[Reason, ...]) -> tuple[Reason, ...]:
@@ -96,10 +143,9 @@ def schedule(scenario: Any, episode: Episode, change: Any) -> Schedule:
         down = episode.down_step(episode.target(target_id))
         end = episode.last_step + 1 if down is None else down
         steps = {0} | {m.step for m in scenario.messages if m.kind == "question" and target_id in m.to}
-        listed = set(change.steps) if change.source == "preset" else set()
+        listed = set(change.fixed_steps())
         forced_at += [(s, target_id) for s in sorted(steps) if s < end]
         preset += [(s, target_id) for s in sorted(listed) if s < end]
         suppressed += [(s, target_id) for s in sorted(steps | listed) if end <= s <= episode.last_step]
-        if change.source == "clef_flash":
-            ticks += [(s, target_id) for s in range(1, end) if is_tick(s, change.every_steps)]
+        ticks += [(s, target_id) for s in range(1, end) if change.asks_at(s)]
     return Schedule(tuple(forced_at), tuple(preset), tuple(ticks), tuple(suppressed))

@@ -11,6 +11,7 @@ import yaml
 from translate import cli
 from translate.backends import Reply
 from translate.backends.openai import OpenAIBackend
+from translate.detector import Answer
 
 ROOT = Path(__file__).resolve().parents[2]
 EPISODE_CSV = ROOT / "data" / "mhi" / "processed" / "mhi_v1.3_ic100601_win.csv"  # B0200 is down from step 136
@@ -97,14 +98,15 @@ class FakeDetector:
     def health(self) -> None:
         self.healthy += 1
 
-    def decide(self, body: dict) -> dict:
+    def decide(self, body: dict) -> Answer:
         self.bodies.append(body)
         step = int(body["state"].split("Step ")[1].split(".")[0])
         target = body["state"].split("Target: ")[1].split(" (")[0].replace(" ", ":")
         p = self.changes.get((target, step), 0.1)
         choice = "change" if p >= 0.5 else "none"
         answer = {"type": "choice", "choice": choice, "probabilities": {"none": round(1 - p, 3), "change": p}}
-        return {"model": "clef", "answers": {"point_kind": answer}, "usage": {"input_tokens": 10, "output_tokens": 1}}
+        usage = {"input_tokens": 10, "output_tokens": 1}
+        return Answer({"model": "clef", "answers": {"point_kind": answer}, "usage": usage})
 
 
 def run(

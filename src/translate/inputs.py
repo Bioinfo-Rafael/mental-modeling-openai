@@ -77,6 +77,14 @@ def register(name: str, options: type[Options] = Options) -> Callable:
     return add
 
 
+def validate_options(inputs: dict[str, Any], where: str) -> dict[str, Options]:
+    """name -> its options model: an unknown input or option fails, naming it."""
+    unknown = sorted(set(inputs) - set(INPUTS))
+    if unknown:
+        raise ValueError(f"{where}: unknown inputs {unknown} (known: {sorted(INPUTS)})")
+    return {name: INPUTS[name].options.model_validate(options or {}) for name, options in inputs.items()}
+
+
 # --- the messages a target sees at t (shared with the event record) -------------------------------
 
 

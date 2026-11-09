@@ -56,7 +56,7 @@ def check_scenario(loaded: Loaded, episode: Episode) -> None:
     """Steps within ``[0, last_complete_step]``, known targets, preset steps that can fire."""
     for target_id in loaded.scenario.targets:
         episode.target(target_id)
-    late = sorted({m.step for m in loaded.scenario.messages} | set(getattr(loaded.config.change, "steps", ())))
+    late = sorted({m.step for m in loaded.scenario.messages} | loaded.config.change.fixed_steps())
     if late and late[-1] > episode.last_step:
         raise ConfigError(
             f"steps {[s for s in late if s > episode.last_step]} are after the last complete step {episode.last_step}"
@@ -73,7 +73,8 @@ def first_body(loaded: Loaded, episode: Episode, step: int, target_id: str) -> d
 
 def detector_preflight(loaded: Loaded, episode: Episode, plan: Schedule) -> int:
     """The worst state bound over every scheduled tick, with a worst-case previous intent; none may reach the budget."""
-    change, options = loaded.config.change, loaded.detector_inputs()
+    change = loaded.config.change
+    options = change.inputs
     if getattr(options.get("previous_translation"), "evidence", False):
         raise ConfigError("change.inputs.previous_translation needs evidence: false (evidence has no length bound)")
     worst = 0

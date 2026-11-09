@@ -38,6 +38,14 @@ def check_fields(template: str, where: str, allowed: frozenset[str], required: f
         raise ValueError(f"{where} must use {sorted(required - found)}")
 
 
+def check_inputs(templates: dict[str, str], inputs: Mapping[str, Any]) -> None:
+    """Every placeholder is a base value or a selected input, and every selected input is used."""
+    used = set().union(*(placeholders(text, where) for where, text in templates.items()))
+    unknown, unused = sorted(used - BASE_VALUES - set(inputs)), sorted(set(inputs) - used)
+    if unknown or unused:
+        raise ValueError(f"{' and '.join(templates)}: unknown placeholders {unknown}, unused inputs {unused}")
+
+
 def fill(template: str, values: Mapping[str, Any]) -> str:
     return template.format_map(values)
 

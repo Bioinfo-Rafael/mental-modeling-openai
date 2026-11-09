@@ -234,7 +234,7 @@ def test_the_detector_client_sends_one_choice_question_over_loopback_with_its_ke
 
     client = SystemOneClient(change, transport=httpx.MockTransport(handler))
     client.health()
-    label, probabilities, _ = parse_decision(client.decide(request_body(change, "state")), change)
+    label, probabilities, _ = parse_decision(client.decide(request_body(change, "state")).raw, change)
 
     assert (label, probabilities["change"]) == ("change", 0.8)
     assert (

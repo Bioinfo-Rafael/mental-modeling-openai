@@ -13,8 +13,8 @@ select inputs (inputs:) -> each input renders View(t) -> fill the prompt (prompt
 | `episode.py` | The CSV checked against its manifest, targets, down steps, `View(t)`, the two renderers |
 | `inputs.py` | `INPUTS`: `instructions`, `alarms`, `question`, `recent_messages`, `previous_translation`, `trajectory`, `policy_trace` |
 | `prompts.py` | Placeholder checks and the one-pass fill |
-| `triggers.py` | The forced `start` and `request`, `CHANGE_SOURCES` (`preset`), the tick grid, the schedule |
-| `detector.py` | clef-flash: the state text, the System One client (Unix socket or loopback + key), the budget |
+| `triggers.py` | The forced `start` and `request`, `CHANGE_SOURCES` and `register_change`, `preset`, the schedule |
+| `detector.py` | The `clef_flash` change source: its options, the state text, the System One client (Unix socket or loopback + key), the budget |
 | `backends/` | `Prompt`, `Reply`, `BackendError`; `openai.py`: the pinned client, the body, the parse |
 | `journal.py` | Run directory, journals (fsync before each send), shared helpers |
 | `pipeline.py` | The causal loop |
@@ -38,8 +38,10 @@ clef-flash server in the same GPU job; after approval D49).
 
 - `start`: step 0. Every scenario target is translated there, with or without an instruction in
   effect (the `instructions` input then reads `(no instruction in effect)`).
-- `request`: a human question to the target, at its step. Instructions and alarms never trigger a
-  translation; they are prompt context and detector input (D4, D61, D50).
+- `request`: a human question to the target, at its step: a human who wants to grasp the
+  situation. A message that carries an instruction is an instruction (`kind: instruction`), never a
+  request; whether it changes the plan is the change source's call. Instructions and alarms never
+  trigger a translation by themselves; they are prompt context and detector input (D4, D61, D50).
 - `change`: the change source's decision. `preset`: every live target at each listed step.
   `clef_flash`: on the tick grid (`step > 0`, `step % every_steps == 0`, D28) every live target that
   has a translation gets exactly one detector call (D9); a change when the choice is `change` and
@@ -47,8 +49,11 @@ clef-flash server in the same GPU job; after approval D49).
 
 Coinciding reasons give one translation listing all of them (`kinds`, `trigger_reasons`). A target
 is closed at its down step (aircraft: first `alive == 0`; team: its last aircraft, D37); its later
-reasons are logged as `trigger_suppressed`. A new change source is one function in
-`CHANGE_SOURCES` plus a `change.source` value in the config models.
+reasons are logged as `trigger_suppressed`. A new change source is one function registered with its
+options model, `@register_change("name", NameChange)` where `NameChange(ChangeOptions)` declares
+`source: Literal["name"]` and its keys, plus `change: {source: name, ...}` in a config. `RunConfig`
+looks `change.source` up in `CHANGE_SOURCES`; no config model is edited. A source that asks a model
+gets the pipeline as its context (`call` journals the request, `event` the record).
 
 ## Config
 

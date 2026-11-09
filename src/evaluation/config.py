@@ -97,8 +97,8 @@ class Criterion(Strict):
 class Prompt(Strict):
     system: str = Field(min_length=1)
     user: str = Field(min_length=1)
-    rating_rule: str = ""
-    future: str = ""
+    rating_rule: str = Field(min_length=1)  # filled into {rating_rule}
+    future: str = Field(min_length=1)  # the FUTURE block of start and change events
 
     @model_validator(mode="after")
     def _fields(self) -> Prompt:

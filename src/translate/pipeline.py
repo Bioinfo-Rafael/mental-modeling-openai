@@ -17,12 +17,12 @@ from typing import Any, NoReturn
 
 from translate.backends import BackendError, Prompt, input_text
 from translate.config import Loaded
-from translate.detector import QUESTION_ID, DetectorError, check_budget, parse_decision, request_body, state_text
+from translate.detector import DetectorError
 from translate.episode import Episode, Target, Translation, View, time_s
 from translate.inputs import INPUTS, TrajectoryOptions, alarms_for, instructions_in_effect, question_at
 from translate.journal import Journal, loads_unique, request_sha256, sha256_text
 from translate.prompts import fill, intent_schema
-from translate.triggers import CHANGE_SOURCES, Reason, forced, is_tick, kinds_of, sorted_reasons
+from translate.triggers import CHANGE_SOURCES, Reason, forced, kinds_of, sorted_reasons
 
 TIMING_DECIMALS = 3
 WITHHELD = "details withheld"
@@ -103,7 +103,7 @@ class Pipeline:
         self.closed: set[str] = set()
         self.counts = {"translation": Counts(), "detector": Counts()}
         self.in_flight: str | None = None  # a call sent and not yet answered in responses.jsonl
-        self.detector_options = loaded.detector_inputs() if self.config.change.source == "clef_flash" else {}
+        self.scenario_id = self.scenario.id
 
     def run(self) -> Summary:
         try:
@@ -132,24 +132,25 @@ class Pipeline:
                 self.closed = self.closed | {target.id}
                 last = self.translations.get(target.id)
                 body = {"reason": "target_down", "down_step": down, "last_event_id": last.event_id if last else None}
-                self._event("target_closed", step, target, body)
+                self.event("target_closed", step, target, body)
         for target in self.targets:
             view = View(step, rows, messages, self.episode.teams, dict(self.translations))
             self._process(view, target, started)
 
-    def _event(self, record_type: str, step: int, target: Target, body: dict[str, Any]) -> None:
+    def event(self, record_type: str, step: int, target: Target, body: dict[str, Any]) -> None:
         common = {"record_type": record_type, "scenario_id": self.scenario.id, "episode_id": self.episode.episode_id}
         self.journal.event({**common, "step": step, "time_s": time_s(step), "target": target.to_json(), **body})
 
     def _process(self, view: View, target: Target, started: float) -> None:
         change = self.config.change
         if target.id in self.closed:
-            preset = CHANGE_SOURCES[change.source](view, target, change) if change.source in CHANGE_SOURCES else None
-            reasons = sorted_reasons(forced(view, target) + ((preset,) if preset else ()))
+            fixed = view.step in change.fixed_steps()  # a down target asks no model; listed changes are logged
+            listed = CHANGE_SOURCES[change.source].decide(view, target, change, self) if fixed else None
+            reasons = sorted_reasons(forced(view, target) + ((listed,) if listed else ()))
             if reasons:
                 down = self.episode.down_step(target)
                 body = {"reason": "target_down", "down_step": down, "kinds": kinds_of(reasons)}
-                self._event(
+                self.event(
                     "trigger_suppressed", view.step, target, {**body, "trigger_reasons": [r.to_json() for r in reasons]}
                 )
             return
@@ -159,17 +160,18 @@ class Pipeline:
             self._translate(view, target, reasons, started)
 
     def _change(self, view: View, target: Target) -> Reason | None:
+        """The change source's decision; a model-backed source journals its calls through ``self.call``."""
         change = self.config.change
-        if change.source in CHANGE_SOURCES:
-            return CHANGE_SOURCES[change.source](view, target, change)
-        if not is_tick(view.step, change.every_steps) or target.id not in view.translations:
-            return None
-        return self._detect(view, target)
+        try:
+            return CHANGE_SOURCES[change.source].decide(view, target, change, self)
+        except DetectorError as exc:  # a state over budget or a malformed answer, raised around the call
+            error = {"layer": "detector", "call_id": exc.call_id, "type": "DetectorError", "message": str(exc)}
+            raise Stop("failed", error=error) from None
 
-    def _base(self, view: View, target: Target) -> dict[str, Any]:
+    def base(self, view: View, target: Target) -> dict[str, Any]:
         return base_values(view, target, self.config.answer.max_intent_chars)
 
-    def _call(
+    def call(
         self, layer: str, call_id: str, view: View, target: Target, body: dict, send: Callable[[dict], Any]
     ) -> tuple[Any, str]:
         """Cap check, request line (fsynced), one call, response line. A failure stops the run."""
@@ -192,7 +194,7 @@ class Pipeline:
             self._failed(
                 layer, call_id, sent, True, {"type": f"unexpected:{type(exc).__name__}", "message": WITHHELD}, None
             )
-        raw = result.raw if layer == "translation" else result
+        raw = result.raw  # a backend Reply or a detector Answer
         self.journal.response(
             {"call_id": call_id, "layer": layer, "status": "ok", "latency_s": _elapsed(sent), "raw": raw, "error": None}
         )
@@ -221,7 +223,7 @@ class Pipeline:
             error={"layer": layer, "call_id": call_id, **error, "uncertain": uncertain},
         )
 
-    def _shown(self, view: View, target: Target) -> dict[str, Any]:
+    def shown(self, view: View, target: Target) -> dict[str, Any]:
         """The instructions in effect and the alarms that reached the target: what a human sees at t."""
         instructions = [
             {"instruction_id": m.id, "issue_step": m.step, "target": self.episode.target(to).to_json(), "text": m.text}
@@ -251,37 +253,10 @@ class Pipeline:
         shown = {**shown, "evidence": list(previous.evidence)}
         return {"question": question, "previous_translation": shown, "trajectory": trajectory}
 
-    def _detect(self, view: View, target: Target) -> Reason | None:
-        change = self.config.change
-        body = request_body(change, state_text(change, self.detector_options, view, target, self._base(view, target)))
-        call_id = f"{self.scenario.id}:detector:{target.id}:{view.step:06d}"
-        try:
-            check_budget(change, body)  # before the request line: an over-long state is never sent
-        except DetectorError as exc:
-            raise Stop(
-                "failed", error={"layer": "detector", "call_id": call_id, "type": "DetectorError", "message": str(exc)}
-            ) from None
-        raw, sha256 = self._call("detector", call_id, view, target, body, self.detector.decide)
-        try:
-            label, probabilities, usage = parse_decision(raw, change)
-        except DetectorError as exc:
-            raise Stop(
-                "failed", error={"layer": "detector", "call_id": call_id, "type": "DetectorError", "message": str(exc)}
-            ) from None
-        triggered = label == "change" and probabilities["change"] >= change.threshold
-        output = {"label": label, "probabilities": probabilities, "threshold": change.threshold, "triggered": triggered}
-        inputs = {**self._shown(view, target), "state_text": body["state"], "question": body["questions"][QUESTION_ID]}
-        model = {"model": change.model, "revision": change.revision, "response_model": raw.get("model")}
-        body_record = {"call_id": call_id, "request_sha256": sha256, "input": inputs, "output": output}
-        self._event(
-            "detector_call", view.step, target, {**body_record, "raw_response": raw, "model": model, "usage": usage}
-        )
-        return Reason("change", "clef_flash", call_id, probabilities["change"]) if triggered else None
-
     def _translate(self, view: View, target: Target, reasons: tuple[Reason, ...], started: float) -> None:
         config, event_id = self.config, f"{self.scenario.id}:{target.id}:{view.step:06d}"
         body = type(self.backend).request_body(config.model, translation_prompt(config, view, target))
-        reply, sha256 = self._call("translation", event_id, view, target, body, self.backend.send)
+        reply, sha256 = self.call("translation", event_id, view, target, body, self.backend.send)
         answer, problem = parse_answer(reply.text, config.answer.max_intent_chars)
         if answer is None and config.answer.on_invalid == "stop":
             raise Stop(
@@ -289,7 +264,7 @@ class Pipeline:
                 error={"layer": "translation", "call_id": event_id, "type": "InvalidAnswer", "message": problem},
             )
         record_input = {
-            **self._shown(view, target),
+            **self.shown(view, target),
             **self._material(view, target),
             "translator_inputs": list(config.inputs),
         }
@@ -316,7 +291,7 @@ class Pipeline:
             "usage": reply.usage,
             "request_sha256": sha256,
         }
-        self._event("translation_event", view.step, target, {**body, "processing_s": _elapsed(started)})
+        self.event("translation_event", view.step, target, {**body, "processing_s": _elapsed(started)})
         if answer is not None:
             translation = Translation(event_id, view.step, answer["intent"], tuple(answer["evidence"]))
             self.translations = {**self.translations, target.id: translation}

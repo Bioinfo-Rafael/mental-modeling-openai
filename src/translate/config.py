@@ -1,29 +1,29 @@
 """Run config and scenario: pydantic models with defaults; unknown keys and duplicate YAML keys fail.
 
-A run config names the scenario, the change source (``preset`` steps or the ``clef_flash``
-detector), the selected inputs with their options, the inline prompt, the model and the limits.
+A run config names the scenario, the change source (any registered in ``CHANGE_SOURCES``, with its
+own options model), the selected inputs with their options, the inline prompt, the model and the limits.
 Errors name the key path. Paths in a run config are repository-relative; the episode path in a
 scenario is relative to the scenario file.
 """
 
 from __future__ import annotations
 
-import getpass
 import hashlib
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, Union
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
 
-from translate.inputs import INPUTS
+import translate.detector  # noqa: F401  (registers the clef_flash change source)
+from translate.inputs import validate_options
 from translate.journal import repo_path
-from translate.prompts import BASE_VALUES, placeholders
+from translate.prompts import check_inputs
+from translate.triggers import CHANGE_SOURCES
 
 SAFE_ID = r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
 TARGET_ID = r"^(aircraft|team):[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
-SERVING_CAP = 16384  # clef-flash serves at most 16384 tokens; the budget must equal the server's max-model-len
 
 
 class ConfigError(ValueError):
@@ -99,55 +99,6 @@ class Scenario(Strict):
 # --- run config -----------------------------------------------------------------------------------
 
 
-class PresetChange(Strict):
-    source: Literal["preset"]
-    steps: tuple[Annotated[int, Field(ge=0)], ...] = ()  # change steps for every live target
-
-
-class Question(Strict):
-    instructions: str = Field(min_length=1)
-    none: str = Field(min_length=1)
-    change: str = Field(min_length=1)
-
-
-class ClefFlashChange(Strict):
-    source: Literal["clef_flash"]
-    every_steps: int = Field(5, gt=0)
-    threshold: float = Field(0.65, ge=0, le=1)  # provisional until a labelled check
-    model: str = Field(min_length=1)  # the Hugging Face id the server serves; recorded in run.json
-    revision: str = Field(min_length=1)
-    socket: str | None = "/tmp/{user}-vllm/clef-flash.sock"  # default; or base_url + api_key_env (D39)
-    base_url: str | None = None
-    api_key_env: Annotated[str, Field(pattern=r"^[A-Z_][A-Z0-9_]{0,63}$")] | None = None  # a NAME, never a key
-    timeout_s: float = Field(30, gt=0)
-    input_token_budget: int = Field(SERVING_CAP, gt=0, le=SERVING_CAP)
-    question: Question
-    inputs: dict[str, Any] = Field(min_length=1)
-    state: str = Field(min_length=1)
-
-    @model_validator(mode="before")
-    @classmethod
-    def _tcp_drops_the_socket(cls, raw: Any) -> Any:
-        return {**raw, "socket": raw.get("socket")} if isinstance(raw, dict) and raw.get("base_url") else raw
-
-    @model_validator(mode="after")
-    def _endpoint(self) -> ClefFlashChange:
-        if (self.socket is None) == (self.base_url is None):
-            raise ValueError("set exactly one of socket (default) or base_url")
-        if self.base_url is not None and self.api_key_env is None:
-            raise ValueError("a TCP base_url needs api_key_env")
-        if self.socket is not None and ("$" in self.socket or "{" in self.socket.replace("{user}", "")):
-            raise ValueError("socket supports only the placeholder {user}; no environment variable is expanded")
-        if self.socket is not None and not self.socket.startswith("/"):
-            raise ValueError("socket must be an absolute path")
-        return self
-
-    @property
-    def socket_path(self) -> Path | None:
-        """The socket with ``{user}`` replaced by the current user name."""
-        return None if self.socket is None else Path(self.socket.replace("{user}", getpass.getuser()))
-
-
 class PromptConfig(Strict):
     name: str | None = None  # default: the config file stem; recorded with the prompt's sha256
     system: str = Field(min_length=1)
@@ -172,24 +123,14 @@ class LimitsConfig(Strict):
     max_detector_calls: int = Field(500, gt=0)
 
 
-def _options(inputs: dict[str, Any], where: str) -> dict[str, Any]:
-    unknown = sorted(set(inputs) - set(INPUTS))
-    if unknown:
-        raise ValueError(f"{where}: unknown inputs {unknown} (known: {sorted(INPUTS)})")
-    return {name: INPUTS[name].options.model_validate(options or {}) for name, options in inputs.items()}
-
-
-def _check_prompt(templates: dict[str, str], inputs: dict[str, Any]) -> None:
-    """Every placeholder is a base value or a selected input, and every selected input is used."""
-    used = set().union(*(placeholders(text, where) for where, text in templates.items()))
-    unknown, unused = sorted(used - BASE_VALUES - set(inputs)), sorted(set(inputs) - used)
-    if unknown or unused:
-        raise ValueError(f"{' and '.join(templates)}: unknown placeholders {unknown}, unused inputs {unused}")
+# The options of every registered change source, picked by ``change.source``: registering a source
+# (``triggers.register_change``) adds it here; no model in this file names a source.
+ChangeConfig = Annotated[Union[tuple(s.options for s in CHANGE_SOURCES.values())], Field(discriminator="source")]  # noqa: UP007
 
 
 class RunConfig(Strict):
     scenario: Path
-    change: Annotated[PresetChange | ClefFlashChange, Field(discriminator="source")]
+    change: ChangeConfig
     inputs: dict[str, Any] = Field(min_length=1)
     prompt: PromptConfig
     model: ModelConfig
@@ -200,13 +141,11 @@ class RunConfig(Strict):
     @field_validator("inputs")
     @classmethod
     def _inputs(cls, inputs: dict[str, Any]) -> dict[str, Any]:
-        return _options(inputs, "inputs")
+        return validate_options(inputs, "inputs")
 
     @model_validator(mode="after")
     def _templates(self) -> RunConfig:
-        _check_prompt({"prompt.system": self.prompt.system, "prompt.user": self.prompt.user}, self.inputs)
-        if isinstance(self.change, ClefFlashChange):
-            _check_prompt({"change.state": self.change.state}, _options(self.change.inputs, "change.inputs"))
+        check_inputs({"prompt.system": self.prompt.system, "prompt.user": self.prompt.user}, self.inputs)
         return self
 
 
@@ -220,9 +159,6 @@ class Loaded:
     sha256: str
     scenario_path: Path
     prompt_name: str
-
-    def detector_inputs(self) -> dict[str, Any]:
-        return _options(self.config.change.inputs, "change.inputs")
 
 
 def load_scenario(path: Path) -> Scenario:

@@ -11,19 +11,24 @@ environment variable NAME. Messages never echo a URL, a key or a body; nothing i
 
 from __future__ import annotations
 
+import getpass
 import json
 import os
 import stat
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Annotated, Any, Literal
 from urllib.parse import urlsplit
 
 import httpx
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from translate.episode import Target, View
-from translate.inputs import INPUTS
-from translate.prompts import fill
+from translate.inputs import INPUTS, validate_options
+from translate.prompts import check_inputs, fill
+from translate.triggers import ChangeOptions, Reason, is_tick, register_change
 
+SERVING_CAP = 16384  # clef-flash serves at most 16384 tokens; the budget must equal the server's max-model-len
 QUESTION_ID = "point_kind"
 LABELS = ("none", "change")
 FRAMING_RESERVE_TOKENS = 1024 + 64  # the server's fixed framing plus one question's labels
@@ -34,9 +39,70 @@ LOOPBACK = ("127.0.0.1", "::1")
 class DetectorError(Exception):
     """The detector could not be asked, or answered badly. ``uncertain``: it may have run (a timeout)."""
 
-    def __init__(self, message: str, *, uncertain: bool = False, raw: Any = None) -> None:
+    def __init__(self, message: str, *, uncertain: bool = False, raw: Any = None, call_id: str | None = None) -> None:
         super().__init__(message)
-        self.uncertain, self.raw = uncertain, raw
+        self.uncertain, self.raw, self.call_id = uncertain, raw, call_id
+
+
+class Question(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    instructions: str = Field(min_length=1)
+    none: str = Field(min_length=1)
+    change: str = Field(min_length=1)
+
+
+class ClefFlashChange(ChangeOptions):
+    source: Literal["clef_flash"]
+    every_steps: int = Field(5, gt=0)
+    threshold: float = Field(0.65, ge=0, le=1)  # provisional until a labelled check
+    model: str = Field(min_length=1)  # the Hugging Face id the server serves; recorded in run.json
+    revision: str = Field(min_length=1)
+    socket: str | None = "/tmp/{user}-vllm/clef-flash.sock"  # default; or base_url + api_key_env (D39)
+    base_url: str | None = None
+    api_key_env: Annotated[str, Field(pattern=r"^[A-Z_][A-Z0-9_]{0,63}$")] | None = None  # a NAME, never a key
+    timeout_s: float = Field(30, gt=0)
+    input_token_budget: int = Field(SERVING_CAP, gt=0, le=SERVING_CAP)
+    question: Question
+    inputs: dict[str, Any] = Field(min_length=1)  # the detector's own inputs (option models after validation)
+    state: str = Field(min_length=1)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _tcp_drops_the_socket(cls, raw: Any) -> Any:
+        # base_url replaces the default socket: with base_url given and no socket key, socket is null
+        # (a config that sets both still fails below: exactly one endpoint).
+        return {**raw, "socket": raw.get("socket")} if isinstance(raw, dict) and raw.get("base_url") else raw
+
+    @field_validator("inputs")
+    @classmethod
+    def _inputs(cls, inputs: dict[str, Any]) -> dict[str, Any]:
+        return validate_options(inputs, "change.inputs")
+
+    @model_validator(mode="after")
+    def _endpoint(self) -> ClefFlashChange:
+        if (self.socket is None) == (self.base_url is None):
+            raise ValueError("set exactly one of socket (default) or base_url")
+        if self.base_url is not None and self.api_key_env is None:
+            raise ValueError("a TCP base_url needs api_key_env")
+        if self.socket is not None and ("$" in self.socket or "{" in self.socket.replace("{user}", "")):
+            raise ValueError("socket supports only the placeholder {user}; no environment variable is expanded")
+        if self.socket is not None and not self.socket.startswith("/"):
+            raise ValueError("socket must be an absolute path")
+        check_inputs({"change.state": self.state}, self.inputs)
+        return self
+
+    @property
+    def socket_path(self) -> Path | None:
+        """The socket with ``{user}`` replaced by the current user name."""
+        return None if self.socket is None else Path(self.socket.replace("{user}", getpass.getuser()))
+
+    def asks_at(self, step: int) -> bool:
+        return is_tick(step, self.every_steps)
+
+
+@dataclass(frozen=True)
+class Answer:
+    raw: dict[str, Any]  # the server's whole response body
 
 
 def request_body(change: Any, state: str) -> dict[str, Any]:
@@ -166,6 +232,31 @@ class SystemOneClient:
         if self.change.model not in served:
             raise DetectorError("the configured detector model is not served by this endpoint")
 
-    def decide(self, body: dict[str, Any]) -> dict[str, Any]:
+    def decide(self, body: dict[str, Any]) -> Answer:
         check_budget(self.change, body)
-        return self._send("POST", "/v1/systemone", body)
+        return Answer(self._send("POST", "/v1/systemone", body))
+
+
+@register_change("clef_flash", ClefFlashChange)
+def clef_flash_change(view: View, target: Target, change: ClefFlashChange, context: Any) -> Reason | None:
+    """On a tick, one detector call per live target that has a translation (D9); a change when the
+    choice is ``change`` and ``p(change) >= threshold``. ``context`` journals the call and its event."""
+    if not change.asks_at(view.step) or target.id not in view.translations:
+        return None
+    body = request_body(change, state_text(change, change.inputs, view, target, context.base(view, target)))
+    call_id = f"{context.scenario_id}:detector:{target.id}:{view.step:06d}"
+    try:
+        check_budget(change, body)  # before the request line: an over-long state is never sent
+        answer, sha256 = context.call("detector", call_id, view, target, body, context.detector.decide)
+        label, probabilities, usage = parse_decision(answer.raw, change)
+    except DetectorError as exc:  # the pipeline stops the run on it, naming the call
+        raise DetectorError(str(exc), call_id=call_id) from None
+    triggered = label == "change" and probabilities["change"] >= change.threshold
+    output = {"label": label, "probabilities": probabilities, "threshold": change.threshold, "triggered": triggered}
+    inputs = {**context.shown(view, target), "state_text": body["state"], "question": body["questions"][QUESTION_ID]}
+    model = {"model": change.model, "revision": change.revision, "response_model": answer.raw.get("model")}
+    record = {"call_id": call_id, "request_sha256": sha256, "input": inputs, "output": output}
+    context.event(
+        "detector_call", view.step, target, {**record, "raw_response": answer.raw, "model": model, "usage": usage}
+    )
+    return Reason("change", "clef_flash", call_id, probabilities["change"]) if triggered else None
