@@ -1,0 +1,9 @@
+# The recorded MHI rollout seed 100601: one neutral instruction per team-A aircraft at step 0, no
+# alarms, no questions. The episode CSV is a derived output of that rollout
+# (slurm/lag/prepare_episode.sbatch); read it from a checkout that has it (validate preview: SOURCE_ROOT).
+id: seed100601
+episode: ../../../outputs/intent_compare/episode/seed100601/seed100601.csv   # relative to this file
+targets: [aircraft:A0100, aircraft:A0200]
+messages:
+  - {id: neutral-A0100, step: 0, kind: instruction, to: [aircraft:A0100], text: "No operator instruction was given. Team A is flying its default 2v2 air-combat mission against the rule-based enemy team B."}
+  - {id: neutral-A0200, step: 0, kind: instruction, to: [aircraft:A0200], text: "No operator instruction was given. Team A is flying its default 2v2 air-combat mission against the rule-based enemy team B."}

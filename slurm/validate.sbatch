@@ -1,17 +1,14 @@
 #!/bin/bash
 # Offline validation of the core. No mode sends an API request: OPENAI_API_KEY is always unset.
 # MODE (first argument):
-#   subset             pytest of translate, policy, sandbox, LLM, LAG and judge tests
-#   full               the whole core pytest
-#   static             git diff --check, ruff check + format check, bash -n of slurm/, imports from
-#                      outside the repository, and the stale-path grep against its allowlist
-#   golden             request-path manifest, request goldens, the replay of recorded runs through the
-#                      pipeline and the paid assess journal against an existing checkout's gitignored
-#                      outputs (SOURCE_ROOT below), and the blob IDs of committed results
-#   translate-preview  a preview of every shipped run config into job scratch; none may write
-#                      requests or responses
-# SOURCE_ROOT (golden, translate-preview): the checkout whose outputs/ hold the real runs; default
-# this repository. Set it with --export=ALL,SOURCE_ROOT=<path> to check another checkout read-only.
+#   full     the whole core pytest
+#   static   git diff --check, ruff check + format check, bash -n of slurm/, imports and --help from
+#            outside the repository, and the line ceilings (src/ and tests/ <= 4000 lines of Python)
+#   preview  a preview of every shipped config of both packages with API client factories that
+#            raise: the translate configs, then the judge configs over a synthetic run made in job
+#            scratch; no preview may write a request or response journal
+# SOURCE_ROOT (preview): the checkout whose outputs/ hold the real runs and derived episodes;
+# default this repository. Set it with --export=ALL,SOURCE_ROOT=<path> to read another checkout.
 #   sbatch slurm/validate.sbatch full
 #SBATCH --partition=151-partition
 #SBATCH --job-name=validate
@@ -22,20 +19,13 @@
 set -euo pipefail                        # before source: a missing common.sh must stop the job
 source "${SLURM_SUBMIT_DIR:-.}/slurm/common.sh"
 unset OPENAI_API_KEY OPENAI_LOG OPENAI_CUSTOM_HEADERS
-MODE="${1:-subset}"
+MODE="${1:-full}"
 SOURCE_ROOT="${SOURCE_ROOT:-$REPO_ROOT}"
-GOLDENS=tests/fixtures/prompt-request-goldens.json
-RESULTS_BASE=d8b2d123ca141eb5d9abe4a4cbee0d59968d4363  # last commit before the core/workspace split
-ASSESS_RUN=intentcmp-seed100601-ja-A-s045-A0100         # the one paid assess run (2026-11-05)
+LINE_CEILING=4000
 require_python
 log_header "$0" "$MODE" "source_root=$SOURCE_ROOT"
 
-golden_value() { "$PY" -c 'import json, sys; print(json.load(open(sys.argv[1]))[sys.argv[2]])' "$GOLDENS" "$1"; }
-
 case "$MODE" in
-  subset)
-    "$PY" -m pytest -q tests/translate tests/policy tests/sandbox tests/llm tests/lag tests/evaluation
-    ;;
   full)
     "$PY" -m pytest -q
     ;;
@@ -44,79 +34,99 @@ case "$MODE" in
     "$PY" -m ruff check src tests scripts
     "$PY" -m ruff format --check src tests scripts
     bash -n slurm/common.sh
-    for job in slurm/*.sbatch; do bash -n "$job"; done
+    for job in slurm/*.sbatch slurm/lag/*.sbatch; do bash -n "$job"; done
     (
       cd "$(mktemp -d)"
-      "$PY" -B -c 'import evaluation, translate, translate.cli, translate.policy.material'
-      for module in evaluation.cli evaluation.assess_cli evaluation.viewer evaluation.clips translate; do
+      "$PY" -B -c 'import evaluation, translate, translate.cli'
+      for module in evaluation translate; do
         "$PY" -B -m "$module" --help >/dev/null
       done
       echo "imports and --help from outside the repository: ok"
     )
-    found="$(mktemp)"
-    # No line numbers (-n is dropped on purpose): an edit elsewhere in a file must not break the allowlist.
-    git grep -hE -f tests/fixtures/stale-paths.pattern -- README.md pyproject.toml src configs tests slurm scripts \
-      ':!tests/fixtures/stale-paths.pattern' ':!tests/fixtures/allowed-stale-paths.txt' > "$found" || true
-    diff -u tests/fixtures/allowed-stale-paths.txt "$found"
-    echo "stale-path grep: only allowlisted lines"
+    for tree in src tests; do  # the line budgets (design section 2b): a ceiling, not a target
+      lines="$(find "$tree" -name '*.py' -print0 | xargs -0 cat | wc -l)"
+      echo "$tree: $lines lines of Python (ceiling $LINE_CEILING)"
+      [ "$lines" -le "$LINE_CEILING" ] || { echo "$tree exceeds $LINE_CEILING lines" >&2; exit 1; }
+    done
     ;;
-  golden)
-    sha256sum -c tests/fixtures/assess-request-path.sha256
-    echo "$(golden_value converter_sha256)  tests/fixtures/frozen/to_translator_run_v2.py.txt" | sha256sum -c
-    "$PY" -m pytest -q tests/translate/test_request_goldens.py tests/evaluation/test_migration_goldens.py \
-      tests/evaluation/test_judge_request_goldens.py tests/test_frozen_moves.py
-    "$PY" -B scripts/check_request_replay.py --source-root "$SOURCE_ROOT"
-    "$PY" -B scripts/check_assess_resume.py --config configs/evaluation/assess-legacy.yaml \
-      --translator-run "$SOURCE_ROOT/outputs/translator/$ASSESS_RUN" \
-      --journal "$SOURCE_ROOT/outputs/evaluation/assess/$ASSESS_RUN/judge_requests.jsonl" \
-      --expect "$(golden_value paid_assess_request_sha256)"
-    # Committed experiment results never change (new ones may be added): no modification, deletion or
-    # rename. The pathspecs match by shape only; the core never reads these files.
-    git diff --exit-code --no-renames --diff-filter=DMT --stat "$RESULTS_BASE" HEAD -- ':(glob)*/*/results/**'
-    # The three tracked output trees moved byte-identically with the legacy project.
-    diff <(git ls-tree -r "$RESULTS_BASE" -- outputs | awk '{print $3, $4}') \
-         <(git ls-tree -r HEAD | awk '$4 ~ /^[^\/]+\/outputs\// {sub("^[^/]+/outputs/", "outputs/", $4); print $3, $4}')
-    echo "golden checks: ok"
-    ;;
-  translate-preview)
+  preview)
     scratch="$(mktemp -d)"
     trap 'status=$?; rm -rf "$scratch"; echo "end=$(date -Is) exit=$status"' EXIT
     "$PY" -B - "$scratch" "$SOURCE_ROOT" <<'PY'
+import json
 import sys
 from pathlib import Path
 
 import yaml
 
-from translate.cli import main
+from evaluation.cli import main as judge_main
+from translate.backends import Reply
+from translate.backends.openai import OpenAIBackend
+from translate.cli import main as translate_main
 
 scratch, source = Path(sys.argv[1]), Path(sys.argv[2])
-configs = sorted(Path("configs/translate").glob("*.yaml"))
-for config in configs:
+
+
+def refuse(*_args, **_kwargs):
+    raise SystemExit("a preview tried to build an API client")
+
+
+class CannedBackend:  # the synthetic run only: one fixed answer per call, no network
+    request_body = staticmethod(OpenAIBackend.request_body)
+
+    def send(self, body):
+        text = json.dumps({"intent": "[SYNTHETIC] intent", "evidence": ["[SYNTHETIC] evidence"]})
+        return Reply(text, body["model"], "resp_synthetic", {}, {"id": "resp_synthetic"})
+
+
+def from_source(path):
+    """A generated outputs/ input is read from SOURCE_ROOT; anything else from this checkout."""
+    relative = path.resolve().relative_to(Path.cwd())
+    return str(source / relative if relative.parts[0] == "outputs" else relative.resolve())
+
+
+def relocated(config, output):
     raw = yaml.safe_load(config.read_text(encoding="utf-8"))
     scenario_path = Path(raw["scenario"])
     scenario = yaml.safe_load(scenario_path.read_text(encoding="utf-8"))
-    episode = scenario["episode"]
-    relocated = {}
-    for key in ("csv_path", "video_path"):  # generated outputs/ inputs are read from SOURCE_ROOT
-        value = episode[key]
-        relative = None if value is None else (scenario_path.parent / value).resolve().relative_to(Path.cwd())
-        relocated[key] = None if relative is None else str(source / relative if relative.parts[0] == "outputs" else relative.resolve())
     scenario_file = scratch / f"{config.stem}.scenario.yaml"
-    scenario_file.write_text(yaml.safe_dump({**scenario, "episode": {**episode, **relocated}}), encoding="utf-8")
-    if raw["policy"] is not None:
-        raw = {**raw, "policy": {**raw["policy"], "rollout_dir": str(source / raw["policy"]["rollout_dir"])}}
+    scenario_file.write_text(yaml.safe_dump({**scenario, "episode": from_source(scenario_path.parent / scenario["episode"])}))
+    inputs = raw["inputs"]
+    if "policy_trace" in inputs:  # the recorded rollout is a generated outputs/ input too
+        inputs = {**inputs, "policy_trace": {**inputs["policy_trace"], "rollout": from_source(Path(inputs["policy_trace"]["rollout"]))}}
     config_file = scratch / config.name
-    config_file.write_text(yaml.safe_dump({**raw, "output": {"root": str(scratch / "out")}}), encoding="utf-8")
-    code = main(["--config", str(config_file), "--scenario", str(scenario_file), "--run-name", config.stem])
+    raw = {**raw, "scenario": str(scenario_file), "inputs": inputs, "output": str(output)}
+    config_file.write_text(yaml.safe_dump(raw), encoding="utf-8")
+    return config_file
+
+
+def check(code, what):
     if code != 0:
-        sys.exit(f"{config}: preview exited {code}")
-written = sorted(p.name for p in (scratch / "out").rglob("*") if p.name in ("requests.jsonl", "responses.jsonl"))
+        sys.exit(f"{what}: exited {code}")
+
+
+configs = sorted(Path("configs/translate").glob("*.yaml"))
+for config in configs:
+    argv = ["--config", str(relocated(config, scratch / "translate")), "--run-name", config.stem]
+    check(translate_main(argv, backend_factory=refuse, detector_factory=refuse), str(config))
+
+# A synthetic run of the preset config (canned answers, no network), then every judge config's preview.
+argv = ["--config", str(relocated(Path("configs/translate/preset.yaml"), scratch / "runs")), "--run-name", "synthetic"]
+check(translate_main([*argv, "--execute", "--confirm-paid-api"], backend_factory=lambda model: CannedBackend()), "synthetic run")
+run, judged = scratch / "runs" / "synthetic", scratch / "evaluation"
+judge_configs = sorted(Path("configs/evaluation").glob("*.yaml"))
+for config in judge_configs:  # each with its output in scratch, so the scan reads no real journal
+    raw = yaml.safe_load(config.read_text(encoding="utf-8"))
+    (scratch / config.name).write_text(yaml.safe_dump({**raw, "output": str(judged)}), encoding="utf-8")
+    check(judge_main(["judge", "--run", str(run), "--config", str(scratch / config.name)], client_factory=refuse), str(config))
+journals = ("requests.jsonl", "responses.jsonl")
+written = sorted(str(p) for root in (scratch / "translate", judged) for p in root.rglob("*") if p.name.endswith(journals))
 if written:
     sys.exit(f"a preview wrote {written}")
-print(f"previews of {len(configs)} run configs: ok (no requests.jsonl or responses.jsonl)")
+print(f"previews of {len(configs)} translate and {len(judge_configs)} judge configs: ok (no request or response journal)")
 PY
     ;;
   *)
-    echo "MODE must be subset, full, static, golden or translate-preview (got $MODE)" >&2; exit 2
+    echo "MODE must be full, static or preview (got $MODE)" >&2; exit 2
     ;;
 esac

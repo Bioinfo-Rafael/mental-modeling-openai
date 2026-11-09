@@ -1,14 +1,11 @@
 #!/bin/bash
-# Translate one episode with one run configuration (python -m translate), on a compute node.
-# Choose inputs, prompt and trigger points in the config (configs/translate/*.yaml); this job runs
-# preset-trigger configs. Online configs need the clef-flash detector: use slurm/translate_vllm.sbatch.
-# MODE (first argument): preview (default; requests + cost estimate, 0 API calls, no key read)
-# | paid (`--execute --confirm-paid-api`; a code-session config first passes the sandbox preflight).
-# Everything after MODE goes to `python -m translate` (--config is required; --run-name, --scenario).
-#   sbatch slurm/translate.sbatch preview --config configs/translate/seed100601-trajectory.yaml
-#   set -a; . ./.env; set +a; sbatch --export=ALL slurm/translate.sbatch paid \
-#     --config configs/translate/seed100601-policy.yaml --run-name seed100601-policy
-# Code sessions run sequentially; the sandbox has no memory cgroup here, so keep paid runs inside a job.
+# Translate one episode with one run config (python -m translate), on a compute node (CPU).
+# MODE (first argument): preview (default; the schedule and the exact first request, 0 API calls,
+# no key read) | paid (`--execute --confirm-paid-api`). A clef_flash config previews here; its paid
+# run needs the detector server: slurm/translate_online.sbatch. Everything after MODE goes to
+# `python -m translate` (--config is required; --scenario, --run-name).
+#   sbatch slurm/translate.sbatch preview --config configs/translate/preset.yaml
+#   set -a; . ./.env; set +a; sbatch --export=ALL slurm/translate.sbatch paid --config configs/translate/preset.yaml
 #SBATCH --partition=151-partition
 #SBATCH --job-name=translate
 #SBATCH --cpus-per-task=4
@@ -21,11 +18,10 @@ set_mode "${1:-preview}"; shift || true
 require_python
 CONFIG="$(arg_value --config "$@")"
 if [ -z "$CONFIG" ]; then echo "pass --config configs/translate/<name>.yaml" >&2; exit 2; fi
-SOURCE="$("$PY" -c 'import sys; from pathlib import Path; from translate.config import load_config; print(load_config(Path(sys.argv[1])).triggers.source)' "$CONFIG")"
-if [ "$SOURCE" != preset ]; then
-  echo "$CONFIG uses $SOURCE triggers (the clef-flash detector): submit slurm/translate_vllm.sbatch instead" >&2; exit 2
+SOURCE="$("$PY" -c 'import sys; from pathlib import Path; from translate.config import load_config; print(load_config(Path(sys.argv[1])).config.change.source)' "$CONFIG")"
+if [ "$MODE" = paid ] && [ "$SOURCE" = clef_flash ]; then
+  echo "$CONFIG uses the clef-flash detector: submit slurm/translate_online.sbatch paid" >&2; exit 2
 fi
-
 CMD=("$PY" -m translate "$@" "${PAID_FLAGS[@]}")
 log_header "${CMD[@]}"
 "${CMD[@]}"

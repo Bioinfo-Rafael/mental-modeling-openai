@@ -1,1 +1,1 @@
-"""LLM judge for evaluating intent translations."""
+"""The LLM judge of translation runs: material -> one call per event -> verdict lines, ratings, report."""

@@ -1,205 +1,265 @@
-"""Input processors: the selected inputs of one slot become the prompt's named values.
+"""INPUTS: the named functions ``View(t) x target x options -> text`` that fill prompt placeholders.
 
-Each processor reads only what is visible at the slot's step t (instructions issued at or before
-t, the alarms that reach the target by t, the request at t, the target's own latest valid
-translation, the trajectory window ending at t, the policy window ending at t) and returns named
-values; list and optional inputs are turned into text by the prompt file's ``blocks``. The values
-every slot has (``BASE_VALUES`` in ``config.py``) come first. ``event_input`` records what a human
-rater sees for the slot (scenario texts and the trajectory window), whatever the translator read.
+A config selects inputs under ``inputs:`` (each with typed options, defaults below); each selected
+input fills the placeholder of its name. An input sees only ``View(t)``, so it cannot leak data
+issued after t (the poison test runs every input). A new input is one function here plus its key in
+a config and its placeholder in the prompt. Lists render in a fixed documented format; free text is
+quoted as a JSON string.
 """
 
 from __future__ import annotations
 
+import json
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any
+from functools import lru_cache
+from pathlib import Path
+from typing import Any, Literal
 
-import pandas as pd
+import numpy as np
+from pydantic import BaseModel, ConfigDict, Field
 
-from translate.config import INPUT_POLICY, INPUT_TRAJECTORY, RunConfig
-from translate.events import (
-    Instruction,
-    PreviousTranslation,
-    Scenario,
-    TargetRef,
-    step_time_s,
-    trajectory_json,
-)
-from translate.lag.rendering import STEP_SECONDS, RenderedTrajectory
-from translate.policy.material import PolicyMaterial, policy_values
-from translate.prompts import list_block, optional_block
-from translate.scenario import EpisodeFacts, instructions_in_effect, target_alarms, target_request
+from translate.episode import Target, View, render_compact, render_lag17
+from translate.journal import quoted, repo_path
 
-T_S_DECIMALS = 6  # the policy prompt's "time t_s s" (formatted with :g)
-
-Renderer = Callable[..., RenderedTrajectory]
+NO_INSTRUCTION = "(no instruction in effect)"
+NONE = "(none)"
 
 
-@dataclass(frozen=True)
-class RunInputs:
-    """Everything the processors read, loaded once per run."""
-
-    frame: pd.DataFrame
-    scenario: Scenario
-    facts: EpisodeFacts
-    config: RunConfig
-    renderer: Renderer
-    policy: PolicyMaterial | None = None
+class Options(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
 
 
-@dataclass(frozen=True)
-class SlotState:
-    step: int
-    target: TargetRef
-    instruction: Instruction | None  # the target's current instruction; None before its first one
-    previous: PreviousTranslation | None  # the target's latest valid translation
+class PreviousOptions(Options):
+    evidence: bool = True  # false: the intent only (the detector state)
 
 
-def trajectory_window(inputs: RunInputs, step: int) -> RenderedTrajectory:
-    """The window ``[max(0, t - past + 1), t]``: judge material always, prompt input when selected."""
-    past = inputs.config.trajectory.past_steps
-    return inputs.renderer(
-        inputs.frame,
-        start_step=max(0, step - past + 1),
-        end_step=step,
-        anchor_step=step,
-        episode_alias=inputs.scenario.episode.alias,
+class RecentOptions(Options):
+    past_steps: int = Field(25, gt=0)  # alarms and questions issued in [t - past_steps + 1, t]
+
+
+class TrajectoryOptions(Options):
+    past_steps: int = Field(60, gt=0)  # the window [max(0, t - past_steps + 1), t]
+    objects: Literal["all", "target_and_opponents"] = "all"
+    fields: tuple[str, ...] | None = None  # None: every entity in the 17 format; else these columns
+    precision: int = Field(5, ge=0)  # decimals of float fields (fields only)
+
+
+class PolicyOptions(Options):
+    rollout: Path  # manifest.json + episode_seed<seed>.npz + head_weights.npz (slurm/lag/record_rollouts.sbatch)
+    seed: int
+    arrays: tuple[Literal["obs", "gru_out", "act_in", "logits", "actions"], ...] = (
+        "obs",
+        "gru_out",
+        "act_in",
+        "logits",
+        "actions",
     )
+    head_weights: bool = True  # the 13 x 128 head matrix and its biases: logits = W_head @ act_in + b_head
+    past_steps: int = Field(60, gt=0)
+    precision: int = Field(4, ge=0)
 
 
-def _base(inputs: RunInputs, slot: SlotState) -> dict[str, object]:
-    return {
-        "episode_alias": inputs.scenario.episode.alias,
-        "step": slot.step,
-        "time_s": step_time_s(slot.step),
-        "t_s": round(slot.step * STEP_SECONDS, T_S_DECIMALS),
-        "step_seconds": STEP_SECONDS,
-        "target_label": slot.target.label,
-        "target_aircraft": ", ".join(inputs.facts.target_aircraft(slot.target)),
-        "max_intent_chars": inputs.config.answer.limits.max_intent_chars,
-    }
+@dataclass(frozen=True)
+class InputSpec:
+    render: Callable[[View, Target, Any], str]
+    options: type[Options]
 
 
-def _instructions(inputs: RunInputs, slot: SlotState) -> dict[str, object]:
-    """All instructions in effect as a block and this target's own one through its optional block (each
-    when the prompt defines it); either may be empty: no instruction need be in effect."""
-    blocks, own = inputs.config.prompt.blocks, slot.instruction
-    values: dict[str, object] = {}
-    if "primary_instruction" in blocks:
-        values = {
-            "primary_instruction": optional_block(blocks["primary_instruction"], {"text": own.text} if own else None)
-        }
-    block = blocks.get("instructions")
-    if block is None:
-        return values
-    own_id = own.instruction_id if own else None
-    items = [
-        {
-            "issue_step": item.issue_step,
-            "target": item.target.label,
-            "primary": block["primary_marker"] if item.instruction_id == own_id else "",
-            "text": item.text,
-        }
-        for item in instructions_in_effect(inputs.scenario, slot.step)
+INPUTS: dict[str, InputSpec] = {}
+
+
+def register(name: str, options: type[Options] = Options) -> Callable:
+    def add(function: Callable[[View, Target, Any], str]) -> Callable[[View, Target, Any], str]:
+        INPUTS[name] = InputSpec(function, options)
+        return function
+
+    return add
+
+
+def validate_options(inputs: dict[str, Any], where: str) -> dict[str, Options]:
+    """name -> its options model: an unknown input or option fails, naming it."""
+    unknown = sorted(set(inputs) - set(INPUTS))
+    if unknown:
+        raise ValueError(f"{where}: unknown inputs {unknown} (known: {sorted(INPUTS)})")
+    return {name: INPUTS[name].options.model_validate(options or {}) for name, options in inputs.items()}
+
+
+# --- the messages a target sees at t (shared with the event record) -------------------------------
+
+
+def instructions_in_effect(view: View) -> list[tuple[str, Any]]:
+    """(target id, its latest instruction) for every instructed target, oldest issue first."""
+    latest: dict[str, Any] = {}
+    for message in sorted((m for m in view.messages if m.kind == "instruction"), key=lambda m: (m.step, m.id)):
+        latest = {**latest, **dict.fromkeys(message.to, message)}
+    return sorted(latest.items(), key=lambda item: (item[1].step, item[1].id, item[0]))
+
+
+def addressed_aircraft(to: str, view: View) -> tuple[str, ...]:
+    kind, name = to.split(":")
+    return (name,) if kind == "aircraft" else tuple(view.teams.get(name, ()))
+
+
+def alarms_for(view: View, target: Target) -> list[Any]:
+    """Every alarm issued by t that reaches the target: it shares an aircraft with an addressee."""
+    reach = set(target.aircraft)
+    return [
+        m
+        for m in view.messages
+        if m.kind == "alarm" and reach & {name for to in m.to for name in addressed_aircraft(to, view)}
     ]
-    return {**values, "instructions": list_block(block, items)}
 
 
-def _alarms(inputs: RunInputs, slot: SlotState) -> dict[str, object]:
-    alarms = target_alarms(inputs.scenario, inputs.facts, slot.target, slot.step)
-    items = [{"step": a.step, "targets": ", ".join(t.label for t in a.targets), "text": a.text} for a in alarms]
-    return {"alarms": list_block(inputs.config.prompt.blocks["alarms"], items)}
+def question_at(view: View, target: Target) -> Any | None:
+    return next((m for m in view.messages if m.kind == "question" and m.step == view.step and target.id in m.to), None)
 
 
-def _question(inputs: RunInputs, slot: SlotState) -> dict[str, object]:
-    request = target_request(inputs.scenario, slot.target, slot.step)
-    item = None if request is None else {"step": request.step, "text": request.question}
-    return {"question": optional_block(inputs.config.prompt.blocks["question"], item)}
+# --- inputs ---------------------------------------------------------------------------------------
 
 
-def _previous(inputs: RunInputs, slot: SlotState) -> dict[str, object]:
-    block = inputs.config.prompt.blocks["previous_translation"]
-    previous = slot.previous
+@register("instructions")
+def instructions(view: View, target: Target, options: Options) -> str:
+    """Every instructed target's current instruction, oldest first; this target's own is marked."""
+    lines = [
+        f"- {to.replace(':', ' ')}, issued at step {m.step}: {quoted(m.text)}"
+        + (" (this target)" if to == target.id else "")
+        for to, m in instructions_in_effect(view)
+    ]
+    return "\n".join(lines) or NO_INSTRUCTION
+
+
+@register("alarms")
+def alarms(view: View, target: Target, options: Options) -> str:
+    """Every alarm that reached the target by t, oldest first."""
+    found = alarms_for(view, target)
+    return "\n".join(f"- step {m.step}: {quoted(m.text)}" for m in found) or NONE
+
+
+@register("question")
+def question(view: View, target: Target, options: Options) -> str:
+    """The human question to the target arriving at t."""
+    found = question_at(view, target)
+    return NONE if found is None else quoted(found.text)
+
+
+@register("recent_messages", RecentOptions)
+def recent_messages(view: View, target: Target, options: RecentOptions) -> str:
+    """Alarms that reached the target and questions to it, issued in the last ``past_steps``, oldest first."""
+    first = view.step - options.past_steps + 1
+    found = [m for m in alarms_for(view, target) if m.step >= first]
+    found += [m for m in view.messages if m.kind == "question" and target.id in m.to and m.step >= first]
+    ordered = sorted(found, key=lambda m: (m.step, m.kind, m.id))
+    return "\n".join(f"- {m.kind} at step {m.step}: {quoted(m.text)}" for m in ordered) or NONE
+
+
+@register("previous_translation", PreviousOptions)
+def previous_translation(view: View, target: Target, options: PreviousOptions) -> str:
+    """The target's latest valid translation before t, or that there is none yet."""
+    previous = view.translations.get(target.id)
     if previous is None:
-        return {"previous_translation": optional_block(block, None)}
-    evidence = block["evidence_joiner"].join(
-        block["evidence_item"].format(item=item) for item in previous.translation.evidence
-    )
-    item = {"step": previous.step, "intent": previous.translation.intent, "evidence": evidence}
-    return {"previous_translation": optional_block(block, item)}
+        return "(none: this is the first translation for this target)"
+    text = f"from step {previous.step}: {quoted(previous.intent)}"
+    if not options.evidence:
+        return text
+    return text + "".join(f"\n  - {quoted(item)}" for item in previous.evidence)
 
 
-def _trajectory(trajectory: RenderedTrajectory) -> dict[str, object]:
-    return {
-        "trajectory": trajectory.text,
-        "trajectory_start": trajectory.start_step,
-        "trajectory_end": trajectory.end_step,
-        "trajectory_points": trajectory.end_step - trajectory.start_step + 1,
-        "trajectory_anchor": trajectory.anchor_step,
-    }
+@register("trajectory", TrajectoryOptions)
+def trajectory(view: View, target: Target, options: TrajectoryOptions) -> str:
+    """The window ending at t: every entity (17 format), or the chosen fields of the chosen objects."""
+    start = max(0, view.step - options.past_steps + 1)
+    if options.fields is None:
+        return render_lag17(view.rows, start, view.step, view.step)
+    objects = (*target.aircraft, *target.opponents) if options.objects == "target_and_opponents" else _all(view)
+    return render_compact(view.rows, start, view.step, view.step, objects, options.fields, options.precision)
 
 
-def _policy(inputs: RunInputs, slot: SlotState) -> dict[str, object]:
-    if inputs.policy is None or inputs.config.policy is None:
-        raise ValueError("the policy input is selected but no policy material was loaded")
-    return policy_values(inputs.policy, slot.step, inputs.config.policy.past_steps)
+def _all(view: View) -> tuple[str, ...]:
+    return tuple(sorted(view.rows.loc[view.rows["entity_type"].eq("aircraft"), "object_id"].unique()))
 
 
-def _session_values(config: RunConfig) -> dict[str, object]:
-    session = config.session
-    if session is None:
-        return {}
-    sandbox = session.sandbox
-    return {
-        "max_runs": session.max_runs,
-        "timeout_s": sandbox.timeout_s,
-        "stdout_cap_chars": sandbox.stdout_cap_chars,
-        "stderr_tail_chars": sandbox.stderr_tail_chars,
-    }
+# --- the policy trace (U-c option b: recorded activations plus the action-head weights) -----------
 
 
-PROCESSORS: dict[str, Callable[[RunInputs, SlotState], dict[str, object]]] = {
-    "instructions": _instructions,
-    "alarms": _alarms,
-    "question": _question,
-    "previous_translation": _previous,
-    INPUT_POLICY: _policy,
-}
+@dataclass(frozen=True)
+class Rollout:
+    learners: tuple[str, ...]  # the aircraft the recorded policy flies, in row order
+    arrays: dict[str, np.ndarray]  # name -> (decisions, rows, ...)
+    weight: np.ndarray | None  # (logits, act_in width)
+    bias: np.ndarray | None
 
 
-def slot_values(inputs: RunInputs, slot: SlotState, trajectory: RenderedTrajectory) -> dict[str, object]:
-    """Base values, then each selected input's values, then the session limits (code session)."""
-    values = {**_base(inputs, slot), **_session_values(inputs.config)}
-    for name in inputs.config.inputs:
-        found = _trajectory(trajectory) if name == INPUT_TRAJECTORY else PROCESSORS[name](inputs, slot)
-        values = {**values, **found}
-    return values
+@lru_cache(maxsize=4)
+def load_rollout(directory: Path, seed: int, names: tuple[str, ...], with_weights: bool) -> Rollout:
+    """One recorded episode of the policy, read once (npz only, no pickle)."""
+    manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
+    files = {entry["seed"]: entry["file"] for entry in manifest["episodes"]}
+    if seed not in files:
+        raise ValueError(f"seed {seed} is not in the rollout {directory}")
+    with np.load(directory / files[seed], allow_pickle=False) as data:
+        missing = sorted(set(names) - set(data.files))
+        if missing:
+            raise ValueError(f"the rollout lacks {missing}: re-record it (slurm/lag/record_rollouts.sbatch)")
+        arrays = {name: np.array(data[name]) for name in names}
+    learners = tuple(manifest["learner_uids"])
+    if {a.ndim for a in arrays.values()} != {3} or len({a.shape[:2] for a in arrays.values()}) != 1:
+        raise ValueError(f"{directory}: every array must be (decisions, rows, width) with the same decisions and rows")
+    if next(iter(arrays.values())).shape[1] != len(learners):
+        raise ValueError(f"{directory}: the arrays have one row per learner {learners}")
+    if not with_weights:
+        return Rollout(learners, arrays, None, None)
+    with np.load(directory / "head_weights.npz", allow_pickle=False) as weights:
+        weight, bias = np.array(weights["weight"]), np.array(weights["bias"])
+    widths = [arrays[name].shape[2] for name in ("logits", "act_in") if name in arrays]
+    if bias.shape != weight.shape[:1] or (len(widths) == 2 and weight.shape != tuple(widths)):
+        raise ValueError(f"{directory}: head_weights must be (logits, act_in) {tuple(widths)} with one bias per logit")
+    return Rollout(learners, arrays, weight, bias)
 
 
-def event_input(inputs: RunInputs, slot: SlotState, trajectory: RenderedTrajectory) -> dict[str, Any]:
-    """The event's ``input``: what a human rater sees for this slot, plus what the translator read."""
-    request = target_request(inputs.scenario, slot.target, slot.step)
-    config = inputs.config
-    record = {
-        "prompt_version": config.prompt.version,
-        "target_aircraft": list(inputs.facts.target_aircraft(slot.target)),
-        "instructions_in_effect": [item.to_json() for item in instructions_in_effect(inputs.scenario, slot.step)],
-        "primary_instruction_id": slot.instruction.instruction_id if slot.instruction else None,
-        "alarms": [item.to_json() for item in target_alarms(inputs.scenario, inputs.facts, slot.target, slot.step)],
-        "question": None
-        if request is None
-        else {"request_id": request.request_id, "step": request.step, "text": request.question},
-        "trajectory": trajectory_json(trajectory),
-        "previous_translation": slot.previous.to_json() if slot.previous else None,
-        "output_language": config.prompt.vars.get("output_language"),
-        "translator_inputs": list(config.inputs),
-    }
-    if inputs.policy is None:
-        return record
-    # The window and the bundle the sandbox read are added by the call (pipeline: observed_inputs).
-    policy = {
-        "network_alias": inputs.policy.spec.alias,
-        "checkpoint_sha256": inputs.policy.checkpoint.sha256,
-        "rollout_sha256": inputs.policy.rollout.sha256,
-    }
-    return {**record, "policy": policy}
+def _rounded(values: np.ndarray, precision: int) -> list[Any]:
+    return np.round(values, precision).tolist() if values.dtype.kind == "f" else values.tolist()
+
+
+@register("policy_trace", PolicyOptions)
+def policy_trace(view: View, target: Target, options: PolicyOptions) -> str:
+    """The recorded policy rows of the window ending at t for each aircraft of the target, then W_head and b_head."""
+    rollout = load_rollout(repo_path(options.rollout), options.seed, options.arrays, options.head_weights)
+    start = max(0, view.step - options.past_steps + 1)
+    if view.step >= len(next(iter(rollout.arrays.values()))):
+        raise ValueError(f"step {view.step} is after the end of the recorded rollout")
+    sections = []
+    for aircraft in target.aircraft:
+        if aircraft not in rollout.learners:
+            sections.append(f"{aircraft}: not flown by the recorded policy")
+            continue
+        row = rollout.learners.index(aircraft)
+        lines = [
+            json.dumps(
+                {
+                    "step": s,
+                    "relative_step": s - view.step,
+                    **{n: _rounded(rollout.arrays[n][s, row], options.precision) for n in options.arrays},
+                },
+                separators=(",", ":"),
+            )
+            for s in range(start, view.step + 1)
+        ]
+        title = f"Policy trace of {aircraft}, steps {start}-{view.step}, one JSON line per step, oldest first:"
+        sections.append("\n".join([title, *lines]))
+    if options.head_weights:
+        rows = [
+            json.dumps(
+                {
+                    "logit": i,
+                    "bias": _rounded(rollout.bias[i], options.precision),
+                    "weight": _rounded(rollout.weight[i], options.precision),
+                },
+                separators=(",", ":"),
+            )
+            for i in range(len(rollout.bias))
+        ]
+        sections.append(
+            "\n".join(["Action heads, one JSON line per logit (logits = W_head @ act_in + b_head):", *rows])
+        )
+    return "\n\n".join(sections)

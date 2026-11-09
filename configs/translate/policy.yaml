@@ -1,0 +1,82 @@
+# Policy input (U-c option b, 2026-11-09): the translator reads the recorded policy itself, not the
+# trajectory: per step of the window its inputs (obs), recurrent output (gru_out), the input of its
+# action heads (act_in), its logits and chosen bins, plus the action-head weights W_head (13 x 128)
+# and biases. This replaces the former "weights + activations" code session; the judge still sees
+# the trajectory window. The rollout must hold act_in and head_weights.npz:
+#   OUT=outputs/rollouts/mhi-v1.3-act-in SEEDS=100601 sbatch --export=ALL slurm/lag/record_rollouts.sbatch
+#   .venv/bin/python -m translate --config configs/translate/policy.yaml        (preview)
+scenario: configs/translate/scenarios/seed100601.yaml   # episode CSV made from rollout seed 100601
+change: {source: preset, steps: [145, 245, 315]}
+inputs:
+  instructions: {}
+  previous_translation: {}
+  policy_trace:
+    rollout: outputs/rollouts/mhi-v1.3-act-in   # manifest.json + episode_seed100601.npz + head_weights.npz
+    seed: 100601
+    arrays: [obs, gru_out, act_in, logits, actions]   # default
+    head_weights: true                 # default: W_head and b_head, so each logit is W_head[i] . act_in + b_head[i]
+    past_steps: 60                     # default
+    precision: 4                       # default
+prompt:
+  name: intent-policy-v1
+  system: |-
+    A recurrent neural-network policy flies the target aircraft in a two-versus-two F-16 air-combat
+    simulation (team A: A0100, A0200; team B: B0100, B0200, rule-based). Both team-A aircraft run their
+    own copy of the same network. You see only the policy, for every step (0.2 s) of a window ending at
+    the current step: its inputs (obs, 33 numbers), its recurrent output (gru_out, 128), the input of its
+    action heads (act_in, 128), its 13 logits and the bins it chose (actions: altitude, heading, speed,
+    shoot), and the action-head weights W_head (13 x 128) with biases b_head, so that
+    logits = W_head @ act_in + b_head. The heads are, in logit order: altitude command (3 bins: up, hold,
+    down), heading command (5 bins: left30, left15, hold, right15, right30), speed command (3 bins: up,
+    hold, down) and shoot (2 bins: no, yes). The first three set the target change of altitude, heading
+    and speed that a frozen low-level controller flies until the next decision; a shoot request
+    launches a missile only if the aircraft has missiles left, the nearest live opponent is within 45
+    degrees and 14 km, and 25 s have passed since its last launch. The inputs are:
+    obs[0] altitude: own altitude above sea level / 5000 [5 km]
+    obs[1] roll_sin: sin(own roll angle)
+    obs[2] roll_cos: cos(own roll angle)
+    obs[3] pitch_sin: sin(own pitch angle)
+    obs[4] pitch_cos: cos(own pitch angle)
+    obs[5] v_body_x: own body-frame forward velocity u / 340 [340 m/s]
+    obs[6] v_body_y: own body-frame sideways velocity v / 340 [340 m/s]
+    obs[7] v_body_z: own body-frame downward velocity w / 340 [340 m/s]
+    obs[8] airspeed: own calibrated airspeed / 340 [340 m/s]
+    obs[9] partner_delta_speed: (body-x speed u of the teammate - own body-x speed u) / 340 [340 m/s]
+    obs[10] partner_delta_altitude: (teammate altitude - own altitude) / 1000 [km]
+    obs[11] partner_AO: angle-off: angle between own velocity vector and the line of sight from own aircraft to the teammate (3-D displacement in north/east/up metres), in [0, pi] (0 = it is dead ahead); velocities enter as (v_north, v_east, v_down), so the vertical velocity component has the opposite sign to the 'up' displacement axis [rad]
+    obs[12] partner_TA: target aspect: angle between the teammate's velocity vector and the same own-to-teammate line of sight, in [0, pi] (0 = it flies directly away from us, pi = straight at us); velocities enter as (v_north, v_east, v_down), so the vertical velocity component has the opposite sign to the 'up' displacement axis [rad]
+    obs[13] partner_distance: 3-D distance to the teammate / 10000 [10 km]
+    obs[14] partner_side: sign(v_north * d_east - v_east * d_north) with own horizontal velocity v and horizontal displacement d to the teammate: +1 = teammate is to the right of own track, -1 = to the left, 0 = dead ahead/behind.
+    obs[15] enemy1_delta_speed: (body-x speed u of the first opponent - own body-x speed u) / 340 [340 m/s]
+    obs[16] enemy1_delta_altitude: (first opponent altitude - own altitude) / 1000 [km]
+    obs[17] enemy1_AO: angle-off: angle between own velocity vector and the line of sight from own aircraft to the first opponent (3-D displacement in north/east/up metres), in [0, pi] (0 = it is dead ahead); velocities enter as (v_north, v_east, v_down), so the vertical velocity component has the opposite sign to the 'up' displacement axis [rad]
+    obs[18] enemy1_TA: target aspect: angle between the first opponent's velocity vector and the same own-to-first opponent line of sight, in [0, pi] (0 = it flies directly away from us, pi = straight at us); velocities enter as (v_north, v_east, v_down), so the vertical velocity component has the opposite sign to the 'up' displacement axis [rad]
+    obs[19] enemy1_distance: 3-D distance to the first opponent / 10000 [10 km]
+    obs[20] enemy1_side: sign(v_north * d_east - v_east * d_north) with own horizontal velocity v and horizontal displacement d to the first opponent: +1 = first opponent is to the right of own track, -1 = to the left, 0 = dead ahead/behind.
+    obs[21] enemy2_delta_speed: (body-x speed u of the second opponent - own body-x speed u) / 340 [340 m/s]
+    obs[22] enemy2_delta_altitude: (second opponent altitude - own altitude) / 1000 [km]
+    obs[23] enemy2_AO: angle-off: angle between own velocity vector and the line of sight from own aircraft to the second opponent (3-D displacement in north/east/up metres), in [0, pi] (0 = it is dead ahead); velocities enter as (v_north, v_east, v_down), so the vertical velocity component has the opposite sign to the 'up' displacement axis [rad]
+    obs[24] enemy2_TA: target aspect: angle between the second opponent's velocity vector and the same own-to-second opponent line of sight, in [0, pi] (0 = it flies directly away from us, pi = straight at us); velocities enter as (v_north, v_east, v_down), so the vertical velocity component has the opposite sign to the 'up' displacement axis [rad]
+    obs[25] enemy2_distance: 3-D distance to the second opponent / 10000 [10 km]
+    obs[26] enemy2_side: sign(v_north * d_east - v_east * d_north) with own horizontal velocity v and horizontal displacement d to the second opponent: +1 = second opponent is to the right of own track, -1 = to the left, 0 = dead ahead/behind.
+    obs[27] missile_delta_speed: (missile speed |v| - own body-x speed u) / 340 [340 m/s]
+    obs[28] missile_delta_altitude: (missile height above the 0 m battlefield reference - own altitude above sea level) / 1000 [km]
+    obs[29] missile_AO: angle-off: angle between own velocity vector and the line of sight from own aircraft to the incoming missile (3-D displacement in north/east/up metres), in [0, pi] (0 = it is dead ahead); own velocity enters as (v_north, v_east, v_down), the missile's as (v_north, v_east, v_up) [rad]
+    obs[30] missile_TA: target aspect: angle between the incoming missile's velocity vector and the same own-to-incoming missile line of sight, in [0, pi] (0 = it flies directly away from us, pi = straight at us); own velocity enters as (v_north, v_east, v_down), the missile's as (v_north, v_east, v_up) [rad]
+    obs[31] missile_distance: 3-D distance to the incoming missile / 10000 [10 km]
+    obs[32] missile_side: sign(v_north * d_east - v_east * d_north) with own horizontal velocity v and horizontal displacement d to the incoming missile: +1 = incoming missile is to the right of own track, -1 = to the left, 0 = dead ahead/behind. All six missile entries are 0 when no live missile is targeting this aircraft.
+    State the target's current intent: what it is trying to achieve and how, judged from the policy's
+    inputs and outputs up to the current step. A previous translation, when given, is the earlier
+    statement for the same aircraft: keep what still holds and revise what newer evidence contradicts.
+    Treat intentions as hypotheses supported by evidence; do not invent hits or outcomes.
+    Output one JSON object: "intent" (at most {max_intent_chars} characters) and "evidence" (short
+    observations citing arrays, steps and values). Write both in English.
+  user: |-
+    Step {step} ({time_s} s). Target: {target}.
+    Instruction in effect (context only; the policy does not read it):
+    {instructions}
+    Previous translation: {previous_translation}
+
+    {policy_trace}
+model: {backend: openai, name: gpt-6.1-sol, reasoning_effort: high, max_output_tokens: 25000}
+answer: {max_intent_chars: 1000, on_invalid: skip}

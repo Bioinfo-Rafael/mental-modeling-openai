@@ -12,12 +12,10 @@ from typing import Any
 import numpy as np
 import pytest
 
-from translate import paths
-from translate.lag.dataset import COLUMNS, MANIFEST_NAME, load_episode
-from translate.lag.rendering import render_lag17_jsonl
-from translate.scenario import episode_facts
+from translate.episode import load_episode, render_lag17
+from translate.journal import REPO_ROOT
 
-SCRIPT_PATH = paths.ROOT / "scripts" / "episode_to_csv.py"
+SCRIPT_PATH = REPO_ROOT / "scripts" / "lag" / "episode_to_csv.py"
 SPEC = importlib.util.spec_from_file_location("episode_to_csv", SCRIPT_PATH)
 assert SPEC is not None and SPEC.loader is not None
 episode_to_csv = importlib.util.module_from_spec(SPEC)
@@ -94,7 +92,7 @@ def episode(tmp_path: Path) -> Path:
     csv_path = tmp_path / "seed1.csv"
     csv_path.write_bytes(data)
     manifest = build_manifest(csv_path.name, data, {**info, "episode_id": "synthetic_seed1"}, {"npz": npz})
-    (tmp_path / MANIFEST_NAME).write_text(json.dumps(manifest), encoding="utf-8")
+    (tmp_path / episode_to_csv.MANIFEST_NAME).write_text(json.dumps(manifest), encoding="utf-8")
     return csv_path
 
 
@@ -123,16 +121,15 @@ def test_softmax_heads_each_head_sums_to_one() -> None:
 
 
 def test_convert_output_loads_with_translator_loader(episode: Path) -> None:
-    frame = load_episode(episode)
+    loaded = load_episode(episode)
 
-    assert list(frame.columns) == list(COLUMNS)
-    facts = episode_facts(frame)
-    assert facts.last_step == ROWS - 1
-    assert facts.down_steps == {"A0100": None, "A0200": None, "B0100": None, "B0200": DEATH_ROW}
+    assert list(loaded.frame.columns) == list(episode_to_csv.COLUMNS)
+    assert loaded.last_step == ROWS - 1
+    assert loaded.down_steps == {"A0100": None, "A0200": None, "B0100": None, "B0200": DEATH_ROW}
 
 
 def test_convert_aircraft_rows_follow_13lag_semantics(episode: Path) -> None:
-    frame = load_episode(episode).set_index(["step", "object_id"])
+    frame = load_episode(episode).frame.set_index(["step", "object_id"])
 
     first_dead, later_dead = frame.loc[(DEATH_ROW, "B0200")], frame.loc[(DEATH_ROW + 1, "B0200")]
     assert (first_dead["alive"], first_dead["state_valid"], first_dead["acmi_event"]) == (0, 0, "remove")
@@ -151,7 +148,7 @@ def test_convert_aircraft_rows_follow_13lag_semantics(episode: Path) -> None:
 
 
 def test_convert_missile_rows_keep_acmi_values_and_drop_frames_after_last_row(episode: Path) -> None:
-    frame = load_episode(episode)
+    frame = load_episode(episode).frame
     missile = frame[frame["object_id"].eq("A01002")].set_index("step")
 
     assert list(missile.index) == [1, 2, 3]
@@ -164,8 +161,8 @@ def test_convert_missile_rows_keep_acmi_values_and_drop_frames_after_last_row(ep
 
 
 def test_convert_window_renders_missile_and_masks_dead_state(episode: Path) -> None:
-    rendered = render_lag17_jsonl(load_episode(episode), start_step=0, end_step=2, anchor_step=2, episode_alias="e1")
-    lines = [json.loads(line) for line in rendered.text.splitlines()]
+    rendered = render_lag17(load_episode(episode).frame, 0, 2, 2)
+    lines = [json.loads(line) for line in rendered.splitlines()]
 
     ids_at_1 = [entity["object_id"] for entity in lines[1]["entities"]]
     assert ids_at_1 == [*UIDS, "A01002"]
