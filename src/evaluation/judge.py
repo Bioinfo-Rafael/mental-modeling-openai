@@ -4,7 +4,12 @@ No-resend (design section 4.2): a paid run holds the ``O_EXCL`` marker ``<output
 for its whole duration; every ``request_sha256`` journaled anywhere under the output root (this
 judge's ``requests.jsonl`` and the 2026-11-05 assess ``judge_requests.jsonl``) is never sent again;
 an event already judged in the same directory with other bytes is refused; each request line is
-fsynced before its call. Nothing is retried: a failed or uncertain call ends the run.
+fsynced before its call. Nothing is retried: a failed or uncertain call ends the run. A paid run
+from a git worktree is refused (its ``outputs/`` holds none of the main checkout's journals).
+
+The one exception is explicit: ``--only-event`` re-sends a single stuck event (sent from this
+directory with the same bytes, no verdict here, journaled nowhere else) and marks the request line
+as a user-requested re-send.
 """
 
 from __future__ import annotations
@@ -120,11 +125,12 @@ def _line_hashes(line: dict[str, Any]) -> frozenset[str]:
     return frozenset(embedded | ({request_sha256(body)} if isinstance(body, dict) else set()))
 
 
-def known_requests(*roots: Path) -> frozenset[str]:
-    """Every request hash journaled under the roots. An unreadable line fails closed, naming the file."""
+def known_requests(*roots: Path, skip: Path | None = None) -> frozenset[str]:
+    """Every request hash journaled under the roots, except in the journal ``skip``. An unreadable line
+    fails closed, naming the file."""
     found: frozenset[str] = frozenset()
-    paths = {p for root in roots for name in JOURNALS for p in Path(root).rglob(name)}
-    for path in sorted(paths):
+    paths = {p.resolve() for root in roots for name in JOURNALS for p in Path(root).rglob(name)}
+    for path in sorted(paths - ({Path(skip).resolve()} if skip is not None else set())):
         try:
             hashes = [_line_hashes(line) for line in read_jsonl(path)]
         except ValueError:
@@ -164,11 +170,48 @@ def make_plan(calls: list[Call], known: frozenset[str], journal: dict[str, froze
     return Plan(tuple(calls), to_send, len(sent), refused)
 
 
-def missing_results(plan: Plan, directory: Path) -> list[str]:
-    """Planned events (not refused) without a result line here; they are never sent again."""
+def _judged(directory: Path) -> set[str]:
     path = directory / "results.jsonl"
-    done = {line["event_id"] for line in read_jsonl(path)} if path.is_file() else set()
+    return {line["event_id"] for line in read_jsonl(path)} if path.is_file() else set()
+
+
+def missing_results(plan: Plan, directory: Path) -> list[str]:
+    """Planned events (not refused) without a result line here; only ``--only-event`` sends one again."""
+    done = _judged(directory)
     return [c.event_id for c in plan.calls if c.event_id not in plan.refused and c.event_id not in done]
+
+
+def resend_plan(calls: list[Call], event_id: str, directory: Path, roots: tuple[Path, ...]) -> tuple[Plan, dict]:
+    """``--only-event``: a plan of the one stuck event and the note its request line carries. Stuck means
+    sent from this directory with these exact bytes, no verdict here, and journaled under no other
+    journal (where its verdict may live). Anything else is refused."""
+    call = next((c for c in calls if c.event_id == event_id), None)
+    if call is None:
+        raise JudgeError(f"{event_id} is not a planned event of this run (unknown id, or its target leaked)")
+    path = directory / REQUESTS
+    sent = [x for x in (read_jsonl(path) if path.is_file() else []) if x["call_id"] == event_id]
+    if not any(call.sha256 in _line_hashes(x) for x in sent):
+        raise JudgeError(f"{event_id} was never sent from {directory} with these bytes: judge without --only-event")
+    if event_id in _judged(directory):
+        raise JudgeError(f"{event_id} already has results in {directory}: it is not stuck")
+    if call.sha256 in known_requests(*roots, skip=path):
+        raise JudgeError(f"the request of {event_id} is journaled outside {directory}: its verdict may live there")
+    note = {"requested_by": "user", "option": "--only-event", "previous_sends": len(sent)}
+    return Plan((call,), (call,), 1, ()), note
+
+
+def main_checkout_only(root: Path) -> None:
+    """Refuse a paid run from a git worktree (``.git`` is a file): it would scan only the worktree's
+    ``outputs/evaluation`` and miss the paid journals of the main checkout."""
+    dot_git = Path(root) / ".git"
+    if not dot_git.is_file():
+        return
+    gitdir = (Path(root) / dot_git.read_text(encoding="utf-8").partition("gitdir:")[2].strip()).resolve()
+    main = gitdir.parents[2] if gitdir.parent.name == "worktrees" else "the main checkout"
+    raise JudgeError(
+        f"{root} is a git worktree: a paid judge run scans only its outputs/evaluation, not the main "
+        f"checkout's paid journals. Run it from {main}"
+    )
 
 
 @contextmanager
@@ -210,8 +253,17 @@ def _failure(exc: BaseException) -> tuple[bool, dict[str, str], Any]:
     return True, {"type": type(exc).__name__, "message": WITHHELD}, None
 
 
-def run_calls(plan: Plan, *, send: Callable[[Call], Any], directory: Path, config: JudgeConfig, batch: str) -> Outcome:
-    """Send the planned calls in order, each once. ``send`` takes a call and returns a ``Reply``."""
+def run_calls(
+    plan: Plan,
+    *,
+    send: Callable[[Call], Any],
+    directory: Path,
+    config: JudgeConfig,
+    batch: str,
+    note: dict | None = None,
+) -> Outcome:
+    """Send the planned calls in order, each once. ``send`` takes a call and returns a ``Reply``; ``note``
+    (an ``--only-event`` re-send) is written into the request line as ``resend``."""
     attempted, judged, in_flight = 0, 0, None
     try:
         for call in plan.to_send:
@@ -219,6 +271,7 @@ def run_calls(plan: Plan, *, send: Callable[[Call], Any], directory: Path, confi
                 return Outcome("cap_reached", attempted, judged, {"event_id": call.event_id, "cap": attempted})
             line = {"call_id": call.event_id, "layer": "judge", "batch": batch, "step": call.event["step"]}
             line = {**line, "target": call.event["target"], "request_sha256": call.sha256, "body": call.body}
+            line = {**line, "resend": note} if note else line
             append_jsonl(directory / REQUESTS, {**line, "written_at": utc_now()})  # fsynced before the send
             attempted, in_flight, started = attempted + 1, call.event_id, time.perf_counter()
             try:

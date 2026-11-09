@@ -1,12 +1,13 @@
 """``python -m evaluation``: judge a translation run, import human ratings, write the report.
 
-    python -m evaluation judge --run DIR [--config C] [--name N] [--execute --confirm-paid-api]
+    python -m evaluation judge --run DIR [--config C] [--name N] [--execute --confirm-paid-api [--only-event ID]]
     python -m evaluation import-ratings --run DIR --ratings FILE [--config C] [--name N]
     python -m evaluation report --run DIR [--config C] [--name N]
 
 Every subcommand works in ``<output>/<translation run>/<name>/`` (owner-only, reused). ``judge``
 previews unless both paid flags are given; a paid run holds the marker, scans every journal under
-the output root and never sends a known request. Exit codes: 0 ok or preview; 1 failure; 2 usage or
+the output root and never sends a known request, except the one stuck event named by ``--only-event``
+(an explicit, user-requested re-send). A paid run from a git worktree is refused. Exit codes: 0 ok or preview; 1 failure; 2 usage or
 gate; 3 a call has an uncertain outcome (it may have been billed; never resend it); 4 the call cap.
 """
 
@@ -29,22 +30,25 @@ from evaluation.judge import (
     Call,
     journaled,
     known_requests,
+    main_checkout_only,
     make_plan,
     missing_results,
     paid_marker,
     plan_call,
+    resend_plan,
     run_calls,
 )
 from evaluation.material import load_frame, load_run, read_jsonl, target_key
 from evaluation.results import RatingsError, build_report, import_ratings
 from translate.backends import BackendError
 from translate.backends.openai import OpenAIBackend, make_client
-from translate.journal import append_jsonl, repo_path
+from translate.journal import REPO_ROOT, append_jsonl, repo_path
 
 DEFAULT_CONFIG = Path("configs/evaluation/judge.yaml")
 EXIT_CODES = {"completed": 0, "preview": 0, "failed": 1, "uncertain": 3, "cap_reached": 4}
 SAFE_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}")
 DIR_MODE = 0o700  # judge material holds scenario text and ratings: owner-only
+CHECKOUT = REPO_ROOT  # a paid run must start from the main checkout, never a git worktree
 
 ClientFactory = Callable[..., Any]
 
@@ -65,6 +69,11 @@ def build_parser() -> argparse.ArgumentParser:
     judge = commands.add_parser("judge", parents=[common], help="preview, or with both flags the paid judge")
     judge.add_argument("--execute", action="store_true", help="send the judge calls (needs --confirm-paid-api)")
     judge.add_argument("--confirm-paid-api", action="store_true", help="confirm paid calls (needs --execute)")
+    judge.add_argument(
+        "--only-event",
+        metavar="EVENT_ID",
+        help="re-send one stuck event (sent from this directory, no verdict here); needs both paid flags",
+    )
     ratings = commands.add_parser("import-ratings", parents=[common], help="validate and append human ratings")
     ratings.add_argument("--ratings", type=Path, required=True, help="human ratings JSONL (private/)")
     commands.add_parser("report", parents=[common], help="write report.json")
@@ -108,11 +117,15 @@ def _calls(run: Any, config: JudgeConfig, directory: Path) -> tuple[list[Call], 
     return calls, leaks
 
 
-def _send_planned(plan: Any, client_factory: ClientFactory, directory: Path, config: JudgeConfig) -> Any:
+def _send_planned(
+    plan: Any, client_factory: ClientFactory, directory: Path, config: JudgeConfig, note: dict | None
+) -> Any:
     """Build the paid client (after the gate, the marker and the scan) and send the planned calls."""
     backend = OpenAIBackend(config.model, client=client_factory(timeout_s=config.model.timeout_s))
     batch = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-    return run_calls(plan, send=lambda call: backend.send(call.body), directory=directory, config=config, batch=batch)
+    return run_calls(
+        plan, send=lambda call: backend.send(call.body), directory=directory, config=config, batch=batch, note=note
+    )
 
 
 def run_judge(args: argparse.Namespace, config: JudgeConfig, run: Any, client_factory: ClientFactory) -> int:
@@ -127,16 +140,26 @@ def run_judge(args: argparse.Namespace, config: JudgeConfig, run: Any, client_fa
         _print({"judgement_dir": str(directory), "status": "preview", "plan": plan.to_json(), "leaks": sorted(leaks)})
         print("Preview only. API requests made: 0", file=sys.stderr)
         return 0
+    main_checkout_only(CHECKOUT)
     with paid_marker(GUARD_ROOT):  # one paid judge run at a time, whatever `output` says
-        plan = make_plan(calls, known_requests(*roots), journaled(directory))  # scanned while the marker is held
+        if args.only_event:  # the explicit, user-requested re-send of one stuck event; nothing else is sent
+            plan, note = resend_plan(calls, args.only_event, directory, roots)
+        else:
+            plan, note = (
+                make_plan(calls, known_requests(*roots), journaled(directory)),
+                None,
+            )  # scanned under the marker
         if plan.refused:
             raise ValueError(f"{len(plan.refused)} event(s) were judged here with other bytes: use another --name")
-        _write_run_json(directory, args, config, run, status="running", plan=plan.to_json(), leaks=sorted(leaks))
+        only = {"only_event": args.only_event}
+        _write_run_json(
+            directory, args, config, run, status="running", plan=plan.to_json(), leaks=sorted(leaks), **only
+        )
         try:
-            outcome = _send_planned(plan, client_factory, directory, config) if plan.to_send else None
+            outcome = _send_planned(plan, client_factory, directory, config, note) if plan.to_send else None
         except (Exception, KeyboardInterrupt) as exc:  # the client could not be built: nothing was sent
             _write_run_json(
-                directory, args, config, run, status="failed", plan=plan.to_json(), error=type(exc).__name__
+                directory, args, config, run, status="failed", plan=plan.to_json(), error=type(exc).__name__, **only
             )
             raise
         status = outcome.status if outcome else "completed"
@@ -150,7 +173,9 @@ def run_judge(args: argparse.Namespace, config: JudgeConfig, run: Any, client_fa
                 "failed",
                 {"message": f"{len(missing)} sent event(s) have no results here", "first": missing[0]},
             )
-        _write_run_json(directory, args, config, run, status=status, plan=plan.to_json(), counts=counts, error=error)
+        _write_run_json(
+            directory, args, config, run, status=status, plan=plan.to_json(), counts=counts, error=error, **only
+        )
     _print(
         {"judgement_dir": str(directory), "status": status, "plan": plan.to_json(), "counts": counts, "error": error}
     )
@@ -184,6 +209,8 @@ def main(argv: list[str] | None = None, *, client_factory: ClientFactory = make_
     args = parser.parse_args(argv)
     if args.command == "judge" and args.execute != args.confirm_paid_api:
         parser.error("the judge calls a paid API: give BOTH --execute and --confirm-paid-api, or neither")
+    if args.command == "judge" and args.only_event and not args.execute:
+        parser.error("--only-event re-sends a paid request: give --execute --confirm-paid-api with it")
     try:
         config = load_config(repo_path(args.config))
         run = load_run(args.run)

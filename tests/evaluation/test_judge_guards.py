@@ -199,3 +199,91 @@ def test_a_sent_event_without_results_is_never_resent_and_keeps_the_run_failed(t
     assert codes == (1, 1) and len(first.sdk.bodies) == 1 and len(second.sdk.bodies) == 1
     status = json.loads((tmp_path / "evaluation" / "trial" / "judge" / "run.json").read_text())
     assert status["status"] == "failed" and status["error"]["first"] == event(45)["event_id"]
+
+
+def test_a_paid_run_from_a_git_worktree_is_refused_naming_the_main_checkout(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+) -> None:
+    run_dir, config = _setup(tmp_path)
+    worktree = tmp_path / "worktree"
+    worktree.mkdir()
+    (worktree / ".git").write_text("gitdir: /srv/main/.git/worktrees/worktree\n")
+    monkeypatch.setattr(cli, "CHECKOUT", worktree)
+    factory = Factory()
+
+    paid, preview = _judge(run_dir, config, factory, *PAID), _judge(run_dir, config, factory)
+
+    assert (paid, preview, factory.calls) == (1, 0, 0)  # a preview sends nothing and stays allowed
+    assert "Run it from /srv/main" in capsys.readouterr().err
+    assert not (tmp_path / "evaluation" / MARKER).exists()
+
+
+def test_a_judgement_directory_refuses_a_run_that_changed(tmp_path: Path, capsys: pytest.CaptureFixture) -> None:
+    run_dir, config = _setup(tmp_path)
+    first = _judge(run_dir, config, Factory())
+    with (run_dir / "events.jsonl").open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps({**event(245, ("change",)), "sequence": 3}) + "\n")
+
+    assert (first, _judge(run_dir, config, Factory())) == (0, 1)
+    assert "judge it under another --name" in capsys.readouterr().err
+
+
+# --- --only-event: the one explicit re-send of a stuck event ---------------------------------------
+
+
+def _stuck(tmp_path: Path) -> tuple[Path, Path, str, dict]:
+    """A paid run whose first event (step 45) got a malformed verdict: it is stuck; step 145 was never sent."""
+    run_dir, config = _setup(tmp_path)
+    first = Factory(FakeSDK(outcomes=['{"criteria": []}']))
+    assert _judge(run_dir, config, first, *PAID) == 1
+    return run_dir, config, event(45)["event_id"], first.sdk.bodies[0]
+
+
+@pytest.mark.parametrize("flags", [(), ("--execute",), ("--confirm-paid-api",)])
+def test_only_event_without_both_paid_flags_is_a_usage_error(tmp_path: Path, flags: tuple[str, ...]) -> None:
+    run_dir, config = _setup(tmp_path)
+
+    with pytest.raises(SystemExit) as exc:
+        _judge(run_dir, config, Factory(), *flags, "--only-event", event(45)["event_id"])
+
+    assert exc.value.code == 2
+
+
+def test_only_event_refuses_an_event_that_is_not_stuck(tmp_path: Path) -> None:
+    run_dir, config, stuck, body = _stuck(tmp_path)
+    factory = Factory()
+    never_sent = event(145, ("change",))["event_id"]
+    codes = [_judge(run_dir, config, factory, *PAID, "--only-event", e) for e in (never_sent, "no-such-event")]
+    elsewhere = tmp_path / "evaluation" / "assess" / "old-run" / "judge_requests.jsonl"
+    elsewhere.parent.mkdir(parents=True)
+    elsewhere.write_text(json.dumps({"call_id": "old", "payload": body}) + "\n")  # the same bytes, sent elsewhere
+
+    codes.append(_judge(run_dir, config, factory, *PAID, "--only-event", stuck))
+
+    assert (codes, factory.calls) == ([1, 1, 1], 0)
+
+
+def test_only_event_resends_exactly_one_body_journaled_as_user_requested(tmp_path: Path) -> None:
+    run_dir, config, stuck, body = _stuck(tmp_path)
+    factory = Factory()
+
+    code = _judge(run_dir, config, factory, *PAID, "--only-event", stuck)
+
+    judged = tmp_path / "evaluation" / "trial" / "judge"
+    lines = _lines(judged / "requests.jsonl")
+    assert (code, factory.sdk.bodies) == (0, [body])
+    assert [line["call_id"] for line in lines] == [stuck, stuck] and "resend" not in lines[0]
+    assert lines[1]["resend"] == {"requested_by": "user", "option": "--only-event", "previous_sends": 1}
+    assert {row["event_id"] for row in _lines(judged / "results.jsonl")} == {stuck}
+    assert json.loads((judged / "run.json").read_text())["only_event"] == stuck
+
+
+def test_after_a_resend_the_guard_still_blocks_every_known_request(tmp_path: Path) -> None:
+    run_dir, config, stuck, body = _stuck(tmp_path)
+    _judge(run_dir, config, Factory(), *PAID, "--only-event", stuck)
+    rerun, again = Factory(), Factory()
+
+    codes = (_judge(run_dir, config, rerun, *PAID), _judge(run_dir, config, again, *PAID, "--only-event", stuck))
+
+    assert codes == (0, 1) and again.calls == 0  # judged now, so no longer stuck
+    assert len(rerun.sdk.bodies) == 1 and rerun.sdk.bodies[0] != body  # only the never-sent event 145

@@ -23,6 +23,7 @@ human ratings (import-ratings) + results -> report.json (cells, agreement, D55 d
 ```bash
 .venv/bin/python -m evaluation judge --run outputs/translate/<run>                       # preview
 .venv/bin/python -m evaluation judge --run outputs/translate/<run> --execute --confirm-paid-api
+.venv/bin/python -m evaluation judge --run outputs/translate/<run> --execute --confirm-paid-api --only-event <event_id>
 .venv/bin/python -m evaluation import-ratings --run outputs/translate/<run> --ratings private/evaluation/<file>.jsonl
 .venv/bin/python -m evaluation report --run outputs/translate/<run>
 ```
@@ -44,7 +45,7 @@ the report). Every subcommand takes `--config` (default `configs/evaluation/judg
 | `timing.request_deadline_s` | `3.0` | D55: a request event passes when `processing_s` is at most this |
 | `limits.max_calls` | `100` | Per invocation; the run stops before call `max_calls + 1` (exit 4) |
 | `output` | `outputs/evaluation` | Repo-relative root of the judgement directories |
-| `prompt` | `system`, `user` required; `rating_rule`, `future` | Every word of the request (see below) |
+| `prompt` | `system`, `user`, `rating_rule`, `future` required | Every word of the request (see below) |
 | `criteria` | required | `{id, kinds, text, levels, conditional, not_applicable, cannot_judge, may_use_future}` |
 
 A criterion's aspect is its id prefix (`elements`, `correctness`, `timing`, `contribution`; any prefix
@@ -98,11 +99,20 @@ quoted JSON strings, so they cannot leave their envelope.
   `judge_requests.jsonl` below `outputs/evaluation/` and below the configured output root, the
   2026-11-05 assess journal `outputs/evaluation/assess/<run>/judge_requests.jsonl` included, and never
   sends a known one, nor the same bytes twice in one run (a run that repeats an event is refused).
-  Run paid judgements in the checkout whose `outputs/evaluation/` holds the journals. A journal line it cannot read stops every paid run until repaired. An event already
+  A paid run from a git worktree (`.git` is a file) is refused, naming the main checkout: run paid
+  judgements there, where `outputs/evaluation/` holds the journals. A journal line it cannot read
+  stops every paid run until repaired. An event already
   judged in the same directory with other bytes is refused (judge it under another `--name`). A
   deliberate replicate needs new bytes: bump `rubric_version` or change the prompt. An event sent
   before whose verdict is not in this directory (an invalid verdict, or results kept elsewhere) is
-  never resent and keeps the run `failed`, naming it.
+  never resent automatically and keeps the run `failed`, naming it.
+- Recovery of a stuck event (deviation (c), 2026-11-09): `--only-event <event_id>` with both paid
+  flags re-sends exactly that event's request, once, when the user asks for it. It refuses an event
+  that is not stuck: it must have been sent from this judgement directory with the same bytes, have
+  no verdict here, and appear in no other journal (where its verdict may live). The request line
+  carries `"resend": {"requested_by": "user", "option": "--only-event", "previous_sends": N}`, and
+  `run.json` names the event. No other event is planned or sent; a later plain run still sends no
+  journaled request. The re-send is billed again, also after an `uncertain` outcome.
 - Every request line is fsynced before its call; nothing is retried. An HTTP or connection error, a
   refusal or an incomplete response ends the run `failed`; a timeout, an unknown status, an
   unreadable response or any other error ends it `uncertain`. A journaled request is never sent

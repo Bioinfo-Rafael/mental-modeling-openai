@@ -1,4 +1,5 @@
-"""Every judge test scans and marks tmp_path/evaluation, never the repository's outputs/evaluation."""
+"""Every judge test scans and marks tmp_path/evaluation, never the repository's outputs/evaluation, and
+runs as if from a main checkout (the tests themselves may run in a git worktree)."""
 
 from __future__ import annotations
 
@@ -13,4 +14,5 @@ from evaluation import cli
 def guard_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     root = tmp_path / "evaluation"
     monkeypatch.setattr(cli, "GUARD_ROOT", root)
+    monkeypatch.setattr(cli, "CHECKOUT", tmp_path)
     return root
